@@ -1,0 +1,114 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Domain\Repository;
+
+use ApiPlatform\Metadata\Operation;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Modules\{{domain}}\Domain\Model\{{domain}};
+use Modules\Shared\Domain\Repository\RepositoryInterface;
+use Modules\Shared\Infrastructure\Laravel\Exception\FatalErrorFoundException;
+use Modules\Shared\Infrastructure\Laravel\Exception\ResourceNotFoundException;
+use Traversable;
+use ArrayIterator;
+
+/**
+ * Repository interface for {{domain}} entities.
+ *
+ * This interface defines the contract for {{domain}} data persistence operations.
+ * It extends the base RepositoryInterface to provide domain-specific methods.
+ */
+interface {{prefix}}{{domain}}RepositoryInterface extends RepositoryInterface
+{
+    /**
+     * Add a new {{domain}} entity.
+     *
+     * @param string $name The name of the {{domain}}
+     * @param string $description The description of the {{domain}}
+     * @param string $status The status of the {{domain}}
+     * @param int $createdBy The ID of the user creating the {{domain}}
+     * @param bool $isActive Whether the {{domain}} is active
+     * @return {{domain}} The created {{domain}} entity
+     */
+    public function add(
+        string $name,
+        string $description,
+        string $status,
+        int $createdBy,
+        bool $isActive
+    ): {{domain}};
+
+    /**
+     * Find a {{domain}} by ID.
+     *
+     * @param int $id The ID of the {{domain}}
+     * @return {{domain}} The found {{domain}} entity
+     * @throws ResourceNotFoundException If the {{domain}} is not found
+     */
+    public function find(int $id): {{domain}};
+
+    /**
+     * Remove a {{domain}} by ID.
+     *
+     * @param int $id The ID of the {{domain}} to remove
+     * @return {{domain}} The removed {{domain}} entity
+     * @throws ResourceNotFoundException If the {{domain}} is not found
+     */
+    public function remove(int $id): {{domain}};
+
+    /**
+     * Update a {{domain}} with complete data replacement.
+     *
+     * @param int $id The ID of the {{domain}} to update
+     * @param array<string, mixed> $updatedData The complete updated data
+     * @return {{domain}} The updated {{domain}} entity
+     * @throws ResourceNotFoundException If the {{domain}} is not found
+     */
+    public function put(int $id, array $updatedData): {{domain}};
+
+    /**
+     * Partially update a {{domain}}.
+     *
+     * @param int $id The ID of the {{domain}} to update
+     * @param array<string, mixed> $partialData The partial data to update
+     * @return {{domain}} The updated {{domain}} entity
+     * @throws ResourceNotFoundException If the {{domain}} is not found
+     */
+    public function patch(int $id, array $partialData): {{domain}};
+
+    public function getIterator(): ArrayIterator|Traversable;
+
+    public function count(): int;
+
+    public function paginator(): ?LengthAwarePaginator;
+
+    /**
+     * Get paginated {{domain}} entities with filters and sorting.
+     *
+     * @param int $page The page number
+     * @param int $itemsPerPage The number of items per page
+     * @param array<string, mixed> $filters The filters to apply
+     * @param array<string, string> $sorts The sorting criteria
+     * @param Operation $operation The API Platform operation
+     * @return LengthAwarePaginator<{{domain}}> The paginated results
+     */
+    public function withPagination(
+        int $page,
+        int $itemsPerPage,
+        array $filters,
+        array $sorts,
+        Operation $operation
+    ): LengthAwarePaginator;
+
+    /**
+     * Get all {{domain}} entities without pagination.
+     *
+     * @param array<string, mixed> $filters The filters to apply
+     * @param array<string, string> $sorts The sorting criteria
+     * @param Operation $operation The API Platform operation
+     * @return iterable<{{domain}}> The collection of entities
+     */
+    public function withoutPagination(array $filters, array $sorts, Operation $operation): iterable;
+}

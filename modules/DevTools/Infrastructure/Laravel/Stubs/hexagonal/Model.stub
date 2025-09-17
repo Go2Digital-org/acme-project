@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Domain\Model;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\{{domain}}\Infrastructure\Laravel\Factory\{{domain}}Factory;
+
+/**
+ * {{domain}} domain model.
+ *
+ * This model represents a {{domain}} entity in the domain layer.
+ * It includes soft deletes and factory support for testing.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $description
+ * @property string $status
+ * @property int $created_by
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ */
+final class {{domain}} extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'status',
+        'created_by',
+        'is_active',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'is_active' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return {{domain}}Factory<static>
+     */
+    protected static function newFactory(): {{domain}}Factory
+    {
+        return {{domain}}Factory::new();
+    }
+}

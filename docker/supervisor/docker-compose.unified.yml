@@ -1,0 +1,215 @@
+services:
+  # ================================================================
+  # ACME CSR Platform - Unified Application Container
+  # Consolidates web server, queue workers, scheduler, and monitoring
+  # ================================================================
+  app:
+    build:
+      context: ../..
+      dockerfile: docker/supervisor/Dockerfile.unified
+    container_name: acme-csr-unified
+    restart: unless-stopped
+    environment:
+      # Environment configuration
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      
+      # FrankenPHP Configuration
+      SERVER_NAME: ":80,:443"
+      FRANKENPHP_CONFIG: "worker ./public/index.php"
+      
+      # Mercure Configuration (Real-time features)
+      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
+      
+      # Database Configuration
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-acme_corp_csr}
+      DB_USERNAME: ${DB_USERNAME:-acme}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      
+      # Redis Configuration
+      REDIS_HOST: redis
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+      CACHE_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+      
+      # Mail Configuration
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_USERNAME: null
+      MAIL_PASSWORD: null
+      MAIL_ENCRYPTION: null
+      
+      # Search Configuration
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_KEY: ${MEILISEARCH_KEY:-masterKey}
+      SCOUT_DRIVER: meilisearch
+      
+      # Monitoring
+      HORIZON_PATH: admin/horizon
+      
+    volumes:
+      - app-storage:/app/storage
+      - app-cache:/app/bootstrap/cache
+      - ./env:/etc/supervisor/env:ro
+    ports:
+      - "${APP_PORT:-80}:80"
+      - "${APP_HTTPS_PORT:-443}:443"
+      - "${APP_HTTP3_PORT:-443}:443/udp"
+    networks:
+      - acme-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+          cpus: '4.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+
+  # ================================================================
+  # MySQL Database
+  # ================================================================
+  mysql:
+    image: mysql:8.0
+    container_name: acme-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-acme_corp_csr}
+      MYSQL_USER: ${DB_USERNAME:-acme}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ../../database/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    networks:
+      - acme-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ================================================================
+  # Redis Cache & Queue
+  # ================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: acme-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 1g --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - acme-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ================================================================
+  # Meilisearch - Full-text Search Engine
+  # ================================================================
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: acme-meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY:-masterKey}
+      MEILI_ENV: ${MEILISEARCH_ENV:-production}
+      MEILI_HTTP_ADDR: 0.0.0.0:7700
+      MEILI_DB_PATH: /meili_data
+      MEILI_NO_ANALYTICS: true
+      MEILI_LOG_LEVEL: INFO
+    volumes:
+      - meilisearch-data:/meili_data
+    ports:
+      - "${MEILISEARCH_PORT:-7700}:7700"
+    networks:
+      - acme-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ================================================================
+  # Mailpit - Email Testing
+  # ================================================================
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: acme-mailpit
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+    networks:
+      - acme-network
+
+  # ================================================================
+  # RedisInsight - Redis Management
+  # ================================================================
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: acme-redisinsight
+    restart: unless-stopped
+    volumes:
+      - redisinsight-data:/data
+    ports:
+      - "${REDISINSIGHT_PORT:-5540}:5540"
+    networks:
+      - acme-network
+    depends_on:
+      - redis
+
+# ================================================================
+# Networks
+# ================================================================
+networks:
+  acme-network:
+    driver: bridge
+
+# ================================================================
+# Volumes
+# ================================================================
+volumes:
+  mysql-data:
+    driver: local
+  redis-data:
+    driver: local
+  meilisearch-data:
+    driver: local
+  redisinsight-data:
+    driver: local
+  app-storage:
+    driver: local
+  app-cache:
+    driver: local

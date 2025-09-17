@@ -1,0 +1,300 @@
+<?php
+
+namespace Illuminate\Database\Eloquent\Factories;
+
+use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as BaseCollection;
+
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ */
+abstract class Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var class-string<TModel>
+     */
+    protected $model;
+
+    /**
+     * The number of models that should be generated.
+     *
+     * @var int|null
+     */
+    protected $count;
+
+    /**
+     * The state transformations that will be applied to the model.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $states;
+
+    /**
+     * The Faker instance for the factory.
+     *
+     * @var \Faker\Generator
+     */
+    protected $faker;
+
+    /**
+     * The "after making" callbacks for the model.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $afterMaking;
+
+    /**
+     * The "after creating" callbacks for the model.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $afterCreating;
+
+    /**
+     * The connection name for the model.
+     *
+     * @var string|null
+     */
+    protected $connection;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    abstract public function definition(): array;
+
+    /**
+     * Create a new factory instance for the given model.
+     *
+     * @return static
+     */
+    public static function new(): static {}
+
+    /**
+     * Get a new factory instance for the given model.
+     *
+     * @param  callable|array<string, mixed>  $attributes
+     * @return static
+     */
+    public static function factory($attributes = []): static {}
+
+    /**
+     * Create a collection of models and persist them to the database.
+     *
+     * @param  iterable|callable|int|null  $attributes
+     * @param  \Illuminate\Database\Eloquent\Model|null  $parent
+     * @return TModel|Collection<int, TModel>
+     */
+    public function create($attributes = [], ?Model $parent = null) {}
+
+    /**
+     * Create a collection of models.
+     *
+     * @param  iterable|callable|int|null  $attributes
+     * @param  \Illuminate\Database\Eloquent\Model|null  $parent
+     * @return TModel|Collection<int, TModel>
+     */
+    public function make($attributes = [], ?Model $parent = null) {}
+
+    /**
+     * Create a single model and persist it to the database.
+     *
+     * @param  iterable|callable  $attributes
+     * @param  \Illuminate\Database\Eloquent\Model|null  $parent
+     * @return TModel
+     */
+    public function createOne($attributes = [], ?Model $parent = null): Model {}
+
+    /**
+     * Create a single model.
+     *
+     * @param  iterable|callable  $attributes
+     * @param  \Illuminate\Database\Eloquent\Model|null  $parent
+     * @return TModel
+     */
+    public function makeOne($attributes = [], ?Model $parent = null): Model {}
+
+    /**
+     * Create a collection of models and persist them to the database.
+     *
+     * @param  iterable|callable  $attributes
+     * @param  \Illuminate\Database\Eloquent\Model|null  $parent
+     * @return Collection<int, TModel>
+     */
+    public function createMany($attributes = [], ?Model $parent = null): Collection {}
+
+    /**
+     * Create a collection of models.
+     *
+     * @param  iterable|callable  $attributes
+     * @param  \Illuminate\Database\Eloquent\Model|null  $parent
+     * @return Collection<int, TModel>
+     */
+    public function makeMany($attributes = [], ?Model $parent = null): Collection {}
+
+    /**
+     * Create models without persisting them to the database.
+     *
+     * @return TModel|Collection<int, TModel>
+     */
+    public function build() {}
+
+    /**
+     * Set the amount of models you wish to create / make.
+     *
+     * @param  int  $count
+     * @return static
+     */
+    public function count(int $count): static {}
+
+    /**
+     * Set the state to be applied to the model.
+     *
+     * @param  callable|array<string, mixed>  $state
+     * @return static
+     */
+    public function state($state): static {}
+
+    /**
+     * Set the states to be applied to the model.
+     *
+     * @param  array<callable|array<string, mixed>>  $states
+     * @return static
+     */
+    public function states(array $states): static {}
+
+    /**
+     * Set the connection name for the generated model.
+     *
+     * @param  string  $connection
+     * @return static
+     */
+    public function connection(string $connection): static {}
+
+    /**
+     * Define a callback to run after making a model.
+     *
+     * @param  \Closure  $callback
+     * @return static
+     */
+    public function afterMaking(\Closure $callback): static {}
+
+    /**
+     * Define a callback to run after creating a model.
+     *
+     * @param  \Closure  $callback
+     * @return static
+     */
+    public function afterCreating(\Closure $callback): static {}
+
+    /**
+     * Specify the sequence of attributes to use for the model.
+     *
+     * @param  callable|array<string, mixed>  ...$sequence
+     * @return static
+     */
+    public function sequence(...$sequence): static {}
+
+    /**
+     * Create the children for the given parent model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $parent
+     * @return mixed
+     */
+    public function createChildren(Model $parent) {}
+
+    /**
+     * Create a new instance of the factory builder with the given mutated properties.
+     *
+     * @param  array<string, mixed>  $arguments
+     * @return static
+     */
+    protected function newInstance(array $arguments = []): static {}
+
+    /**
+     * Get the raw attributes generated by the factory.
+     *
+     * @param  array<string, mixed>  $attributes
+     * @param  \Illuminate\Database\Eloquent\Model|null  $parent
+     * @return array<string, mixed>
+     */
+    public function raw($attributes = [], ?Model $parent = null): array {}
+
+    /**
+     * Create a new model instance that is not persisted to the database.
+     *
+     * @param  array<string, mixed>  $attributes
+     * @return TModel
+     */
+    protected function makeInstance(?array $attributes = null): Model {}
+
+    /**
+     * Make an instance of the model with the given attributes.
+     *
+     * @param  array<string, mixed>  $attributes
+     * @return TModel
+     */
+    protected function newModel(array $attributes = []): Model {}
+
+    /**
+     * Get a new Faker instance.
+     *
+     * @return \Faker\Generator
+     */
+    protected function withFaker(): \Faker\Generator {}
+
+    /**
+     * Get the factory name for the given model name.
+     *
+     * @param  class-string  $modelName
+     * @return class-string
+     */
+    public static function resolveFactoryName(string $modelName): string {}
+
+    /**
+     * Specify the callback that should be invoked to guess model names based on factory names.
+     *
+     * @param  callable  $callback
+     * @return void
+     */
+    public static function guessModelNamesUsing(callable $callback): void {}
+
+    /**
+     * Specify the callback that should be invoked to guess factory names based on model names.
+     *
+     * @param  callable  $callback
+     * @return void
+     */
+    public static function guessFactoryNamesUsing(callable $callback): void {}
+
+    /**
+     * Get a new factory instance for the given model.
+     *
+     * @param  class-string|TModel  $modelName
+     * @return \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+     */
+    public static function factoryForModel($modelName): Factory {}
+
+    /**
+     * Proxy dynamic factory methods onto their corresponding model.
+     *
+     * @param  string  $method
+     * @param  array<mixed>  $parameters
+     * @return mixed
+     */
+    public function __call(string $method, array $parameters) {}
+
+    /**
+     * Proxy dynamic factory methods onto their corresponding model.
+     *
+     * @param  string  $method
+     * @param  array<mixed>  $parameters
+     * @return mixed
+     */
+    public static function __callStatic(string $method, array $parameters) {}
+}

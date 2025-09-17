@@ -1,0 +1,73 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\Laravel\Repository;
+
+use ArrayIterator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Modules\{{domain}}\Domain\Model\{{domain}};
+use Modules\{{domain}}\Domain\Repository\{{domain}}RepositoryInterface;
+use Modules\Shared\Infrastructure\Laravel\Eloquent\AbstractEloquentRepository;
+use Traversable;
+
+/**
+ * Eloquent implementation of {{domain}}RepositoryInterface.
+ *
+ * This repository provides data persistence for {{domain}} entities using Eloquent ORM.
+ * It extends AbstractEloquentRepository to inherit common repository functionality.
+ */
+final class {{prefix}}{{domain}}EloquentRepository extends AbstractEloquentRepository implements {{domain}}RepositoryInterface
+{
+    /**
+     * @param {{domain}} ${{domainCamelCase}} The {{domain}} model instance
+     */
+    public function __construct({{domain}} ${{domainCamelCase}})
+    {
+        parent::__construct(${{domainCamelCase}});
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function add(string $name, string $description, string $status, int $createdBy, bool $isActive): {{domain}}
+    {
+        /** @var {{domain}} ${{domainCamelCase}} */
+        ${{domainCamelCase}} = {{domain}}::create([
+            'name' => $name,
+            'description' => $description,
+            'status' => $status,
+            'created_by' => $createdBy,
+            'is_active' => $isActive,
+        ]);
+
+        return ${{domainCamelCase}};
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIterator(): Traversable|ArrayIterator
+    {
+        return $this->model::all()->getIterator();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return $this->model::count();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function paginator(): ?LengthAwarePaginator
+    {
+        /** @var LengthAwarePaginator<{{domain}}> $paginator */
+        $paginator = $this->model::paginate();
+
+        return $paginator;
+    }
+}

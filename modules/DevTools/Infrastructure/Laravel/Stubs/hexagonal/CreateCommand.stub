@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Command;
+
+use Modules\Shared\Application\Command\CommandInterface;
+
+/**
+ * Command for creating a new {{domain}} entity.
+ *
+ * This command encapsulates all data required to create a {{domain}}.
+ * It follows the CQRS pattern and implements the CommandInterface.
+ */
+final class {{prefix}}Create{{domain}}Command implements CommandInterface
+{
+    /**
+     * @param string $name The name of the {{domain}}
+     * @param string $description The description of the {{domain}}
+     * @param string $status The status of the {{domain}}
+     * @param int $createdBy The ID of the user creating the {{domain}}
+     * @param bool $isActive Whether the {{domain}} is active
+     */
+    public function __construct(
+        public readonly string $name,
+        public readonly string $description,
+        public readonly string $status,
+        public readonly int $createdBy,
+        public readonly bool $isActive
+    ) {
+    }
+}

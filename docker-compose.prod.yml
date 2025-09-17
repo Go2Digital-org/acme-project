@@ -1,0 +1,281 @@
+# ================================================================
+# ACME Corp CSR Platform - Production Overrides
+# ================================================================
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  # ================================================================
+  # Application - Production Configuration
+  # ================================================================
+  app:
+    build:
+      target: frankenphp_prod
+      args:
+        BUILD_ENV: production
+    environment:
+      # === Application Configuration ===
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_URL: ${APP_URL:-https://acme-corp.com}
+      
+      # === FrankenPHP + Octane Production ===
+      OCTANE_WORKERS: ${OCTANE_WORKERS:-auto}
+      OCTANE_MAX_REQUESTS: ${OCTANE_MAX_REQUESTS:-1000}
+      OCTANE_HTTPS: true
+      
+      # === Multi-tenant Production Domains ===
+      SERVER_NAME: "${PRODUCTION_DOMAIN:-acme-corp.com}, *.${PRODUCTION_DOMAIN:-acme-corp.com}:443"
+      
+      # === Security Configuration ===
+      SESSION_SECURE_COOKIES: true
+      SESSION_SAME_SITE: strict
+      BCRYPT_ROUNDS: 14
+      
+      # === Performance Tuning ===
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 0
+      PHP_OPCACHE_REVALIDATE_FREQ: 0
+      PHP_MEMORY_LIMIT: 1024M
+      
+      # === Logging Configuration ===
+      LOG_LEVEL: warning
+      LOG_STACK: "daily,slack,bugsnag"
+      
+      # === Cache Configuration ===
+      CACHE_STORE: redis
+      VIEW_CACHE_PATH: /app/storage/framework/views
+      
+      # === Queue Production Settings ===
+      HORIZON_BALANCE: auto
+      HORIZON_MAX_PROCESSES: ${HORIZON_MAX_PROCESSES:-25}
+      HORIZON_TRIES: 5
+      HORIZON_TIMEOUT: 300
+      
+    volumes:
+      # Remove development bind mounts
+      - app-storage:/app/storage
+      - app-bootstrap-cache:/app/bootstrap/cache
+      # Production-optimized volumes
+      - app-logs:/app/storage/logs
+      - app-uploads:/app/storage/app/public
+      
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '2.0'
+          memory: 2G
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  # ================================================================
+  # MySQL Production Configuration
+  # ================================================================
+  mysql:
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --innodb-buffer-pool-size=2G
+      --innodb-log-file-size=512M
+      --innodb-flush-log-at-trx-commit=2
+      --innodb-io-capacity=1000
+      --innodb-io-capacity-max=2000
+      --max-connections=500
+      --query-cache-type=1
+      --query-cache-size=256M
+      --slow-query-log=1
+      --long-query-time=1
+      --binlog-expire-logs-seconds=259200
+      --innodb-file-per-table=1
+      --innodb-stats-on-metadata=0
+    environment:
+      TZ: UTC
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 3G
+        reservations:
+          cpus: '1.0'
+          memory: 1.5G
+    volumes:
+      - mysql-prod-data:/var/lib/mysql
+      - mysql-prod-logs:/var/log/mysql
+      - ./database/mysql/prod.cnf:/etc/mysql/conf.d/prod.cnf:ro
+
+  # ================================================================
+  # Redis Production Configuration
+  # ================================================================
+  redis:
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 1gb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --tcp-keepalive 60
+      --timeout 300
+      --rdbcompression yes
+      --rdbchecksum yes
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1.5G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    volumes:
+      - redis-prod-data:/data
+      - ./database/redis/prod.conf:/usr/local/etc/redis/redis.conf:ro
+
+  # ================================================================
+  # Meilisearch Production Configuration
+  # ================================================================
+  meilisearch:
+    environment:
+      MEILI_ENV: production
+      MEILI_LOG_LEVEL: WARN
+      MEILI_MAX_INDEXING_MEMORY: 2GB
+      MEILI_MAX_INDEXING_THREADS: 8
+      MEILI_SCHEDULE_SNAPSHOT: 86400
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 3G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+    volumes:
+      - meilisearch-prod-data:/meili_data
+      - meilisearch-prod-dumps:/dumps
+      - meilisearch-prod-snapshots:/snapshots
+
+  # ================================================================
+  # Remove Development Services
+  # ================================================================
+  mailpit:
+    profiles:
+      - development
+    
+  redisinsight:
+    profiles:
+      - development
+
+# ================================================================
+# Production Networks
+# ================================================================
+networks:
+  acme-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: acme-prod-bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+
+# ================================================================
+# Production Volumes
+# ================================================================
+volumes:
+  # Application volumes
+  app-storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${STORAGE_PATH:-./storage}
+    labels:
+      - "com.acme.volume=app-storage"
+      - "com.acme.env=production"
+      
+  app-bootstrap-cache:
+    driver: local
+    labels:
+      - "com.acme.volume=app-bootstrap-cache"
+      - "com.acme.env=production"
+      
+  app-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOGS_PATH:-./storage/logs}
+    labels:
+      - "com.acme.volume=app-logs"
+      - "com.acme.env=production"
+      
+  app-uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${UPLOADS_PATH:-./storage/app/public}
+    labels:
+      - "com.acme.volume=app-uploads"
+      - "com.acme.env=production"
+
+  # Database volumes
+  mysql-prod-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${MYSQL_DATA_PATH:-/var/lib/mysql-acme}
+    labels:
+      - "com.acme.volume=mysql-data"
+      - "com.acme.env=production"
+      
+  mysql-prod-logs:
+    driver: local
+    labels:
+      - "com.acme.volume=mysql-logs"
+      - "com.acme.env=production"
+
+  # Cache volumes
+  redis-prod-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${REDIS_DATA_PATH:-/var/lib/redis-acme}
+    labels:
+      - "com.acme.volume=redis-data"
+      - "com.acme.env=production"
+
+  # Search volumes
+  meilisearch-prod-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${MEILISEARCH_DATA_PATH:-/var/lib/meilisearch-acme}
+    labels:
+      - "com.acme.volume=meilisearch-data"
+      - "com.acme.env=production"
+      
+  meilisearch-prod-dumps:
+    driver: local
+    labels:
+      - "com.acme.volume=meilisearch-dumps"
+      - "com.acme.env=production"
+      
+  meilisearch-prod-snapshots:
+    driver: local
+    labels:
+      - "com.acme.volume=meilisearch-snapshots"
+      - "com.acme.env=production"

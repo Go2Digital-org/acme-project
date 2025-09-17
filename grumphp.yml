@@ -1,0 +1,201 @@
+grumphp:
+    # Optimized for maximum speed
+    stop_on_failure: false
+    ignore_unstaged_changes: false
+    hide_circumvention_tip: true
+    process_timeout: 60
+    
+    # Aggressive parallel processing for speed
+    parallel:
+        enabled: true
+        max_workers: 8
+    
+    # Minimal ASCII output for speed
+    ascii:
+        failed: ~
+        succeeded: ~
+    
+    # Define fixer configuration (auto-fix enabled)
+    fixer:
+        enabled: true
+        fix_by_default: true
+    
+    # Task configuration (ordered by speed - fastest first)
+    tasks:
+        # 1. Rector + Laravel Pint - safe refactoring check and auto-fix style (< 8 seconds)
+        composer_script:
+            metadata:
+                label: "Rector Check + Pint Auto-fix"
+                priority: 1000
+            script: 'pre-commit-checks'
+            triggered_by: [php]
+            working_directory: ~
+        
+        # 2. PHPStan - comprehensive analysis (< 10 seconds with cache)
+        phpstan:
+            metadata:
+                label: "PHPStan - Static Analysis"
+                priority: 900
+            configuration: phpstan.neon
+            memory_limit: "2G"
+            triggered_by: [php]
+            use_grumphp_paths: false
+            ignore_patterns:
+                - /^vendor\//
+                - /^.github\//
+                - /^storage\//
+                - /^bootstrap\/cache\//
+                - /^node_modules\//
+                - /^public\//
+                - /^public\//
+                - /^rector\//
+                - /\.phpstorm\.meta\.php$/
+
+        # 3. Deptrac - architecture validation (< 3 seconds)
+        deptrac:
+            metadata:
+                label: "Deptrac - Architecture Check"
+                priority: 800
+            depfile: deptrac.yaml
+            formatter: ~
+            cache_file: var/cache/deptrac.cache
+        
+        # 4. Git blacklist - instant feedback (< 1 second)
+        git_blacklist:
+            metadata:
+                label: "Git Blacklist - Debug Code Check"
+                priority: 500
+            keywords:
+                - '\bdd\s*\('
+                - '\bdump\s*\('
+                - '\bvar_dump\s*\('
+                - '\bvar_export\s*\('
+                - '\bprint_r\s*\('
+                - '\bray\s*\('
+                - '\bRay::'
+                - '\bdie\s*\('
+                - '\bexit\s*\('
+                - '\becho\s+'
+                - '\bprintf\s*\('
+                - '\bprint\s*\('
+                - 'console\.log\s*\('
+                - 'debugger;'
+                - 'TODO:'
+                - 'FIXME:'
+                - 'XXX:'
+                - 'HACK:'
+                - 'DEBUG:'
+                - '<<<<<<< HEAD'
+                - '======='
+                - '>>>>>>>'
+            whitelist_patterns:
+                - /^resources\/js\/.*\.js$/
+                - /^resources\/js\/.*\.vue$/
+                - /^tests\/.*\.php$/
+            triggered_by: ['php']
+            regexp_type: E
+            match_word: false
+        
+        # 7. Security Advisor - vulnerability scan (< 3 seconds)
+        securitychecker_enlightn:
+            metadata:
+                label: "Security Advisor - Vulnerability Scan"
+                priority: 500
+            lockfile: composer.lock
+            run_always: true
+        
+        # 8. Composer check - cached validation (< 2 seconds)
+        composer:
+            metadata:
+                label: "Composer - Dependency Check"
+                priority: 400
+            no_check_all: true
+            no_check_lock: false
+            no_check_publish: true
+            strict: true
+        
+        # 9. JSON validation - fast format check (< 1 second)
+        jsonlint:
+            metadata:
+                label: "JSON Lint - Format Check"
+                priority: 300
+            ignore_patterns: []
+            detect_key_conflicts: true
+        
+        # 10. YAML validation - fast format check (< 1 second)
+        yamllint:
+            metadata:
+                label: "YAML Lint - Format Check"
+                priority: 200
+            ignore_patterns: []
+            object_support: false
+            exception_on_invalid_type: false
+            parse_constant: false
+            parse_custom_tags: false
+        
+        # 11. File size check - quick validation (< 1 second)
+        file_size:
+            metadata:
+                label: "File Size - Large File Check"
+                priority: 100
+            max_size: 100M
+            ignore_patterns: 
+                - /.*\.php$/
+        
+        # 12. Git commit message validation
+        git_commit_message:
+            metadata:
+                label: "Git Message - Format Validation"
+                priority: 50
+            allow_empty_message: false
+            enforce_capitalized_subject: true
+            enforce_no_subject_punctuations: false
+            enforce_no_subject_trailing_period: true
+            enforce_single_lined_subject: true
+            max_body_width: 72
+            max_subject_width: 60
+            matchers:
+                # Conventional commits pattern
+                - '/^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+/'
+            case_insensitive: true
+            multiline: true
+            additional_modifiers: ''
+
+    # Optimized test suites for different speed requirements
+    testsuites:
+        # QUICK SUITE: Ultra-fast feedback (< 5 seconds)
+        quick:
+            tasks:
+                - git_blacklist
+                - composer_script           # Rector + Pint
+        
+        # STANDARD SUITE: Balanced (< 15 seconds)
+        standard:
+            tasks:
+                - git_blacklist
+                - composer_script           # Rector + Pint
+                - phpstan
+                - deptrac
+        
+        # FULL SUITE: Complete validation (< 30 seconds)
+        full:
+            tasks:
+                - git_blacklist
+                - composer_script           # Rector + Pint
+                - phpstan
+                - deptrac
+                - securitychecker_enlightn
+                - composer
+                - file_size
+        
+        # Pre-commit hook
+        git_pre_commit:
+            tasks:
+                - git_blacklist
+                - composer_script           # Rector + Pint
+                - phpstan
+        
+        # Commit message validation
+        git_commit_msg:
+            tasks:
+                - git_commit_message

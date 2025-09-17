@@ -1,0 +1,81 @@
+# Unified ACME Corp CSR Platform Container
+# Consolidates web server, queue workers, scheduler, and monitoring
+FROM dunglas/frankenphp:1-php8.4-alpine AS base
+
+# Install system dependencies and Supervisor
+RUN apk add --no-cache \
+    supervisor \
+    curl \
+    mysql-client \
+    redis-tools \
+    bash \
+    tzdata \
+    && rm -rf /var/cache/apk/*
+
+# Create necessary directories
+RUN mkdir -p \
+    /var/log/supervisor \
+    /etc/supervisor/conf.d \
+    /app/storage/logs \
+    /app/bootstrap/cache
+
+# Install PHP extensions
+RUN install-php-extensions \
+    pdo_mysql \
+    redis \
+    opcache \
+    pcntl \
+    bcmath \
+    gd \
+    intl \
+    zip
+
+# Configure PHP for production
+RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/memory.ini \
+    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/execution.ini
+
+# Copy Supervisor configuration
+COPY docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY docker/supervisor/conf.d/ /etc/supervisor/conf.d/
+
+# Create application user
+RUN addgroup -g 1000 www-data || true \
+    && adduser -u 1000 -G www-data -s /bin/bash -D www-data || true
+
+# Set working directory
+WORKDIR /app
+
+# Copy application files
+COPY --chown=www-data:www-data . .
+
+# Install Composer dependencies
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist \
+    && composer dump-autoloader --optimize
+
+# Install Node.js dependencies and build assets
+RUN npm ci && npm run build && npm cache clean --force
+
+# Set permissions
+RUN chown -R www-data:www-data /app \
+    && chmod -R 755 /app/storage \
+    && chmod -R 755 /app/bootstrap/cache
+
+# Health check script
+COPY docker/healthcheck.sh /usr/local/bin/healthcheck
+RUN chmod +x /usr/local/bin/healthcheck
+
+# Startup script
+COPY docker/supervisor/start.sh /usr/local/bin/start
+RUN chmod +x /usr/local/bin/start
+
+EXPOSE 80 443
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD /usr/local/bin/healthcheck
+
+# Start Supervisor with all processes
+CMD ["/usr/local/bin/start"]

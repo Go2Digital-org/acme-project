@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Command;
+
+use Modules\{{domain}}\Domain\Repository\{{domain}}RepositoryInterface;
+
+final readonly class {{prefix}}{{action}}{{domain}}CommandHandler
+{
+    public function __construct(
+        private readonly {{domain}}RepositoryInterface ${{domainCamelCase}}Repository
+    ) {
+    }
+
+    public function handle({{action}}{{domain}}Command $command): void
+    {
+        $data = [
+            'title' => $command->title,
+            'author' => $command->author,
+            'pages' => $command->pages,
+            'published_year' => $command->published_year,
+        ];
+
+        $this->{{domainCamelCase}}Repository->{{actionCamelCase}}($command->id, $data);
+    }
+}

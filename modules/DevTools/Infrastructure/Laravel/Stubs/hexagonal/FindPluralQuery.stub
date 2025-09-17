@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Query;
+
+use ApiPlatform\Metadata\Operation;
+use Modules\Shared\Application\Query\QueryInterface;
+
+final class {{prefix}}Find{{domain}}sQuery implements QueryInterface
+{
+    public ?int $offset;
+    public ?int $limit;
+    public array $filters = [];
+    public array $sorts = [];
+    public Operation $operation;
+
+    public function __construct(?int $offset, ?int $limit, array $filters, array $sorts, Operation $operation)
+    {
+        $this->offset = $offset;
+        $this->limit = $limit;
+        $this->filters = $filters;
+        $this->sorts = $sorts;
+        $this->operation = $operation;
+    }
+}

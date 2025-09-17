@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Command;
+
+use Modules\Shared\Application\Command\CommandInterface;
+
+class {{prefix}}Patch{{domain}}Command implements CommandInterface
+{
+    public function __construct(
+        public int $id,
+        public ?string $title = null,
+        public ?string $author = null,
+        public ?int $pages = null,
+        public ?int $publishedYear = null,
+        public ?bool $isAvailable = null
+    ) {
+    }
+}

@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Event;
+
+class {{prefix}}{{domain}}CreatedEventHandler
+{
+    public function handle({{domain}}CreatedEvent $event): void
+    {
+        // Handle event logic here
+    }
+}

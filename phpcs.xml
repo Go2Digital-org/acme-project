@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<ruleset name="ACMECorp">
+    <description>Custom PHP CodeSniffer configuration for ACME Corp CSR Donation Platform</description>
+
+    <!-- What to scan -->
+    <file>app</file>
+    <file>modules</file>
+    <file>config</file>
+    <file>routes</file>
+    <file>tests</file>
+
+    <!-- Exclude vendor and other directories -->
+    <exclude-pattern>vendor</exclude-pattern>
+    <exclude-pattern>bootstrap/cache</exclude-pattern>
+    <exclude-pattern>storage</exclude-pattern>
+    <exclude-pattern>node_modules</exclude-pattern>
+    <exclude-pattern>public</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+    <exclude-pattern>*.css</exclude-pattern>
+    <exclude-pattern>*.blade.php</exclude-pattern>
+    <exclude-pattern>modules/*/Infrastructure/Laravel/Migration/*</exclude-pattern>
+
+    <!-- Use PSR-12 standard -->
+    <rule ref="PSR12">
+        <!-- Disable specific rules that conflict with Laravel Pint -->
+        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+        <exclude name="PSR12.Files.FileHeader.IncorrectOrder"/>
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
+        <exclude name="Generic.Files.LineLength.MaxExceeded"/>
+        <exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
+        <exclude name="PSR12.Functions.ReturnTypeDeclaration.SpaceBeforeColon"/>
+        <exclude name="PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine"/>
+        <exclude name="PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine"/>
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
+        <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
+        <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine"/>
+        <exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingAfterOpen"/>
+        <exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingBeforeClose"/>
+    </rule>
+
+    <!-- Line length rule: 120 characters max -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <!-- Soft limit at 80 characters -->
+            <property name="lineLimit" value="80"/>
+            <!-- Hard limit at 120 characters -->
+            <property name="absoluteLineLimit" value="120"/>
+        </properties>
+    </rule>
+
+    <!-- Show progress -->
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <!-- Run checks in parallel for faster execution -->
+    <arg name="parallel" value="75"/>
+
+    <!-- Only check PHP files -->
+    <arg name="extensions" value="php"/>
+</ruleset>

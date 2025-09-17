@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\Laravel\Factory;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\{{domain}}\Domain\Model\{{domain}};
+
+/**
+ * Factory for creating {{domain}} test instances.
+ *
+ * This factory provides realistic test data for {{domain}} entities.
+ * It extends Laravel's Factory class to generate consistent test data.
+ *
+ * @extends Factory<{{domain}}>
+ */
+final class {{prefix}}{{domain}}Factory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var class-string<{{domain}}>
+     */
+    protected $model = {{domain}}::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->words(3, true),
+            'description' => $this->faker->paragraph,
+            'status' => $this->faker->randomElement(['draft', 'published', 'archived']),
+            'created_by' => $this->faker->numberBetween(1, 100),
+            'is_active' => $this->faker->boolean,
+        ];
+    }
+}

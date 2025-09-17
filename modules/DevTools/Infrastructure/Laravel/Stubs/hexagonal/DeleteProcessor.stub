@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\ApiPlatform\Handler\Processor;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use Modules\{{domain}}\Application\Command\Delete{{domain}}Command;
+use Modules\Shared\Application\Command\CommandBusInterface;
+
+/**
+ * @implements ProcessorInterface<object, void>
+ */
+final readonly class {{prefix}}Delete{{domain}}Processor implements ProcessorInterface
+{
+    public function __construct(
+        private CommandBusInterface $commandBus
+    ) {
+    }
+
+    public function process(
+        mixed $data,
+        Operation $operation,
+        array $uriVariables = [],
+        array $context = []
+    ): void {
+        $command = new Delete{{domain}}Command(
+            $data->id,
+        );
+
+        $this->commandBus->dispatch($command);
+
+        // API Platform handles 204 No Content for DELETE operations
+    }
+}

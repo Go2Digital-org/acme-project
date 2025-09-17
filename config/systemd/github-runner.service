@@ -1,0 +1,148 @@
+# GitHub Actions Self-Hosted Runner SystemD Service Configuration
+# Location: /etc/systemd/system/github-runner.service
+# 
+# This service file ensures the GitHub Actions runner:
+# - Starts automatically on system boot
+# - Restarts automatically if it crashes
+# - Runs with proper security isolation
+# - Has resource limits for safety
+# - Logs to systemd journal for monitoring
+#
+# Installation:
+#   sudo cp config/systemd/github-runner.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable github-runner
+#   sudo systemctl start github-runner
+
+[Unit]
+# Service description and documentation
+Description=GitHub Actions Self-Hosted Runner
+Documentation=https://docs.github.com/en/actions/hosting-your-own-runners
+Documentation=https://github.com/actions/runner
+
+# Dependencies - ensure network and multi-user target are ready
+After=network.target multi-user.target mysql.service redis.service
+Wants=network.target
+# Optional dependencies - runner can work without these but they're preferred
+Wants=mysql.service redis.service
+
+# Restart behavior on dependency failures
+OnFailure=restart
+
+[Service]
+# Service type and execution
+Type=simple
+User=github-runner
+Group=github-runner
+WorkingDirectory=/home/github-runner/actions-runner
+
+# Environment variables
+Environment=HOME=/home/github-runner
+Environment=USER=github-runner
+Environment=DOTNET_ROOT=/home/github-runner/actions-runner/externals/dotnet
+Environment=DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+Environment=RUNNER_ALLOW_RUNASROOT=0
+
+# Execution commands
+ExecStart=/home/github-runner/actions-runner/run.sh
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -TERM $MAINPID
+
+# Restart policy - always restart on failure
+Restart=always
+RestartSec=10
+StartLimitBurst=5
+StartLimitIntervalSec=300
+
+# Process management
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStartSec=120
+TimeoutStopSec=30
+
+# Security settings - enhanced isolation
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+RemoveIPC=yes
+LockPersonality=yes
+
+# File system access - allow write access to runner directories
+ReadWritePaths=/home/github-runner
+ReadOnlyPaths=/usr /lib /lib64 /bin /sbin
+
+# Network restrictions - allow outbound connections for GitHub API
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+IPAddressDeny=any
+IPAddressAllow=localhost
+IPAddressAllow=10.0.0.0/8
+IPAddressAllow=172.16.0.0/12
+IPAddressAllow=192.168.0.0/16
+IPAddressAllow=0.0.0.0/0
+
+# Capability restrictions
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# System call filtering - allow only necessary syscalls
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @privileged @reboot @swap @raw-io
+
+# Resource limits for safety and performance
+# Memory limit: 4GB (adjust based on your server capacity)
+MemoryAccounting=yes
+MemoryLimit=4G
+MemoryMax=4G
+
+# CPU quota: 60% of available CPU (adjust based on server load)
+CPUAccounting=yes
+CPUQuota=60%
+
+# I/O limits
+IOAccounting=yes
+IOWeight=100
+
+# Process limits
+TasksAccounting=yes
+TasksMax=4096
+
+# File descriptor limits
+LimitNOFILE=65536
+
+# Process limit
+LimitNPROC=4096
+
+# Core dump limit (disabled for security)
+LimitCORE=0
+
+# Nice level (lower priority to not interfere with system processes)
+Nice=5
+
+# Logging configuration
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=github-runner
+SyslogFacility=daemon
+SyslogLevel=info
+
+# Journal rate limiting
+RateLimitInterval=30s
+RateLimitBurst=1000
+
+[Install]
+# Target for auto-start on boot
+WantedBy=multi-user.target
+
+# Additional targets that can start this service
+Also=basic.target

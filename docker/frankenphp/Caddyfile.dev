@@ -1,0 +1,121 @@
+# ACME Corp CSR Platform - Development Caddyfile
+# FrankenPHP + Laravel Octane configuration with multi-tenancy support
+
+{
+    auto_https off
+    admin off
+
+    frankenphp
+
+    order php_server before file_server
+
+    # Development-specific settings
+    servers {
+        trusted_proxies static private_ranges
+        protocols h1 h2 h3
+    }
+}
+
+# Main application and wildcard subdomain support for multi-tenancy
+:80, localhost:80, *.localhost:80, acme-corp-optimy.test:80, *.acme-corp-optimy.test:80 {
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+
+    root * /app/public
+    encode zstd br gzip
+
+    # Extract tenant from subdomain
+    vars {
+        tenant {labels.2}
+    }
+
+    # Security headers
+    header {
+        X-Frame-Options "DENY"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        -Server
+
+        # Add tenant header for debugging
+        ?X-Tenant {vars.tenant}
+    }
+
+    # Health check endpoints
+    respond /health "OK" 200
+    respond /health/detailed "OK - All services running" 200
+    respond /health/ready "Ready" 200
+    respond /health/live "Live" 200
+
+    # PHP server with tenant context
+    php_server {
+        env TENANT_ID {vars.tenant}
+        env TENANT_DOMAIN {host}
+    }
+
+    # Static file caching headers for development
+    @cacheable {
+        path /build/* /css/* /js/* /images/* /fonts/*
+    }
+    header @cacheable Cache-Control "public, max-age=3600"
+
+    # Storage routes
+    @storage {
+        path /storage/*
+    }
+
+    handle @storage {
+        root * /app/storage/app/public
+        file_server
+        header Cache-Control "no-cache"
+    }
+
+    # API routes with CORS for development
+    @api {
+        path /api/*
+    }
+
+    handle @api {
+        header Access-Control-Allow-Origin *
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        header Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN"
+        header Access-Control-Allow-Credentials true
+        header Access-Control-Max-Age 86400
+
+        @options {
+            method OPTIONS
+        }
+        respond @options 204
+    }
+
+    # Admin routes (central domain only)
+    @admin {
+        path /admin/* /horizon/* /telescope/*
+    }
+
+    handle @admin {
+        # Only allow on central domains
+        @notTenant {
+            host localhost 127.0.0.1 acme-corp-optimy.test
+        }
+
+        handle @notTenant {
+            php_server
+        }
+
+        # Block admin on tenant subdomains
+        respond "Admin access not available on tenant domains" 403
+    }
+}
+
+# Mercure hub configuration (for real-time features)
+localhost/.well-known/mercure {
+    mercure {
+        publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY}
+        subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY}
+        cors_origins *
+        anonymous
+    }
+}

@@ -1,0 +1,29 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - app
+        - modules
+        - config
+        - routes
+        - lang
+        - database/seeders
+    excludePaths:
+        - tests
+        - database/migrations (?)
+        - tests/Browser/console (?)
+        - tests/Browser/screenshots (?)
+        - storage
+        - bootstrap/cache
+        - vendor
+        - .phpstorm.meta.php
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Ignore pluck collection optimization warnings in PaymentAttempt repository
+        # These are intentionally using collections due to complex query patterns
+        -
+            message: "#Called 'pluck' on Laravel collection, but could have been retrieved as a query.#"
+            path: modules/Donation/Infrastructure/Laravel/Repository/PaymentAttemptEloquentRepository.php

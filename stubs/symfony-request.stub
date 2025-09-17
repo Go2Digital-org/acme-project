@@ -1,0 +1,17 @@
+<?php
+
+namespace Symfony\Component\HttpFoundation;
+
+use Illuminate\Contracts\Auth\Authenticatable;
+
+/**
+ * @template TUser of \Illuminate\Contracts\Auth\Authenticatable
+ */
+class Request
+{
+    // Authentication methods (Laravel extends Symfony)
+    /**
+     * @return TUser|null
+     */
+    public function user(?string $guard = null): ?Authenticatable {}
+}

@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Query;
+
+use Modules\Shared\Application\Query\QueryInterface;
+
+/**
+ * Query for finding a single {{domain}} entity by ID.
+ *
+ * This query encapsulates the ID parameter needed to find a specific {{domain}}.
+ * It follows the CQRS pattern and implements the QueryInterface.
+ */
+final class {{prefix}}Find{{domain}}Query implements QueryInterface
+{
+    /**
+     * @param int $id The ID of the {{domain}} to find
+     */
+    public function __construct(public readonly int $id)
+    {
+    }
+
+    /**
+     * Get the ID of the {{domain}} to find.
+     *
+     * @return int The {{domain}} ID
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+}

@@ -1,0 +1,410 @@
+# ================================================================
+# ACME Corp CSR Platform - Optimized Docker Compose
+# FrankenPHP + Laravel Octane + Supervisor
+# Multi-platform support (AMD64/ARM64)
+# ================================================================
+
+x-common-variables: &common-variables
+  env_file: .env.docker
+
+services:
+  # ================================================================
+  # Application - FrankenPHP + Octane + Supervisor (Unified)
+  # ================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frankenphp_dev
+      args:
+        FRANKENPHP_VERSION: 1-php8.4-alpine
+        COMPOSER_VERSION: 2.8
+        NODE_VERSION: 22-alpine
+    container_name: acme-app
+    restart: unless-stopped
+    env_file: .env.docker
+    environment:
+      # === Application Configuration ===
+      APP_NAME: "ACME CSR Platform"
+      APP_ENV: local
+      APP_KEY: ${APP_KEY:-***REMOVED***}
+      APP_DEBUG: false
+      APP_TIMEZONE: UTC
+      APP_URL: ${APP_URL:-http://localhost}
+      
+      # === FrankenPHP + Octane Configuration ===
+      OCTANE_SERVER: frankenphp
+      OCTANE_HOST: 0.0.0.0
+      OCTANE_PORT: 80
+      OCTANE_WORKERS: auto
+      OCTANE_MAX_REQUESTS: 500
+      OCTANE_HTTPS: false
+      
+      # === Multi-tenant Domain Support ===
+      SERVER_NAME: ":80, localhost:80, *.localhost:80, *.test:80, acme-corp-optimy.test:80, *.acme-corp-optimy.test:80"
+      TENANT_DATABASE_PREFIX: ${TENANT_DATABASE_PREFIX:-tenant_}
+      TENANCY_CENTRAL_DOMAINS: ${TENANCY_CENTRAL_DOMAINS:-127.0.0.1,localhost,acme-corp-optimy.test,acme-corp.go2digit.al,staging.acme-corp.go2digit.al,acme-corp-optimy.frp.go2digit.al,app.acme-corp-optimy.orb.local}
+      
+      # === Mercure Configuration ===
+      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
+      MERCURE_URL: ${MERCURE_URL:-http://localhost/.well-known/mercure}
+      MERCURE_CORS_ORIGINS: ${MERCURE_CORS_ORIGINS:-*}
+      MERCURE_PUBLISH_ORIGINS: ${MERCURE_PUBLISH_ORIGINS:-*}
+      
+      # === Database Configuration ===
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-acme_corp_csr}
+      DB_USERNAME: ${DB_USERNAME:-acme}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      
+      # === Cache & Session Configuration ===
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
+      SESSION_LIFETIME: 120
+      SESSION_ENCRYPT: false
+      SESSION_PATH: /
+      SESSION_DOMAIN: ${SESSION_DOMAIN:-}
+      
+      # === Queue Configuration ===
+      QUEUE_CONNECTION: redis
+      
+      # === Queue Worker Process Counts ===
+      QUEUE_PAYMENTS_WORKERS: 2
+      QUEUE_NOTIFICATIONS_WORKERS: 2
+      QUEUE_EXPORTS_WORKERS: 1
+      QUEUE_REPORTS_WORKERS: 1
+      QUEUE_BULK_WORKERS: 1
+      QUEUE_MAINTENANCE_WORKERS: 1
+      HORIZON_BALANCE: auto
+      HORIZON_MAX_PROCESSES: 20
+      HORIZON_TRIES: 3
+      HORIZON_TIMEOUT: 60
+      
+      # === Redis Configuration ===
+      REDIS_HOST: redis
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      REDIS_CACHE_DB: 1
+      REDIS_QUEUE_DB: 2
+      REDIS_SESSION_DB: 3
+      
+      # === Mail Configuration ===
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_USERNAME: null
+      MAIL_PASSWORD: null
+      MAIL_ENCRYPTION: null
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-noreply@acme.local}
+      MAIL_FROM_NAME: "${APP_NAME}"
+      
+      # === Search Configuration ===
+      SCOUT_DRIVER: meilisearch
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_KEY: ${MEILISEARCH_KEY:-masterKey}
+      
+      # === Logging Configuration ===
+      LOG_CHANNEL: stack
+      LOG_STACK: single
+      LOG_LEVEL: debug
+      
+      # === Security Configuration ===
+      BCRYPT_ROUNDS: 12
+      
+      # === CORS Configuration ===
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-*}
+      CORS_ALLOWED_METHODS: "GET,POST,PUT,DELETE,OPTIONS,PATCH"
+      CORS_ALLOWED_HEADERS: "Content-Type,Authorization,X-Requested-With,X-CSRF-TOKEN"
+      
+      # === Tenancy Configuration ===
+      TENANCY_MODEL: tenant
+      TENANCY_DATABASE_AUTO_DELETE: false
+      TENANCY_QUEUE_DATABASE_DELETION: true
+      TENANCY_MIGRATIONS_PATH: database/migrations/tenant
+      TENANCY_SEEDER_PARAMETERS: "--class=TenantDatabaseSeeder"
+      
+      # === Performance Tuning ===
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      PHP_OPCACHE_REVALIDATE_FREQ: 0
+      PHP_MEMORY_LIMIT: 512M
+      
+    volumes:
+      # Application source (development bind mount)
+      - .:/app:cached
+      # Optimized storage mounts with delegated consistency
+      - ./storage:/app/storage:delegated
+      - ./bootstrap/cache:/app/bootstrap/cache:delegated
+      # Node modules cache (optional for faster npm installs)
+      - node_modules:/app/node_modules
+      # Composer cache
+      - composer_cache:/root/.composer/cache
+    
+    ports:
+      - "${APP_PORT:-80}:80"
+      - "${APP_HTTPS_PORT:-443}:443"
+      - "${APP_HTTP3_PORT:-443}:443/udp"
+    
+    networks:
+      - acme-network
+    
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.acme-app.rule=Host(`localhost`) || HostRegexp(`{subdomain:[a-z0-9-]+}.localhost`)"
+      - "traefik.http.services.acme-app.loadbalancer.server.port=80"
+      - "com.acme.project=acme-csr-platform"
+      - "com.acme.version=2.0"
+
+  # ================================================================
+  # MySQL Database (Optimized)
+  # ================================================================
+  mysql:
+    image: mysql:8.4
+    platform: linux/amd64  # MySQL 8.4 optimized for AMD64
+    container_name: acme-mysql
+    restart: unless-stopped
+    command: >
+      --innodb-buffer-pool-size=512M
+      --innodb-log-file-size=256M
+      --innodb-flush-log-at-trx-commit=2
+      --max-connections=200
+      --slow-query-log=1
+      --long-query-time=2
+      --binlog-expire-logs-seconds=259200
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: acme_corp_csr
+      MYSQL_USER: acme
+      MYSQL_PASSWORD: secret
+      TZ: UTC
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - ./database/mysql/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    networks:
+      - acme-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    labels:
+      - "com.acme.service=database"
+
+  # ================================================================
+  # Redis Cache & Queue (Optimized)
+  # ================================================================
+  redis:
+    image: redis:7-alpine
+    platform: linux/arm64  # Redis optimized for ARM64
+    container_name: acme-redis
+    restart: unless-stopped
+    env_file: .env.docker
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --tcp-keepalive 60
+      --timeout 300
+    volumes:
+      - redis-data:/data
+      - ./database/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - acme-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.acme.service=cache"
+
+  # ================================================================
+  # Meilisearch - Full-text Search Engine (ARM64 Native)
+  # ================================================================
+  meilisearch:
+    image: getmeili/meilisearch:v1.8
+    platform: linux/arm64
+    container_name: acme-meilisearch
+    restart: unless-stopped
+    env_file: .env.docker
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY:-masterKey}
+      MEILI_ENV: ${MEILISEARCH_ENV:-development}
+      MEILI_HTTP_ADDR: 0.0.0.0:7700
+      MEILI_DB_PATH: /meili_data
+      MEILI_NO_ANALYTICS: true
+      MEILI_LOG_LEVEL: INFO
+      MEILI_DUMPS_DIR: /dumps
+      MEILI_SNAPSHOTS_DIR: /snapshots
+      MEILI_MAX_INDEXING_MEMORY: 512MB
+      MEILI_MAX_INDEXING_THREADS: 4
+    volumes:
+      - meilisearch-data:/meili_data
+      - meilisearch-dumps:/dumps
+      - meilisearch-snapshots:/snapshots
+    ports:
+      - "${MEILISEARCH_PORT:-7700}:7700"
+    networks:
+      - acme-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.acme.service=search"
+
+  # ================================================================
+  # Mailpit - Email Testing (ARM64 Native)
+  # ================================================================
+  mailpit:
+    image: axllent/mailpit:v1.20
+    platform: linux/arm64
+    container_name: acme-mailpit
+    restart: unless-stopped
+    env_file: .env.docker
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_SSL_CERT: ""
+      MP_SMTP_SSL_KEY: ""
+      MP_UI_AUTH_FILE: ""
+      MP_UI_TLS_CERT: ""
+      MP_UI_TLS_KEY: ""
+    volumes:
+      - mailpit-data:/data
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+    networks:
+      - acme-network
+    labels:
+      - "com.acme.service=mail"
+
+  # ================================================================
+  # RedisInsight - Redis Management (ARM64 Native)
+  # ================================================================
+  redisinsight:
+    image: redis/redisinsight:2.58
+    platform: linux/arm64
+    container_name: acme-redisinsight
+    restart: unless-stopped
+    env_file: .env.docker
+    volumes:
+      - redisinsight-data:/data
+    ports:
+      - "${REDISINSIGHT_PORT:-5540}:5540"
+    networks:
+      - acme-network
+    depends_on:
+      redis:
+        condition: service_healthy
+    labels:
+      - "com.acme.service=redis-ui"
+
+# ================================================================
+# Production Override (docker-compose.prod.yml)
+# ================================================================
+# To use production configuration:
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+# ================================================================
+# Networks
+# ================================================================
+networks:
+  acme-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: acme-bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    labels:
+      - "com.acme.network=main"
+
+# ================================================================
+# Volumes
+# ================================================================
+volumes:
+  # Database volumes
+  mysql-data:
+    driver: local
+    labels:
+      - "com.acme.volume=mysql-data"
+  
+  # Cache volumes
+  redis-data:
+    driver: local
+    labels:
+      - "com.acme.volume=redis-data"
+  
+  # Search volumes
+  meilisearch-data:
+    driver: local
+    labels:
+      - "com.acme.volume=meilisearch-data"
+  meilisearch-dumps:
+    driver: local
+    labels:
+      - "com.acme.volume=meilisearch-dumps"
+  meilisearch-snapshots:
+    driver: local
+    labels:
+      - "com.acme.volume=meilisearch-snapshots"
+  
+  # Mail volumes
+  mailpit-data:
+    driver: local
+    labels:
+      - "com.acme.volume=mailpit-data"
+  
+  # Management volumes
+  redisinsight-data:
+    driver: local
+    labels:
+      - "com.acme.volume=redisinsight-data"
+  
+  # Development optimization volumes
+  node_modules:
+    driver: local
+    labels:
+      - "com.acme.volume=node-modules-cache"
+  
+  composer_cache:
+    driver: local
+    labels:
+      - "com.acme.volume=composer-cache"

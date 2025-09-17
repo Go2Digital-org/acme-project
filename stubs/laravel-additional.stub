@@ -1,0 +1,1061 @@
+<?php
+
+// =============================================================================
+// Laravel Additional Stubs - Supplementary type definitions for PHPStan
+// =============================================================================
+
+namespace Illuminate\Support {
+    
+    /**
+     * Laravel Collection class stubs
+     */
+    class Collection implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable {
+        /**
+         * @template TKey of array-key
+         * @template TValue
+         * @param array<TKey, TValue>|iterable<TKey, TValue>|null $items
+         * @return Collection<TKey, TValue>
+         */
+        public function __construct($items = null) {}
+
+        /**
+         * @template TMapValue
+         * @param callable(TValue, TKey): TMapValue $callback
+         * @return static<TKey, TMapValue>
+         */
+        public function map(callable $callback) {}
+
+        /**
+         * @param callable(TValue, TKey): bool $callback
+         * @return static<TKey, TValue>
+         */
+        public function filter(?callable $callback = null) {}
+
+        /**
+         * @param callable(TValue, TKey): bool $callback
+         * @return static<TKey, TValue>
+         */
+        public function reject(callable $callback) {}
+
+        /**
+         * @return TValue|null
+         */
+        public function first(?callable $callback = null, $default = null) {}
+
+        /**
+         * @return TValue|null
+         */
+        public function last(?callable $callback = null, $default = null) {}
+
+        /**
+         * @param TKey|callable(TValue, TKey): bool $key
+         * @return TValue|null
+         */
+        public function find($key, $default = null) {}
+
+        /**
+         * @param callable(mixed, TValue): mixed $callback
+         * @param mixed $initial
+         * @return mixed
+         */
+        public function reduce(callable $callback, $initial = null) {}
+
+        /**
+         * @return static<int, TValue>
+         */
+        public function values() {}
+
+        /**
+         * @return static<TValue, TKey>
+         */
+        public function flip() {}
+
+        /**
+         * @param int $size
+         * @return static<int, static<TKey, TValue>>
+         */
+        public function chunk(int $size) {}
+
+        /**
+         * @return static<TKey, TValue>
+         */
+        public function unique(?callable $callback = null, bool $strict = false) {}
+
+        /**
+         * @param iterable<TKey, TValue> $items
+         * @return static<TKey, TValue>
+         */
+        public function merge($items) {}
+
+        /**
+         * @template TPluckKey of array-key
+         * @template TPluckValue
+         * @param TPluckKey|array<array-key, TPluckKey>|null $value
+         * @param TPluckValue|array<array-key, TPluckValue>|null $key
+         * @return static<array-key, TPluckValue>
+         */
+        public function pluck($value, $key = null) {}
+
+        /**
+         * @param callable(TValue, TKey): array-key $callback
+         * @return static<array-key, static<TKey, TValue>>
+         */
+        public function groupBy($callback) {}
+
+        /**
+         * @param TKey $key
+         * @return TValue|null
+         */
+        public function get($key, $default = null) {}
+
+        /**
+         * @param TKey $key
+         * @param TValue $value
+         * @return static<TKey, TValue>
+         */
+        public function put($key, $value) {}
+
+        /**
+         * @return array<TKey, TValue>
+         */
+        public function toArray(): array {}
+
+        /**
+         * @return array<TKey, TValue>
+         */
+        public function all(): array {}
+
+        public function count(): int {}
+
+        public function isEmpty(): bool {}
+
+        public function isNotEmpty(): bool {}
+
+        /**
+         * @param TKey $key
+         */
+        public function has($key): bool {}
+
+        /**
+         * @param TKey $key
+         * @return static<TKey, TValue>
+         */
+        public function forget($key) {}
+
+        /**
+         * @param int $offset
+         * @param int|null $length
+         * @return static<TKey, TValue>
+         */
+        public function slice(int $offset, ?int $length = null) {}
+
+        /**
+         * @param int $limit
+         * @return static<TKey, TValue>
+         */
+        public function take(int $limit) {}
+
+        /**
+         * @param int $number
+         * @return static<TKey, TValue>
+         */
+        public function skip(int $number) {}
+
+        /**
+         * @param callable(TValue, TKey): bool $callback
+         * @return static<TKey, TValue>
+         */
+        public function skipWhile(callable $callback) {}
+
+        /**
+         * @param callable(TValue, TKey): bool $callback
+         * @return static<TKey, TValue>
+         */
+        public function takeWhile(callable $callback) {}
+
+        /**
+         * @return static<TKey, TValue>
+         */
+        public function reverse() {}
+
+        /**
+         * @param callable(TValue, TValue): int|null $callback
+         * @return static<TKey, TValue>
+         */
+        public function sort(?callable $callback = null) {}
+
+        /**
+         * @param callable(TValue, TKey): mixed|int|string $callback
+         * @param int $options
+         * @param bool $descending
+         * @return static<TKey, TValue>
+         */
+        public function sortBy($callback, int $options = SORT_REGULAR, bool $descending = false) {}
+
+        /**
+         * @param callable(TValue, TKey): mixed|int|string $callback
+         * @param int $options
+         * @return static<TKey, TValue>
+         */
+        public function sortByDesc($callback, int $options = SORT_REGULAR) {}
+
+        /**
+         * @return static<TKey, TValue>
+         */
+        public function shuffle() {}
+
+        public function getIterator(): \ArrayIterator {}
+
+        /**
+         * @param TKey $offset
+         */
+        public function offsetExists($offset): bool {}
+
+        /**
+         * @param TKey $offset
+         * @return TValue|null
+         */
+        public function offsetGet($offset) {}
+
+        /**
+         * @param TKey|null $offset
+         * @param TValue $value
+         */
+        public function offsetSet($offset, $value): void {}
+
+        /**
+         * @param TKey $offset
+         */
+        public function offsetUnset($offset): void {}
+
+        public function jsonSerialize(): array {}
+
+        public function __toString(): string {}
+    }
+
+    /**
+     * HtmlString class for HTML content
+     */
+    class HtmlString implements \Illuminate\Contracts\Support\Htmlable {
+        public function __construct(string $html = '') {}
+        public function toHtml(): string {}
+        public function __toString(): string {}
+        public function isEmpty(): bool {}
+        public function isNotEmpty(): bool {}
+    }
+
+    /**
+     * Stringable class for fluent string manipulation
+     */
+    class Stringable {
+        public function __construct(string $value = '') {}
+        
+        // All Str methods available as instance methods
+        public function after(string $search): static {}
+        public function afterLast(string $search): static {}
+        public function append(string ...$values): static {}
+        public function ascii(string $language = 'en'): static {}
+        public function basename(string $suffix = ''): static {}
+        public function before(string $search): static {}
+        public function beforeLast(string $search): static {}
+        public function between(string $from, string $to): static {}
+        public function betweenFirst(string $from, string $to): static {}
+        public function camel(): static {}
+        public function classBasename(): static {}
+        public function contains($needles, bool $ignoreCase = false): bool {}
+        public function containsAll($needles, bool $ignoreCase = false): bool {}
+        public function dirname(int $levels = 1): static {}
+        public function endsWith($needles): bool {}
+        public function exactly(string $value): bool {}
+        public function explode(string $delimiter, int $limit = PHP_INT_MAX): \Illuminate\Support\Collection {}
+        public function finish(string $cap): static {}
+        public function headline(): static {}
+        public function is($pattern): bool {}
+        public function isAscii(): bool {}
+        public function isEmpty(): bool {}
+        public function isNotEmpty(): bool {}
+        public function isJson(): bool {}
+        public function isUlid(): bool {}
+        public function isUuid(): bool {}
+        public function isUrl(): bool {}
+        public function kebab(): static {}
+        public function length(?string $encoding = null): int {}
+        public function limit(int $limit = 100, string $end = '...'): static {}
+        public function lower(): static {}
+        public function ltrim(?string $characters = null): static {}
+        public function markdown(array $options = []): static {}
+        public function inlineMarkdown(array $options = []): static {}
+        public function mask(string $character, int $index, ?int $length = null, string $encoding = 'UTF-8'): static {}
+        public function match(string $pattern): static {}
+        public function matchAll(string $pattern): \Illuminate\Support\Collection {}
+        public function padBoth(int $length, string $pad = ' '): static {}
+        public function padLeft(int $length, string $pad = ' '): static {}
+        public function padRight(int $length, string $pad = ' '): static {}
+        public function pipe(callable $callback): mixed {}
+        public function plural($count = 2): static {}
+        public function pluralStudly($count = 2): static {}
+        public function prepend(string ...$values): static {}
+        public function remove($search, bool $caseSensitive = true): static {}
+        public function repeat(int $times): static {}
+        public function replace($search, $replace, bool $caseSensitive = true): static {}
+        public function replaceArray(string $search, $replace): static {}
+        public function replaceFirst(string $search, string $replace): static {}
+        public function replaceLast(string $search, string $replace): static {}
+        public function replaceMatches(string $pattern, $replace, int $limit = -1): static {}
+        public function rtrim(?string $characters = null): static {}
+        public function scan(string $format): \Illuminate\Support\Collection {}
+        public function singular(): static {}
+        public function slug(string $separator = '-', ?string $language = 'en'): static {}
+        public function snake(string $delimiter = '_'): static {}
+        public function split(int $length): \Illuminate\Support\Collection {}
+        public function splitByLength(int $length, int $flags = 0): \Illuminate\Support\Collection {}
+        public function squish(): static {}
+        public function start(string $prefix): static {}
+        public function startsWith($needles): bool {}
+        public function studly(): static {}
+        public function substr(int $start, ?int $length = null, string $encoding = 'UTF-8'): static {}
+        public function substrReplace(string $replace, int $offset = 0, ?int $length = null): static {}
+        public function swap($map): static {}
+        public function take(int $limit): static {}
+        public function test(string $pattern): bool {}
+        public function title(): static {}
+        public function trim(?string $characters = null): static {}
+        public function ucfirst(): static {}
+        public function ucsplit(): \Illuminate\Support\Collection {}
+        public function upper(): static {}
+        public function when($condition, callable $callback, ?callable $default = null): static {}
+        public function whenContains($needles, callable $callback, ?callable $default = null): static {}
+        public function whenContainsAll($needles, callable $callback, ?callable $default = null): static {}
+        public function whenEmpty(callable $callback, ?callable $default = null): static {}
+        public function whenNotEmpty(callable $callback, ?callable $default = null): static {}
+        public function whenStartsWith($needles, callable $callback, ?callable $default = null): static {}
+        public function whenEndsWith($needles, callable $callback, ?callable $default = null): static {}
+        public function whenExactly(string $value, callable $callback, ?callable $default = null): static {}
+        public function whenNotExactly(string $value, callable $callback, ?callable $default = null): static {}
+        public function whenIs($pattern, callable $callback, ?callable $default = null): static {}
+        public function whenIsAscii(callable $callback, ?callable $default = null): static {}
+        public function whenIsUlid(callable $callback, ?callable $default = null): static {}
+        public function whenIsUuid(callable $callback, ?callable $default = null): static {}
+        public function whenTest(string $pattern, callable $callback, ?callable $default = null): static {}
+        public function wordCount(?string $characters = null): int {}
+        public function words(int $words = 100, string $end = '...'): static {}
+        
+        // Other methods
+        public function toString(): string {}
+        public function toInteger(): int {}
+        public function toFloat(): float {}
+        public function toDate(?string $format = null, ?string $tz = null): ?\Illuminate\Support\Carbon {}
+        public function dump(): static {}
+        public function dd(): void {}
+        public function value(): string {}
+        public function jsonSerialize(): string {}
+        public function __toString(): string {}
+    }
+}
+
+namespace Illuminate\Foundation\Http {
+
+    /**
+     * Form Request base class with user() method
+     */
+    abstract class FormRequest extends \Illuminate\Http\Request
+    {
+        /**
+         * Get the authenticated user making the request.
+         *
+         * @param  string|null  $guard
+         * @return \Illuminate\Contracts\Auth\Authenticatable|null
+         */
+        public function user(?string $guard = null): ?\Illuminate\Contracts\Auth\Authenticatable {}
+
+        /**
+         * Get the validation rules that apply to the request.
+         *
+         * @return array<string, mixed>
+         */
+        abstract public function rules(): array;
+
+        /**
+         * Determine if the user is authorized to make this request.
+         */
+        public function authorize(): bool {}
+
+        /**
+         * Get custom messages for validator errors.
+         *
+         * @return array<string, string>
+         */
+        public function messages(): array {}
+
+        /**
+         * Get custom attributes for validator errors.
+         *
+         * @return array<string, string>
+         */
+        public function attributes(): array {}
+
+        /**
+         * Prepare the data for validation.
+         */
+        protected function prepareForValidation(): void {}
+
+        /**
+         * Get the validator instance for the request.
+         *
+         * @return \Illuminate\Contracts\Validation\Validator
+         */
+        protected function getValidatorInstance(): \Illuminate\Contracts\Validation\Validator {}
+
+        /**
+         * Handle a failed validation attempt.
+         *
+         * @param  \Illuminate\Contracts\Validation\Validator  $validator
+         */
+        protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void {}
+
+        /**
+         * Get validated data from the request.
+         *
+         * @param  string|array<string>|null  $key
+         * @param  mixed  $default
+         * @return mixed
+         */
+        public function validated($key = null, $default = null) {}
+
+        /**
+         * Get validated data as a collection.
+         *
+         * @return \Illuminate\Support\Collection
+         */
+        public function collect(): \Illuminate\Support\Collection {}
+    }
+}
+
+namespace Illuminate\Contracts\Auth {
+
+    /**
+     * Authenticatable contract
+     */
+    interface Authenticatable
+    {
+        /**
+         * Get the unique identifier for the user.
+         *
+         * @return mixed
+         */
+        public function getAuthIdentifier();
+
+        /**
+         * Get the name of the unique identifier for the user.
+         *
+         * @return string
+         */
+        public function getAuthIdentifierName(): string;
+
+        /**
+         * Get the password for the user.
+         *
+         * @return string
+         */
+        public function getAuthPassword(): string;
+
+        /**
+         * Get the token value for the "remember me" session.
+         *
+         * @return string|null
+         */
+        public function getRememberToken(): ?string;
+
+        /**
+         * Set the token value for the "remember me" session.
+         *
+         * @param  string  $value
+         */
+        public function setRememberToken(string $value): void;
+
+        /**
+         * Get the column name for the "remember me" token.
+         *
+         * @return string
+         */
+        public function getRememberTokenName(): string;
+
+        /**
+         * Get the name of the password attribute for the user.
+         *
+         * @return string
+         */
+        public function getAuthPasswordName(): string;
+    }
+}
+
+namespace Illuminate\Contracts\Support {
+    
+    /**
+     * Htmlable contract
+     */
+    interface Htmlable
+    {
+        /**
+         * Get content as a string of HTML.
+         *
+         * @return string
+         */
+        public function toHtml(): string;
+    }
+}
+
+namespace Illuminate\Http {
+
+    /**
+     * Base Request class
+     */
+    class Request implements \Symfony\Component\HttpFoundation\RequestStack
+    {
+        /**
+         * Get the authenticated user making the request.
+         *
+         * @param  string|null  $guard
+         * @return \Illuminate\Contracts\Auth\Authenticatable|null
+         */
+        public function user(?string $guard = null): ?\Illuminate\Contracts\Auth\Authenticatable {}
+
+        /**
+         * Get an input element from the request.
+         *
+         * @param  string|null  $key
+         * @param  mixed  $default
+         * @return mixed
+         */
+        public function input(?string $key = null, $default = null) {}
+
+        /**
+         * Get all of the input data for the request.
+         *
+         * @return array<string, mixed>
+         */
+        public function all(): array {}
+
+        /**
+         * Retrieve an input item from the request.
+         *
+         * @param  string|null  $key
+         * @param  mixed  $default
+         * @return mixed
+         */
+        public function get(?string $key, $default = null) {}
+
+        /**
+         * Get a subset of the items from the input data.
+         *
+         * @param  array<string>|mixed  $keys
+         * @return array<string, mixed>
+         */
+        public function only($keys): array {}
+
+        /**
+         * Get all input except for a specified array of items.
+         *
+         * @param  array<string>|mixed  $keys
+         * @return array<string, mixed>
+         */
+        public function except($keys): array {}
+
+        /**
+         * Determine if the request contains a given input item key.
+         *
+         * @param  string|array<string>  $key
+         * @return bool
+         */
+        public function has($key): bool {}
+
+        /**
+         * Determine if the request contains any of the given inputs.
+         *
+         * @param  string|array<string>  $keys
+         * @return bool
+         */
+        public function hasAny($keys): bool {}
+
+        /**
+         * Determine if the request contains a non-empty value for an input item.
+         *
+         * @param  string|array<string>  $key
+         * @return bool
+         */
+        public function filled($key): bool {}
+
+        /**
+         * Determine if the request contains a non-empty value for any of the given inputs.
+         *
+         * @param  string|array<string>  $keys
+         * @return bool
+         */
+        public function anyFilled($keys): bool {}
+
+        /**
+         * Determine if the request is missing a given input item key.
+         *
+         * @param  string|array<string>  $key
+         * @return bool
+         */
+        public function missing($key): bool {}
+
+        /**
+         * Get the URL for the request.
+         *
+         * @return string
+         */
+        public function url(): string {}
+
+        /**
+         * Get the full URL for the request.
+         *
+         * @return string
+         */
+        public function fullUrl(): string {}
+
+        /**
+         * Get the full URL for the request with the added query string parameters.
+         *
+         * @param  array<string, mixed>  $query
+         * @return string
+         */
+        public function fullUrlWithQuery(array $query): string {}
+
+        /**
+         * Get the URL without query parameters.
+         *
+         * @return string
+         */
+        public function fullUrlWithoutQuery(array $keys): string {}
+
+        /**
+         * Get the request method.
+         *
+         * @return string
+         */
+        public function method(): string {}
+
+        /**
+         * Checks if the request method is of specified type.
+         *
+         * @param  string  $method
+         * @return bool
+         */
+        public function isMethod(string $method): bool {}
+
+        /**
+         * Determine if the current request URL and query string matches a pattern.
+         *
+         * @param  mixed  ...$patterns
+         * @return bool
+         */
+        public function is(...$patterns): bool {}
+
+        /**
+         * Determine if the route name matches a given pattern.
+         *
+         * @param  mixed  ...$patterns
+         * @return bool
+         */
+        public function routeIs(...$patterns): bool {}
+
+        /**
+         * Get the client IP address.
+         *
+         * @return string|null
+         */
+        public function ip(): ?string {}
+
+        /**
+         * Get the client IP addresses.
+         *
+         * @return array<string>
+         */
+        public function ips(): array {}
+
+        /**
+         * Get the client user agent.
+         *
+         * @return string|null
+         */
+        public function userAgent(): ?string {}
+
+        /**
+         * Determine if the request is over HTTPS.
+         *
+         * @return bool
+         */
+        public function secure(): bool {}
+
+        /**
+         * Get a header from the request.
+         *
+         * @param  string  $key
+         * @param  string|array<string>|null  $default
+         * @return string|array<string>|null
+         */
+        public function header(string $key, $default = null) {}
+
+        /**
+         * Get a bearer token from the request headers.
+         *
+         * @return string|null
+         */
+        public function bearerToken(): ?string {}
+
+        /**
+         * Determine if the request contains a given cookie.
+         *
+         * @param  string  $key
+         * @return bool
+         */
+        public function hasCookie(string $key): bool {}
+
+        /**
+         * Retrieve a cookie from the request.
+         *
+         * @param  string|null  $key
+         * @param  string|array<string>|null  $default
+         * @return string|array<string>|null
+         */
+        public function cookie(?string $key = null, $default = null) {}
+
+        /**
+         * Get an array of all of the files on the request.
+         *
+         * @return array
+         */
+        public function allFiles(): array {}
+
+        /**
+         * Retrieve a file from the request.
+         *
+         * @param  string|null  $key
+         * @param  mixed  $default
+         * @return \Illuminate\Http\UploadedFile|\Illuminate\Http\UploadedFile[]|array|null
+         */
+        public function file(?string $key = null, $default = null) {}
+
+        /**
+         * Determine if the uploaded data contains a file.
+         *
+         * @param  string  $key
+         * @return bool
+         */
+        public function hasFile(string $key): bool {}
+
+        /**
+         * Retrieve the validated input data.
+         *
+         * @param  string|array<string>|null  $key
+         * @param  mixed  $default
+         * @return mixed
+         */
+        public function validated($key = null, $default = null) {}
+
+        /**
+         * Merge new input into the current request's input array.
+         *
+         * @param  array<string, mixed>  $input
+         * @return $this
+         */
+        public function merge(array $input): static {}
+
+        /**
+         * Merge new input into the request's input, but only when that key is missing from the request.
+         *
+         * @param  array<string, mixed>  $input
+         * @return $this
+         */
+        public function mergeIfMissing(array $input): static {}
+
+        /**
+         * Replace the input values for the current request.
+         *
+         * @param  array<string, mixed>  $input
+         * @return $this
+         */
+        public function replace(array $input): static {}
+
+        /**
+         * Get the JSON payload for the request.
+         *
+         * @param  string|null  $key
+         * @param  mixed  $default
+         * @return mixed
+         */
+        public function json(?string $key = null, $default = null) {}
+        
+        // Additional commonly used methods
+        public function flash(): void {}
+        public function flashOnly($keys): void {}
+        public function flashExcept($keys): void {}
+        public function old(?string $key = null, $default = null) {}
+        public function route(?string $param = null, $default = null) {}
+        public function fingerprint(): string {}
+        public function toArray(): array {}
+        public function offsetExists($offset): bool {}
+        public function offsetGet($offset) {}
+        public function offsetSet($offset, $value): void {}
+        public function offsetUnset($offset): void {}
+        public function __isset(string $key): bool {}
+        public function __get(string $key) {}
+    }
+
+    /**
+     * UploadedFile class
+     */
+    class UploadedFile extends \Symfony\Component\HttpFoundation\File\UploadedFile
+    {
+        /**
+         * Store the uploaded file on a filesystem disk.
+         *
+         * @param  string|null  $path
+         * @param  array<string, mixed>|string|null  $options
+         * @return string|false
+         */
+        public function store(?string $path = null, $options = []): string|false {}
+
+        /**
+         * Store the uploaded file on a filesystem disk with public visibility.
+         *
+         * @param  string|null  $path
+         * @param  array<string, mixed>|string|null  $options
+         * @return string|false
+         */
+        public function storePublicly(?string $path = null, $options = []): string|false {}
+
+        /**
+         * Store the uploaded file on a filesystem disk with a given name.
+         *
+         * @param  string  $path
+         * @param  string  $name
+         * @param  array<string, mixed>|string|null  $options
+         * @return string|false
+         */
+        public function storeAs(string $path, string $name, $options = []): string|false {}
+
+        /**
+         * Store the uploaded file on a filesystem disk with public visibility and a given name.
+         *
+         * @param  string  $path
+         * @param  string  $name
+         * @param  array<string, mixed>|string|null  $options
+         * @return string|false
+         */
+        public function storePubliclyAs(string $path, string $name, $options = []): string|false {}
+
+        /**
+         * Get the fully qualified path to the file.
+         *
+         * @return string
+         */
+        public function path(): string {}
+
+        /**
+         * Get the file's extension.
+         *
+         * @return string|null
+         */
+        public function extension(): ?string {}
+
+        /**
+         * Get the file's extension supplied by the client.
+         *
+         * @return string|null
+         */
+        public function clientExtension(): ?string {}
+
+        /**
+         * Get a filename for the file.
+         *
+         * @param  string|null  $path
+         * @return string
+         */
+        public function hashName(?string $path = null): string {}
+
+        /**
+         * Get the file's dimensions.
+         *
+         * @return array<int>
+         */
+        public function dimensions(): array {}
+    }
+}
+
+namespace {
+
+    // Global helper functions
+
+    /**
+     * Create a collection from the given value.
+     *
+     * @template TKey of array-key
+     * @template TValue
+     * @param  array<TKey, TValue>|iterable<TKey, TValue>|null  $value
+     * @return \Illuminate\Support\Collection<TKey, TValue>
+     */
+    function collect($value = null): \Illuminate\Support\Collection {}
+
+    /**
+     * Get a new stringable object from the given string.
+     *
+     * @param  string|null  $string
+     * @return \Illuminate\Support\Stringable
+     */
+    function str(?string $string = null): \Illuminate\Support\Stringable {}
+
+    /**
+     * Get an instance of the current request or an input item from the request.
+     *
+     * @param  array<string>|string|null  $key
+     * @param  mixed  $default
+     * @return \Illuminate\Http\Request|string|array<string, mixed>|null
+     */
+    function request($key = null, $default = null) {}
+
+    /**
+     * Return a new response from the application.
+     *
+     * @param  string  $content
+     * @param  int  $status
+     * @param  array<string, string>  $headers
+     * @return mixed
+     */
+    function response($content = '', int $status = 200, array $headers = []) {}
+
+    /**
+     * Get the available auth instance.
+     *
+     * @param  string|null  $guard
+     * @return mixed
+     */
+    function auth(?string $guard = null) {}
+
+    /**
+     * Get / set the specified configuration value.
+     *
+     * @param  array<string, mixed>|string|null  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function config($key = null, $default = null) {}
+
+    /**
+     * Get the available container instance.
+     *
+     * @param  string|null  $abstract
+     * @param  array<string, mixed>  $parameters
+     * @return mixed
+     */
+    function app(?string $abstract = null, array $parameters = []) {}
+
+    /**
+     * Retrieve an old input item.
+     *
+     * @param  string|null  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function old(?string $key = null, $default = null) {}
+
+    /**
+     * Get / set the specified session value.
+     *
+     * @param  array<string, mixed>|string|null  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function session($key = null, $default = null) {}
+
+    /**
+     * Generate the URL to a named route.
+     *
+     * @param  string  $name
+     * @param  mixed  $parameters
+     * @param  bool  $absolute
+     * @return string
+     */
+    function route(string $name, $parameters = [], bool $absolute = true): string {}
+
+    /**
+     * Generate a url for the application.
+     *
+     * @param  string|null  $path
+     * @param  mixed  $parameters
+     * @param  bool|null  $secure
+     * @return mixed
+     */
+    function url(?string $path = null, $parameters = [], ?bool $secure = null) {}
+
+    /**
+     * Generate an asset path for the application.
+     *
+     * @param  string  $path
+     * @param  bool|null  $secure
+     * @return string
+     */
+    function asset(string $path, ?bool $secure = null): string {}
+
+    /**
+     * Get the evaluated view contents for the given view.
+     *
+     * @param  string|null  $view
+     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $mergeData
+     * @return mixed
+     */
+    function view(?string $view = null, array $data = [], array $mergeData = []) {}
+
+    /**
+     * Create a new redirect response to the previous location.
+     *
+     * @param  int  $status
+     * @param  array<string, string>  $headers
+     * @param  mixed  $fallback
+     * @return mixed
+     */
+    function back(int $status = 302, array $headers = [], $fallback = false) {}
+
+    /**
+     * Get an instance of the redirector.
+     *
+     * @param  string|null  $to
+     * @param  int  $status
+     * @param  array<string, string>  $headers
+     * @param  bool|null  $secure
+     * @return mixed
+     */
+    function redirect(?string $to = null, int $status = 302, array $headers = [], ?bool $secure = null) {}
+
+    /**
+     * Get an item from the cache, or execute the given Closure and store the result.
+     *
+     * @param  array<string, mixed>|string|null  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    function cache($key = null, $default = null) {}
+
+    /**
+     * Translate the given message.
+     *
+     * @param  string|null  $key
+     * @param  array<string, mixed>  $replace
+     * @param  string|null  $locale
+     * @return mixed
+     */
+    function trans(?string $key = null, array $replace = [], ?string $locale = null) {}
+
+    /**
+     * Translate the given message.
+     *
+     * @param  string|null  $key
+     * @param  array<string, mixed>  $replace
+     * @param  string|null  $locale
+     * @return mixed
+     */
+    function __(?string $key = null, array $replace = [], ?string $locale = null) {}
+}

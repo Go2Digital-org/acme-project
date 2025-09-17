@@ -1,0 +1,19 @@
+# ACME Corp CSR Platform - Staging Environment Crontab
+# Laravel Task Scheduler for staging environment
+# 
+# This crontab runs Laravel's task scheduler every minute, which then
+# manages all scheduled tasks defined in the application.
+#
+# Logs are written to staging-specific log files for easier debugging.
+
+# Laravel Task Scheduler - Staging
+* * * * * cd /var/www/acme-staging/current && /usr/bin/php artisan schedule:run >> /var/www/acme-staging/storage/logs/scheduler.log 2>&1
+
+# Optional: Clear old log files weekly (Sundays at 2 AM)
+0 2 * * 0 find /var/www/acme-staging/storage/logs -name "*.log" -mtime +7 -delete 2>/dev/null
+
+# Optional: Clear application cache daily (3 AM)
+0 3 * * * cd /var/www/acme-staging/current && /usr/bin/php artisan cache:clear >> /var/www/acme-staging/storage/logs/cache-clear.log 2>&1
+
+# Optional: Restart queue workers daily (4 AM) to prevent memory leaks
+0 4 * * * /usr/bin/supervisorctl restart acme-staging-workers:* >> /var/www/acme-staging/storage/logs/worker-restart.log 2>&1

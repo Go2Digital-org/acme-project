@@ -1,0 +1,591 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/typography';
+@plugin '@tailwindcss/forms';
+
+/* Alpine.js x-cloak - hide elements until Alpine is initialized */
+[x-cloak] { 
+    display: none !important; 
+}
+
+/* Hide scrollbar for filter tags on mobile */
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+/* Bookmark Toast Styles */
+.bookmark-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 9999;
+    max-width: 320px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bookmark-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.bookmark-toast.enter {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.bookmark-toast.success {
+    background-color: #10b981;
+}
+
+.bookmark-toast.error {
+    background-color: #ef4444;
+}
+
+.bookmark-toast.warning {
+    background-color: #f59e0b;
+}
+
+.bookmark-toast.info {
+    background-color: #3b82f6;
+}
+
+/* Toast Icon Styles */
+.toast-icon {
+    font-size: 16px;
+    min-width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: toast-icon-bounce 0.6s ease-out;
+}
+
+.toast-message {
+    flex: 1;
+    line-height: 1.4;
+}
+
+@keyframes toast-icon-bounce {
+    0%, 20%, 53%, 80%, 100% {
+        transform: translateX(0);
+    }
+    40%, 43% {
+        transform: translateX(-8px) scale(1.1);
+    }
+    70% {
+        transform: translateX(-4px) scale(1.05);
+    }
+    90% {
+        transform: translateX(-1px) scale(1.02);
+    }
+}
+
+/* Bookmark Button Animation */
+.bookmark-pulse {
+    animation: bookmark-pulse 0.3s ease-in-out;
+}
+
+@keyframes bookmark-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../../vendor/filament/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-mirage: #141624;
+    --color-haiti: #16182c;
+    --color-cloud: #2b2e53;
+    
+    /* Primary brand colors - from go2digital */
+    --color-primary: #4a6cf7;
+    --color-primary-dark: #3d5bdb;
+
+    --font-poppins: 'Poppins', Verdana, sans-serif;
+}
+
+@utility container {
+    margin-inline: auto;
+}
+
+@layer base {
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+}
+
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+/* Scrollbar thumb (the draggable part) */
+:hover::-webkit-scrollbar-thumb {
+    background: rgb(203 213 225 / 0.8);
+    border-radius: 999px;
+}
+
+:hover::-webkit-scrollbar-thumb:hover {
+    background: rgb(203 213 225);
+}
+
+.dark :hover::-webkit-scrollbar-thumb {
+    background: rgb(43 46 83 / 0.6);
+}
+
+.dark :hover::-webkit-scrollbar-thumb:hover {
+    background: rgb(43 46 83);
+}
+
+/* Fancy Progress Bar Animations */
+@layer components {
+    /* Progress bar gradient schemes - Red to Green progression */
+    .progress-gradient-success {
+        background: linear-gradient(90deg, 
+            #10b981 0%, 
+            #34d399 25%, 
+            #6ee7b7 50%, 
+            #34d399 75%, 
+            #10b981 100%);
+        background-size: 200% 100%;
+        animation: gradient-shift 3s ease infinite;
+    }
+    
+    .progress-gradient-vibrant {
+        background: linear-gradient(90deg, 
+            #84cc16 0%, 
+            #10b981 25%, 
+            #34d399 50%, 
+            #10b981 75%, 
+            #84cc16 100%);
+        background-size: 200% 100%;
+        animation: gradient-shift 3s ease infinite;
+    }
+    
+    .progress-gradient-progress {
+        background: linear-gradient(90deg, 
+            #facc15 0%, 
+            #84cc16 50%, 
+            #facc15 100%);
+        background-size: 200% 100%;
+        animation: gradient-shift 4s ease infinite;
+    }
+    
+    .progress-gradient-active {
+        background: linear-gradient(90deg, 
+            #fb923c 0%, 
+            #facc15 50%, 
+            #fb923c 100%);
+        background-size: 200% 100%;
+        animation: gradient-shift 4s ease infinite;
+    }
+    
+    .progress-gradient-starting {
+        background: linear-gradient(90deg, 
+            #ef4444 0%, 
+            #fb923c 50%, 
+            #ef4444 100%);
+        background-size: 200% 100%;
+        animation: gradient-shift 5s ease infinite;
+    }
+    
+    /* Animated stripes pattern */
+    .progress-stripes {
+        background-image: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.1) 10px,
+            rgba(255, 255, 255, 0.1) 20px
+        );
+        animation: progress-stripes-animation 1s linear infinite;
+    }
+    
+    /* Shimmer effect */
+    .progress-shimmer {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 100%
+        );
+        animation: shimmer 2s ease-in-out infinite;
+    }
+    
+    /* Wave animation */
+    .progress-wave {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 25%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0.2) 75%,
+            transparent 100%
+        );
+        animation: wave 3s ease-in-out infinite;
+    }
+    
+    /* Glow effect */
+    .progress-glow {
+        background: radial-gradient(
+            circle at center,
+            rgba(255, 255, 255, 0.5) 0%,
+            transparent 70%
+        );
+        animation: glow-pulse 2s ease-in-out infinite;
+    }
+    
+}
+
+/* Keyframe Animations */
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes progress-stripes-animation {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 0; }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); opacity: 0; }
+    50% { transform: translateX(0%); opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes wave {
+    0% { transform: translateX(-100%) scaleY(1); }
+    50% { transform: translateX(0%) scaleY(1.2); }
+    100% { transform: translateX(100%) scaleY(1); }
+}
+
+@keyframes glow-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+
+@keyframes animate-bounce-slow {
+    0%, 100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+
+@keyframes animate-ping-slow {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@keyframes animate-pulse-fast {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes animate-glow {
+    0%, 100% { 
+        box-shadow: 0 0 3px rgba(59, 130, 246, 0.5);
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+    }
+}
+
+/* Animation utility classes */
+.animate-bounce-slow {
+    animation: animate-bounce-slow 2s infinite;
+}
+
+.animate-ping-slow {
+    animation: animate-ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-pulse-fast {
+    animation: animate-pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-glow {
+    animation: animate-glow 2s ease-in-out infinite;
+}
+
+/* Brand Utilities - matching go2digital */
+@layer utilities {
+    .bg-primary {
+        background-color: var(--color-primary);
+    }
+    .bg-primary-dark {
+        background-color: var(--color-primary-dark);
+    }
+    
+    .text-primary {
+        color: var(--color-primary);
+    }
+    .text-primary-dark {
+        color: var(--color-primary-dark);
+    }
+    
+    .border-primary {
+        border-color: var(--color-primary);
+    }
+    
+    .hover\:bg-primary:hover {
+        background-color: var(--color-primary);
+    }
+    .hover\:bg-primary-dark:hover {
+        background-color: var(--color-primary-dark);
+    }
+    .hover\:text-primary:hover {
+        color: var(--color-primary);
+    }
+    
+    .ring-primary {
+        --tw-ring-color: var(--color-primary);
+    }
+    .focus\:ring-primary:focus {
+        --tw-ring-color: var(--color-primary);
+    }
+    .focus\:border-primary:focus {
+        border-color: var(--color-primary);
+    }
+    
+    /* Dark mode colors - from go2digital */
+    .text-dark {
+        color: #1d2144;
+    }
+    .bg-dark {
+        background-color: #1d2144;
+    }
+    .text-body-color {
+        color: #959cb1;
+    }
+    .bg-body-color {
+        background-color: #959cb1;
+    }
+    .text-black {
+        color: #090e34;
+    }
+    .bg-black {
+        background-color: #090e34;
+    }
+    
+    .dark\:text-white:where(.dark, .dark *) {
+        color: #ffffff;
+    }
+    .dark\:bg-dark:where(.dark, .dark *) {
+        background-color: #1d2144;
+    }
+    .dark\:text-body-color:where(.dark, .dark *) {
+        color: #e5e7eb; /* Gray-200 for dark mode */
+    }
+    
+    .hover\:text-dark:hover {
+        color: #1d2144;
+    }
+    .hover\:bg-dark:hover {
+        background-color: #1d2144;
+    }
+    
+    .border-body-color {
+        border-color: #959cb1;
+    }
+    
+    /* Opacity modifiers */
+    .bg-body-color.bg-opacity-\[15\%\] {
+        background-color: rgba(149, 156, 177, 0.15);
+    }
+    .dark .bg-body-color.bg-opacity-\[15\%\] {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .bg-primary.bg-opacity-10 {
+        background-color: rgba(74, 108, 247, 0.1);
+    }
+    .border-body-color.border-opacity-10 {
+        border-color: rgba(149, 156, 177, 0.1);
+    }
+    .dark\:border-white.dark\:border-opacity-10:where(.dark, .dark *) {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Form elements */
+    input[type="checkbox"]:checked {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+    input[type="checkbox"]:checked:hover {
+        background-color: var(--color-primary-dark);
+        border-color: var(--color-primary-dark);
+    }
+    input[type="checkbox"]:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-primary);
+    }
+    .dark input[type="checkbox"]:focus {
+        box-shadow: 0 0 0 2px #1d2144, 0 0 0 4px var(--color-primary);
+    }
+    
+    /* Campaign status indicators */
+    .status-active {
+        background-color: #10b981; /* Green for active */
+        color: white;
+    }
+    .status-pending {
+        background-color: #f59e0b; /* Amber for pending */
+        color: white;
+    }
+    .status-completed {
+        background-color: var(--color-primary);
+        color: white;
+    }
+    .status-draft {
+        background-color: #959cb1;
+        color: white;
+    }
+}
+
+/* Animations from go2digital */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translate3d(-20px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translate3d(20px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInUp {
+    animation-name: fadeInUp;
+}
+
+.fadeInDown {
+    animation-name: fadeInDown;
+}
+
+.fadeInLeft {
+    animation-name: fadeInLeft;
+}
+
+.fadeInRight {
+    animation-name: fadeInRight;
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+.animated.delay-1s {
+    animation-delay: 0.1s;
+}
+
+.animated.delay-2s {
+    animation-delay: 0.2s;
+}
+
+.animated.delay-3s {
+    animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animated {
+        animation-duration: 1ms !important;
+        transition-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

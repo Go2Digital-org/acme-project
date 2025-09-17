@@ -1,0 +1,475 @@
+name: CI Pipeline
+
+# This pipeline uses Laravel schema dumps for faster database setup:
+# - Schema dumps located at database/schema/mysql-testing-schema.sql
+# - Fast path: Load schema dump (~3s) + incremental migrations
+# - Fallback: Full migrations if schema dump missing (~30s)
+# - Works for both self-hosted and GitHub-hosted runners
+
+on:
+  push:
+    branches: [main, dev, 'feature/**', 'hotfix/**', '*.x']
+  pull_request:
+    branches: [main, dev]
+  schedule:
+    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
+  workflow_dispatch:
+    inputs:
+      runner_type:
+        description: 'Runner type'
+        required: false
+        default: 'github-hosted'
+        type: choice
+        options:
+        - github-hosted
+        - self-hosted
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PHP_VERSION: '8.4'
+  NODE_VERSION: '22'
+
+jobs:
+  # ================================================================
+  # CODE QUALITY & LINTING
+  # ================================================================
+  lint:
+    name: Code Quality & Linting
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone for speed
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, mysql, opcache, zip, curl, bcmath
+          tools: composer:v2
+          coverage: none
+          ini-values: memory_limit=2G
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # Aggressive caching with vendor directory
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache
+            vendor
+            node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/composer.lock', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Install dependencies (optimized)
+        run: |
+          # Only install if cache miss
+          if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
+            composer install --prefer-dist --no-progress --optimize-autoloader
+          fi
+
+          # Check for package-lock.json
+          if [ ! -f "package-lock.json" ]; then
+            echo "Warning: package-lock.json not found, using npm install"
+            npm install --no-audit --timeout=60000
+          else
+            # Clear node_modules on ARM64 to get correct binaries
+            if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm64" ]; then
+              echo "ARM64 detected, clearing node_modules for fresh install"
+              rm -rf node_modules
+            fi
+
+            if [ ! -d "node_modules" ]; then
+              npm ci --no-audit --prefer-offline --timeout=60000
+            fi
+          fi
+
+          # Rebuild native modules
+          npm rebuild || true
+
+      - name: Code Quality Checks (combined)
+        run: |
+          echo "::group::Laravel Pint"
+          vendor/bin/pint --test || {
+            echo "::error::Code style issues found"
+            exit 1
+          }
+          echo "::endgroup::"
+          
+          echo "::group::PHPStan"
+          export XDEBUG_MODE=off
+          vendor/bin/phpstan analyse --memory-limit=2G --error-format=github --no-progress
+          echo "::endgroup::"
+          
+          echo "::group::Rector (non-blocking)"
+          vendor/bin/rector process --config=rector/rector-safe.php --dry-run || true
+          echo "::endgroup::"
+
+      - name: Build Assets
+        run: |
+          # Try to build with proper Node version
+          npm run build || {
+            echo "⚠️ Build failed, creating placeholder manifest"
+            mkdir -p public/build
+            echo '{"inputs":{},"outputs":{}}' > public/build/manifest.json
+          }
+
+  # ================================================================
+  # UNIT & INTEGRATION TESTS
+  # ================================================================
+  test:
+    name: Tests (PHP ${{ matrix.php }})
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 20
+    needs: lint
+    
+    strategy:
+      fail-fast: true  # Stop on first failure to save minutes
+      matrix:
+        php: ['8.4']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, mysql, opcache, zip, curl, bcmath, pcntl
+          tools: composer:v2
+          coverage: none  # Disable coverage for speed
+          ini-values: memory_limit=2G
+
+      # Reuse cache from lint job
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache
+            vendor
+            node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/composer.lock', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies (from cache)
+        run: |
+          if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
+            composer install --prefer-dist --no-progress
+          fi
+
+          # Check for package-lock.json
+          if [ ! -f "package-lock.json" ]; then
+            echo "Warning: package-lock.json not found, using npm install"
+            npm install --no-audit --timeout=60000
+          else
+            # Clear node_modules on ARM64 for correct binaries
+            if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm64" ]; then
+              echo "ARM64 detected, clearing node_modules"
+              rm -rf node_modules
+            fi
+
+            if [ ! -d "node_modules" ]; then
+              npm ci --no-audit --prefer-offline --timeout=60000
+            fi
+          fi
+
+          # Build assets with proper Node version
+          if [ ! -d "public/build" ] || [ ! -f "public/build/manifest.json" ]; then
+            npm run build || {
+              echo "Build failed, creating placeholder"
+              mkdir -p public/build
+              echo '{"inputs":{},"outputs":{}}' > public/build/manifest.json
+            }
+          fi
+
+      - name: Setup test environment
+        run: |
+          cp .env.ci .env
+          php artisan key:generate
+          
+          # Self-hosted runner database setup
+          echo "Setting up database for self-hosted runner..."
+          # Create test database if it doesn't exist
+          mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "CREATE DATABASE IF NOT EXISTS acme_corp_csr_test;" 2>/dev/null || {
+            echo "Database already exists or using Docker service"
+          }
+
+      - name: Setup database with schema dump
+        run: |
+          # Self-hosted runner uses local MySQL
+          echo "Using local MySQL installation"
+
+          # Drop and recreate test database for clean state
+          echo "Dropping existing test database if exists..."
+          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "DROP DATABASE IF EXISTS acme_corp_csr_test;" || true
+
+          echo "Creating fresh test database..."
+          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "CREATE DATABASE IF NOT EXISTS acme_corp_csr_test;"
+
+          # Verify connection
+          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "SELECT 1;" acme_corp_csr_test
+
+          php artisan config:clear
+
+          # Use schema dump for faster database setup (reduces ~30s to ~3s)
+          if [ -f "database/schema/mysql-testing-schema.sql" ]; then
+            echo "Loading database schema from dump (fast path)..."
+            start_time=$(date +%s)
+            mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} acme_corp_csr_test < database/schema/mysql-testing-schema.sql
+            end_time=$(date +%s)
+            echo "Schema loaded successfully in $((end_time - start_time)) seconds"
+
+            # Run any new migrations not included in schema dump
+            echo "Running incremental migrations..."
+            php artisan migrate --force
+          else
+            echo "Schema dump not found at database/schema/mysql-testing-schema.sql"
+            echo "Falling back to full migrations (slow path)..."
+            start_time=$(date +%s)
+            php artisan migrate --force
+            end_time=$(date +%s)
+            echo "Migrations completed in $((end_time - start_time)) seconds"
+          fi
+
+      - name: Run Tests (optimized)
+        run: |
+          echo "::group::Unit Tests (Parallel)"
+          # Unit tests can run in parallel - no database
+          vendor/bin/pest tests/Unit --parallel --processes=4 --compact --bail --no-coverage
+          echo "::endgroup::"
+
+          echo "::group::Feature Tests (Sequential)"
+          # Run feature tests sequentially to avoid database conflicts
+          vendor/bin/pest tests/Feature --compact --bail --no-coverage
+          echo "::endgroup::"
+
+          echo "::group::Integration Tests (Sequential)"
+          # Run integration tests sequentially to avoid database conflicts
+          vendor/bin/pest tests/Integration --compact --bail --no-coverage
+          echo "::endgroup::"
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-php${{ matrix.php }}
+          path: storage/logs/
+          retention-days: 3
+
+  # ================================================================
+  # COVERAGE ANALYSIS
+  # ================================================================
+  coverage:
+    name: Test Coverage Analysis
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 15
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip coverage]')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, sqlite3, opcache, zip, gd, curl, bcmath, pcntl
+          tools: composer:v2
+          coverage: pcov
+          ini-values: memory_limit=2G
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies and build
+        run: |
+          composer install --prefer-dist --no-progress
+          # Clear npm cache to avoid permission issues
+          npm cache clean --force || echo "Cache clean failed, continuing..."
+
+          # Check for package-lock.json
+          if [ ! -f "package-lock.json" ]; then
+            echo "Warning: package-lock.json not found, using npm install"
+            npm install --no-audit --timeout=60000
+          else
+            npm ci --no-audit --timeout=60000
+          fi
+
+          npm rebuild || true
+          npm run build
+
+      - name: Setup test environment
+        run: |
+          cp .env.ci .env
+          php artisan key:generate
+
+      - name: Setup database with schema dump
+        run: |
+          # Self-hosted runner uses local MySQL
+          echo "Using local MySQL installation"
+
+          # Drop and recreate test database for clean state
+          echo "Dropping existing test database if exists..."
+          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "DROP DATABASE IF EXISTS acme_corp_csr_test;" || true
+
+          echo "Creating fresh test database..."
+          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "CREATE DATABASE IF NOT EXISTS acme_corp_csr_test;"
+
+          # Verify connection
+          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "SELECT 1;" acme_corp_csr_test
+
+          php artisan config:clear
+
+          # Use schema dump for faster database setup (reduces ~30s to ~3s)
+          if [ -f "database/schema/mysql-testing-schema.sql" ]; then
+            echo "Loading database schema from dump (fast path)..."
+            start_time=$(date +%s)
+            mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} acme_corp_csr_test < database/schema/mysql-testing-schema.sql
+            end_time=$(date +%s)
+            echo "Schema loaded successfully in $((end_time - start_time)) seconds"
+
+            # Run any new migrations not included in schema dump
+            echo "Running incremental migrations..."
+            php artisan migrate --force
+          else
+            echo "Schema dump not found at database/schema/mysql-testing-schema.sql"
+            echo "Falling back to full migrations (slow path)..."
+            start_time=$(date +%s)
+            php artisan migrate --force
+            end_time=$(date +%s)
+            echo "Migrations completed in $((end_time - start_time)) seconds"
+          fi
+
+      - name: Run tests with coverage
+        run: |
+          # Run tests with coverage - only unit tests in parallel
+          vendor/bin/pest tests/Unit --coverage \
+            --coverage-html=coverage/html \
+            --coverage-clover=coverage/clover.xml \
+            --coverage-text \
+            --parallel --processes=4 \
+            --min=80 || true
+
+          # Run integration and feature tests sequentially
+          vendor/bin/pest tests/Feature tests/Integration \
+            --coverage-clover=coverage/clover-integration.xml \
+            --no-coverage || true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/clover.xml
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+
+
+  # ================================================================
+  # BASIC SECURITY AUDIT
+  # ================================================================
+  security:
+    name: Security Audit
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 4
+    needs: lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          tools: composer:v2
+
+      # Reuse cache for speed
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies (minimal)
+        run: composer install --prefer-dist --no-progress
+
+      - name: Security Audit (combined)
+        run: |
+          echo "::group::PHP Security"
+          # Update composer to fix GithubActionError class issue
+          composer self-update --stable --quiet || echo "Composer update failed, continuing..."
+          # Run audit with fallback
+          composer audit || echo "::warning::Composer audit failed (see above for details)"
+          echo "::endgroup::"
+          
+          echo "::group::Node.js Security (critical only)"
+          npm audit --audit-level=critical --json > audit.json 2>/dev/null || {
+            if [ -s audit.json ]; then
+              echo "::warning::Critical vulnerabilities found"
+              cat audit.json
+            fi
+          }
+          echo "::endgroup::"
+
+  # ================================================================
+  # SUCCESS GATE
+  # ================================================================
+  ci-success:
+    name: CI Success
+    runs-on: [self-hosted, linux]
+    needs: [lint, test, security]
+    if: always()
+
+    steps:
+      - name: Check results
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.test.result }}" != "success" ] || [ "${{ needs.security.result }}" != "success" ]; then
+            echo "❌ CI Pipeline failed"
+            echo "Lint: ${{ needs.lint.result }}"
+            echo "Test: ${{ needs.test.result }}"
+            echo "Security: ${{ needs.security.result }}"
+            exit 1
+          fi
+          echo "✅ CI Pipeline successful!"

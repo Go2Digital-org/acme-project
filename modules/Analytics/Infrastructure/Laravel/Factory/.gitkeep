@@ -1,0 +1,50 @@
+# Analytics Factory Directory
+
+This directory contains factory classes for the Analytics module.
+
+## Purpose
+
+- Factory classes for Analytics models should be placed here
+- Namespace: Modules\Analytics\Infrastructure\Laravel\Factory
+- Registered via FactoryServiceProvider using Laravel's modern factory system
+
+## Usage
+
+When Analytics models are created, their corresponding factories should:
+1. Be placed in this directory
+2. Use the namespace: Modules\Analytics\Infrastructure\Laravel\Factory
+3. Extend Illuminate\Database\Eloquent\Factories\Factory
+4. Follow Laravel 8+ factory patterns
+5. Be automatically resolved via FactoryServiceProvider's guessFactoryNamesUsing callback
+
+## Example
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Analytics\Infrastructure\Laravel\Factory;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Analytics\Domain\Model\AnalyticsEvent;
+
+final class AnalyticsEventFactory extends Factory
+{
+    protected $model = AnalyticsEvent::class;
+
+    public function definition(): array
+    {
+        return [
+            'event_type' => $this->faker->randomElement(['page_view', 'click', 'conversion']),
+            'event_data' => $this->faker->randomElements(),
+            'occurred_at' => $this->faker->dateTimeThisYear(),
+        ];
+    }
+}
+```
+
+## Current Status
+
+No Analytics models currently exist, so no factories are needed yet.
+The structure is prepared for future use when Analytics models are added.

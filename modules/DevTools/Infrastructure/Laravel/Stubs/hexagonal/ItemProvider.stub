@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\ApiPlatform\Handler\Provider;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
+use Modules\{{domain}}\Application\Query\Find{{domain}}Query;
+use Modules\{{domain}}\Infrastructure\ApiPlatform\Resource\{{domain}}Resource;
+use Modules\Shared\Application\Query\QueryBusInterface;
+use Webmozart\Assert\Assert;
+
+/**
+ * @implements ProviderInterface<{{domain}}Resource>
+ */
+final readonly class {{prefix}}{{domain}}ItemProvider implements ProviderInterface
+{
+    public function __construct(
+        private QueryBusInterface $queryBus,
+    ) {
+    }
+
+    public function provide(
+        Operation $operation,
+        array $uriVariables = [],
+        array $context = []
+    ): {{domain}}Resource {
+        $id = $uriVariables['id'];
+        Assert::notNull($id);
+        ${{domainCamelCase}}Identifier = intval($id);
+
+        $model = $this->queryBus->ask(new Find{{domain}}Query(${{domainCamelCase}}Identifier));
+
+        return {{domain}}Resource::fromModel($model);
+    }
+}
