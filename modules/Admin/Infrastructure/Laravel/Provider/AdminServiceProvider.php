@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Infrastructure\Laravel\Provider;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\ServiceProvider;
@@ -21,6 +20,7 @@ use Modules\Admin\Domain\Repository\AdminSettingsRepositoryInterface;
 use Modules\Admin\Infrastructure\Laravel\Command\CreateSampleNotificationsCommand;
 use Modules\Admin\Infrastructure\Laravel\Repository\AdminSettingsEloquentRepository;
 use Modules\Shared\Infrastructure\Laravel\Notifications\MaintenanceModeEnabledNotification;
+use Modules\User\Infrastructure\Laravel\Models\User;
 
 final class AdminServiceProvider extends ServiceProvider
 {

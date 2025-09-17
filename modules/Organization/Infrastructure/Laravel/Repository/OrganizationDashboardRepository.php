@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Organization\Infrastructure\Laravel\Repository;
 
-use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,6 +14,7 @@ use Modules\Organization\Domain\Model\Organization;
 use Modules\Shared\Application\ReadModel\AbstractReadModelRepository;
 use Modules\Shared\Application\ReadModel\ReadModelInterface;
 use Modules\Shared\Application\Service\CacheService;
+use Modules\User\Infrastructure\Laravel\Models\User;
 
 /**
  * Repository for Organization Dashboard Read Models with caching.

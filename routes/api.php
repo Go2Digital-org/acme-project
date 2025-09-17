@@ -36,26 +36,6 @@ declare(strict_types=1);
  * - Currencies: /api/v1/currencies/* (via Currency module traditional routing)
  */
 
-use Illuminate\Support\Facades\Route;
-use Modules\Auth\Infrastructure\Laravel\Controllers\Api\AuthController;
-
-/**
- * Authentication Routes (Override API Platform for better middleware control)
- */
-Route::prefix('auth')->group(function () {
-    // Public authentication routes (no auth required)
-    Route::middleware(['api.locale', 'throttle:api', 'api.performance'])->group(function () {
-        Route::post('login', [AuthController::class, 'login'])->name('api.auth.login');
-        Route::post('register', [AuthController::class, 'register'])->name('api.auth.register');
-    });
-
-    // Protected authentication routes (auth required)
-    Route::middleware(['auth:sanctum', 'api.locale', 'throttle:api', 'api.performance'])->group(function () {
-        Route::get('user', [AuthController::class, 'user'])->name('api.auth.user');
-        Route::post('logout', [AuthController::class, 'logout'])->name('api.auth.logout');
-    });
-});
-
-// All other API endpoints are handled by:
+// All API endpoints are handled by:
 // 1. API Platform - See modules/*/Infrastructure/ApiPlatform/Resource/*Resource.php
 // 2. Module-specific routes - See modules/*/Infrastructure/Laravel/routes/api.php

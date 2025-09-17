@@ -277,6 +277,11 @@ php artisan queue:work
 
 # Start specific queue worker
 php artisan queue:work --queue=payments
+
+# Common queue worker commands
+php artisan queue:work --queue=notifications,default --tries=3  # Notifications and default jobs
+php artisan queue:work --queue=exports,scout,default --tries=3 --timeout=3600 --stop-when-empty  # Export and search indexing
+php artisan queue:work --queue=exports --tries=1 --stop-when-empty  # Export-only queue
 ```
 
 ### Job Management

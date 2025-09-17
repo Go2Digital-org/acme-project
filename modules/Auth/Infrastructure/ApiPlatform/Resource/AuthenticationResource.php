@@ -15,8 +15,6 @@ use Modules\Auth\Infrastructure\ApiPlatform\Handler\Processor\LogoutProcessor;
 use Modules\Auth\Infrastructure\ApiPlatform\Handler\Processor\RegisterProcessor;
 use Modules\Auth\Infrastructure\ApiPlatform\Handler\Provider\UserProfileProvider;
 
-// Disabled - Using Laravel routes instead to handle auth middleware properly
-/*
 #[ApiResource(
     shortName: 'Authentication',
     operations: [
@@ -25,6 +23,7 @@ use Modules\Auth\Infrastructure\ApiPlatform\Handler\Provider\UserProfileProvider
             status: Response::HTTP_OK,
             processor: LoginProcessor::class,
             rules: LoginFormRequest::class,
+            middleware: ['api.locale', 'throttle:api', 'api.performance'],
         ),
 
         new Post(
@@ -32,22 +31,24 @@ use Modules\Auth\Infrastructure\ApiPlatform\Handler\Provider\UserProfileProvider
             status: Response::HTTP_CREATED,
             processor: RegisterProcessor::class,
             rules: RegisterFormRequest::class,
+            middleware: ['api.locale', 'throttle:api', 'api.performance'],
         ),
 
         new Post(
             uriTemplate: '/auth/logout',
             status: Response::HTTP_OK,
             processor: LogoutProcessor::class,
+            middleware: ['auth:sanctum', 'api.locale', 'throttle:api', 'api.performance'],
         ),
 
         new Get(
             uriTemplate: '/auth/user',
             status: Response::HTTP_OK,
             provider: UserProfileProvider::class,
+            middleware: ['auth:sanctum', 'api.locale', 'throttle:api', 'api.performance'],
         ),
     ],
 )]
-*/
 class AuthenticationResource
 {
     public function __construct(

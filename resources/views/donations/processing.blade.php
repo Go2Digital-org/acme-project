@@ -223,7 +223,7 @@
                     this.isChecking = true;
                     
                     try {
-                        const response = await fetch('{{ route('api.donations.status', $donation) }}', {
+                        const response = await fetch('{{ route('donations.status', $donation) }}', {
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                                 'Accept': 'application/json',
