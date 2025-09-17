@@ -49,7 +49,7 @@ return [
         'pagination_items_per_page' => 20,
         'pagination_maximum_items_per_page' => 100,
         'route_prefix' => '/api',
-        'middleware' => ['auth:sanctum', 'api.locale', 'throttle:api', 'api.performance'],
+        'middleware' => ['api.locale', 'throttle:api', 'api.performance'],
     ],
 
     'pagination' => [

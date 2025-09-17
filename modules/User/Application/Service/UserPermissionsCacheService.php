@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\User\Application\Service;
 
-use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Modules\Shared\Application\Service\CacheService;
+use Modules\User\Infrastructure\Laravel\Models\User;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Support\Facades\DB;
 use Modules\Campaign\Domain\Model\Campaign;
@@ -11,6 +10,7 @@ use Modules\Donation\Domain\Model\Donation;
 use Modules\Organization\Domain\Model\Organization;
 use Modules\Organization\Infrastructure\Laravel\Repository\OrganizationDashboardRepository;
 use Modules\Shared\Application\Service\CacheService;
+use Modules\User\Infrastructure\Laravel\Models\User;
 
 beforeEach(function (): void {
     // Create repository instance

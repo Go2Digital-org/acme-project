@@ -33,6 +33,7 @@ use Modules\Campaign\Infrastructure\Laravel\Controllers\Web\StoreCampaignControl
 use Modules\Campaign\Infrastructure\Laravel\Controllers\Web\UpdateCampaignController;
 use Modules\Campaign\Infrastructure\Laravel\Controllers\Web\UpdateCampaignWebController;
 use Modules\Currency\Infrastructure\Laravel\Controllers\Web\ChangeCurrencyController;
+use Modules\Donation\Infrastructure\Laravel\Controllers\Api\DonationStatusApiController;
 use Modules\Donation\Infrastructure\Laravel\Controllers\MollieWebhookController;
 use Modules\Donation\Infrastructure\Laravel\Controllers\StripeWebhookController;
 use Modules\Donation\Infrastructure\Laravel\Controllers\Web\CancelDonationController;
@@ -129,6 +130,7 @@ Route::group([
     Route::post('/donations', StoreDonationController::class)->name('donations.store')->middleware('auth');
     Route::get('/donations/{donation}', ShowDonationWebController::class)->name('donations.show')->middleware('auth');
     Route::post('/donations/{donation}/cancel', CancelDonationController::class)->name('donations.cancel')->middleware('auth');
+    Route::get('/donations/{donation}/status', DonationStatusApiController::class)->name('donations.status')->middleware('auth');
 
     // Export Routes (Async with progress tracking)
     Route::middleware(['auth'])->group(function (): void {

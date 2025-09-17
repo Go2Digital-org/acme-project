@@ -2,8 +2,6 @@
 
 # ACME Corp CSR Platform
 
-
-
 [![CI Pipeline](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml/badge.svg)](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml)[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-Level%208-brightgreen.svg)](https://phpstan.org)
 [![Security Check](https://img.shields.io/badge/Security-Enlightn%20Enabled-blue.svg)](https://www.laravel-enlightn.com/docs/security/security-analyzer.html)
@@ -643,48 +641,6 @@ MEILISEARCH_PORT=7700
 4. **Access application**:
    - Main app: http://localhost
    - Check emails: http://localhost:8025
-
-### Queue Workers
-
-The platform uses queue workers to process background jobs including exports, notifications, and payment processing.
-
-#### Development - Running Queue Workers
-
-```bash
-# Process all queues
-php artisan queue:work
-
-# Process export queue specifically
-php artisan queue:work --queue=exports,default
-
-# Process with timeout for large exports
-php artisan queue:work --queue=exports,default --timeout=900 --memory=1024
-```
-
-#### Production - Supervisor Configuration
-
-```bash
-# Start export workers
-sudo supervisorctl start laravel-export-worker:*
-
-# Check worker status
-sudo supervisorctl status
-
-# Restart workers
-sudo supervisorctl restart laravel-export-worker:*
-```
-
-#### Docker Queue Workers
-
-```bash
-# Scale queue workers in Docker
-docker-compose up -d --scale queue-worker=4
-
-# View worker logs
-docker-compose logs -f queue-worker
-```
-
-For detailed export queue setup, see [Export Queue Setup Guide](docs/infrastructure/export-queue-setup.md).
 
 ### Production Deployment
 

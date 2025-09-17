@@ -6,12 +6,12 @@ namespace Modules\Notification\Infrastructure\Laravel\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Modules\Campaign\Domain\Repository\CampaignRepositoryInterface;
 use Modules\Donation\Application\Event\DonationCompletedEvent;
-use Modules\Notification\Application\Command\CreateNotificationCommand;
-use Modules\Notification\Application\Command\CreateNotificationCommandHandler;
-use Modules\Notification\Domain\Enum\NotificationChannel;
-use Modules\Notification\Domain\Enum\NotificationPriority;
-use Modules\Notification\Domain\Enum\NotificationType;
+use Modules\Donation\Domain\Repository\DonationRepositoryInterface;
+use Modules\Notification\Application\Command\SendDonationNotificationCommand;
+use Modules\Notification\Application\Command\SendDonationNotificationCommandHandler;
+use Modules\User\Infrastructure\Laravel\Models\User;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -27,21 +27,52 @@ final class DonationCompletedNotificationListener implements ShouldQueue
     public int $timeout = 120;
 
     public function __construct(
-        private readonly CreateNotificationCommandHandler $notificationHandler,
+        private readonly SendDonationNotificationCommandHandler $notificationHandler,
+        private readonly DonationRepositoryInterface $donationRepository,
+        private readonly CampaignRepositoryInterface $campaignRepository,
         private readonly LoggerInterface $logger,
     ) {}
 
     public function handle(DonationCompletedEvent $event): void
     {
         try {
-            // Send final confirmation to donor
-            $this->sendFinalConfirmation($event);
+            // Get donation and campaign details
+            $donation = $this->donationRepository->findById($event->donationId);
+            $campaign = $this->campaignRepository->findById($event->campaignId);
 
-            // Update campaign creator about completed payment
-            $this->notifyCampaignCreator($event);
+            if (! $donation || ! $campaign) {
+                $this->logger->warning('Donation or campaign not found for notification', [
+                    'donation_id' => $event->donationId,
+                    'campaign_id' => $event->campaignId,
+                ]);
+
+                return;
+            }
+
+            // Get donor name
+            $donorName = null;
+            if ($event->userId) {
+                $user = User::find($event->userId);
+                $donorName = $user ? $user->name : null;
+            }
+
+            // Send notifications using the proper command
+            $command = new SendDonationNotificationCommand(
+                donationId: $event->donationId,
+                userId: $event->userId ?? '',
+                campaignId: $event->campaignId,
+                amount: $event->amount,
+                currency: $event->currency,
+                campaignTitle: $campaign->title ?? 'Campaign',
+                donorName: $donorName,
+            );
+
+            $this->notificationHandler->handle($command);
 
             $this->logger->info('Donation completion notifications processed', [
                 'donation_id' => $event->donationId,
+                'user_id' => $event->userId,
+                'campaign_id' => $event->campaignId,
             ]);
         } catch (Throwable $e) {
             $this->logger->error('Failed to process donation completion notifications', [
@@ -59,76 +90,5 @@ final class DonationCompletedNotificationListener implements ShouldQueue
             'donation_id' => $event->donationId ?? 'unknown',
             'exception' => $exception->getMessage(),
         ]);
-    }
-
-    private function sendFinalConfirmation(DonationCompletedEvent $event): void
-    {
-        $this->notificationHandler->handle(new CreateNotificationCommand(
-            recipientId: '', // Will be resolved to donor
-            title: 'Donation Processing Complete',
-            message: 'Your donation has been successfully processed and funds have been allocated.',
-            type: NotificationType::DONATION_PROCESSED->value,
-            channel: NotificationChannel::EMAIL->value,
-            priority: NotificationPriority::HIGH->value,
-            senderId: null,
-            data: [
-                'donation_id' => $event->donationId,
-                'processing_complete' => true,
-                'funds_allocated' => true,
-                'final_confirmation' => true,
-                'actions' => [
-                    [
-                        'label' => 'View Impact Report',
-                        'url' => "/donations/{$event->donationId}/impact",
-                        'primary' => true,
-                    ],
-                    [
-                        'label' => 'Download Tax Receipt',
-                        'url' => "/donations/{$event->donationId}/receipt",
-                        'primary' => false,
-                    ],
-                ],
-            ],
-            metadata: [
-                'donation_id' => $event->donationId,
-                'processing_complete' => true,
-                'funds_allocated' => true,
-                'final_confirmation' => true,
-            ],
-        ));
-
-        // Note: Would resolve donor in real implementation
-        // $this->notificationHandler->handle($command);
-    }
-
-    private function notifyCampaignCreator(DonationCompletedEvent $event): void
-    {
-        $this->notificationHandler->handle(new CreateNotificationCommand(
-            recipientId: '', // Will be resolved to campaign creator
-            title: 'Donation Funds Available',
-            message: 'A donation has been processed and funds are now available for your campaign.',
-            type: NotificationType::DONATION_PROCESSED->value,
-            channel: NotificationChannel::IN_APP->value,
-            priority: NotificationPriority::LOW->value,
-            senderId: null,
-            data: [
-                'donation_id' => $event->donationId,
-                'funds_available' => true,
-                'actions' => [
-                    [
-                        'label' => 'View Campaign Funds',
-                        'url' => "/campaigns/{$event->campaignId}/funds",
-                        'primary' => true,
-                    ],
-                ],
-            ],
-            metadata: [
-                'donation_id' => $event->donationId,
-                'funds_available' => true,
-            ],
-        ));
-
-        // Note: Would resolve campaign creator in real implementation
-        // $this->notificationHandler->handle($command);
     }
 }

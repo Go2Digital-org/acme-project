@@ -9,9 +9,7 @@ deptrac:
     - '#Seeder\.php$#'
     - '#\.gitkeep$#'
     - '#helpers\.php$#'
-    # Exclude factories to avoid Infrastructure in Domain violations
-    - '#Factory.*\.php$#'
-    - '#/Factory/.*\.php$#'
+    # Exclude only Infrastructure Laravel factories to avoid Infrastructure in Domain violations
     - '#database/factories/.*#'
     - '#Infrastructure/Laravel/Factory/.*#'
     # Exclude specific files that cause uncovered issues
@@ -54,9 +52,7 @@ deptrac:
     # Layer for uncovered classes to capture them explicitly
     - name: UncoveredClasses
       collectors:
-        # Payment Gateway Factory and Service classes
-        - type: classLike
-          value: '^Modules\\Donation\\Infrastructure\\Service\\PaymentGatewayFactory$'
+        # Payment Gateway Factory and Service classes (removed to avoid layer conflict)
         # Factory classes referenced by models (but not cache observers)
         - type: classLike
           value: '^Modules\\.*\\Infrastructure\\Laravel\\Factory\\.*Factory$'

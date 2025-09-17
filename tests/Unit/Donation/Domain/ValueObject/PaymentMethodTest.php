@@ -16,9 +16,10 @@ describe('PaymentMethod Value Object', function (): void {
             'paypal',
             'bank_transfer',
             'corporate_account',
+            'credit_card',
         ];
 
-        expect($cases)->toHaveCount(8);
+        expect($cases)->toHaveCount(9);
 
         foreach ($cases as $case) {
             expect($expectedValues)->toContain($case->value);
@@ -28,6 +29,7 @@ describe('PaymentMethod Value Object', function (): void {
     describe('Labels and Display', function (): void {
         it('returns correct labels for all payment methods', function (): void {
             expect(PaymentMethod::CARD->getLabel())->toBe('Credit/Debit Card')
+                ->and(PaymentMethod::CREDIT_CARD->getLabel())->toBe('Credit/Debit Card')
                 ->and(PaymentMethod::IDEAL->getLabel())->toBe('iDEAL')
                 ->and(PaymentMethod::BANCONTACT->getLabel())->toBe('Bancontact')
                 ->and(PaymentMethod::SOFORT->getLabel())->toBe('Sofort')
@@ -39,6 +41,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('returns correct icons for all payment methods', function (): void {
             expect(PaymentMethod::CARD->getIcon())->toBe('heroicon-o-credit-card')
+                ->and(PaymentMethod::CREDIT_CARD->getIcon())->toBe('heroicon-o-credit-card')
                 ->and(PaymentMethod::IDEAL->getIcon())->toBe('heroicon-o-credit-card')
                 ->and(PaymentMethod::BANCONTACT->getIcon())->toBe('heroicon-o-credit-card')
                 ->and(PaymentMethod::SOFORT->getIcon())->toBe('heroicon-o-credit-card')
@@ -50,6 +53,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('returns correct colors for all payment methods', function (): void {
             expect(PaymentMethod::CARD->getColor())->toBe('primary')
+                ->and(PaymentMethod::CREDIT_CARD->getColor())->toBe('primary')
                 ->and(PaymentMethod::IDEAL->getColor())->toBe('success')
                 ->and(PaymentMethod::BANCONTACT->getColor())->toBe('warning')
                 ->and(PaymentMethod::SOFORT->getColor())->toBe('info')
@@ -61,6 +65,8 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('returns tailwind badge classes for all payment methods', function (): void {
             expect(PaymentMethod::CARD->getTailwindBadgeClasses())
+                ->toContain('bg-blue-100 text-blue-800')
+                ->and(PaymentMethod::CREDIT_CARD->getTailwindBadgeClasses())
                 ->toContain('bg-blue-100 text-blue-800')
                 ->and(PaymentMethod::IDEAL->getTailwindBadgeClasses())
                 ->toContain('bg-green-100 text-green-800')
@@ -80,6 +86,8 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('returns descriptive text for all payment methods', function (): void {
             expect(PaymentMethod::CARD->getDescription())
+                ->toContain('Pay securely with your credit or debit card')
+                ->and(PaymentMethod::CREDIT_CARD->getDescription())
                 ->toContain('Pay securely with your credit or debit card')
                 ->and(PaymentMethod::IDEAL->getDescription())
                 ->toContain('iDEAL (Netherlands)')
@@ -101,6 +109,7 @@ describe('PaymentMethod Value Object', function (): void {
     describe('Processing Characteristics', function (): void {
         it('identifies methods that require processing', function (): void {
             expect(PaymentMethod::CARD->requiresProcessing())->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->requiresProcessing())->toBeTrue()
                 ->and(PaymentMethod::IDEAL->requiresProcessing())->toBeTrue()
                 ->and(PaymentMethod::BANCONTACT->requiresProcessing())->toBeTrue()
                 ->and(PaymentMethod::SOFORT->requiresProcessing())->toBeTrue()
@@ -112,6 +121,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('identifies instant payment methods', function (): void {
             expect(PaymentMethod::CARD->isInstant())->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->isInstant())->toBeTrue()
                 ->and(PaymentMethod::IDEAL->isInstant())->toBeTrue()
                 ->and(PaymentMethod::BANCONTACT->isInstant())->toBeTrue()
                 ->and(PaymentMethod::SOFORT->isInstant())->toBeTrue()
@@ -123,6 +133,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('identifies online payment methods', function (): void {
             expect(PaymentMethod::CARD->isOnline())->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->isOnline())->toBeTrue()
                 ->and(PaymentMethod::IDEAL->isOnline())->toBeTrue()
                 ->and(PaymentMethod::BANCONTACT->isOnline())->toBeTrue()
                 ->and(PaymentMethod::SOFORT->isOnline())->toBeTrue()
@@ -134,6 +145,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('identifies methods that require webhooks', function (): void {
             expect(PaymentMethod::CARD->requiresWebhook())->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->requiresWebhook())->toBeTrue()
                 ->and(PaymentMethod::IDEAL->requiresWebhook())->toBeTrue()
                 ->and(PaymentMethod::BANCONTACT->requiresWebhook())->toBeTrue()
                 ->and(PaymentMethod::SOFORT->requiresWebhook())->toBeTrue()
@@ -147,6 +159,7 @@ describe('PaymentMethod Value Object', function (): void {
     describe('Gateway Assignment', function (): void {
         it('returns correct gateways for payment methods', function (): void {
             expect(PaymentMethod::CARD->getGateway())->toBe('mollie')
+                ->and(PaymentMethod::CREDIT_CARD->getGateway())->toBe('mollie')
                 ->and(PaymentMethod::IDEAL->getGateway())->toBe('mollie')
                 ->and(PaymentMethod::BANCONTACT->getGateway())->toBe('mollie')
                 ->and(PaymentMethod::SOFORT->getGateway())->toBe('mollie')
@@ -160,6 +173,7 @@ describe('PaymentMethod Value Object', function (): void {
     describe('Processing Times', function (): void {
         it('returns processing times for all payment methods', function (): void {
             expect(PaymentMethod::CARD->getProcessingTime())->toBe('Instant')
+                ->and(PaymentMethod::CREDIT_CARD->getProcessingTime())->toBe('Instant')
                 ->and(PaymentMethod::IDEAL->getProcessingTime())->toBe('Instant')
                 ->and(PaymentMethod::BANCONTACT->getProcessingTime())->toBe('Instant')
                 ->and(PaymentMethod::SOFORT->getProcessingTime())->toBe('Instant')
@@ -173,6 +187,7 @@ describe('PaymentMethod Value Object', function (): void {
     describe('Currency Support', function (): void {
         it('validates USD support correctly', function (): void {
             expect(PaymentMethod::CARD->supportsCurrency('USD'))->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->supportsCurrency('USD'))->toBeTrue()
                 ->and(PaymentMethod::STRIPE->supportsCurrency('USD'))->toBeTrue()
                 ->and(PaymentMethod::PAYPAL->supportsCurrency('USD'))->toBeTrue()
                 ->and(PaymentMethod::BANK_TRANSFER->supportsCurrency('USD'))->toBeTrue()
@@ -184,6 +199,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('validates EUR support correctly', function (): void {
             expect(PaymentMethod::CARD->supportsCurrency('EUR'))->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->supportsCurrency('EUR'))->toBeTrue()
                 ->and(PaymentMethod::IDEAL->supportsCurrency('EUR'))->toBeTrue()
                 ->and(PaymentMethod::BANCONTACT->supportsCurrency('EUR'))->toBeTrue()
                 ->and(PaymentMethod::SOFORT->supportsCurrency('EUR'))->toBeTrue()
@@ -195,6 +211,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('validates GBP support correctly', function (): void {
             expect(PaymentMethod::CARD->supportsCurrency('GBP'))->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->supportsCurrency('GBP'))->toBeTrue()
                 ->and(PaymentMethod::SOFORT->supportsCurrency('GBP'))->toBeTrue()
                 ->and(PaymentMethod::STRIPE->supportsCurrency('GBP'))->toBeTrue()
                 ->and(PaymentMethod::PAYPAL->supportsCurrency('GBP'))->toBeTrue()
@@ -207,6 +224,8 @@ describe('PaymentMethod Value Object', function (): void {
         it('validates other currency support', function (): void {
             expect(PaymentMethod::CARD->supportsCurrency('CAD'))->toBeTrue()
                 ->and(PaymentMethod::CARD->supportsCurrency('AUD'))->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->supportsCurrency('CAD'))->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->supportsCurrency('AUD'))->toBeTrue()
                 ->and(PaymentMethod::STRIPE->supportsCurrency('CAD'))->toBeTrue()
                 ->and(PaymentMethod::STRIPE->supportsCurrency('AUD'))->toBeTrue()
                 ->and(PaymentMethod::PAYPAL->supportsCurrency('CAD'))->toBeTrue()
@@ -218,6 +237,8 @@ describe('PaymentMethod Value Object', function (): void {
         it('handles case insensitive currency checks', function (): void {
             expect(PaymentMethod::CARD->supportsCurrency('usd'))->toBeTrue()
                 ->and(PaymentMethod::CARD->supportsCurrency('eur'))->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->supportsCurrency('usd'))->toBeTrue()
+                ->and(PaymentMethod::CREDIT_CARD->supportsCurrency('eur'))->toBeTrue()
                 ->and(PaymentMethod::IDEAL->supportsCurrency('eur'))->toBeTrue()
                 ->and(PaymentMethod::IDEAL->supportsCurrency('Eur'))->toBeTrue();
         });
@@ -226,6 +247,7 @@ describe('PaymentMethod Value Object', function (): void {
     describe('Minimum Amounts', function (): void {
         it('returns correct minimum amounts for USD', function (): void {
             expect(PaymentMethod::CARD->getMinimumAmount('USD'))->toBe(0.50)
+                ->and(PaymentMethod::CREDIT_CARD->getMinimumAmount('USD'))->toBe(0.50)
                 ->and(PaymentMethod::STRIPE->getMinimumAmount('USD'))->toBe(0.50)
                 ->and(PaymentMethod::PAYPAL->getMinimumAmount('USD'))->toBe(1.00)
                 ->and(PaymentMethod::BANK_TRANSFER->getMinimumAmount('USD'))->toBe(0.01)
@@ -234,6 +256,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('returns correct minimum amounts for EUR', function (): void {
             expect(PaymentMethod::CARD->getMinimumAmount('EUR'))->toBe(0.50)
+                ->and(PaymentMethod::CREDIT_CARD->getMinimumAmount('EUR'))->toBe(0.50)
                 ->and(PaymentMethod::IDEAL->getMinimumAmount('EUR'))->toBe(0.01)
                 ->and(PaymentMethod::BANCONTACT->getMinimumAmount('EUR'))->toBe(0.01)
                 ->and(PaymentMethod::SOFORT->getMinimumAmount('EUR'))->toBe(0.50)
@@ -245,6 +268,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('returns correct minimum amounts for GBP', function (): void {
             expect(PaymentMethod::CARD->getMinimumAmount('GBP'))->toBe(0.30)
+                ->and(PaymentMethod::CREDIT_CARD->getMinimumAmount('GBP'))->toBe(0.30)
                 ->and(PaymentMethod::SOFORT->getMinimumAmount('GBP'))->toBe(0.50)
                 ->and(PaymentMethod::STRIPE->getMinimumAmount('GBP'))->toBe(0.30)
                 ->and(PaymentMethod::PAYPAL->getMinimumAmount('GBP'))->toBe(1.00)
@@ -254,6 +278,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('returns default minimum for unsupported currencies', function (): void {
             expect(PaymentMethod::CARD->getMinimumAmount('JPY'))->toBe(0.01)
+                ->and(PaymentMethod::CREDIT_CARD->getMinimumAmount('JPY'))->toBe(0.01)
                 ->and(PaymentMethod::IDEAL->getMinimumAmount('USD'))->toBe(0.01)
                 ->and(PaymentMethod::BANCONTACT->getMinimumAmount('GBP'))->toBe(0.01);
         });
@@ -261,6 +286,8 @@ describe('PaymentMethod Value Object', function (): void {
         it('handles case insensitive currency for minimum amounts', function (): void {
             expect(PaymentMethod::CARD->getMinimumAmount('usd'))->toBe(0.50)
                 ->and(PaymentMethod::CARD->getMinimumAmount('Usd'))->toBe(0.50)
+                ->and(PaymentMethod::CREDIT_CARD->getMinimumAmount('usd'))->toBe(0.50)
+                ->and(PaymentMethod::CREDIT_CARD->getMinimumAmount('Usd'))->toBe(0.50)
                 ->and(PaymentMethod::IDEAL->getMinimumAmount('eur'))->toBe(0.01);
         });
     });
@@ -270,6 +297,7 @@ describe('PaymentMethod Value Object', function (): void {
             $methods = PaymentMethod::getAvailableForCurrency('USD');
 
             expect($methods)->toContain(PaymentMethod::CARD)
+                ->and($methods)->toContain(PaymentMethod::CREDIT_CARD)
                 ->and($methods)->toContain(PaymentMethod::STRIPE)
                 ->and($methods)->toContain(PaymentMethod::PAYPAL)
                 ->and($methods)->toContain(PaymentMethod::BANK_TRANSFER)
@@ -282,7 +310,7 @@ describe('PaymentMethod Value Object', function (): void {
             $methods = PaymentMethod::getAvailableForCurrency('EUR');
 
             // All methods support EUR
-            expect($methods)->toHaveCount(8);
+            expect($methods)->toHaveCount(9);
 
             foreach (PaymentMethod::cases() as $method) {
                 expect($methods)->toContain($method);
@@ -293,6 +321,7 @@ describe('PaymentMethod Value Object', function (): void {
             $methods = PaymentMethod::getAvailableForCurrency('GBP');
 
             expect($methods)->toContain(PaymentMethod::CARD)
+                ->and($methods)->toContain(PaymentMethod::CREDIT_CARD)
                 ->and($methods)->toContain(PaymentMethod::SOFORT)
                 ->and($methods)->toContain(PaymentMethod::STRIPE)
                 ->and($methods)->toContain(PaymentMethod::PAYPAL)
@@ -313,6 +342,7 @@ describe('PaymentMethod Value Object', function (): void {
     describe('String Conversion', function (): void {
         it('creates payment method from string', function (): void {
             expect(PaymentMethod::fromString('card'))->toBe(PaymentMethod::CARD)
+                ->and(PaymentMethod::fromString('credit_card'))->toBe(PaymentMethod::CREDIT_CARD)
                 ->and(PaymentMethod::fromString('paypal'))->toBe(PaymentMethod::PAYPAL)
                 ->and(PaymentMethod::fromString('bank_transfer'))->toBe(PaymentMethod::BANK_TRANSFER);
         });
@@ -324,6 +354,7 @@ describe('PaymentMethod Value Object', function (): void {
 
         it('tries to create payment method from string safely', function (): void {
             expect(PaymentMethod::tryFromString('card'))->toBe(PaymentMethod::CARD)
+                ->and(PaymentMethod::tryFromString('credit_card'))->toBe(PaymentMethod::CREDIT_CARD)
                 ->and(PaymentMethod::tryFromString('invalid'))->toBeNull()
                 ->and(PaymentMethod::tryFromString('paypal'))->toBe(PaymentMethod::PAYPAL);
         });

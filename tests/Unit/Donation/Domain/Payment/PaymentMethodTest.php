@@ -10,6 +10,7 @@ describe('PaymentMethod Value Object', function () {
             $cases = PaymentMethod::cases();
             $expectedCases = [
                 'CARD',
+                'CREDIT_CARD',
                 'IDEAL',
                 'BANCONTACT',
                 'SOFORT',
@@ -19,7 +20,7 @@ describe('PaymentMethod Value Object', function () {
                 'CORPORATE_ACCOUNT',
             ];
 
-            expect($cases)->toHaveCount(8);
+            expect($cases)->toHaveCount(9);
             $caseNames = array_map(fn ($case) => $case->name, $cases);
             foreach ($expectedCases as $case) {
                 expect($caseNames)->toContain($case);
@@ -28,6 +29,7 @@ describe('PaymentMethod Value Object', function () {
 
         it('has correct string values for each case', function () {
             expect(PaymentMethod::CARD->value)->toBe('card');
+            expect(PaymentMethod::CREDIT_CARD->value)->toBe('credit_card');
             expect(PaymentMethod::IDEAL->value)->toBe('ideal');
             expect(PaymentMethod::BANCONTACT->value)->toBe('bancontact');
             expect(PaymentMethod::SOFORT->value)->toBe('sofort');
@@ -41,6 +43,7 @@ describe('PaymentMethod Value Object', function () {
     describe('getType() method', function () {
         it('returns the correct type value for each payment method', function () {
             expect(PaymentMethod::CARD->getType())->toBe('card');
+            expect(PaymentMethod::CREDIT_CARD->getType())->toBe('credit_card');
             expect(PaymentMethod::IDEAL->getType())->toBe('ideal');
             expect(PaymentMethod::BANCONTACT->getType())->toBe('bancontact');
             expect(PaymentMethod::SOFORT->getType())->toBe('sofort');
@@ -60,6 +63,7 @@ describe('PaymentMethod Value Object', function () {
     describe('getLabel() method', function () {
         it('returns correct human-readable labels', function () {
             expect(PaymentMethod::CARD->getLabel())->toBe('Credit/Debit Card');
+            expect(PaymentMethod::CREDIT_CARD->getLabel())->toBe('Credit/Debit Card');
             expect(PaymentMethod::IDEAL->getLabel())->toBe('iDEAL');
             expect(PaymentMethod::BANCONTACT->getLabel())->toBe('Bancontact');
             expect(PaymentMethod::SOFORT->getLabel())->toBe('Sofort');
@@ -80,6 +84,7 @@ describe('PaymentMethod Value Object', function () {
     describe('getIcon() method', function () {
         it('returns correct heroicon classes', function () {
             expect(PaymentMethod::CARD->getIcon())->toBe('heroicon-o-credit-card');
+            expect(PaymentMethod::CREDIT_CARD->getIcon())->toBe('heroicon-o-credit-card');
             expect(PaymentMethod::IDEAL->getIcon())->toBe('heroicon-o-credit-card');
             expect(PaymentMethod::BANCONTACT->getIcon())->toBe('heroicon-o-credit-card');
             expect(PaymentMethod::SOFORT->getIcon())->toBe('heroicon-o-credit-card');
@@ -102,6 +107,7 @@ describe('PaymentMethod Value Object', function () {
         it('returns true for online payment methods', function () {
             $onlineMethods = [
                 PaymentMethod::CARD,
+                PaymentMethod::CREDIT_CARD,
                 PaymentMethod::IDEAL,
                 PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT,
@@ -129,6 +135,7 @@ describe('PaymentMethod Value Object', function () {
     describe('getGateway() method', function () {
         it('returns correct gateway names', function () {
             expect(PaymentMethod::CARD->getGateway())->toBe('mollie');
+            expect(PaymentMethod::CREDIT_CARD->getGateway())->toBe('mollie');
             expect(PaymentMethod::IDEAL->getGateway())->toBe('mollie');
             expect(PaymentMethod::BANCONTACT->getGateway())->toBe('mollie');
             expect(PaymentMethod::SOFORT->getGateway())->toBe('mollie');
@@ -144,6 +151,7 @@ describe('PaymentMethod Value Object', function () {
         it('has gateway assignment for all online payment methods', function () {
             $onlineMethods = [
                 PaymentMethod::CARD,
+                PaymentMethod::CREDIT_CARD,
                 PaymentMethod::IDEAL,
                 PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT,
@@ -169,6 +177,7 @@ describe('PaymentMethod Value Object', function () {
 
         it('returns specific colors for payment methods', function () {
             expect(PaymentMethod::CARD->getColor())->toBe('primary');
+            expect(PaymentMethod::CREDIT_CARD->getColor())->toBe('primary');
             expect(PaymentMethod::IDEAL->getColor())->toBe('success');
             expect(PaymentMethod::BANCONTACT->getColor())->toBe('warning');
             expect(PaymentMethod::SOFORT->getColor())->toBe('info');
@@ -208,6 +217,7 @@ describe('PaymentMethod Value Object', function () {
         it('returns true for instant payment methods', function () {
             $instantMethods = [
                 PaymentMethod::CARD,
+                PaymentMethod::CREDIT_CARD,
                 PaymentMethod::IDEAL,
                 PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT,
@@ -236,6 +246,7 @@ describe('PaymentMethod Value Object', function () {
         it('returns true for online payment methods', function () {
             $onlineMethods = [
                 PaymentMethod::CARD,
+                PaymentMethod::CREDIT_CARD,
                 PaymentMethod::IDEAL,
                 PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT,
@@ -264,6 +275,7 @@ describe('PaymentMethod Value Object', function () {
         it('returns true for online payment methods that require processing', function () {
             $webhookMethods = [
                 PaymentMethod::CARD,
+                PaymentMethod::CREDIT_CARD,
                 PaymentMethod::IDEAL,
                 PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT,
@@ -329,6 +341,7 @@ describe('PaymentMethod Value Object', function () {
         it('returns instant for online methods', function () {
             $instantMethods = [
                 PaymentMethod::CARD,
+                PaymentMethod::CREDIT_CARD,
                 PaymentMethod::IDEAL,
                 PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT,
@@ -357,7 +370,7 @@ describe('PaymentMethod Value Object', function () {
         });
 
         it('supports major currencies for card methods', function () {
-            $cardMethods = [PaymentMethod::CARD, PaymentMethod::STRIPE];
+            $cardMethods = [PaymentMethod::CARD, PaymentMethod::CREDIT_CARD, PaymentMethod::STRIPE];
             $majorCurrencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 
             foreach ($cardMethods as $method) {
@@ -410,8 +423,11 @@ describe('PaymentMethod Value Object', function () {
 
         it('has reasonable minimums for card methods', function () {
             expect(PaymentMethod::CARD->getMinimumAmount('USD'))->toBe(0.50);
+            expect(PaymentMethod::CREDIT_CARD->getMinimumAmount('USD'))->toBe(0.50);
             expect(PaymentMethod::CARD->getMinimumAmount('EUR'))->toBe(0.50);
+            expect(PaymentMethod::CREDIT_CARD->getMinimumAmount('EUR'))->toBe(0.50);
             expect(PaymentMethod::CARD->getMinimumAmount('GBP'))->toBe(0.30);
+            expect(PaymentMethod::CREDIT_CARD->getMinimumAmount('GBP'))->toBe(0.30);
         });
 
         it('has low minimums for European methods', function () {
@@ -457,6 +473,7 @@ describe('PaymentMethod Value Object', function () {
             $availableTypes = array_map(fn ($method) => $method->value, $available);
 
             expect($availableTypes)->toContain('card');
+            expect($availableTypes)->toContain('credit_card');
             expect($availableTypes)->toContain('stripe');
             expect($availableTypes)->toContain('paypal');
             expect($availableTypes)->toContain('bank_transfer');
@@ -469,7 +486,7 @@ describe('PaymentMethod Value Object', function () {
         it('filters correctly for EUR', function () {
             $available = PaymentMethod::getAvailableForCurrency('EUR');
 
-            expect(count($available))->toBeGreaterThan(5);
+            expect(count($available))->toBeGreaterThan(6);
 
             $availableTypes = array_map(fn ($method) => $method->value, $available);
             expect($availableTypes)->toContain('ideal');
@@ -487,6 +504,7 @@ describe('PaymentMethod Value Object', function () {
     describe('fromString() static method', function () {
         it('creates payment method from valid string', function () {
             expect(PaymentMethod::fromString('card'))->toBe(PaymentMethod::CARD);
+            expect(PaymentMethod::fromString('credit_card'))->toBe(PaymentMethod::CREDIT_CARD);
             expect(PaymentMethod::fromString('ideal'))->toBe(PaymentMethod::IDEAL);
             expect(PaymentMethod::fromString('paypal'))->toBe(PaymentMethod::PAYPAL);
         });
@@ -500,6 +518,7 @@ describe('PaymentMethod Value Object', function () {
     describe('tryFromString() static method', function () {
         it('creates payment method from valid string', function () {
             expect(PaymentMethod::tryFromString('card'))->toBe(PaymentMethod::CARD);
+            expect(PaymentMethod::tryFromString('credit_card'))->toBe(PaymentMethod::CREDIT_CARD);
             expect(PaymentMethod::tryFromString('ideal'))->toBe(PaymentMethod::IDEAL);
             expect(PaymentMethod::tryFromString('paypal'))->toBe(PaymentMethod::PAYPAL);
         });
@@ -542,6 +561,7 @@ describe('PaymentMethod Value Object', function () {
             // Stripe and regular card methods should have reasonable minimums
             expect(PaymentMethod::STRIPE->getMinimumAmount('USD'))->toBeGreaterThanOrEqual(0.50);
             expect(PaymentMethod::CARD->getMinimumAmount('USD'))->toBeGreaterThanOrEqual(0.50);
+            expect(PaymentMethod::CREDIT_CARD->getMinimumAmount('USD'))->toBeGreaterThanOrEqual(0.50);
 
             // PayPal should have higher minimums
             expect(PaymentMethod::PAYPAL->getMinimumAmount('USD'))->toBeGreaterThanOrEqual(1.00);
@@ -555,7 +575,7 @@ describe('PaymentMethod Value Object', function () {
         it('handles empty currency strings', function () {
             $manualMethods = [PaymentMethod::BANK_TRANSFER, PaymentMethod::CORPORATE_ACCOUNT];
             $onlineMethods = [
-                PaymentMethod::CARD, PaymentMethod::IDEAL, PaymentMethod::BANCONTACT,
+                PaymentMethod::CARD, PaymentMethod::CREDIT_CARD, PaymentMethod::IDEAL, PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT, PaymentMethod::STRIPE, PaymentMethod::PAYPAL,
             ];
 
@@ -571,7 +591,7 @@ describe('PaymentMethod Value Object', function () {
         it('handles special characters in currency', function () {
             $manualMethods = [PaymentMethod::BANK_TRANSFER, PaymentMethod::CORPORATE_ACCOUNT];
             $onlineMethods = [
-                PaymentMethod::CARD, PaymentMethod::IDEAL, PaymentMethod::BANCONTACT,
+                PaymentMethod::CARD, PaymentMethod::CREDIT_CARD, PaymentMethod::IDEAL, PaymentMethod::BANCONTACT,
                 PaymentMethod::SOFORT, PaymentMethod::STRIPE, PaymentMethod::PAYPAL,
             ];
 

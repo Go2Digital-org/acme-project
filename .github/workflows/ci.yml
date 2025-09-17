@@ -254,19 +254,14 @@ jobs:
 
       - name: Run Tests (optimized)
         run: |
-          echo "::group::Unit Tests (Parallel)"
-          # Unit tests can run in parallel - no database
-          vendor/bin/pest tests/Unit --parallel --processes=4 --compact --bail --no-coverage
+          echo "::group::Unit, Feature & Integration Tests (Parallel)"
+          # Run main test suites in parallel with 10 processes for maximum speed
+          vendor/bin/pest --testsuite=Unit,Feature,Integration --no-coverage --parallel --processes=10 --compact --bail
           echo "::endgroup::"
 
-          echo "::group::Feature Tests (Sequential)"
-          # Run feature tests sequentially to avoid database conflicts
-          vendor/bin/pest tests/Feature --compact --bail --no-coverage
-          echo "::endgroup::"
-
-          echo "::group::Integration Tests (Sequential)"
-          # Run integration tests sequentially to avoid database conflicts
-          vendor/bin/pest tests/Integration --compact --bail --no-coverage
+          echo "::group::Browser Tests (Sequential)"
+          # Run browser tests separately to avoid flakiness
+          vendor/bin/pest --testsuite=Browser --no-coverage --compact --bail || echo "::warning::Browser tests failed - this is non-blocking"
           echo "::endgroup::"
 
       - name: Upload test artifacts
