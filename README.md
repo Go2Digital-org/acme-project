@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](#license)
 
 <div align="center">
-  <img src="https://go2digit.al/storage/media/a58e6e4f-04bc-4e84-86fb-c18bd0f15e03.png" alt="ACME Corp CSR Platform Banner" width="600">
+  <img src="https://go2digit.al/storage/media/a58e6e4f-04bc-4e84-86fb-c18bd0f15e03.png" alt="ACME Corp CSR Platform Banner" width="100%">
 </div>
 
 Enterprise-grade Corporate Social Responsibility platform built with **Hexagonal Architecture** and **Domain-Driven Design** principles, designed to handle 20,000+ concurrent employees across global operations.
@@ -227,8 +227,7 @@ php artisan db:seed
 
 ```bash
 # Import search indexes
-php artisan scout:import "App\Models\Campaign"
-php artisan scout:import "App\Models\Employee"
+php artisan scout:import-async 'Modules\Campaign\Domain\Model\Campaign'
 ```
 
 ### 6. Build Assets
@@ -535,7 +534,7 @@ docker-compose exec app npm run build
 docker-compose exec app php artisan migrate --seed
 
 # Import search indexes
-docker-compose exec app php artisan scout:import "App\Models\Campaign"
+docker-compose exec app php artisan scout:import-async 'Modules\Campaign\Domain\Model\Campaign'
 ```
 
 The application will be available at:
@@ -796,9 +795,9 @@ This is proprietary software owned by ACME Corporation. All rights reserved.
 <div align="center">
   <img src="https://go2digit.al/storage/profile-photos/19SUTKoKhYGA30JGrl5pjzQyQuXIfvAQ42wuRWGR.png" alt="Go2digit.al Logo" width="150">
 
-  **Developed and Maintained by [Go2digit.al](https://go2digit.al)**
+**Developed and Maintained by [Go2digit.al](https://go2digit.al)**
 
-  Specialized in enterprise-grade applications with focus on scalability, security, and maintainability.
+Specialized in enterprise-grade applications with focus on scalability, security, and maintainability.
 
-  Copyright 2025 Go2digit.al - All Rights Reserved
+Copyright 2025 Go2digit.al - All Rights Reserved
 </div>
