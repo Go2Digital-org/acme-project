@@ -4,12 +4,10 @@
 
 </div>
 
-[![CI Pipeline](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml/badge.svg?event=status)](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml)
-[![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-blue.svg)](https://php.net)
-[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
+[![CI Pipeline](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml/badge.svg)](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml)[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-Level%208-brightgreen.svg)](https://phpstan.org)
 [![Deployment Status](https://img.shields.io/badge/Staging-Deployed-success.svg)](https://staging.acme-corp.go2digit.al)
-[![Code Style](https://img.shields.io/badge/Code%20Style-Laravel%20Pint-blue.svg)](https://laravel.com/docs/pint)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-Pint%20%E2%80%A2%20PHPStan%20%E2%80%A2%20Rector%20%E2%80%A2%20Deptrac-0ea5e9.svg)](#quality)
 [![Tests](https://img.shields.io/badge/Tests-3,903%20tests%20|%2013,133%20assertions-brightgreen.svg)](#testing)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](#license)
 
