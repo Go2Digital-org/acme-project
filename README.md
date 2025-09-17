@@ -2,8 +2,6 @@
 
 # ACME Corp CSR Platform
 
-
-
 [![CI Pipeline](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml/badge.svg)](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml)[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-Level%208-brightgreen.svg)](https://phpstan.org)
 [![Security Check](https://img.shields.io/badge/Security-Enlightn%20Enabled-blue.svg)](https://www.laravel-enlightn.com/docs/security/security-analyzer.html)

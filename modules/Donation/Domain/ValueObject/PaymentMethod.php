@@ -7,6 +7,7 @@ namespace Modules\Donation\Domain\ValueObject;
 enum PaymentMethod: string
 {
     case CARD = 'card';
+    case CREDIT_CARD = 'credit_card'; // Legacy support for existing data
     case IDEAL = 'ideal';
     case BANCONTACT = 'bancontact';
     case SOFORT = 'sofort';
@@ -27,6 +28,7 @@ enum PaymentMethod: string
     {
         return match ($this) {
             self::CARD => 'Credit/Debit Card',
+            self::CREDIT_CARD => 'Credit/Debit Card', // Legacy support
             self::IDEAL => 'iDEAL',
             self::BANCONTACT => 'Bancontact',
             self::SOFORT => 'Sofort',
@@ -41,6 +43,7 @@ enum PaymentMethod: string
     {
         return match ($this) {
             self::CARD => 'heroicon-o-credit-card',
+            self::CREDIT_CARD => 'heroicon-o-credit-card', // Legacy support
             self::IDEAL => 'heroicon-o-credit-card',
             self::BANCONTACT => 'heroicon-o-credit-card',
             self::SOFORT => 'heroicon-o-credit-card',
@@ -54,7 +57,7 @@ enum PaymentMethod: string
     public function requiresProcessing(): bool
     {
         return match ($this) {
-            self::CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => true,
+            self::CARD, self::CREDIT_CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => true,
             self::BANK_TRANSFER, self::CORPORATE_ACCOUNT => false,
         };
     }
@@ -62,7 +65,7 @@ enum PaymentMethod: string
     public function getGateway(): ?string
     {
         return match ($this) {
-            self::CARD, self::IDEAL, self::BANCONTACT, self::SOFORT => 'mollie',
+            self::CARD, self::CREDIT_CARD, self::IDEAL, self::BANCONTACT, self::SOFORT => 'mollie',
             self::STRIPE => 'stripe',
             self::PAYPAL => 'paypal',
             self::BANK_TRANSFER, self::CORPORATE_ACCOUNT => null,
@@ -73,6 +76,7 @@ enum PaymentMethod: string
     {
         return match ($this) {
             self::CARD => 'primary',
+            self::CREDIT_CARD => 'primary', // Legacy support
             self::IDEAL => 'success',
             self::BANCONTACT => 'warning',
             self::SOFORT => 'info',
@@ -87,6 +91,7 @@ enum PaymentMethod: string
     {
         return match ($this) {
             self::CARD => 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
+            self::CREDIT_CARD => 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400', // Legacy support
             self::IDEAL => 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
             self::BANCONTACT => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
             self::SOFORT => 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400',
@@ -100,7 +105,7 @@ enum PaymentMethod: string
     public function isInstant(): bool
     {
         return match ($this) {
-            self::CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => true,
+            self::CARD, self::CREDIT_CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => true,
             self::BANK_TRANSFER, self::CORPORATE_ACCOUNT => false,
         };
     }
@@ -108,7 +113,7 @@ enum PaymentMethod: string
     public function isOnline(): bool
     {
         return match ($this) {
-            self::CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => true,
+            self::CARD, self::CREDIT_CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => true,
             self::BANK_TRANSFER, self::CORPORATE_ACCOUNT => false,
         };
     }
@@ -122,6 +127,7 @@ enum PaymentMethod: string
     {
         return match ($this) {
             self::CARD => 'Pay securely with your credit or debit card',
+            self::CREDIT_CARD => 'Pay securely with your credit or debit card', // Legacy support
             self::IDEAL => 'Pay with your bank account using iDEAL (Netherlands)',
             self::BANCONTACT => 'Pay with your bank account using Bancontact (Belgium)',
             self::SOFORT => 'Instant bank transfer via Sofort',
@@ -135,7 +141,7 @@ enum PaymentMethod: string
     public function getProcessingTime(): string
     {
         return match ($this) {
-            self::CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => 'Instant',
+            self::CARD, self::CREDIT_CARD, self::IDEAL, self::BANCONTACT, self::SOFORT, self::STRIPE, self::PAYPAL => 'Instant',
             self::BANK_TRANSFER => '1-3 business days',
             self::CORPORATE_ACCOUNT => 'Next business day',
         };
@@ -144,7 +150,7 @@ enum PaymentMethod: string
     public function supportsCurrency(string $currency): bool
     {
         return match ($this) {
-            self::CARD, self::STRIPE => in_array(strtoupper($currency), ['USD', 'EUR', 'GBP', 'CAD', 'AUD'], true),
+            self::CARD, self::CREDIT_CARD, self::STRIPE => in_array(strtoupper($currency), ['USD', 'EUR', 'GBP', 'CAD', 'AUD'], true),
             self::IDEAL => strtoupper($currency) === 'EUR',
             self::BANCONTACT => strtoupper($currency) === 'EUR',
             self::SOFORT => in_array(strtoupper($currency), ['EUR', 'GBP'], true),
@@ -156,7 +162,7 @@ enum PaymentMethod: string
     public function getMinimumAmount(string $currency = 'USD'): float
     {
         $minimums = match ($this) {
-            self::CARD, self::STRIPE => ['USD' => 0.50, 'EUR' => 0.50, 'GBP' => 0.30],
+            self::CARD, self::CREDIT_CARD, self::STRIPE => ['USD' => 0.50, 'EUR' => 0.50, 'GBP' => 0.30],
             self::IDEAL, self::BANCONTACT => ['EUR' => 0.01],
             self::SOFORT => ['EUR' => 0.50, 'GBP' => 0.50],
             self::PAYPAL => ['USD' => 1.00, 'EUR' => 1.00, 'GBP' => 1.00],

@@ -412,7 +412,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
      * Bulk load donation statistics for multiple campaigns to prevent N+1 queries.
      *
      * @param  array<int>  $campaignIds
-     * @return array<int, object|stdClass>
+     * @return array<int, object>
      */
     private function getBulkDonationStats(array $campaignIds): array
     {
