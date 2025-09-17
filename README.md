@@ -4,7 +4,7 @@
 
 </div>
 
-[![Build Status](https://github.com/go2digit-al/acme-project/workflows/CI/badge.svg)](https://github.com/go2digit-al/acme-project/actions)
+[![CI Pipeline](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml/badge.svg?event=status)](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml)
 [![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-blue.svg)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-Level%208-brightgreen.svg)](https://phpstan.org)
