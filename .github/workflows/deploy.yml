@@ -444,9 +444,19 @@ jobs:
             # Restart queue workers (environment-specific)
             echo "🔄 Restarting queue workers..."
             if [ "$ENVIRONMENT" = "staging" ]; then
-              supervisorctl restart acme-staging-workers:* || true
+              timeout 10 supervisorctl restart acme-staging-workers:* || {
+                echo "⚠️ Worker restart timed out, using stop/start instead..."
+                supervisorctl stop acme-staging-workers:* || true
+                sleep 2
+                supervisorctl start acme-staging-workers:* || true
+              }
             else
-              supervisorctl restart acme-workers:* || true
+              timeout 10 supervisorctl restart acme-workers:* || {
+                echo "⚠️ Worker restart timed out, using stop/start instead..."
+                supervisorctl stop acme-workers:* || true
+                sleep 2
+                supervisorctl start acme-workers:* || true
+              }
             fi
             
             # Verify Meilisearch health

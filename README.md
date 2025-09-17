@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](#license)
 
 <div align="center">
-  <img src="https://go2digit.al/storage/media/a58e6e4f-04bc-4e84-86fb-c18bd0f15e03.png" alt="ACME Corp CSR Platform Banner" width="100%">
+  <img src="https://go2digit.al/storage/media/a58e6e4f-04bc-4e84-86fb-c18bd0f15e03.png" alt="ACME Corp CSR Platform Banner" width="600">
 </div>
 
 Enterprise-grade Corporate Social Responsibility platform built with **Hexagonal Architecture** and **Domain-Driven Design** principles, designed to handle 20,000+ concurrent employees across global operations.
