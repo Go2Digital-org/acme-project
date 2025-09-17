@@ -162,7 +162,7 @@ frankenphp/
 ├── Caddyfile.production        # Production config
 └── Caddyfile.staging           # Staging config
 
-configs/nginx/
+config/nginx/
 ├── acme-corp.conf              # Production Nginx config
 └── acme-staging.conf           # Staging Nginx config
 ```
@@ -285,7 +285,7 @@ frankenphp {
 ```
 
 ### Enable Basic Auth for Staging
-Uncomment in `configs/nginx/acme-staging.conf`:
+Uncomment in `config/nginx/acme-staging.conf`:
 ```nginx
 auth_basic "Staging Environment";
 auth_basic_user_file /etc/nginx/.htpasswd.staging;

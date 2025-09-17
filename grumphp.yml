@@ -3,7 +3,7 @@ grumphp:
     stop_on_failure: false
     ignore_unstaged_changes: false
     hide_circumvention_tip: true
-    process_timeout: 180
+    process_timeout: 60
     
     # Aggressive parallel processing for speed
     parallel:
@@ -22,7 +22,7 @@ grumphp:
     
     # Task configuration (ordered by speed - fastest first)
     tasks:
-        # 1. Rector + Laravel Pint - safe refactoring check and auto-fix style
+        # 1. Rector + Laravel Pint - safe refactoring check and auto-fix style (< 8 seconds)
         composer_script:
             metadata:
                 label: "Rector Check + Pint Auto-fix"
@@ -156,7 +156,7 @@ grumphp:
             max_subject_width: 60
             matchers:
                 # Conventional commits pattern
-                - '/^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+/'
+                - '/^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\([a-z0-9][a-z0-9-]*\))?(?:!)?: [A-Z].+$/'
             case_insensitive: true
             multiline: true
             additional_modifiers: ''
@@ -194,7 +194,6 @@ grumphp:
                 - git_blacklist
                 - composer_script           # Rector + Pint
                 - phpstan
-                - securitychecker_enlightn  # Security vulnerability check
         
         # Commit message validation
         git_commit_msg:

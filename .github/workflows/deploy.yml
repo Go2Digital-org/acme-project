@@ -232,7 +232,7 @@ jobs:
         with:
           name: deployment-${{ needs.setup.outputs.environment }}
           path: artifacts/app.tar.gz
-          retention-days: 1
+          retention-days: 30
 
   # ================================================================
   # DEPLOY JOB - Deploy to Hetzner server
