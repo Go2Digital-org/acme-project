@@ -1,0 +1,178 @@
+# ================================================================
+# ACME Corp CSR Platform - Docker Ignore
+# Optimized for build performance and security
+# ================================================================
+
+# === Git and Version Control ===
+.git
+.gitignore
+.gitattributes
+.github/
+
+# === IDE and Editor Files ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# === Documentation ===
+README.md
+CHANGELOG.md
+docs/
+*.md
+
+# === Testing and Coverage ===
+tests/
+phpunit.xml
+pest.xml
+.phpunit.result.cache
+coverage/
+.coverage
+.nyc_output
+.pest/
+
+# === Development Tools ===
+.editorconfig
+.styleci.yml
+.php_cs
+.php_cs.cache
+.php-cs-fixer.cache
+phpstan.neon
+phpstan-baseline.neon
+deptrac.yaml
+
+# === Environment and Configuration ===
+.env*
+!.env.example
+.env.local
+.env.*.local
+.env.backup
+
+# === Dependencies ===
+vendor/
+node_modules/
+bower_components/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json.backup
+
+# === Build and Cache ===
+storage/logs/*
+!storage/logs/.gitkeep
+storage/framework/cache/*
+!storage/framework/cache/.gitkeep
+storage/framework/sessions/*
+!storage/framework/sessions/.gitkeep
+storage/framework/views/*
+!storage/framework/views/.gitkeep
+storage/framework/testing/*
+!storage/framework/testing/.gitkeep
+bootstrap/cache/*
+!bootstrap/cache/.gitkeep
+
+# === Docker ===
+Dockerfile.dev
+Dockerfile.prod
+docker-compose*.yml
+!docker-compose.yml
+.dockerignore
+
+# === CI/CD ===
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+Jenkinsfile
+.drone.yml
+
+# === Security ===
+*.pem
+*.key
+*.crt
+*.p12
+id_rsa*
+*.pub
+
+# === Logs ===
+*.log
+logs/
+
+# === Temporary Files ===
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+
+# === Platform Specific ===
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# === Laravel Specific ===
+/public/hot
+/public/storage
+/storage/*.key
+
+# === Webpack/Vite Build ===
+/public/js
+/public/css
+/public/mix-manifest.json
+/public/build
+
+# === PHP ===
+*.cache
+
+# === Composer ===
+/vendor
+composer.phar
+composer.lock.backup
+
+# === NPM/Yarn ===
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# === Development Containers ===
+.devcontainer/
+.vscode/settings.json
+
+# === Backup Files ===
+*.bak
+*.backup
+*.sql.gz
+*.sql.zip
+
+# === Local Development ===
+.vagrant/
+Vagrantfile.local
+.homestead/
+Homestead.yaml
+Homestead.json
+
+# === Application Specific ===
+/modules/*/Tests/
+/modules/*/tests/
+public/uploads/
+storage/app/public/uploads/
+
+# Include essential files for Docker build
+!/storage/app/.gitkeep
+!/storage/app/public/.gitkeep
+!/storage/framework/cache/.gitkeep
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/views/.gitkeep
+!/storage/logs/.gitkeep
+!/bootstrap/cache/.gitkeep
+
+# Include Docker configuration files
+!docker/
+!Dockerfile
+!.dockerignore

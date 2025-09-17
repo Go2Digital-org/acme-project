@@ -1,0 +1,502 @@
+<?php
+
+namespace Illuminate\Support {
+    /**
+     * @template TKey
+     * @template TValue
+     */
+    class Collection implements \ArrayAccess, \Countable, \IteratorAggregate {
+        /**
+         * @template TMapValue
+         * @param callable(TValue, TKey): TMapValue $callback
+         * @return Collection<TKey, TMapValue>
+         */
+        public function map(callable $callback) {}
+        
+        /**
+         * @return array<TKey, TValue>
+         */
+        public function toArray() {}
+        
+        /**
+         * @param callable(TValue, TKey): bool $callback
+         * @return Collection<TKey, TValue>
+         */
+        public function filter(callable $callback) {}
+        
+        /**
+         * @param callable(TValue, TKey): bool $callback
+         * @return Collection<TKey, TValue>
+         */
+        public function reject(callable $callback) {}
+        
+        /**
+         * @param TValue $value
+         * @return $this
+         */
+        public function push($value) {}
+        
+        /**
+         * @param callable(TValue, TKey): void $callback
+         * @return $this
+         */
+        public function each(callable $callback) {}
+        
+        /**
+         * @return int
+         */
+        public function count(): int {}
+        
+        /**
+         * @param string $value
+         * @param string|null $key
+         * @return Collection<int, mixed>
+         */
+        public function pluck($value, $key = null) {}
+        
+        /**
+         * @return TValue|null
+         */
+        public function first() {}
+        
+        /**
+         * @param string $key
+         * @return mixed
+         */
+        public function get($key) {}
+        
+        /**
+         * @param string $needle
+         * @return bool
+         */
+        public function contains($needle) {}
+    }
+    
+    class Str {
+        /**
+         * @param string $value
+         * @param string $separator
+         * @return string
+         */
+        public static function slug(string $value, string $separator = '-'): string {}
+        
+        /**
+         * @return string
+         */
+        public static function uuid(): string {}
+        
+        /**
+         * @param string $value
+         * @return string
+         */
+        public static function headline(string $value): string {}
+        
+        /**
+         * @param string $value
+         * @return Stringable
+         */
+        public static function of(string $value): Stringable {}
+    }
+    
+    class Stringable {
+        /**
+         * @param string|array<string> $needles
+         * @return bool
+         */
+        public function contains($needles): bool {}
+    }
+}
+
+namespace Illuminate\Database\Eloquent {
+    use Illuminate\Support\Collection;
+    
+    /**
+     * @template TModel of Model
+     */
+    class Builder {
+        /**
+         * @param mixed $id
+         * @param array<string>|string $columns
+         * @return TModel|null
+         */
+        public function find($id, $columns = ['*']) {}
+        
+        /**
+         * @param mixed $id
+         * @param array<string>|string $columns
+         * @return TModel
+         * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+         */
+        public function findOrFail($id, $columns = ['*']) {}
+        
+        /**
+         * @param string $column
+         * @param mixed $operator
+         * @param mixed $value
+         * @param string $boolean
+         * @return Builder<TModel>
+         */
+        public function where($column, $operator = null, $value = null, $boolean = 'and') {}
+        
+        /**
+         * @return TModel|null
+         */
+        public function first() {}
+        
+        /**
+         * @return Collection<int, TModel>
+         */
+        public function get() {}
+        
+        /**
+         * @param array<string, mixed> $attributes
+         * @return TModel
+         */
+        public function create(array $attributes = []) {}
+        
+        /**
+         * @param array<string, mixed> $values
+         * @return int
+         */
+        public function update(array $values) {}
+        
+        /**
+         * @return mixed
+         */
+        public function delete() {}
+        
+        /**
+         * @return int
+         */
+        public function count() {}
+    }
+    
+    abstract class Model {
+        /** @var int|string */
+        public $id;
+        
+        /**
+         * @param mixed $id
+         * @param array<string>|string $columns
+         * @return static|null
+         */
+        public static function find($id, $columns = ['*']) {}
+        
+        /**
+         * @param mixed $id
+         * @param array<string>|string $columns
+         * @return static
+         * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+         */
+        public static function findOrFail($id, $columns = ['*']) {}
+        
+        /**
+         * @param string $column
+         * @param mixed $operator
+         * @param mixed $value
+         * @param string $boolean
+         * @return Builder<static>
+         */
+        public static function where($column, $operator = null, $value = null, $boolean = 'and') {}
+        
+        /**
+         * @param array<string, mixed> $attributes
+         * @return static
+         */
+        public static function create(array $attributes = []) {}
+        
+        /**
+         * @return bool
+         */
+        public function save() {}
+        
+        /**
+         * @param array<string, mixed> $attributes
+         * @param array<string, mixed> $options
+         * @return $this
+         */
+        public function fill(array $attributes) {}
+        
+        /**
+         * @param array<string, mixed> $attributes
+         * @return $this
+         */
+        public function forceFill(array $attributes) {}
+        
+        /**
+         * @return bool|null
+         */
+        public function delete() {}
+    }
+    
+    /**
+     * @template TModel of Model
+     * @extends Collection<int, TModel>
+     */
+    class Collection extends \Illuminate\Support\Collection {
+    }
+}
+
+namespace Illuminate\Database\Query {
+    class Builder {
+        /**
+         * @param string $column
+         * @param mixed $operator
+         * @param mixed $value
+         * @param string $boolean
+         * @return $this
+         */
+        public function where($column, $operator = null, $value = null, $boolean = 'and') {}
+        
+        /**
+         * @return mixed
+         */
+        public function delete() {}
+        
+        /**
+         * @param array<string> $columns
+         * @return int
+         */
+        public function count($columns = ['*']) {}
+    }
+}
+
+namespace Illuminate\Http {
+    class Request extends \Symfony\Component\HttpFoundation\Request {
+        /**
+         * @return string
+         */
+        public function path() {}
+        
+        /**
+         * @param string $key
+         * @param mixed $default
+         * @return mixed
+         */
+        public function input($key = null, $default = null) {}
+        
+        /**
+         * @return \Illuminate\Contracts\Auth\Authenticatable|null
+         */
+        public function user() {}
+        
+        /**
+         * @param array<string>|string|null $keys
+         * @return array<string, mixed>
+         */
+        public function all($keys = null) {}
+        
+        /**
+         * @param array<string>|string $keys
+         * @return array<string, mixed>
+         */
+        public function only($keys) {}
+        
+        /**
+         * @param string $key
+         * @return bool
+         */
+        public function has($key) {}
+        
+        /**
+         * @param array<string> $rules
+         * @return array<string, mixed>
+         */
+        public function validate(array $rules) {}
+    }
+}
+
+namespace Illuminate\Contracts\Auth {
+    interface Factory {
+        /**
+         * @param string|null $guard
+         * @return Guard
+         */
+        public function guard($guard = null);
+        
+        /**
+         * @return void
+         */
+        public function logout();
+        
+        /**
+         * @param string $password
+         * @return void
+         */
+        public function logoutOtherDevices($password);
+    }
+    
+    interface Guard {
+        /**
+         * @return Authenticatable|null
+         */
+        public function user();
+        
+        /**
+         * @param Authenticatable $user
+         * @param bool $remember
+         * @return void
+         */
+        public function login(Authenticatable $user, $remember = false);
+        
+        /**
+         * @return void
+         */
+        public function logout();
+        
+        /**
+         * @param array<string, mixed> $credentials
+         * @param bool $remember
+         * @return bool
+         */
+        public function attempt(array $credentials = [], $remember = false);
+    }
+    
+    interface Authenticatable {
+        /**
+         * @return string|int
+         */
+        public function getAuthIdentifier();
+        
+        /**
+         * @return string
+         */
+        public function getAuthPassword();
+        
+        /**
+         * @param array<string, mixed> $attributes
+         * @return $this
+         */
+        public function forceFill(array $attributes);
+        
+        /**
+         * @return bool
+         */
+        public function save();
+        
+        /**
+         * @return array<string>
+         */
+        public function recoveryCodes();
+        
+        /**
+         * @return void
+         */
+        public function replaceRecoveryCodes();
+    }
+}
+
+namespace Modules\User\Infrastructure\Laravel\Models {
+    use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Contracts\Auth\Authenticatable;
+    
+    class User extends Model implements Authenticatable {
+        /** @var int */
+        public $id;
+        
+        /** @var string */
+        public $name;
+        
+        /** @var string */
+        public $email;
+        
+        /**
+         * @return string|int
+         */
+        public function getAuthIdentifier() {}
+        
+        /**
+         * @return string
+         */
+        public function getAuthPassword() {}
+        
+        /**
+         * @param array<string, mixed> $attributes
+         * @return $this
+         */
+        public function forceFill(array $attributes) {}
+        
+        /**
+         * @return bool
+         */
+        public function save() {}
+        
+        /**
+         * @return array<string>
+         */
+        public function recoveryCodes() {}
+        
+        /**
+         * @return void
+         */
+        public function replaceRecoveryCodes() {}
+    }
+}
+
+namespace {
+    /**
+     * @param string|null $guard
+     * @return \Illuminate\Contracts\Auth\Factory|\Illuminate\Contracts\Auth\Guard
+     */
+    function auth($guard = null) {}
+    
+    /**
+     * @param mixed $value
+     * @return \Illuminate\Support\Collection
+     */
+    function collect($value = null) {}
+    
+    /**
+     * @param string|null $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function config($key = null, $default = null) {}
+    
+    /**
+     * @param string|null $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function env($key = null, $default = null) {}
+    
+    /**
+     * @param string $name
+     * @param array<mixed> $parameters
+     * @param bool $absolute
+     * @return string
+     */
+    function route($name, $parameters = [], $absolute = true) {}
+    
+    /**
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
+     */
+    function response() {}
+    
+    /**
+     * @param string $path
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $mergeData
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    function view($path = null, $data = [], $mergeData = []) {}
+    
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    function redirect() {}
+    
+    /**
+     * @param mixed ...$args
+     * @return mixed
+     */
+    function event(...$args) {}
+    
+    /**
+     * @param string $key
+     * @param array<mixed> $replace
+     * @param string|null $locale
+     * @return string|array<string, string>
+     */
+    function __($key, $replace = [], $locale = null) {}
+}

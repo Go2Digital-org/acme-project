@@ -1,0 +1,120 @@
+<?php
+
+namespace Illuminate\Support;
+
+class Str {
+    // String transformation methods
+    public static function slug(string $title, string $separator = '-', ?string $language = 'en'): string {}
+    public static function headline(string $value): string {}
+    public static function studly(string $value): string {}
+    public static function camel(string $value): string {}
+    public static function snake(string $value, string $delimiter = '_'): string {}
+    public static function kebab(string $value): string {}
+    public static function lower(string $value): string {}
+    public static function upper(string $value): string {}
+    public static function ucfirst(string $string): string {}
+    public static function lcfirst(string $string): string {}
+    public static function title(string $value): string {}
+    public static function ascii(string $value, string $language = 'en'): string {}
+    public static function transliterate(string $string, ?string $unknown = '?', ?bool $strict = false): string {}
+    
+    // String generation methods
+    public static function uuid(): string {}
+    public static function orderedUuid(): string {}
+    public static function ulid(): string {}
+    public static function random(int $length = 16): string {}
+    public static function password(int $length = 32, bool $letters = true, bool $numbers = true, bool $symbols = true, bool $spaces = false): string {}
+    
+    // String manipulation methods
+    public static function limit(string $value, int $limit = 100, string $end = '...'): string {}
+    public static function words(string $value, int $words = 100, string $end = '...'): string {}
+    public static function mask(string $string, string $character, int $index, ?int $length = null, string $encoding = 'UTF-8'): string {}
+    public static function padBoth(string $value, int $length, string $pad = ' '): string {}
+    public static function padLeft(string $value, int $length, string $pad = ' '): string {}
+    public static function padRight(string $value, int $length, string $pad = ' '): string {}
+    public static function repeat(string $string, int $times): string {}
+    public static function reverse(string $value): string {}
+    public static function squish(string $value): string {}
+    public static function substr(string $string, int $start, ?int $length = null, string $encoding = 'UTF-8'): string {}
+    public static function substrCount(string $haystack, string $needle, int $offset = 0, ?int $length = null): int {}
+    public static function substrReplace(string|array $string, string|array $replace, int|array $offset = 0, int|array|null $length = null): string|array {}
+    public static function swap(array $map, string $subject): string {}
+    public static function trim(string $value, ?string $charlist = null): string {}
+    public static function ltrim(string $value, ?string $charlist = null): string {}
+    public static function rtrim(string $value, ?string $charlist = null): string {}
+    
+    // String replacement methods
+    public static function replace(string|array $search, string|array $replace, string|array $subject, bool $caseSensitive = true): string|array {}
+    public static function replaceArray(string $search, array $replace, string $subject): string {}
+    public static function replaceFirst(string $search, string $replace, string $subject): string {}
+    public static function replaceLast(string $search, string $replace, string $subject): string {}
+    public static function replaceStart(string $search, string $replace, string $subject): string {}
+    public static function replaceEnd(string $search, string $replace, string $subject): string {}
+    public static function replaceMatches(string $pattern, string|\Closure $replace, string $subject, int $limit = -1): string {}
+    
+    // String testing methods
+    public static function is(string|iterable $pattern, string $value): bool {}
+    public static function isAscii(string $value): bool {}
+    public static function isJson(string $value): bool {}
+    public static function isUuid(string $value): bool {}
+    public static function isUlid(string $value): bool {}
+    public static function isUrl(string $value): bool {}
+    public static function startsWith(string $haystack, string|iterable $needles): bool {}
+    public static function endsWith(string $haystack, string|iterable $needles): bool {}
+    public static function contains(string $haystack, string|iterable $needles, bool $ignoreCase = false): bool {}
+    public static function containsAll(string $haystack, iterable $needles, bool $ignoreCase = false): bool {}
+    public static function match(string $pattern, string $subject): string {}
+    public static function matchAll(string $pattern, string $subject): array {}
+    public static function test(string $pattern, string $subject): bool {}
+    
+    // String extraction methods
+    public static function after(string $subject, string $search): string {}
+    public static function afterLast(string $subject, string $search): string {}
+    public static function before(string $subject, string $search): string {}
+    public static function beforeLast(string $subject, string $search): string {}
+    public static function between(string $subject, string $from, string $to): string {}
+    public static function betweenFirst(string $subject, string $from, string $to): string {}
+    public static function start(string $value, string $prefix): string {}
+    public static function finish(string $value, string $cap): string {}
+    public static function remove(string|array $search, string $subject, bool $caseSensitive = true): string {}
+    
+    // String counting and length methods
+    public static function length(string $value, ?string $encoding = null): int {}
+    public static function wordCount(string $string, ?string $characters = null): int {}
+    
+    // Pluralization methods
+    public static function plural(string $value, int|array|\Countable $count = 2): string {}
+    public static function pluralStudly(string $value, int|array|\Countable $count = 2): string {}
+    public static function singular(string $value): string {}
+    
+    // Array/Collection methods
+    public static function of(string $string): \Illuminate\Support\Stringable {}
+    public static function ucsplit(string $string): array {}
+    public static function split(string $pattern, string $subject, int $limit = -1, int $flags = 0): array {}
+    public static function explode(string $delimiter, string $string, int $limit = PHP_INT_MAX): array {}
+    public static function take(string $string, int $limit): string {}
+    
+    // Encoding methods
+    public static function toBase64(string $string): string {}
+    public static function fromBase64(string $string, bool $strict = false): string|false {}
+    
+    // Markdown methods
+    public static function markdown(string $string, array $options = []): \Illuminate\Support\HtmlString {}
+    public static function inlineMarkdown(string $string, array $options = []): \Illuminate\Support\HtmlString {}
+    
+    // Other utility methods
+    public static function pipe(string $value, callable $callback): mixed {}
+    public static function whenEmpty(string $value, callable $callback, ?callable $default = null): mixed {}
+    public static function whenNotEmpty(string $value, callable $callback, ?callable $default = null): mixed {}
+    public static function whenStartsWith(string $value, string|array $needles, callable $callback, ?callable $default = null): mixed {}
+    public static function whenEndsWith(string $value, string|array $needles, callable $callback, ?callable $default = null): mixed {}
+    public static function whenExactly(string $value, string $needle, callable $callback, ?callable $default = null): mixed {}
+    public static function whenNotExactly(string $value, string $needle, callable $callback, ?callable $default = null): mixed {}
+    public static function whenIs(string $value, string|array $pattern, callable $callback, ?callable $default = null): mixed {}
+    public static function whenIsAscii(string $value, callable $callback, ?callable $default = null): mixed {}
+    public static function whenIsUuid(string $value, callable $callback, ?callable $default = null): mixed {}
+    public static function whenIsUlid(string $value, callable $callback, ?callable $default = null): mixed {}
+    public static function whenTest(string $value, string $pattern, callable $callback, ?callable $default = null): mixed {}
+    public static function whenContains(string $value, string|array $needles, callable $callback, ?callable $default = null): mixed {}
+    public static function whenContainsAll(string $value, array $needles, callable $callback, ?callable $default = null): mixed {}
+}

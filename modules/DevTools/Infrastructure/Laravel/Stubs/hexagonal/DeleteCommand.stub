@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Command;
+
+use Modules\Shared\Application\Command\CommandInterface;
+
+class {{prefix}}Delete{{domain}}Command implements CommandInterface
+{
+    public function __construct(
+    public int $id
+) {
+}
+}

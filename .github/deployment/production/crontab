@@ -1,0 +1,19 @@
+# ACME Corp CSR Platform - Production Environment Crontab
+# Laravel Task Scheduler for production environment
+# 
+# This crontab runs Laravel's task scheduler every minute, which then
+# manages all scheduled tasks defined in the application.
+#
+# Logs are written to production-specific log files for easier debugging.
+
+# Laravel Task Scheduler - Production
+* * * * * cd /var/www/acme-corp/current && /usr/bin/php artisan schedule:run >> /var/www/acme-corp/storage/logs/scheduler.log 2>&1
+
+# Clear old log files weekly (Sundays at 2 AM)
+0 2 * * 0 find /var/www/acme-corp/storage/logs -name "*.log" -mtime +14 -delete 2>/dev/null
+
+# Restart queue workers daily (4 AM) to prevent memory leaks
+0 4 * * * /usr/bin/supervisorctl restart acme-workers:* >> /var/www/acme-corp/storage/logs/worker-restart.log 2>&1
+
+# Backup database weekly (Sundays at 1 AM)
+0 1 * * 0 cd /var/www/acme-corp/current && /usr/bin/php artisan backup:run >> /var/www/acme-corp/storage/logs/backup.log 2>&1

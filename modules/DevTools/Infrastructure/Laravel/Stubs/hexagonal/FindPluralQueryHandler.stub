@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Query;
+
+use Modules\{{domain}}\Domain\Repository\{{domain}}RepositoryInterface;
+
+readonly class {{prefix}}Find{{domain}}sQueryHandler
+{
+    public function __construct(private {{domain}}RepositoryInterface ${{domainCamelCase}}Repository)
+    {
+    }
+
+    public function handle(Find{{domain}}sQuery $query): mixed
+    {
+        if ($query->limit && $query->limit > 0) {
+            return $this->{{domainCamelCase}}Repository->withPagination(
+                $query->offset,
+                $query->limit,
+                $query->filters,
+                $query->sorts,
+                $query->operation
+            );
+        }
+
+        return $this->{{domainCamelCase}}Repository->withoutPagination(
+            $query->filters,
+            $query->sorts,
+            $query->operation
+        );
+    }
+}

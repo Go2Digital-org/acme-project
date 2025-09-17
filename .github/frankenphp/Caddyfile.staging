@@ -1,0 +1,134 @@
+{
+    servers {
+        metrics
+        trusted_proxies static 127.0.0.1/8
+        protocols h1 h2
+    }
+    
+    admin off
+    auto_https off
+    grace_period 30s
+}
+
+# Staging server on port 8081
+:8081 {
+    root * /var/www/acme-staging/current/public
+    
+    php_server {
+        # Environment variables
+        env APP_ENV staging
+        env APP_DEBUG true
+        env APP_RUNTIME frankenphp
+        env FRANKENPHP_WORKER 1
+        
+        # OPcache configuration (less aggressive than production)
+        env PHP_OPCACHE_ENABLE 1
+        env PHP_OPCACHE_MEMORY_CONSUMPTION 128
+        env PHP_OPCACHE_MAX_ACCELERATED_FILES 10000
+        env PHP_OPCACHE_REVALIDATE_FREQ 2
+        env PHP_OPCACHE_VALIDATE_TIMESTAMPS 1
+        env PHP_OPCACHE_PRELOAD /var/www/acme-staging/current/.github/frankenphp/preload.php
+        env PHP_OPCACHE_PRELOAD_USER www-data
+        
+        # Memory limits
+        env PHP_MEMORY_LIMIT 256M
+        env PHP_MAX_EXECUTION_TIME 60
+        env PHP_MAX_INPUT_TIME 60
+        
+        # File upload limits
+        env PHP_POST_MAX_SIZE 100M
+        env PHP_UPLOAD_MAX_FILESIZE 100M
+        
+        # Display errors for debugging
+        env PHP_DISPLAY_ERRORS 1
+        env PHP_DISPLAY_STARTUP_ERRORS 1
+        env PHP_ERROR_REPORTING E_ALL
+    }
+    
+    # Compression
+    encode {
+        gzip 6
+        zstd
+        minimum_length 1024
+    }
+
+    # Vite build assets
+    handle /build/* {
+        root * /var/www/acme-staging/current/public
+        file_server
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+
+    # Livewire routes (must come before static files)
+    handle /livewire/* {
+        php_server
+    }
+
+    # Static files (excluding Livewire routes)
+    @static {
+        path *.jpg *.jpeg *.png *.gif *.ico *.svg *.webp
+        path *.css *.js *.map
+        path *.woff *.woff2 *.ttf *.eot *.otf
+        not path /livewire/*
+    }
+
+    handle @static {
+        header Cache-Control "public, max-age=3600"
+        file_server
+    }
+    
+    # Laravel public storage (serve through symlink in public directory)
+    handle_path /storage/* {
+        root * /var/www/acme-staging/current/public
+        file_server
+        header Cache-Control "public, max-age=3600"
+        header X-Robots-Tag "noindex, nofollow"
+    }
+    
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200
+        header Content-Type "text/plain"
+    }
+    
+    # Metrics endpoint
+    handle /metrics {
+        metrics
+    }
+    
+    # Telescope (Laravel debugging tool) - staging only
+    handle /telescope* {
+        php_server
+        header X-Robots-Tag "noindex, nofollow"
+    }
+    
+    # Security headers
+    header {
+        -Server
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        X-Robots-Tag "noindex, nofollow"
+        -X-Powered-By
+    }
+    
+    # Handle all requests through Laravel
+    handle {
+        php_server
+    }
+    
+    # Error handling
+    handle_errors {
+        respond "{http.error.status_code} {http.error.status_text}" {http.error.status_code}
+    }
+    
+    # Verbose logging for debugging
+    log {
+        output file /var/www/acme-staging/storage/logs/caddy_access.log {
+            roll_size 100mb
+            roll_keep 5
+        }
+        format json
+        level DEBUG
+    }
+}

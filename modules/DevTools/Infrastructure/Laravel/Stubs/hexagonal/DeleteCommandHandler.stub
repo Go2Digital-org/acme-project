@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Command;
+
+use Modules\{{domain}}\Domain\Repository\{{domain}}RepositoryInterface;
+
+final class {{prefix}}Delete{{domain}}CommandHandler
+{
+    public function __construct(private {{domain}}RepositoryInterface ${{domainCamelCase}}Repository)
+    {
+    }
+
+    public function handle(Delete{{domain}}Command $command): void
+    {
+        $this->{{domainCamelCase}}Repository->remove($command->id);
+    }
+}

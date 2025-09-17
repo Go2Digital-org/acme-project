@@ -1,0 +1,80 @@
+<?php
+
+namespace Illuminate\Database\Query;
+
+/**
+ * @template TValue
+ */
+class Builder
+{
+    /**
+     * @return int
+     */
+    public function count($columns = '*')
+    {
+        //
+    }
+
+    /**
+     * @return bool
+     */
+    public function exists()
+    {
+        //
+    }
+
+    /**
+     * @param string $column
+     * @return mixed
+     */
+    public function sum($column)
+    {
+        //
+    }
+
+    /**
+     * @param string $column
+     * @return mixed
+     */
+    public function max($column)
+    {
+        //
+    }
+
+    /**
+     * @param string $column
+     * @param mixed $operator
+     * @param mixed $value
+     * @return $this
+     */
+    public function where($column, $operator = null, $value = null, $boolean = 'and')
+    {
+        //
+    }
+
+    /**
+     * @param string $column
+     * @param string $direction
+     * @return $this
+     */
+    public function orderBy($column, $direction = 'asc')
+    {
+        //
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, object>
+     */
+    public function get()
+    {
+        //
+    }
+
+    /**
+     * @return int
+     */
+    public function delete()
+    {
+        //
+    }
+}

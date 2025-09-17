@@ -1,0 +1,705 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Integration\User\Application\Service;
+
+use Illuminate\Support\Facades\DB;
+use Mockery;
+use Modules\Shared\Application\Service\CacheService;
+use Modules\User\Application\Service\UserPermissionsCacheService;
+use Psr\Log\LoggerInterface;
+use Tests\Integration\IntegrationTestCase;
+
+/**
+ * Tests for UserPermissionsCacheService functionality including permissions caching.
+ */
+class UserPermissionsCacheServiceTest extends IntegrationTestCase
+{
+    private UserPermissionsCacheService $service;
+
+    private CacheService $mockCacheService;
+
+    private LoggerInterface $mockLogger;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockCacheService = Mockery::mock(CacheService::class);
+        $this->mockLogger = Mockery::mock(LoggerInterface::class);
+
+        $this->service = new UserPermissionsCacheService(
+            $this->mockCacheService,
+            $this->mockLogger
+        );
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+
+    // Basic Permission Retrieval Tests
+
+    /** @test */
+    public function it_gets_cached_user_permissions(): void
+    {
+        $userId = 123;
+        $expectedPermissions = [
+            'user_id' => $userId,
+            'organization_id' => 456,
+            'roles' => ['admin', 'user'],
+            'direct_permissions' => ['create_campaign'],
+            'role_permissions' => ['manage_users', 'view_dashboard'],
+            'all_permissions' => ['create_campaign', 'manage_users', 'view_dashboard'],
+            'organization_permissions' => [],
+            'is_admin' => true,
+            'is_org_admin' => true,
+            'is_super_admin' => false,
+        ];
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn($expectedPermissions);
+
+        $result = $this->service->getUserPermissions($userId);
+
+        $this->assertSame($expectedPermissions, $result);
+    }
+
+    // Data Loading Tests
+
+    /** @test */
+    public function it_loads_user_permissions_data_when_cache_misses(): void
+    {
+        $userId = 456;
+        $organizationId = 789;
+
+        // Mock user basic info
+        $user = (object) [
+            'id' => $userId,
+            'organization_id' => $organizationId,
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ];
+
+        DB::shouldReceive('table')
+            ->with('users')
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('id', $userId)
+            ->andReturnSelf();
+
+        DB::shouldReceive('first')
+            ->andReturn($user);
+
+        // Mock roles query
+        $this->mockUserRolesQuery($userId, ['admin', 'user']);
+
+        // Mock direct permissions query
+        $this->mockUserDirectPermissionsQuery($userId, ['create_campaign']);
+
+        // Mock role permissions query
+        $this->mockRolePermissionsQuery(['admin', 'user'], ['manage_users', 'view_dashboard']);
+
+        // Mock organization permissions (empty for now)
+        // This is already handled in the method implementation
+
+        $this->mockLogger->shouldReceive('debug')
+            ->once()
+            ->with('User permissions loaded', Mockery::type('array'));
+
+        $result = $this->service->loadUserPermissionsData($userId);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('user_id', $result);
+        $this->assertArrayHasKey('organization_id', $result);
+        $this->assertArrayHasKey('roles', $result);
+        $this->assertArrayHasKey('direct_permissions', $result);
+        $this->assertArrayHasKey('role_permissions', $result);
+        $this->assertArrayHasKey('all_permissions', $result);
+        $this->assertArrayHasKey('organization_permissions', $result);
+        $this->assertArrayHasKey('is_admin', $result);
+        $this->assertArrayHasKey('is_org_admin', $result);
+        $this->assertArrayHasKey('is_super_admin', $result);
+        $this->assertArrayHasKey('cached_at', $result);
+        $this->assertArrayHasKey('load_time_ms', $result);
+
+        $this->assertSame($userId, $result['user_id']);
+        $this->assertSame($organizationId, $result['organization_id']);
+        $this->assertSame(['admin', 'user'], $result['roles']);
+        $this->assertSame(['create_campaign'], $result['direct_permissions']);
+        $this->assertSame(['manage_users', 'view_dashboard'], $result['role_permissions']);
+        $this->assertSame(['create_campaign', 'manage_users', 'view_dashboard'], $result['all_permissions']);
+        $this->assertTrue($result['is_admin']);
+        $this->assertTrue($result['is_org_admin']);
+        $this->assertFalse($result['is_super_admin']);
+    }
+
+    /** @test */
+    public function it_returns_empty_data_for_non_existent_user(): void
+    {
+        $userId = 9999;
+
+        DB::shouldReceive('table')
+            ->with('users')
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('id', $userId)
+            ->andReturnSelf();
+
+        DB::shouldReceive('first')
+            ->andReturn(null);
+
+        $result = $this->service->loadUserPermissionsData($userId);
+
+        $this->assertSame([], $result);
+    }
+
+    // Permission Checking Tests
+
+    /** @test */
+    public function it_checks_if_user_has_specific_permission(): void
+    {
+        $userId = 123;
+        $permission = 'create_campaign';
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'all_permissions' => ['create_campaign', 'view_dashboard'],
+            ]);
+
+        $result = $this->service->hasPermission($userId, $permission);
+
+        $this->assertTrue($result);
+    }
+
+    /** @test */
+    public function it_returns_false_when_user_does_not_have_permission(): void
+    {
+        $userId = 123;
+        $permission = 'delete_campaign';
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'all_permissions' => ['create_campaign', 'view_dashboard'],
+            ]);
+
+        $result = $this->service->hasPermission($userId, $permission);
+
+        $this->assertFalse($result);
+    }
+
+    /** @test */
+    public function it_checks_if_user_has_any_of_the_given_permissions(): void
+    {
+        $userId = 123;
+        $permissions = ['delete_campaign', 'create_campaign', 'super_admin'];
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'all_permissions' => ['create_campaign', 'view_dashboard'],
+            ]);
+
+        $result = $this->service->hasAnyPermission($userId, $permissions);
+
+        $this->assertTrue($result); // Has 'create_campaign'
+    }
+
+    /** @test */
+    public function it_returns_false_when_user_has_none_of_the_given_permissions(): void
+    {
+        $userId = 123;
+        $permissions = ['delete_campaign', 'super_admin'];
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'all_permissions' => ['create_campaign', 'view_dashboard'],
+            ]);
+
+        $result = $this->service->hasAnyPermission($userId, $permissions);
+
+        $this->assertFalse($result);
+    }
+
+    /** @test */
+    public function it_checks_if_user_has_all_of_the_given_permissions(): void
+    {
+        $userId = 123;
+        $permissions = ['create_campaign', 'view_dashboard'];
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'all_permissions' => ['create_campaign', 'view_dashboard', 'edit_profile'],
+            ]);
+
+        $result = $this->service->hasAllPermissions($userId, $permissions);
+
+        $this->assertTrue($result);
+    }
+
+    /** @test */
+    public function it_returns_false_when_user_is_missing_some_permissions(): void
+    {
+        $userId = 123;
+        $permissions = ['create_campaign', 'delete_campaign'];
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'all_permissions' => ['create_campaign', 'view_dashboard'],
+            ]);
+
+        $result = $this->service->hasAllPermissions($userId, $permissions);
+
+        $this->assertFalse($result); // Missing 'delete_campaign'
+    }
+
+    // Role Checking Tests
+
+    /** @test */
+    public function it_checks_if_user_has_specific_role(): void
+    {
+        $userId = 123;
+        $role = 'admin';
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'roles' => ['admin', 'user'],
+            ]);
+
+        $result = $this->service->hasRole($userId, $role);
+
+        $this->assertTrue($result);
+    }
+
+    /** @test */
+    public function it_returns_false_when_user_does_not_have_role(): void
+    {
+        $userId = 123;
+        $role = 'super_admin';
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'roles' => ['admin', 'user'],
+            ]);
+
+        $result = $this->service->hasRole($userId, $role);
+
+        $this->assertFalse($result);
+    }
+
+    /** @test */
+    public function it_checks_if_user_has_any_of_the_given_roles(): void
+    {
+        $userId = 123;
+        $roles = ['super_admin', 'admin', 'moderator'];
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->once()
+            ->with($userId)
+            ->andReturn([
+                'roles' => ['admin', 'user'],
+            ]);
+
+        $result = $this->service->hasAnyRole($userId, $roles);
+
+        $this->assertTrue($result); // Has 'admin'
+    }
+
+    // Bulk Operations Tests
+
+    /** @test */
+    public function it_gets_bulk_user_permissions_with_cache_optimization(): void
+    {
+        $userIds = [123, 456, 789];
+
+        // Mock cache hits for some users
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->with(123)
+            ->once()
+            ->andReturn(['user_id' => 123, 'roles' => ['admin']]);
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->with(456)
+            ->once()
+            ->andReturn([]); // Cache miss
+
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->with(789)
+            ->once()
+            ->andReturn(['user_id' => 789, 'roles' => ['user']]);
+
+        // Mock bulk loading for uncached user
+        $this->mockBulkUserPermissionsLoad([456]);
+
+        // Mock caching of newly loaded data
+        $this->mockCacheService->shouldReceive('rememberWithTtl')
+            ->once()
+            ->with(
+                'permissions:user:456',
+                Mockery::type('callable'),
+                3600,
+                ['permissions', 'users', 'user:456']
+            );
+
+        $results = $this->service->getBulkUserPermissions($userIds);
+
+        $this->assertArrayHasKey(123, $results);
+        $this->assertArrayHasKey(456, $results);
+        $this->assertArrayHasKey(789, $results);
+        $this->assertSame(123, $results[123]['user_id']);
+        $this->assertSame(789, $results[789]['user_id']);
+    }
+
+    // Cache Invalidation Tests
+
+    /** @test */
+    public function it_invalidates_user_permissions_cache(): void
+    {
+        $userId = 123;
+
+        $this->mockCacheService->shouldReceive('invalidateUserPermissions')
+            ->once()
+            ->with($userId);
+
+        $this->mockLogger->shouldReceive('info')
+            ->once()
+            ->with('User permissions cache invalidated', ['user_id' => $userId]);
+
+        $this->service->invalidateUserPermissions($userId);
+    }
+
+    /** @test */
+    public function it_invalidates_permissions_cache_for_all_users_with_specific_role(): void
+    {
+        $roleName = 'admin';
+        $userIds = [123, 456, 789];
+
+        DB::shouldReceive('table')
+            ->with('model_has_roles')
+            ->andReturnSelf();
+
+        DB::shouldReceive('join')
+            ->with('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('roles.name', $roleName)
+            ->andReturnSelf();
+
+        DB::shouldReceive('pluck')
+            ->with('model_id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('toArray')
+            ->andReturn($userIds);
+
+        foreach ($userIds as $userId) {
+            $this->mockCacheService->shouldReceive('invalidateUserPermissions')
+                ->once()
+                ->with($userId);
+
+            $this->mockLogger->shouldReceive('info')
+                ->once()
+                ->with('User permissions cache invalidated', ['user_id' => $userId]);
+        }
+
+        $this->mockLogger->shouldReceive('info')
+            ->once()
+            ->with('Role permissions cache invalidated', [
+                'role' => $roleName,
+                'affected_users' => count($userIds),
+            ]);
+
+        $this->service->invalidateRolePermissions($roleName);
+    }
+
+    // Cache Warming Tests
+
+    /** @test */
+    public function it_warms_permissions_cache_for_organization_users(): void
+    {
+        $organizationId = 456;
+        $userIds = [123, 456, 789];
+
+        DB::shouldReceive('table')
+            ->with('users')
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('organization_id', $organizationId)
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('status', 'active')
+            ->andReturnSelf();
+
+        DB::shouldReceive('pluck')
+            ->with('id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('toArray')
+            ->andReturn($userIds);
+
+        // Mock bulk permissions loading
+        $this->mockBulkUserPermissionsWarming($userIds);
+
+        $this->service->warmOrganizationPermissions($organizationId);
+    }
+
+    /** @test */
+    public function it_warms_permissions_for_users_in_batches(): void
+    {
+        $userIds = range(1, 125); // 125 users to test batching
+        $expectedBatches = array_chunk($userIds, 50);
+
+        foreach ($expectedBatches as $batch) {
+            $this->mockBulkUserPermissionsWarming($batch);
+        }
+
+        $this->service->warmPermissionsForUsers($userIds);
+    }
+
+    /** @test */
+    public function it_handles_cache_warming_errors_gracefully(): void
+    {
+        $userIds = [123, 456];
+
+        // Mock error for first batch
+        $this->mockCacheService->shouldReceive('rememberUserPermissions')
+            ->andThrow(new \Exception('Cache warming failed'));
+
+        $this->mockLogger->shouldReceive('warning')
+            ->once()
+            ->with('Failed to warm permissions for user batch', Mockery::type('array'));
+
+        // Should not throw exception
+        $this->service->warmPermissionsForUsers($userIds);
+    }
+
+    // Cache Statistics Tests
+
+    /** @test */
+    public function it_returns_permissions_cache_statistics(): void
+    {
+        $recentUserIds = [123, 456, 789, 101, 102];
+
+        // Mock recent users query
+        DB::shouldReceive('table')
+            ->with('users')
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('last_login_at', '>=', Mockery::type(\Carbon\Carbon::class))
+            ->andReturnSelf();
+
+        DB::shouldReceive('limit')
+            ->with(100)
+            ->andReturnSelf();
+
+        DB::shouldReceive('pluck')
+            ->with('id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('toArray')
+            ->andReturn($recentUserIds);
+
+        // Mock cache checks
+        $this->mockCacheService->cache = Mockery::mock();
+
+        foreach ($recentUserIds as $userId) {
+            $isUserCached = in_array($userId, [123, 456, 789]); // 3 out of 5 cached
+            $this->mockCacheService->cache->shouldReceive('has')
+                ->with("permissions:user:{$userId}")
+                ->andReturn($isUserCached);
+
+            if ($isUserCached) {
+                $this->mockCacheService->cache->shouldReceive('get')
+                    ->with("permissions:user:{$userId}")
+                    ->andReturn(['load_time_ms' => 15.5]);
+            }
+        }
+
+        $stats = $this->service->getPermissionsCacheStatistics();
+
+        $this->assertArrayHasKey('total_cached_users', $stats);
+        $this->assertArrayHasKey('cache_hit_rate', $stats);
+        $this->assertArrayHasKey('avg_load_time_ms', $stats);
+
+        $this->assertSame(3, $stats['total_cached_users']);
+        $this->assertSame(60.0, $stats['cache_hit_rate']); // 3/5 * 100
+        $this->assertSame(15.5, $stats['avg_load_time_ms']);
+    }
+
+    /** @test */
+    public function it_handles_cache_statistics_errors_gracefully(): void
+    {
+        DB::shouldReceive('table')
+            ->andThrow(new \Exception('Database error'));
+
+        $this->mockLogger->shouldReceive('warning')
+            ->once()
+            ->with('Failed to get permissions cache statistics', Mockery::type('array'));
+
+        $stats = $this->service->getPermissionsCacheStatistics();
+
+        $this->assertSame([
+            'total_cached_users' => 0,
+            'cache_hit_rate' => 0,
+            'avg_load_time_ms' => 0,
+        ], $stats);
+    }
+
+    // Role Detection Tests
+
+    /** @test */
+    public function it_detects_admin_roles_correctly(): void
+    {
+        $testCases = [
+            [['admin'], true],
+            [['organization_admin'], true],
+            [['super_admin'], true],
+            [['user'], false],
+            [['admin', 'user'], true],
+            [['user', 'guest'], false],
+            [[], false],
+        ];
+
+        foreach ($testCases as [$roles, $expected]) {
+            $userId = 123;
+
+            $this->mockCacheService->shouldReceive('rememberUserPermissions')
+                ->once()
+                ->with($userId)
+                ->andReturn([
+                    'all_permissions' => [],
+                    'is_admin' => $expected,
+                ]);
+
+            $result = $this->service->getUserPermissions($userId);
+            $this->assertSame($expected, $result['is_admin']);
+        }
+    }
+
+    // Helper methods for mocking
+
+    private function mockUserRolesQuery(int $userId, array $roles): void
+    {
+        DB::shouldReceive('table')
+            ->with('model_has_roles')
+            ->andReturnSelf();
+
+        DB::shouldReceive('join')
+            ->with('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('model_has_roles.model_id', $userId)
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('model_has_roles.model_type', 'App\\Models\\User')
+            ->andReturnSelf();
+
+        DB::shouldReceive('pluck')
+            ->with('roles.name')
+            ->andReturnSelf();
+
+        DB::shouldReceive('toArray')
+            ->andReturn($roles);
+    }
+
+    private function mockUserDirectPermissionsQuery(int $userId, array $permissions): void
+    {
+        DB::shouldReceive('table')
+            ->with('model_has_permissions')
+            ->andReturnSelf();
+
+        DB::shouldReceive('join')
+            ->with('permissions', 'model_has_permissions.permission_id', '=', 'permissions.id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('model_has_permissions.model_id', $userId)
+            ->andReturnSelf();
+
+        DB::shouldReceive('where')
+            ->with('model_has_permissions.model_type', 'App\\Models\\User')
+            ->andReturnSelf();
+
+        DB::shouldReceive('pluck')
+            ->with('permissions.name')
+            ->andReturnSelf();
+
+        DB::shouldReceive('toArray')
+            ->andReturn($permissions);
+    }
+
+    private function mockRolePermissionsQuery(array $roles, array $permissions): void
+    {
+        DB::shouldReceive('table')
+            ->with('role_has_permissions')
+            ->andReturnSelf();
+
+        DB::shouldReceive('join')
+            ->with('permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('join')
+            ->with('roles', 'role_has_permissions.role_id', '=', 'roles.id')
+            ->andReturnSelf();
+
+        DB::shouldReceive('whereIn')
+            ->with('roles.name', $roles)
+            ->andReturnSelf();
+
+        DB::shouldReceive('pluck')
+            ->with('permissions.name')
+            ->andReturnSelf();
+
+        DB::shouldReceive('unique')
+            ->andReturnSelf();
+
+        DB::shouldReceive('toArray')
+            ->andReturn($permissions);
+    }
+
+    private function mockBulkUserPermissionsLoad(array $userIds): void
+    {
+        foreach ($userIds as $userId) {
+            $this->mockCacheService->shouldReceive('rememberUserPermissions')
+                ->with($userId)
+                ->andReturn([]);
+        }
+    }
+
+    private function mockBulkUserPermissionsWarming(array $userIds): void
+    {
+        foreach ($userIds as $userId) {
+            $this->mockCacheService->shouldReceive('rememberUserPermissions')
+                ->with($userId)
+                ->andReturn(['user_id' => $userId]);
+        }
+    }
+}

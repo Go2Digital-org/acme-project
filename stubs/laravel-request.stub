@@ -1,0 +1,172 @@
+<?php
+
+namespace Illuminate\Http;
+
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
+
+/**
+ * @template TUser of \Illuminate\Contracts\Auth\Authenticatable
+ */
+class Request
+{
+    // Authentication methods
+    /**
+     * @return TUser|null
+     */
+    public function user(?string $guard = null): ?Authenticatable {}
+
+    // Input retrieval methods with type casting
+    public function string(string $key, mixed $default = null): ?string {}
+    public function boolean(string $key = null, bool $default = false): bool {}
+    public function integer(string $key, int $default = 0): int {}
+    public function float(string $key, float $default = 0.0): float {}
+    public function date(string $key, ?string $format = null, ?string $timezone = null): ?Carbon {}
+    public function enum(string $key, string $enumClass, mixed $default = null): mixed {}
+    
+    // Input retrieval methods
+    public function input(string $key = null, mixed $default = null): mixed {}
+    public function get(string $key = null, mixed $default = null): mixed {}
+    public function post(string $key = null, mixed $default = null): mixed {}
+    public function query(string $key = null, mixed $default = null): mixed {}
+    public function cookie(string $key = null, mixed $default = null): mixed {}
+    public function server(string $key = null, mixed $default = null): mixed {}
+    public function header(string $key = null, mixed $default = null): mixed {}
+    public function bearerToken(): ?string {}
+    
+    // Input filtering and selection
+    public function only(array|mixed $keys): array {}
+    public function except(array|mixed $keys): array {}
+    public function collect(array|string|null $key = null): \Illuminate\Support\Collection {}
+    
+    // Input validation
+    public function has(string|array $key): bool {}
+    public function hasAny(array $keys): bool {}
+    public function filled(string|array $key): bool {}
+    public function isNotFilled(string|array $key): bool {}
+    public function missing(string|array $key): bool {}
+    public function exists(string $key): bool {}
+    public function whenHas(string $key, callable $callback, ?callable $default = null): mixed {}
+    public function whenFilled(string $key, callable $callback, ?callable $default = null): mixed {}
+    public function whenMissing(string $key, callable $callback, ?callable $default = null): mixed {}
+    
+    // All input data
+    public function all(?array $keys = null): array {}
+    public function keys(): array {}
+    
+    // Request information
+    public function path(): string {}
+    public function decodedPath(): string {}
+    public function url(): string {}
+    public function fullUrl(): string {}
+    public function fullUrlWithQuery(array $query): string {}
+    public function fullUrlWithoutQuery(array|string $keys): string {}
+    public function method(): string {}
+    public function isMethod(string $method): bool {}
+    public function getRealMethod(): string {}
+    public function root(): string {}
+    public function schemeAndHttpHost(): string {}
+    
+    // Client information
+    public function ip(): ?string {}
+    public function ips(): array {}
+    public function userAgent(): ?string {}
+    
+    // Request matching
+    public function is(mixed ...$patterns): bool {}
+    public function routeIs(mixed ...$patterns): bool {}
+    public function fullUrlIs(mixed ...$patterns): bool {}
+    
+    // AJAX and JSON
+    public function ajax(): bool {}
+    public function pjax(): bool {}
+    public function prefetch(): bool {}
+    public function expectsJson(): bool {}
+    public function wantsJson(): bool {}
+    public function acceptsJson(): bool {}
+    public function acceptsHtml(): bool {}
+    public function accepts(string|array $contentTypes): bool {}
+    public function prefers(string|array $contentTypes): ?string {}
+    public function acceptsAnyContentType(): bool {}
+    
+    // JSON input
+    public function json(?string $key = null, mixed $default = null): mixed {}
+    
+    // File uploads
+    public function file(string $key = null, mixed $default = null): UploadedFile|array|null {}
+    public function allFiles(): array {}
+    public function hasFile(string $key): bool {}
+    
+    // Validation
+    public function validate(array $rules, array $messages = [], array $attributes = []): array {}
+    public function validateWithBag(string $errorBag, array $rules, array $messages = [], array $attributes = []): array {}
+    public function validated(string|array|null $key = null, mixed $default = null): mixed {}
+    public function safe(array|null $keys = null): array {}
+    
+    // Session
+    public function session(): \Illuminate\Session\Store {}
+    public function hasSession(): bool {}
+    public function setLaravelSession(\Illuminate\Session\Store $session): void {}
+    
+    // Flashed input
+    public function flash(): void {}
+    public function flashExcept(array|mixed $keys): void {}
+    public function flashOnly(array|mixed $keys): void {}
+    public function flush(): void {}
+    public function old(string $key = null, mixed $default = null): mixed {}
+    public function hasOldInput(string $key = null): bool {}
+    public function oldInput(string $key = null, mixed $default = null): mixed {}
+    
+    // Request type checks
+    public function isJson(): bool {}
+    public function isXmlHttpRequest(): bool {}
+    public function isSecure(): bool {}
+    
+    // Content
+    public function getContent(): string {}
+    public function getContentType(): ?string {}
+    public function getETags(): array {}
+    public function isNoCache(): bool {}
+    public function getPreferredLanguage(array $locales = null): ?string {}
+    public function getLanguages(): array {}
+    public function getCharsets(): array {}
+    public function getEncodings(): array {}
+    
+    // Route parameters
+    public function route(string $param = null, mixed $default = null): mixed {}
+    
+    // Merging data
+    public function merge(array $input): static {}
+    public function mergeIfMissing(array $input): static {}
+    public function replace(array $input): static {}
+    
+    // Duplicating request
+    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null): static {}
+    
+    // Converting to arrays
+    public function toArray(): array {}
+    
+    // Request fingerprinting
+    public function fingerprint(): string {}
+    
+    // Headers
+    public function headers(): \Symfony\Component\HttpFoundation\HeaderBag {}
+    
+    // Segments
+    public function segments(): array {}
+    public function segment(int $index, mixed $default = null): mixed {}
+    
+    // Format
+    public function format(mixed $default = 'html'): mixed {}
+    
+    // PSR-7 compatibility
+    public function toPsrRequest(): \Psr\Http\Message\ServerRequestInterface {}
+    
+    // Magic methods
+    public function __get(string $key): mixed {}
+    public function __set(string $key, mixed $value): void {}
+    public function __isset(string $key): bool {}
+    public function __unset(string $key): void {}
+}

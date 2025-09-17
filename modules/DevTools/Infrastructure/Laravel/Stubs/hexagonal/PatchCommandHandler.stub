@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Command;
+
+use Modules\{{domain}}\Domain\Repository\{{domain}}RepositoryInterface;
+
+final class {{prefix}}Patch{{domain}}CommandHandler
+{
+    public function __construct(private {{domain}}RepositoryInterface ${{domainCamelCase}}Repository)
+    {
+    }
+
+    public function handle(Patch{{domain}}Command $command): void
+    {
+        $updatedData = array_filter(
+            [
+                'title' => $command->title,
+                'author' => $command->author,
+                'pages' => $command->pages,
+                'published_year' => $command->publishedYear,
+                'is_available' => $command->isAvailable,
+            ],
+            fn ($value) => $value !== null
+        );
+
+        $this->{{domainCamelCase}}Repository->patch($command->id, $updatedData);
+    }
+}

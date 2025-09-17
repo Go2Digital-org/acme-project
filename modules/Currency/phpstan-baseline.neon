@@ -1,0 +1,7 @@
+# PHPStan baseline for Currency module
+# These are mostly template type issues with Laravel's collect() helper
+# The code is type-safe but PHPStan can't infer the template types
+parameters:
+	ignoreErrors:
+		- '#Unable to resolve the template type TKey in call to function collect#'
+		- '#Unable to resolve the template type TValue in call to function collect#'

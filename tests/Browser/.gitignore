@@ -1,0 +1,9 @@
+# Browser test artifacts
+screenshots/
+artifacts/
+baseline/
+diffs/
+
+# Temporary files
+*.tmp
+*.log

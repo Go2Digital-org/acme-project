@@ -1,0 +1,353 @@
+{
+    # Production configuration optimized for performance with Octane
+    frankenphp {
+        # Octane worker configuration for production
+        worker {
+            file /app/public/index.php
+            num auto
+            env APP_ENV=production
+            env APP_DEBUG=false
+            env OCTANE_SERVER=frankenphp
+        }
+    }
+    
+    # Global production options
+    admin off
+    persist_config off
+    auto_https off
+    
+    # Enable HTTP/2 and HTTP/3 for optimal performance
+    servers {
+        protocols h1 h2 h3
+        max_header_size 16384
+        timeouts {
+            read_body 30s
+            read_header 10s
+            write 30s
+            idle 2m
+        }
+    }
+}
+
+# Multi-tenant wildcard domain support
+:80, {$SERVER_NAME:localhost}, *.{$SERVER_NAME:localhost} {
+    # Root directory
+    root * /app/public
+
+    # Octane-powered PHP server with optimal configuration
+    php_server {
+        # Mercure hub for real-time features
+        mercure {
+            publisher_jwt {$MERCURE_PUBLISHER_JWT_KEY:!ChangeThisMercureHubJWTSecretKey!}
+            subscriber_jwt {$MERCURE_SUBSCRIBER_JWT_KEY:!ChangeThisMercureHubJWTSecretKey!}
+            
+            # Production Mercure settings
+            cors_origins {$MERCURE_CORS_ORIGINS:*}
+            publish_origins {$MERCURE_PUBLISH_ORIGINS:*}
+            subscriptions 4096
+            anonymous_subscriptions false
+            heartbeat_interval 15s
+        }
+        
+        # Production timeouts
+        timeouts {
+            read_body 30s
+            read_header 10s
+            write 30s
+            idle 2m
+        }
+        
+        # Trusted proxies for production
+        trusted_proxies static private_ranges
+    }
+
+    # Static file serving with aggressive caching and precompression
+    file_server {
+        precompressed zstd br gzip
+        index index.php
+        hide .*
+    }
+
+    # Multi-stage compression for optimal performance
+    encode {
+        zstd better
+        br 11
+        gzip 9
+        minimum_length 256
+        
+        # Optimize compression for specific content types
+        match {
+            header Content-Type text/*
+            header Content-Type application/javascript*
+            header Content-Type application/json*
+            header Content-Type application/xml*
+            header Content-Type application/xhtml+xml*
+            header Content-Type image/svg+xml*
+        }
+    }
+
+    # Production security headers
+    header {
+        # Core security headers
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+        
+        # HSTS for HTTPS (uncomment when using HTTPS)
+        # Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        
+        # Production CSP (restrictive)
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' wss: https: {$MERCURE_URL:}; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+        
+        # Remove server identification
+        -Server
+        -X-Powered-By
+        
+        # Performance headers
+        X-DNS-Prefetch-Control "on"
+        X-Permitted-Cross-Domain-Policies "none"
+    }
+
+    # Static assets with long-term caching
+    @static {
+        path *.jpg *.jpeg *.png *.gif *.ico *.svg *.webp *.avif
+        path *.css *.js *.woff *.woff2 *.ttf *.eot *.otf
+        path *.pdf *.zip *.tar *.gz *.mp4 *.mp3 *.wav
+    }
+    
+    header @static {
+        Cache-Control "public, max-age=31536000, immutable"
+        Expires "1 year"
+    }
+
+    # API routes with rate limiting and optimization
+    @api {
+        path /api/*
+    }
+    
+    handle @api {
+        # Rate limiting for API endpoints
+        rate_limit {
+            zone api {
+                key {remote_host}
+                events 120
+                window 1m
+            }
+            
+            zone api_strict {
+                key {remote_host}
+                events 10
+                window 1m
+                only_matching_hosts *.admin.* *.secure.*
+            }
+        }
+        
+        # API-specific headers
+        header {
+            X-API-Version "v1"
+            X-Rate-Limit-Remaining "{rate_limit.api.remaining}"
+            X-Rate-Limit-Reset "{rate_limit.api.reset}"
+        }
+        
+        # CORS for production API
+        @options {
+            method OPTIONS
+        }
+        respond @options 204 {
+            Access-Control-Allow-Origin "{$CORS_ALLOWED_ORIGINS:*}"
+            Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+            Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN"
+            Access-Control-Max-Age "86400"
+        }
+        
+        header {
+            Access-Control-Allow-Origin "{$CORS_ALLOWED_ORIGINS:*}"
+            Access-Control-Allow-Credentials "true"
+        }
+        
+        php_server
+    }
+
+    # Storage routes with tenant-aware paths
+    @storage {
+        path /storage/*
+    }
+    
+    handle @storage {
+        root * /app/storage/app/public
+        file_server
+        
+        # Cache uploaded files but allow updates
+        header Cache-Control "public, max-age=604800, must-revalidate"
+        
+        # Security for uploaded files
+        @dangerous {
+            path *.php *.phtml *.php3 *.php4 *.php5 *.php7 *.phps *.pht *.phar
+            path *.asp *.aspx *.jsp *.jspx *.sh *.bat *.exe
+        }
+        respond @dangerous "File type not allowed" 403
+    }
+
+    # Tenant-specific storage (if using multi-tenancy)
+    @tenant_storage {
+        path /tenant-storage/*
+    }
+    
+    handle @tenant_storage {
+        root * /app/storage/app/tenants
+        file_server
+        header Cache-Control "private, max-age=3600"
+    }
+
+    # Health check with enhanced monitoring
+    handle /health {
+        @deep_check {
+            query check=deep
+        }
+        
+        # Deep health check (database, redis, etc.)
+        handle @deep_check {
+            reverse_proxy http://127.0.0.1:80/api/health/deep {
+                header_up X-Internal-Request "true"
+            }
+        }
+        
+        # Basic health check
+        respond "OK" 200 {
+            Content-Type "text/plain"
+            X-Health-Status "healthy"
+            X-Timestamp "{time.now.unix}"
+        }
+    }
+
+    # Metrics endpoint (internal monitoring)
+    handle /metrics {
+        @internal {
+            remote_ip private_ranges
+        }
+        
+        respond @internal `{
+            "server": "frankenphp",
+            "octane": true,
+            "workers": "auto",
+            "memory_usage": "{http.request.env.MEMORY_USAGE}",
+            "uptime": "{http.request.env.UPTIME}",
+            "timestamp": {time.now.unix}
+        }` 200 {
+            Content-Type "application/json"
+        }
+        
+        respond "Forbidden" 403
+    }
+
+    # Horizon dashboard (protected)
+    @horizon {
+        path /horizon/*
+    }
+    
+    handle @horizon {
+        @authorized {
+            remote_ip private_ranges
+            header Authorization "*"
+        }
+        
+        handle @authorized {
+            php_server
+        }
+        
+        respond "Unauthorized" 401
+    }
+
+    # Robots.txt handling
+    handle /robots.txt {
+        respond `User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/internal/
+Disallow: /storage/
+Disallow: /horizon/
+
+Sitemap: https://{host}/sitemap.xml` 200 {
+            Content-Type "text/plain"
+        }
+    }
+
+    # Sitemap handling
+    handle /sitemap.xml {
+        php_server
+        header Cache-Control "public, max-age=3600"
+    }
+
+    # Error pages with tenant awareness
+    handle_errors {
+        @404 {
+            expression {http.error.status_code} == 404
+        }
+        respond @404 "Resource not found" 404 {
+            Content-Type "application/json"
+        }
+        
+        @429 {
+            expression {http.error.status_code} == 429
+        }
+        respond @429 "Rate limit exceeded" 429 {
+            Content-Type "application/json"
+            Retry-After "60"
+        }
+        
+        @5xx {
+            expression {http.error.status_code} >= 500
+        }
+        respond @5xx "Service temporarily unavailable" 500 {
+            Content-Type "application/json"
+        }
+    }
+
+    # Production logging (structured)
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100mb
+            roll_keep 10
+            roll_keep_for 720h
+        }
+        format json {
+            time_format "2006-01-02T15:04:05.000Z07:00"
+            message_key "message"
+            level_key "level"
+            time_key "timestamp"
+            logger_key "logger"
+            caller_key "caller"
+        }
+        level ERROR
+    }
+}
+
+# WWW redirect (if needed)
+www.{$SERVER_NAME:localhost} {
+    redir https://{$SERVER_NAME:localhost}{uri} permanent
+}
+
+# Admin subdomain (if needed)
+admin.{$SERVER_NAME:localhost} {
+    # Enhanced security for admin subdomain
+    header {
+        X-Frame-Options "DENY"
+        X-Content-Type-Options "nosniff"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';"
+    }
+    
+    # Rate limiting for admin
+    rate_limit {
+        zone admin {
+            key {remote_host}
+            events 30
+            window 1m
+        }
+    }
+    
+    php_server
+    file_server
+}

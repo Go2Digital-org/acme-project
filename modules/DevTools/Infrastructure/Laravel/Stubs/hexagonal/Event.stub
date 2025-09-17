@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Event;
+
+use Modules\Shared\Application\Command\CommandInterface;
+
+class {{prefix}}{{domain}}CreatedEvent implements CommandInterface
+{
+    public function __construct(
+        {{properties}}
+    ) {
+    }
+}

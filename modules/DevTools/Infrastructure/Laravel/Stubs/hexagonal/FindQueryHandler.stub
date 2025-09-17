@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Application\Query;
+
+use Modules\{{domain}}\Domain\Model\{{domain}};
+use Modules\{{domain}}\Domain\Repository\{{domain}}RepositoryInterface;
+use Modules\Shared\Infrastructure\Laravel\Exception\ResourceNotFoundException;
+
+/**
+ * Handler for Find{{domain}}Query.
+ *
+ * This handler processes the query to find a single {{domain}} entity by ID.
+ * It follows the CQRS pattern and delegates to the domain repository.
+ */
+final readonly class {{prefix}}Find{{domain}}QueryHandler
+{
+    /**
+     * @param {{domain}}RepositoryInterface ${{domainCamelCase}}Repository The repository for {{domain}} entities
+     */
+    public function __construct(private {{domain}}RepositoryInterface ${{domainCamelCase}}Repository)
+    {
+    }
+
+    /**
+     * Handle the find {{domain}} query.
+     *
+     * @param Find{{domain}}Query $query The query containing the {{domain}} ID
+     * @return {{domain}} The found {{domain}} entity
+     * @throws ResourceNotFoundException If the {{domain}} is not found
+     */
+    public function handle(Find{{domain}}Query $query): {{domain}}
+    {
+        return $this->{{domainCamelCase}}Repository->find($query->getId());
+    }
+}

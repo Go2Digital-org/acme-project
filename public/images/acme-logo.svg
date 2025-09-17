@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="acme-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Modern geometric logo mark -->
+  <g id="logo-mark">
+    <path d="M4 16 L16 4 L28 16 L16 28 Z" fill="url(#acme-gradient)" opacity="0.9"/>
+    <path d="M12 16 L16 12 L20 16 L16 20 Z" fill="white" opacity="0.95"/>
+    <circle cx="16" cy="16" r="2" fill="url(#acme-gradient)"/>
+  </g>
+  
+  <!-- Company text -->
+  <g id="company-text" fill="#6B7280">
+    <text x="36" y="12" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="700" fill="url(#acme-gradient)">ACME</text>
+    <text x="36" y="22" font-family="Inter, system-ui, sans-serif" font-size="8" font-weight="500" opacity="0.8">CORP</text>
+  </g>
+  
+  <!-- CSR indicator -->
+  <g id="csr-badge">
+    <rect x="76" y="10" width="40" height="12" rx="6" fill="url(#acme-gradient)" opacity="0.1"/>
+    <text x="96" y="18" font-family="Inter, system-ui, sans-serif" font-size="6" font-weight="600" text-anchor="middle" fill="url(#acme-gradient)">CSR PLATFORM</text>
+  </g>
+</svg>

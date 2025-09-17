@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\Laravel\Provider;
+
+use Illuminate\Support\ServiceProvider;
+
+class {{prefix}}{{domain}}ServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        //
+    }
+}

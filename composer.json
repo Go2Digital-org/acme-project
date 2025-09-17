@@ -1,0 +1,143 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": ["laravel", "framework"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2|^8.3|^8.4",
+        "api-platform/laravel": "^4.0",
+        "barryvdh/laravel-dompdf": "^3.1",
+        "bezhansalleh/filament-shield": "4.0.0-beta2",
+        "darkaonline/l5-swagger": "^9.0",
+        "diglactic/laravel-breadcrumbs": "^10.0",
+        "fakerphp/faker": "^1.23",
+        "filament/filament": "^4.0",
+        "http-interop/http-factory-guzzle": "^1.2",
+        "jenssegers/agent": "^2.6",
+        "laravel/fortify": "^1.28",
+        "laravel/framework": "^12.0",
+        "laravel/horizon": "^5.33",
+        "laravel/octane": "*",
+        "laravel/pulse": "^1.4",
+        "laravel/sanctum": "^4.2",
+        "laravel/scout": "^10.19",
+        "laravel/socialite": "^5.16",
+        "laravel/tinker": "^2.10.1",
+        "maatwebsite/excel": "^3.1",
+        "mcamara/laravel-localization": "^2.0",
+        "meilisearch/meilisearch-php": "^1.15",
+        "mollie/laravel-mollie": "^3.1",
+        "owen-it/laravel-auditing": "^14.0",
+        "pragmarx/google2fa": "^8.0",
+        "pxlrbt/filament-environment-indicator": "^3.1",
+        "sentry/sentry-laravel": "^4.16",
+        "solution-forest/filament-translate-field": "^2.0",
+        "stancl/tenancy": "^3.9",
+        "stechstudio/filament-impersonate": "^4.0",
+        "stripe/stripe-php": "^17.0"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.16",
+        "barryvdh/laravel-ide-helper": "^3.6",
+        "canvural/larastan-strict-rules": "^3.0",
+        "deptrac/deptrac": "^4.1",
+        "driftingly/rector-laravel": "^2.0",
+        "enlightn/security-checker": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "kitloong/laravel-migrations-generator": "^7.2",
+        "larastan/larastan": "^3.0",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.13",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-browser": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "php-webdriver/webdriver": "^1.15",
+        "phpro/grumphp": "^2.0",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^12.3",
+        "rector/rector": "^2.1",
+        "rector/type-perfect": "^2.1",
+        "roave/security-advisories": "dev-latest"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Modules\\": "modules/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan config:clear",
+            "@php artisan clear-compiled",
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
+        "test": "./vendor/bin/pest --no-coverage",
+        "test:unit": "./vendor/bin/pest --testsuite=Unit --no-coverage",
+        "test:integration": "./vendor/bin/pest --testsuite=Integration --no-coverage",
+        "test:feature": "./vendor/bin/pest --testsuite=Feature --no-coverage",
+        "test:browser": "./vendor/bin/pest tests/Browser --no-coverage",
+        "test:parallel": "./vendor/bin/pest --no-coverage --parallel",
+        
+        "lint": "vendor/bin/grumphp run",
+        "lint:fix": "vendor/bin/pint",
+        "rector:check-safe": "vendor/bin/rector process --config=rector/rector-safe.php --dry-run",
+        "pre-commit-checks": "(vendor/bin/rector process --config=rector/rector-safe.php --dry-run || true) && vendor/bin/pint",
+        "pre-commit": "vendor/bin/grumphp run --testsuite=git_pre_commit",
+        
+        "stan": "vendor/bin/phpstan clear-result-cache && vendor/bin/phpstan analyse",
+        "stan:baseline": "vendor/bin/phpstan analyse --generate-baseline",
+        "deptrac": "vendor/bin/deptrac analyse",
+
+        "rector": "vendor/bin/rector process --config=rector/rector-safe.php",
+        "rector:dry": "vendor/bin/rector process --config=rector/rector-safe.php --dry-run",
+        "rector:aggressive": "vendor/bin/rector process --config=rector/rector.php --dry-run",
+        "rector:aggressive:apply": "vendor/bin/rector process --config=rector/rector.php"
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true,
+            "phpro/grumphp": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

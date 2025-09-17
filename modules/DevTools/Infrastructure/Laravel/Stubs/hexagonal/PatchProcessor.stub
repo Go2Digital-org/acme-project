@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\ApiPlatform\Handler\Processor;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use Modules\{{domain}}\Application\Command\Patch{{domain}}Command;
+use Modules\Shared\Application\Command\CommandBusInterface;
+
+/**
+ * @implements ProcessorInterface<object, mixed>
+ */
+final readonly class {{prefix}}Patch{{domain}}Processor implements ProcessorInterface
+{
+    public function __construct(
+        private CommandBusInterface $commandBus,
+    ) {
+    }
+
+    public function process(
+        mixed $data,
+        Operation $operation,
+        array $uriVariables = [],
+        array $context = []
+    ): mixed {
+        $previousData = $context['previous_data'] ?? throw new \InvalidArgumentException('Previous data context is required');
+
+        $command = new Patch{{domain}}Command(
+            id: $previousData->id,
+            name: $data->name ?? $previousData->name,
+            description: $data->description ?? $previousData->description,
+            status: $data->status ?? $previousData->status,
+            createdBy: $data->created_by ?? $previousData->created_by,
+            isActive: $data->is_active ?? $previousData->is_active
+        );
+
+        $this->commandBus->dispatch($command);
+
+        // Let API Platform handle the response
+        return $data;
+    }
+}

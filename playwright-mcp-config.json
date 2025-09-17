@@ -1,0 +1,52 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "isolated": true,
+    "launchOptions": {
+      "headless": true,
+      "args": [
+        "--disable-blink-features=AutomationControlled",
+        "--disable-dev-shm-usage",
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--disable-web-security",
+        "--disable-features=IsolateOrigins,site-per-process"
+      ]
+    },
+    "contextOptions": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "ignoreHTTPSErrors": true,
+      "bypassCSP": true,
+      "reducedMotion": "reduce",
+      "forcedColors": "none",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+  },
+  "server": {
+    "port": 8931,
+    "host": "localhost"
+  },
+  "capabilities": [
+    "tabs",
+    "install"
+  ],
+  "outputDir": "./tests/Browser/playwright-output",
+  "network": {
+    "blockedOrigins": [
+      "*.doubleclick.net",
+      "*.google-analytics.com",
+      "*.googletagmanager.com",
+      "*.facebook.com",
+      "*.twitter.com",
+      "*.hotjar.com",
+      "*.segment.io",
+      "*.mixpanel.com",
+      "*.amplitude.com"
+    ]
+  },
+  "imageResponses": "omit"
+}

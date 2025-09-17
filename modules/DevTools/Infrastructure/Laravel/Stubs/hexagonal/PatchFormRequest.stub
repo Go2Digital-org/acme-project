@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\Laravel\FormRequest;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class {{prefix}}Patch{{domain}}FormRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'title' => ['nullable', 'string'],
+            'author' => ['nullable', 'string'],
+            'pages' => ['nullable', 'integer'],
+            'published_year' => ['nullable', 'integer'],
+            'is_available' => ['nullable', 'boolean'],
+        ];
+    }
+}

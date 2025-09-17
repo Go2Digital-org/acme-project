@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\ApiPlatform\Handler\Provider;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\Pagination\Pagination;
+use ApiPlatform\State\ProviderInterface;
+use ArrayIterator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Modules\{{domain}}\Application\Query\Find{{domain}}sQuery;
+use Modules\{{domain}}\Infrastructure\ApiPlatform\Resource\{{domain}}Resource;
+use Modules\Shared\Application\Query\QueryBusInterface;
+use Modules\Shared\Infrastructure\ApiPlatform\State\Paginator;
+
+/**
+ * @implements ProviderInterface<Paginator|array>
+ */
+final readonly class {{prefix}}{{domain}}CollectionProvider implements ProviderInterface
+{
+    public function __construct(
+        private QueryBusInterface $queryBus,
+        private Pagination $pagination,
+    ) {
+    }
+
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): Paginator|array
+    {
+        $offset = $limit = null;
+        $filters = $context['filters'] ?? [];
+        $sorts = ($context['filters'] ?? [])['sort'] ?? [];
+
+        if ($this->pagination->isEnabled($operation, $context)) {
+            $offset = $this->pagination->getPage($context);
+            $limit = $this->pagination->getLimit($operation, $context);
+        }
+
+        $models = $this->queryBus->ask(new Find{{domain}}sQuery($offset, $limit, $filters, $sorts, $operation));
+
+        if (! $models || $models->isEmpty()) {
+            return [];
+        }
+
+        $resources = $models->map(fn ($model) => {{domain}}Resource::fromModel($model))->toArray();
+
+        if ($models instanceof LengthAwarePaginator) {
+            return new Paginator(
+                new ArrayIterator($resources),
+                $models->currentPage(),
+                $models->perPage(),
+                $models->lastPage(),
+                $models->total()
+            );
+        }
+
+        return $resources;
+    }
+}

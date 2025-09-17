@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{domain}}\Infrastructure\Laravel\FormRequest;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class {{prefix}}Create{{domain}}FormRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'title' => ['required', 'string'],
+            'author' => ['required', 'string'],
+            'pages' => ['required', 'integer'],
+            'published_year' => ['required', 'integer'],
+            'is_available' => ['required', 'boolean'],
+        ];
+    }
+}
