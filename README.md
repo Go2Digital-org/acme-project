@@ -2,7 +2,7 @@
 
 # ACME Corp CSR Platform
 
-</div>
+
 
 [![CI Pipeline](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml/badge.svg)](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml)[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-Level%208-brightgreen.svg)](https://phpstan.org)
@@ -12,7 +12,6 @@
 [![Tests](https://img.shields.io/badge/Tests-3,903%20tests%20|%2013,133%20assertions-brightgreen.svg)](#testing)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](#license)
 
-<div align="center">
   <img src="https://go2digit.al/storage/media/a58e6e4f-04bc-4e84-86fb-c18bd0f15e03.png" alt="ACME Corp CSR Platform Banner" width="600">
 </div>
 
