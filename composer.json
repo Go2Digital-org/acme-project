@@ -45,7 +45,6 @@
         "deptrac/deptrac": "^4.1",
         "driftingly/rector-laravel": "^2.0",
         "enlightn/security-checker": "^2.0",
-        "friendsofphp/php-cs-fixer": "^3.0",
         "kitloong/laravel-migrations-generator": "^7.2",
         "larastan/larastan": "^3.0",
         "laravel/pail": "^1.2.2",
@@ -112,7 +111,6 @@
         "lint:fix": "vendor/bin/pint",
         "rector:check-safe": "vendor/bin/rector process --config=rector/rector-safe.php --dry-run",
         "pre-commit-checks": "(vendor/bin/rector process --config=rector/rector-safe.php --dry-run || true) && vendor/bin/pint",
-        "pre-commit-checks-fast": "vendor/bin/pint --dirty",
         "pre-commit": "vendor/bin/grumphp run --testsuite=git_pre_commit",
         
         "stan": "vendor/bin/phpstan clear-result-cache && vendor/bin/phpstan analyse",
