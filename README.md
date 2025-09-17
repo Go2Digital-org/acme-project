@@ -6,6 +6,7 @@
 
 [![CI Pipeline](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml/badge.svg)](https://github.com/go2digit-al/acme-project/actions/workflows/ci.yml)[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-Level%208-brightgreen.svg)](https://phpstan.org)
+[![Security Check](https://img.shields.io/badge/Security-Enlightn%20Enabled-blue.svg)](https://www.laravel-enlightn.com/docs/security/security-analyzer.html)
 [![Deployment Status](https://img.shields.io/badge/Staging-Deployed-success.svg)](https://staging.acme-corp.go2digit.al)
 [![Code Quality](https://img.shields.io/badge/Code%20Quality-Pint%20%E2%80%A2%20PHPStan%20%E2%80%A2%20Rector%20%E2%80%A2%20Deptrac-0ea5e9.svg)](#quality)
 [![Tests](https://img.shields.io/badge/Tests-3,903%20tests%20|%2013,133%20assertions-brightgreen.svg)](#testing)
@@ -768,6 +769,19 @@ Please read our contributing guidelines before submitting pull requests.
 - Ensure PHPStan Level 8 compliance
 - Apply Rector automated refactoring rules
 - Pass all GrumPHP checks (includes Pint, PHPStan, Rector, and Deptrac)
+
+## Roadmap
+
+#### Frontend Decoupling
+- [ ] **Vue.js 3 Headless Client**: Develop a modern Vue.js 3 application consuming the API Platform endpoints for complete frontend-backend separation
+- [ ] **React Alternative Client**: Create a React-based client implementation demonstrating framework flexibility through the API-first architecture
+- [ ] **API Platform Enhancement**: Extend API Platform integration with GraphQL support, advanced filtering, and real-time subscriptions via Mercure
+
+#### General Improvements
+- [ ] **Code Cleanup**: Refactor legacy code sections and remove deprecated methods
+- [ ] **Bug Fixes**: Address known issues in campaign management, donation processing, and user authentication flows
+- [ ] **Performance Optimization**: Optimize database queries and implement additional caching strategies
+- [ ] **Technical Debt**: Resolve accumulated technical debt and improve code maintainability
 
 ## Support
 

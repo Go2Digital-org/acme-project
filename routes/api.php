@@ -56,6 +56,6 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-// All other API endpoints are handled by:a
+// All other API endpoints are handled by:
 // 1. API Platform - See modules/*/Infrastructure/ApiPlatform/Resource/*Resource.php
 // 2. Module-specific routes - See modules/*/Infrastructure/Laravel/routes/api.php
