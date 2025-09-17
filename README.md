@@ -663,35 +663,15 @@ php artisan queue:work --queue=exports,default --timeout=900 --memory=1024
 
 #### Production - Supervisor Configuration
 
-Create `/etc/supervisor/conf.d/laravel-worker.conf`:
-
-```ini
-[program:laravel-export-worker]
-process_name=%(program_name)s_%(process_num)02d
-command=php /home/acme/acme-corp-optimy/artisan queue:work --queue=exports,default --sleep=3 --tries=3 --timeout=900
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
-user=www-data
-numprocs=2
-redirect_stderr=true
-stdout_logfile=/var/log/supervisor/export-worker.log
-stopwaitsecs=3600
-```
-
-Start and manage workers:
-
 ```bash
-# Reload supervisor configuration
-sudo supervisorctl reread
-sudo supervisorctl update
-
-# Start workers
+# Start export workers
 sudo supervisorctl start laravel-export-worker:*
 
-# Check status
+# Check worker status
 sudo supervisorctl status
+
+# Restart workers
+sudo supervisorctl restart laravel-export-worker:*
 ```
 
 #### Docker Queue Workers
