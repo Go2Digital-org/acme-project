@@ -644,6 +644,68 @@ MEILISEARCH_PORT=7700
    - Main app: http://localhost
    - Check emails: http://localhost:8025
 
+### Queue Workers
+
+The platform uses queue workers to process background jobs including exports, notifications, and payment processing.
+
+#### Development - Running Queue Workers
+
+```bash
+# Process all queues
+php artisan queue:work
+
+# Process export queue specifically
+php artisan queue:work --queue=exports,default
+
+# Process with timeout for large exports
+php artisan queue:work --queue=exports,default --timeout=900 --memory=1024
+```
+
+#### Production - Supervisor Configuration
+
+Create `/etc/supervisor/conf.d/laravel-worker.conf`:
+
+```ini
+[program:laravel-export-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /home/acme/acme-corp-optimy/artisan queue:work --queue=exports,default --sleep=3 --tries=3 --timeout=900
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/export-worker.log
+stopwaitsecs=3600
+```
+
+Start and manage workers:
+
+```bash
+# Reload supervisor configuration
+sudo supervisorctl reread
+sudo supervisorctl update
+
+# Start workers
+sudo supervisorctl start laravel-export-worker:*
+
+# Check status
+sudo supervisorctl status
+```
+
+#### Docker Queue Workers
+
+```bash
+# Scale queue workers in Docker
+docker-compose up -d --scale queue-worker=4
+
+# View worker logs
+docker-compose logs -f queue-worker
+```
+
+For detailed export queue setup, see [Export Queue Setup Guide](docs/infrastructure/export-queue-setup.md).
+
 ### Production Deployment
 
 ```bash
