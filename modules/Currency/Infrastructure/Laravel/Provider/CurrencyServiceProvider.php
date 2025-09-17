@@ -125,7 +125,7 @@ class CurrencyServiceProvider extends ServiceProvider
 
         // Register helper function
         if (! function_exists('current_currency')) {
-            require_once __DIR__ . '/../helpers.php';
+            require_once __DIR__ . '/../Helper/CurrencyHelper.php';
         }
     }
 }

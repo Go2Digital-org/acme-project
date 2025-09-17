@@ -104,37 +104,43 @@ modules/[ModuleName]/
 ### Documentation
 
 #### Architecture & Design
-- [Architecture Decision Records](docs/architecture/adr/)
 - [Module Structure Guide](docs/architecture/module-structure.md)
 - [Module Interactions](docs/architecture/module-interactions.md)
 - [Hexagonal Architecture](docs/architecture/hexagonal-architecture.md)
 - [Payment Architecture](docs/architecture/payment-architecture.md)
 - [API Platform Design](docs/architecture/api-platform-design.md)
+- [Internationalization](docs/architecture/internationalization.md)
 
 #### Development
 - [Developer Guide](docs/development/developer-guide.md)
-- [Creating New Modules](docs/development/creating-new-module.md)
-- [Migration Guide](docs/development/migration-guide.md)
-- [Testing Guide](docs/development/testing-guide.md)
 - [CI/CD Pipeline](docs/development/ci-cd-pipeline.md)
 - [Localization](docs/development/translation.md)
+- [Getting Started](docs/development/getting-started.md)
+- [Code Quality](docs/development/code-quality.md)
+- [Linting & Testing](docs/development/linting-testing.md)
+- [Hex Commands](docs/development/hex-commands.md)
 
 #### Infrastructure & Operations
-- [Docker Deployment](docs/docker/docker-deployment.md)
 - [Deployment Guide](docs/infrastructure/deployment.md)
-- [Infrastructure Setup](docs/infrastructure/)
-- [Security Documentation](docs/security/)
-- [Performance Optimization](docs/analysis/performance-gaps.md)
 - [Meilisearch Troubleshooting](docs/infrastructure/meilisearch-troubleshooting.md)
+- [Queue Worker System](docs/infrastructure/queue-worker-system.md)
+- [Worker Deployment](docs/infrastructure/worker-deployment.md)
+- [Redis Cache Usage](docs/infrastructure/redis-cache-usage.md)
+- [Redis Queue](docs/infrastructure/redis-queue.md)
+- [Staging Server Setup](docs/infrastructure/staging-server-setup.md)
+- [GitHub Runner Setup](docs/infrastructure/github-runner-setup.md)
+- [Job Monitoring](docs/infrastructure/job-monitoring.md)
+- [Tenancy Setup](docs/infrastructure/tenancy-setup.md)
 
-#### Quality Assurance
-- [Code Quality & Linting](docs/linting/)
-- [Testing & Coverage](docs/testing/)
-- [Static Analysis](docs/quality/)
+#### Docker & Containers
+- [Docker Deployment](docs/docker/docker-deployment.md)
+- [FrankenPHP Configuration](docs/docker/frankenphp.md)
+- [Multi-Tenancy Guide](docs/docker/multi-tenancy-guide.md)
+- [Supervisor Configuration](docs/docker/supervisor.md)
 
-#### Specialized Guides
-- [Docker Services](docs/docker/) - Container documentation
-- [Module Helpers](docs/modules/) - Shared utilities
+#### Module Documentation
+- [Currency Usage](docs/modules/currency-usage.md)
+- [Notification Broadcasting](docs/modules/notification-broadcasting.md)
 
 ## Requirements
 
