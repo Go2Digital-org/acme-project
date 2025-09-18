@@ -96,9 +96,7 @@ class SearchServiceProvider extends ServiceProvider
         // Load migrations
         $this->loadMigrationsFrom(__DIR__ . '/../Migration');
 
-        // Load routes
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        // No routes to load - Search module uses API Platform resources only
 
         // Publish configuration
         if ($this->app->runningInConsole()) {

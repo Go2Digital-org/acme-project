@@ -104,22 +104,18 @@ class CategorySearchService extends SearchService
 
         $cacheKey = $this->getCachePrefix() . ':name_suggestions:' . md5($query . $limit);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query, $limit) {
-            return Category::search($query)
-                ->where('is_active', true)
-                ->take($limit)
-                ->get()
-                ->map(function (Category $category) {
-                    return [
-                        'id' => $category->id,
-                        'name' => $category->getName(),
-                        'slug' => $category->slug,
-                        'icon' => $category->icon,
-                        'color' => $category->color,
-                        'campaigns_count' => $category->campaigns_count ?? 0,
-                    ];
-                });
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Category::search($query)
+            ->where('is_active', true)
+            ->take($limit)
+            ->get()
+            ->map(fn (Category $category) => [
+                'id' => $category->id,
+                'name' => $category->getName(),
+                'slug' => $category->slug,
+                'icon' => $category->icon,
+                'color' => $category->color,
+                'campaigns_count' => $category->campaigns_count ?? 0,
+            ]));
     }
 
     /**
@@ -131,12 +127,10 @@ class CategorySearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':active_ordered';
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () {
-            return Category::search('')
-                ->where('is_active', true)
-                ->orderBy('sort_order', 'asc')
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Category::search('')
+            ->where('is_active', true)
+            ->orderBy('sort_order', 'asc')
+            ->get());
     }
 
     /**
@@ -148,14 +142,12 @@ class CategorySearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':most_popular:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Category::search('')
-                ->where('is_active', true)
-                ->where('has_active_campaigns', true)
-                ->orderBy('campaigns_count', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Category::search('')
+            ->where('is_active', true)
+            ->where('has_active_campaigns', true)
+            ->orderBy('campaigns_count', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**
@@ -241,14 +233,12 @@ class CategorySearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':empty:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Category::search('')
-                ->where('is_active', true)
-                ->where('has_active_campaigns', false)
-                ->orderBy('created_at', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Category::search('')
+            ->where('is_active', true)
+            ->where('has_active_campaigns', false)
+            ->orderBy('created_at', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**

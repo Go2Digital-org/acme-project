@@ -36,9 +36,9 @@ final class SearchResource
     public string $id;
 
     /**
-     * @param  array<int, array<string, mixed>>  $results
+     * @param  array<array<string, mixed>>  $results
      * @param  array<string, array<string, int>>  $facets
-     * @param  array<int, string>  $suggestions
+     * @param  array<string, mixed>  $suggestions
      * @param  array<string, array<string, mixed>>  $highlights
      */
     public function __construct(

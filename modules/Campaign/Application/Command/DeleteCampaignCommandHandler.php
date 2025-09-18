@@ -33,7 +33,7 @@ class DeleteCampaignCommandHandler implements CommandHandlerInterface
             }
 
             // Validate employee permissions
-            if ($campaign->user_id !== $command->employeeId) {
+            if ($campaign->user_id !== $command->userId) {
                 throw CampaignException::unauthorizedAccess($campaign);
             }
 
@@ -44,7 +44,7 @@ class DeleteCampaignCommandHandler implements CommandHandlerInterface
                 // Dispatch domain event for soft deletion
                 event(new CampaignDeletedEvent(
                     campaignId: $campaign->id,
-                    employeeId: $command->employeeId,
+                    userId: $command->userId,
                     organizationId: $campaign->organization_id,
                     title: $campaign->getTitle(),
                 ));

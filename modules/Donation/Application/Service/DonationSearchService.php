@@ -179,22 +179,18 @@ class DonationSearchService extends SearchService
 
         $cacheKey = $this->getCachePrefix() . ':transaction_suggestions:' . md5($query . $limit);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query, $limit) {
-            return Donation::search($query)
-                ->take($limit)
-                ->get()
-                ->map(function (Donation $donation) {
-                    return [
-                        'id' => $donation->id,
-                        'transaction_id' => $donation->transaction_id,
-                        'amount' => $donation->formatted_amount,
-                        'donor_name' => $donation->anonymous ? 'Anonymous' : $donation->user?->name,
-                        'campaign_title' => $donation->campaign?->title,
-                        'status' => $donation->status->value,
-                        'donated_at' => $donation->donated_at->format('Y-m-d H:i:s'),
-                    ];
-                });
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Donation::search($query)
+            ->take($limit)
+            ->get()
+            ->map(fn (Donation $donation) => [
+                'id' => $donation->id,
+                'transaction_id' => $donation->transaction_id,
+                'amount' => $donation->formatted_amount,
+                'donor_name' => $donation->anonymous ? 'Anonymous' : $donation->user?->name,
+                'campaign_title' => $donation->campaign?->title,
+                'status' => $donation->status->value,
+                'donated_at' => $donation->donated_at->format('Y-m-d H:i:s'),
+            ]));
     }
 
     /**
@@ -316,13 +312,11 @@ class DonationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':largest:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Donation::search('')
-                ->where('is_successful', true)
-                ->orderBy('amount', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Donation::search('')
+            ->where('is_successful', true)
+            ->orderBy('amount', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**
@@ -334,13 +328,11 @@ class DonationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':recent_successful:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Donation::search('')
-                ->where('is_successful', true)
-                ->orderBy('donated_at', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Donation::search('')
+            ->where('is_successful', true)
+            ->orderBy('donated_at', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**
@@ -352,12 +344,10 @@ class DonationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':refundable:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Donation::search('')
-                ->where('can_be_refunded', true)
-                ->orderBy('donated_at', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Donation::search('')
+            ->where('can_be_refunded', true)
+            ->orderBy('donated_at', 'desc')
+            ->take($limit)
+            ->get());
     }
 }

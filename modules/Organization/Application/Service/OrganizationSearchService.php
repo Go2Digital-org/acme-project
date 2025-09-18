@@ -120,22 +120,18 @@ class OrganizationSearchService extends SearchService
 
         $cacheKey = $this->getCachePrefix() . ':name_suggestions:' . md5($query . $limit);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query, $limit) {
-            return Organization::search($query)
-                ->where('is_active', true)
-                ->take($limit)
-                ->get()
-                ->map(function (Organization $org) {
-                    return [
-                        'id' => $org->id,
-                        'name' => $org->getName(),
-                        'category' => $org->category,
-                        'location' => trim($org->city . ', ' . $org->country, ', '),
-                        'is_verified' => $org->is_verified,
-                        'campaigns_count' => $org->campaigns_count ?? 0,
-                    ];
-                });
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Organization::search($query)
+            ->where('is_active', true)
+            ->take($limit)
+            ->get()
+            ->map(fn (Organization $org) => [
+                'id' => $org->id,
+                'name' => $org->getName(),
+                'category' => $org->category,
+                'location' => trim($org->city . ', ' . $org->country, ', '),
+                'is_verified' => $org->is_verified,
+                'campaigns_count' => $org->campaigns_count ?? 0,
+            ]));
     }
 
     /**
@@ -212,13 +208,11 @@ class OrganizationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':recently_verified:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Organization::search('')
-                ->where('is_verified', true)
-                ->orderBy('verification_date', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Organization::search('')
+            ->where('is_verified', true)
+            ->orderBy('verification_date', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**
@@ -230,13 +224,11 @@ class OrganizationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':most_active:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Organization::search('')
-                ->where('is_active', true)
-                ->where('is_verified', true)
-                ->orderBy('campaigns_count', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Organization::search('')
+            ->where('is_active', true)
+            ->where('is_verified', true)
+            ->orderBy('campaigns_count', 'desc')
+            ->take($limit)
+            ->get());
     }
 }

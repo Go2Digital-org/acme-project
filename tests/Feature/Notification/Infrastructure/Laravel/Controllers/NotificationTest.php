@@ -78,7 +78,7 @@ describe('Notification API Basic Tests', function (): void {
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
             ])
-            ->patch("/api/notifications/{$notificationId}/read");
+            ->post("/api/notifications/{$notificationId}/read");
 
         // Should work (200) or return business logic error (422) or not found (404)
         expect($response->getStatusCode())->toBeIn([200, 404, 422]);

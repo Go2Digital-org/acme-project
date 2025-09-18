@@ -33,7 +33,7 @@ class CampaignApprovalService
     {
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $submitter->id,
+            userId: $submitter->id,
         );
 
         return $this->submitHandler->handle($command);

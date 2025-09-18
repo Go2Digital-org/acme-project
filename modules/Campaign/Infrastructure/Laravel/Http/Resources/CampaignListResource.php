@@ -53,22 +53,18 @@ class CampaignListResource extends BaseApiResource
 
         // Add creator info (lazy loaded)
         if ($this->shouldIncludeField($request, 'creator')) {
-            $data['creator'] = $this->whenLoadedRelation('creator', function ($creator) {
-                return [
-                    'id' => $creator->getId(),
-                    'name' => $creator->getName(),
-                ];
-            });
+            $data['creator'] = $this->whenLoadedRelation('creator', fn ($creator) => [
+                'id' => $creator->getId(),
+                'name' => $creator->getName(),
+            ]);
         }
 
         // Add organization info (lazy loaded)
         if ($this->shouldIncludeField($request, 'organization')) {
-            $data['organization'] = $this->whenLoadedRelation('organization', function ($organization) {
-                return [
-                    'id' => $organization->id,
-                    'name' => $organization->getName(),
-                ];
-            });
+            $data['organization'] = $this->whenLoadedRelation('organization', fn ($organization) => [
+                'id' => $organization->id,
+                'name' => $organization->getName(),
+            ]);
         }
 
         // Add metadata if requested

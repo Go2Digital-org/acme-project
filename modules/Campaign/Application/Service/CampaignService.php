@@ -45,7 +45,7 @@ final readonly class CampaignService
             startDate: $data['start_date'],
             endDate: $data['end_date'],
             organizationId: (int) ($data['organization_id'] ?? $user->organization_id),
-            employeeId: $user->id,
+            userId: $user->id,
             locale: $data['locale'] ?? app()->getLocale(),
             // Pass additional fields to the command
             category: $data['category'] ?? null,
@@ -92,7 +92,7 @@ final readonly class CampaignService
             startDate: $data['start_date'],
             endDate: $data['end_date'],
             organizationId: $existingCampaign->organization_id,
-            employeeId: $user->id,
+            userId: $user->id,
             locale: $data['locale'] ?? app()->getLocale(),
         );
 
@@ -112,7 +112,7 @@ final readonly class CampaignService
 
         $command = new DeleteCampaignCommand(
             campaignId: $campaignId,
-            employeeId: $user->id,
+            userId: $user->id,
         );
 
         return $this->deleteHandler->handle($command);

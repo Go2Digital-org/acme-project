@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Shared\Infrastructure\Laravel\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -25,7 +26,7 @@ class ApiOptimizationMiddleware
         $request->headers->set('X-Request-ID', $requestId);
 
         // Check for conditional requests before processing
-        if ($this->handleConditionalRequest($request)) {
+        if ($this->handleConditionalRequest()) {
             return response()->json([], 304, [
                 'X-Request-ID' => $requestId,
                 'X-Cache-Status' => 'not-modified',
@@ -44,7 +45,7 @@ class ApiOptimizationMiddleware
     /**
      * Handle conditional requests (If-None-Match, If-Modified-Since).
      */
-    private function handleConditionalRequest(Request $request): bool
+    private function handleConditionalRequest(): bool
     {
         // This is a basic implementation - the actual ETag checking
         // would be done in individual controllers with specific data
@@ -56,7 +57,7 @@ class ApiOptimizationMiddleware
      */
     private function addOptimizationHeaders(SymfonyResponse $response, Request $request, float $startTime, string $requestId): void
     {
-        if (! $response instanceof \Illuminate\Http\JsonResponse) {
+        if (! $response instanceof JsonResponse) {
             return;
         }
 
@@ -69,7 +70,7 @@ class ApiOptimizationMiddleware
             'X-API-Version' => 'v1',
             'X-Rate-Limit-Limit' => $this->getRateLimit($request),
             'X-Rate-Limit-Remaining' => $this->getRemainingRequests($request),
-            'X-Rate-Limit-Reset' => $this->getRateLimitReset($request),
+            'X-Rate-Limit-Reset' => $this->getRateLimitReset(),
         ];
 
         // Add compression hint
@@ -84,9 +85,7 @@ class ApiOptimizationMiddleware
 
         foreach ($headers as $key => $value) {
             /** @phpstan-ignore-next-line notIdentical.alwaysTrue */
-            if ($value !== null) {
-                $response->header($key, (string) $value);
-            }
+            $response->header($key, (string) $value);
         }
     }
 
@@ -127,7 +126,7 @@ class ApiOptimizationMiddleware
     /**
      * Get rate limit reset time.
      */
-    private function getRateLimitReset(Request $request): int
+    private function getRateLimitReset(): int
     {
         return (int) now()->addMinute()->timestamp;
     }

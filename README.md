@@ -13,7 +13,7 @@
   <img src="https://go2digit.al/storage/media/a58e6e4f-04bc-4e84-86fb-c18bd0f15e03.png" alt="ACME Corp CSR Platform Banner" width="600">
 </div>
 
-Enterprise-grade Corporate Social Responsibility platform built with **Hexagonal Architecture** and **Domain-Driven Design** principles, designed to handle 20,000+ concurrent employees across global operations.
+Enterprise-grade Corporate Social Responsibility platform built with **Hexagonal Architecture** and **Domain-Driven Design** principles, designed to handle 20,000+ concurrent users across global operations.
 
 ## Architecture Overview
 
@@ -342,7 +342,7 @@ test('user can create campaigns when active and verified', function () {
         firstName: 'John',
         lastName: 'Doe', 
         email: new EmailAddress('john@example.com'),
-        role: UserRole::EMPLOYEE
+        role: UserRole::USER
     );
     $user->verifyEmail(now());
     
@@ -372,7 +372,7 @@ test('creates user with valid data', function () {
         'first_name' => 'Jane',
         'last_name' => 'Doe',
         'email' => 'jane@example.com',
-        'role' => 'employee'
+        'role' => 'user'
     ]);
     
     $response->assertStatus(201);
@@ -552,7 +552,7 @@ The application will be available at:
 - **FrankenPHP Application**: High-performance PHP application server with HTTP/3 support
 - **MySQL 8.0**: Primary database for application data
 - **Redis 7**: Cache, session storage, and queue backend
-- **Meilisearch**: Full-text search engine for campaigns and employees
+- **Meilisearch**: Full-text search engine for campaigns and users
 - **Mailpit**: Email testing and debugging interface
 
 #### Worker Services
@@ -744,9 +744,9 @@ php artisan campaign:notify        # Send campaign notifications
 php artisan donation:process       # Process pending donations
 php artisan donation:reconcile     # Reconcile payment gateway transactions
 
-# Employee management
-php artisan employee:sync          # Sync with HR system
-php artisan employee:deactivate    # Deactivate inactive employees
+# User management
+php artisan user:sync          # Sync with HR system
+php artisan user:deactivate    # Deactivate inactive users
 
 # Reporting
 php artisan report:generate        # Generate scheduled reports

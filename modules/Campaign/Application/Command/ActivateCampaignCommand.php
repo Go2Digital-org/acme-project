@@ -10,6 +10,6 @@ final readonly class ActivateCampaignCommand implements CommandInterface
 {
     public function __construct(
         public int $campaignId,
-        public int $employeeId,
+        public int $userId,
     ) {}
 }

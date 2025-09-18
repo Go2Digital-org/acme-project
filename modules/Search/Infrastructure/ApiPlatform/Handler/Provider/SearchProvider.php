@@ -34,7 +34,8 @@ final readonly class SearchProvider implements ProviderInterface
         }
 
         // Get entity types from request
-        $types = count($request->query->all('types')) > 0 ? $request->query->all('types') : ['campaign', 'donation', 'user', 'organization'];
+        $typesFromRequest = $request->query->all('types');
+        $types = count($typesFromRequest) > 0 ? $typesFromRequest : ['campaign', 'donation', 'user', 'organization'];
 
         // Perform empty search to get facets
         $searchQuery = new SearchEntitiesQuery(

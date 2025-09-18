@@ -8,6 +8,7 @@ use DateTime;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use InvalidArgumentException;
 use Modules\Notification\Application\Command\CreateNotificationCommand;
 use Modules\Notification\Application\Command\CreateNotificationCommandHandler;
 use Modules\Notification\Application\Command\MarkNotificationAsReadCommand;
@@ -20,6 +21,7 @@ use Modules\Notification\Application\Query\GetUserNotificationsQuery;
 use Modules\Notification\Application\Query\GetUserNotificationsQueryHandler;
 use Modules\Notification\Domain\Model\Notification;
 use Modules\Notification\Domain\Repository\NotificationRepositoryInterface;
+use Modules\User\Infrastructure\Laravel\Models\User;
 
 /**
  * Application service that orchestrates notification operations.
@@ -71,6 +73,63 @@ final readonly class NotificationService
         $freshNotification = $notification->fresh();
 
         return $freshNotification ?? $notification;
+    }
+
+    /**
+     * Create and send a notification to a specific recipient via specified channels.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<string>  $channels
+     */
+    public function createAndSendNotification(
+        string $recipientType,
+        string $recipientId,
+        string $type,
+        array $data,
+        array $channels = ['database'],
+        ?DateTime $scheduledAt = null,
+    ): string {
+        // Prepare notification data with recipient information
+        $notificationData = [
+            'type' => $type,
+            'notifiable_type' => $this->getNotifiableType($recipientType),
+            'notifiable_id' => $recipientId,
+            'data' => [
+                ...$data,
+                'channels' => $channels,
+                'recipient_type' => $recipientType,
+            ],
+        ];
+
+        // Add scheduled_at to data if provided
+        if ($scheduledAt instanceof DateTime) {
+            $notificationData['data']['scheduled_at'] = $scheduledAt->format('Y-m-d H:i:s');
+        }
+
+        // Create the notification
+        $notification = $this->createNotification($notificationData);
+
+        // Prepare delivery options for sending
+        $deliveryOptions = [
+            'channels' => $channels,
+            'recipient_type' => $recipientType,
+        ];
+
+        // Add scheduling information if provided
+        if ($scheduledAt instanceof DateTime) {
+            $deliveryOptions['scheduled_at'] = $scheduledAt->format('Y-m-d H:i:s');
+        }
+
+        // Send the notification
+        $sendCommand = new SendNotificationCommand(
+            notificationId: $notification->id,
+            forceImmediate: ! $scheduledAt instanceof DateTime, // Send immediately if not scheduled
+            deliveryOptions: $deliveryOptions,
+        );
+
+        $this->sendHandler->handle($sendCommand);
+
+        return $notification->id;
     }
 
     /**
@@ -249,5 +308,17 @@ final readonly class NotificationService
         ?DateTime $endDate = null,
     ): array {
         return $this->repository->getDeliveryMetrics($startDate, $endDate);
+    }
+
+    /**
+     * Map recipient type to notifiable model class.
+     */
+    private function getNotifiableType(string $recipientType): string
+    {
+        return match ($recipientType) {
+            'user', 'organization_admin', 'admin' => User::class,
+            'organization' => 'Modules\\Organization\\Infrastructure\\Laravel\\Models\\Organization',
+            default => throw new InvalidArgumentException("Unsupported recipient type: {$recipientType}"),
+        };
     }
 }

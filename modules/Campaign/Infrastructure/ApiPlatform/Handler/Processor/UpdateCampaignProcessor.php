@@ -77,7 +77,7 @@ final readonly class UpdateCampaignProcessor implements ProcessorInterface
             startDate: property_exists($data, 'start_date') ? (string) $data->start_date : now()->toDateString(),
             endDate: property_exists($data, 'end_date') ? (string) $data->end_date : now()->addMonth()->toDateString(),
             organizationId: property_exists($data, 'organization_id') ? (int) $data->organization_id : 0,
-            employeeId: $user->id,
+            userId: $user->id,
             locale: $this->request->get('locale', 'en'),
         );
 

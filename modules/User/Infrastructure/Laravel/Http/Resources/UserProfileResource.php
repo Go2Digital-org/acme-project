@@ -50,25 +50,19 @@ class UserProfileResource extends BaseApiResource
 
         // Add organization information (lazy loaded)
         if ($this->shouldIncludeField($request, 'organization')) {
-            $data['organization'] = $this->whenLoadedRelation('organization', function ($organization) {
-                return [
-                    'id' => $organization->id,
-                    'name' => $organization->getName(),
-                    'logo_url' => $organization->logo_url ?? null,
-                ];
-            });
+            $data['organization'] = $this->whenLoadedRelation('organization', fn ($organization) => [
+                'id' => $organization->id,
+                'name' => $organization->getName(),
+                'logo_url' => $organization->logo_url ?? null,
+            ]);
         }
 
         // Add role information (lazy loaded)
         if ($this->shouldIncludeField($request, 'roles')) {
-            $data['roles'] = $this->whenLoadedRelation('roles', function ($roles) {
-                return $roles->map(function ($role) {
-                    return [
-                        'name' => $role->name,
-                        'display_name' => $role->display_name ?? $role->name,
-                    ];
-                })->toArray();
-            });
+            $data['roles'] = $this->whenLoadedRelation('roles', fn ($roles) => $roles->map(fn ($role) => [
+                'name' => $role->name,
+                'display_name' => $role->display_name ?? $role->name,
+            ])->toArray());
         }
 
         // Add donation statistics (only if specifically requested)

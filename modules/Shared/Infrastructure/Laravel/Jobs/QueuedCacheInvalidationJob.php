@@ -278,7 +278,7 @@ final class QueuedCacheInvalidationJob implements ShouldQueue
             );
         }
 
-        if (! empty($jobs)) {
+        if ($jobs !== []) {
             // Dispatch all jobs with a small delay to allow batching
             foreach ($jobs as $index => $job) {
                 $job->delay(now()->addSeconds($index * 2)); // Stagger by 2 seconds

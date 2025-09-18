@@ -1058,10 +1058,10 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * @return array<Campaign>
      */
-    public function findByEmployeeAndStatus(int $employeeId, CampaignStatus $status): array
+    public function findByEmployeeAndStatus(int $userId, CampaignStatus $status): array
     {
         return $this->model
-            ->where('user_id', $employeeId)
+            ->where('user_id', $userId)
             ->where('status', $status)
             ->with('organization')
             ->orderBy('created_at', 'desc')

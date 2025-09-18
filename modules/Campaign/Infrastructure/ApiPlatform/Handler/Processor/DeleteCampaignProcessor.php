@@ -40,7 +40,7 @@ final readonly class DeleteCampaignProcessor implements ProcessorInterface
 
         $command = new DeleteCampaignCommand(
             campaignId: $campaignId,
-            employeeId: $user->id,
+            userId: $user->id,
         );
 
         try {

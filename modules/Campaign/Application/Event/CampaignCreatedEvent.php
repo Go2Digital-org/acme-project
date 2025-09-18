@@ -11,7 +11,7 @@ class CampaignCreatedEvent extends AbstractDomainEvent implements CampaignEventI
 {
     public function __construct(
         public readonly int $campaignId,
-        public readonly int $employeeId,
+        public readonly int $userId,
         public readonly int $organizationId,
         public readonly string $title,
         public readonly float $goalAmount,
@@ -49,7 +49,7 @@ class CampaignCreatedEvent extends AbstractDomainEvent implements CampaignEventI
     {
         return [
             'campaignId' => $this->campaignId,
-            'employeeId' => $this->employeeId,
+            'userId' => $this->userId,
             'organizationId' => $this->organizationId,
             'title' => $this->title,
             'goalAmount' => $this->goalAmount,

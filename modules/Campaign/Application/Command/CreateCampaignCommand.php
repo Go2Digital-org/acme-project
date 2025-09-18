@@ -20,7 +20,7 @@ final readonly class CreateCampaignCommand implements CommandInterface
         public string $startDate,
         public string $endDate,
         public int $organizationId,
-        public int $employeeId,
+        public int $userId,
         public ?string $locale = 'en',
         public ?string $category = null,
         public ?int $categoryId = null,

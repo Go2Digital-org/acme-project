@@ -120,22 +120,18 @@ class PageSearchService extends SearchService
 
         $cacheKey = $this->getCachePrefix() . ':title_suggestions:' . md5($query . $limit);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query, $limit) {
-            return Page::search($query)
-                ->where('is_published', true)
-                ->take($limit)
-                ->get()
-                ->map(function (Page $page) {
-                    return [
-                        'id' => $page->id,
-                        'title' => $page->getTranslation('title') ?? 'Untitled Page',
-                        'slug' => $page->slug,
-                        'url' => $page->url,
-                        'status' => $page->status,
-                        'order' => $page->order,
-                    ];
-                });
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Page::search($query)
+            ->where('is_published', true)
+            ->take($limit)
+            ->get()
+            ->map(fn (Page $page) => [
+                'id' => $page->id,
+                'title' => $page->getTranslation('title') ?? 'Untitled Page',
+                'slug' => $page->slug,
+                'url' => $page->url,
+                'status' => $page->status,
+                'order' => $page->order,
+            ]));
     }
 
     /**
@@ -147,12 +143,10 @@ class PageSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':published_ordered';
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () {
-            return Page::search('')
-                ->where('is_published', true)
-                ->orderBy('order', 'asc')
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Page::search('')
+            ->where('is_published', true)
+            ->orderBy('order', 'asc')
+            ->get());
     }
 
     /**
@@ -164,12 +158,10 @@ class PageSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':recently_updated:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Page::search('')
-                ->orderBy('updated_at', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Page::search('')
+            ->orderBy('updated_at', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**
@@ -227,11 +219,10 @@ class PageSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':empty_content:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () {
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () =>
             // This would need to be implemented with custom logic
             // since we can't easily filter by empty content in search
-            return new Collection;
-        });
+            new Collection);
     }
 
     /**

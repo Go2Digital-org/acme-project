@@ -17,10 +17,10 @@ use Modules\User\Infrastructure\Laravel\Models\User as LaravelUser;
  * Handles user authentication through the domain layer.
  * Validates credentials and returns authenticated user.
  */
-final class AuthenticateUserCommandHandler
+final readonly class AuthenticateUserCommandHandler
 {
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository,
+        private UserRepositoryInterface $userRepository,
     ) {}
 
     /**
@@ -35,7 +35,7 @@ final class AuthenticateUserCommandHandler
         // Find user by email in domain
         $user = $this->userRepository->findByEmail($email);
 
-        if (! $user) {
+        if (! $user instanceof User) {
             throw AuthenticationException::invalidCredentials();
         }
 

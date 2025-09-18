@@ -7,13 +7,16 @@ namespace Modules\Shared\Infrastructure\ApiPlatform\Resource;
 use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
 use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Http\Response;
 use Illuminate\Notifications\DatabaseNotification;
 use Modules\Shared\Infrastructure\ApiPlatform\Handler\Processor\ClearAllNotificationsProcessor;
+use Modules\Shared\Infrastructure\ApiPlatform\Handler\Processor\GetMetricsProcessor;
 use Modules\Shared\Infrastructure\ApiPlatform\Handler\Processor\MarkNotificationAsReadProcessor;
+use Modules\Shared\Infrastructure\ApiPlatform\Handler\Processor\SendNotificationProcessor;
 use Modules\Shared\Infrastructure\ApiPlatform\Handler\Provider\NotificationCollectionProvider;
 
 #[ApiResource(
@@ -44,6 +47,18 @@ use Modules\Shared\Infrastructure\ApiPlatform\Handler\Provider\NotificationColle
             status: Response::HTTP_OK,
             security: "is_granted('ROLE_USER')",
             processor: ClearAllNotificationsProcessor::class,
+        ),
+        new Post(
+            uriTemplate: '/notifications/send',
+            status: Response::HTTP_CREATED,
+            security: "is_granted('ROLE_ADMIN')",
+            processor: SendNotificationProcessor::class,
+        ),
+        new Get(
+            uriTemplate: '/notifications/metrics',
+            status: Response::HTTP_OK,
+            security: "is_granted('ROLE_ADMIN')",
+            processor: GetMetricsProcessor::class,
         ),
     ],
     middleware: ['auth:sanctum', 'api.locale'],

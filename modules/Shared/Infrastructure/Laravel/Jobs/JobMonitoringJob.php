@@ -10,10 +10,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use stdClass;
 
 /**
  * Job monitoring system for tracking queue health and performance
@@ -87,7 +89,7 @@ final class JobMonitoringJob implements ShouldQueue
             }
         }
 
-        if (! empty($alerts)) {
+        if ($alerts !== []) {
             // Convert indexed array to associative array for method signature
             $alertsAssoc = [];
             foreach ($alerts as $i => $alert) {
@@ -274,7 +276,7 @@ final class JobMonitoringJob implements ShouldQueue
      */
     private function sendQueueHealthAlert(array $alerts): void
     {
-        \Modules\Shared\Infrastructure\Laravel\Jobs\SendEmailJob::dispatch(
+        SendEmailJob::dispatch(
             emailData: [
                 'to' => config('queue.monitoring.alert_email', 'admin@example.com'),
                 'subject' => 'Queue Health Alert - High Queue Sizes',
@@ -297,7 +299,7 @@ final class JobMonitoringJob implements ShouldQueue
      */
     private function sendFailedJobsAlert(int $failedCount, array $failedByQueue): void
     {
-        \Modules\Shared\Infrastructure\Laravel\Jobs\SendEmailJob::dispatch(
+        SendEmailJob::dispatch(
             emailData: [
                 'to' => config('queue.monitoring.alert_email', 'admin@example.com'),
                 'subject' => 'Failed Jobs Alert - High Failure Rate',
@@ -321,7 +323,7 @@ final class JobMonitoringJob implements ShouldQueue
 
     private function sendMemoryAlert(int $usage, int $peak, int $limit, float $percentage): void
     {
-        \Modules\Shared\Infrastructure\Laravel\Jobs\SendEmailJob::dispatch(
+        SendEmailJob::dispatch(
             emailData: [
                 'to' => config('queue.monitoring.alert_email', 'admin@example.com'),
                 'subject' => 'Memory Usage Alert - High Memory Consumption',
@@ -345,11 +347,11 @@ final class JobMonitoringJob implements ShouldQueue
     }
 
     /**
-     * @param  \Illuminate\Support\Collection<int, \stdClass>  $longRunningJobs
+     * @param  Collection<int, stdClass>  $longRunningJobs
      */
     private function sendSlowJobsAlert($longRunningJobs): void
     {
-        \Modules\Shared\Infrastructure\Laravel\Jobs\SendEmailJob::dispatch(
+        SendEmailJob::dispatch(
             emailData: [
                 'to' => config('queue.monitoring.alert_email', 'admin@example.com'),
                 'subject' => 'Slow Jobs Alert - Long Running Jobs Detected',

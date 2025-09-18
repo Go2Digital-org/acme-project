@@ -166,7 +166,7 @@ interface CampaignRepositoryInterface
      *
      * @return array<Campaign>
      */
-    public function findByEmployeeAndStatus(int $employeeId, CampaignStatus $status): array;
+    public function findByEmployeeAndStatus(int $userId, CampaignStatus $status): array;
 
     /**
      * Get featured campaigns for homepage display.

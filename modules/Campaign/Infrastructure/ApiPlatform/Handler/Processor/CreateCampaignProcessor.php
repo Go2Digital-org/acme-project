@@ -60,7 +60,7 @@ final readonly class CreateCampaignProcessor implements ProcessorInterface
             startDate: $startDate,
             endDate: $endDate,
             organizationId: property_exists($data, 'organization_id') ? (int) $data->organization_id : 0,
-            employeeId: $user->id,
+            userId: $user->id,
         );
 
         /** @var Campaign $campaign */

@@ -34,7 +34,7 @@ class ActivateCampaignCommandHandler implements CommandHandlerInterface
             }
 
             // Validate employee permissions
-            if ($campaign->user_id !== $command->employeeId) {
+            if ($campaign->user_id !== $command->userId) {
                 throw CampaignException::unauthorizedAccess($campaign);
             }
 
@@ -62,7 +62,7 @@ class ActivateCampaignCommandHandler implements CommandHandlerInterface
             // Dispatch domain event
             event(new CampaignActivatedEvent(
                 campaignId: $campaign->id,
-                employeeId: $command->employeeId,
+                userId: $command->userId,
                 organizationId: $campaign->organization_id,
             ));
 

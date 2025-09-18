@@ -26,7 +26,8 @@ final class SharedServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Load API routes
-        $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
+        // Routes are handled centrally by API Platform or main /routes directory
+        // Module routes have been moved to centralized route management
+        // $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
     }
 }

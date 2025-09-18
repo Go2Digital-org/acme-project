@@ -33,7 +33,7 @@ class CompleteCampaignCommandHandler implements CommandHandlerInterface
             }
 
             // Validate employee permissions
-            if ($campaign->user_id !== $command->employeeId) {
+            if ($campaign->user_id !== $command->userId) {
                 throw CampaignException::unauthorizedAccess($campaign);
             }
 
@@ -49,7 +49,7 @@ class CompleteCampaignCommandHandler implements CommandHandlerInterface
             // Dispatch domain event
             event(new CampaignCompletedEvent(
                 campaignId: $campaign->id,
-                employeeId: $command->employeeId,
+                userId: $command->userId,
                 organizationId: $campaign->organization_id,
                 totalRaised: (float) $campaign->current_amount,
                 goalAmount: (float) $campaign->goal_amount,

@@ -14,6 +14,8 @@ use Modules\Donation\Application\Event\DonationFailedEvent;
 use Modules\Notification\Application\Command\CreateNotificationCommandHandler;
 use Modules\Notification\Application\Command\MarkNotificationAsReadCommandHandler;
 use Modules\Notification\Application\Command\SendNotificationCommandHandler;
+use Modules\Notification\Application\Query\GetNotificationMetricsQueryHandler;
+use Modules\Notification\Application\Query\GetNotificationMetricsQueryHandlerInterface;
 use Modules\Notification\Application\Query\GetUnreadNotificationCountQueryHandler;
 use Modules\Notification\Application\Query\GetUserNotificationsQueryHandler;
 use Modules\Notification\Application\Service\NotificationDeliveryService;
@@ -85,6 +87,12 @@ final class NotificationServiceProvider extends ServiceProvider
         $this->app->bind(NotificationDeliveryService::class);
         $this->app->singleton(NotificationService::class);
 
+        // Register API Platform processors - bind the notification module's query handler
+        $this->app->bind(
+            GetNotificationMetricsQueryHandlerInterface::class,
+            GetNotificationMetricsQueryHandler::class
+        );
+
         // Register console commands when running in console
     }
 
@@ -96,8 +104,7 @@ final class NotificationServiceProvider extends ServiceProvider
         // Load migrations
         $this->loadMigrationsFrom(__DIR__ . '/../Migration');
 
-        // Load routes
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        // Routes are handled by API Platform, no need to load traditional routes
 
         // Register event listeners
         $this->registerEventListeners();

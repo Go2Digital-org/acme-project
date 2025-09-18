@@ -129,22 +129,18 @@ class UserSearchService extends SearchService
 
         $cacheKey = $this->getCachePrefix() . ':name_suggestions:' . md5($query . $limit);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query, $limit) {
-            return User::search($query)
-                ->where('status', 'active')
-                ->take($limit)
-                ->get()
-                ->map(function (User $user) {
-                    return [
-                        'id' => $user->id,
-                        'name' => $user->getFullName(),
-                        'email' => $user->email,
-                        'job_title' => $user->job_title,
-                        'department' => $user->department,
-                        'organization_name' => $user->organization?->getName(),
-                    ];
-                });
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => User::search($query)
+            ->where('status', 'active')
+            ->take($limit)
+            ->get()
+            ->map(fn (User $user) => [
+                'id' => $user->id,
+                'name' => $user->getFullName(),
+                'email' => $user->email,
+                'job_title' => $user->job_title,
+                'department' => $user->department,
+                'organization_name' => $user->organization?->getName(),
+            ]));
     }
 
     /**
@@ -237,13 +233,11 @@ class UserSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':recently_joined:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return User::search('')
-                ->where('status', 'active')
-                ->orderBy('created_at', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => User::search('')
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**

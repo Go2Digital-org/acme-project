@@ -46,7 +46,7 @@ class CreateCampaignCommandHandler implements CommandHandlerInterface
                 'end_date' => $command->endDate,
                 'status' => $status->value, // Use the enum value (string) not the enum object
                 'organization_id' => $command->organizationId,
-                'user_id' => $command->employeeId,
+                'user_id' => $command->userId,
                 'category' => $command->category,
                 'category_id' => $command->categoryId,
                 'metadata' => $command->metadata === [] ? null : $command->metadata,
@@ -63,7 +63,7 @@ class CreateCampaignCommandHandler implements CommandHandlerInterface
             // Dispatch domain event
             event(new CampaignCreatedEvent(
                 campaignId: $campaign->id,
-                employeeId: $command->employeeId,
+                userId: $command->userId,
                 organizationId: $command->organizationId,
                 title: $command->title[$command->locale ?? 'en'] ?? $command->title[array_key_first($command->title)] ?? '',
                 goalAmount: $command->goalAmount,

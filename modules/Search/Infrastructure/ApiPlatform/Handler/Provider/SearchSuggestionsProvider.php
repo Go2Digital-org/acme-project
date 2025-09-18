@@ -55,7 +55,7 @@ final readonly class SearchSuggestionsProvider implements ProviderInterface
         // Return array of SearchResource objects with suggestions
         return array_map(fn (array $suggestion): SearchResource => new SearchResource(
             query: $searchQueryString,
-            suggestions: [$suggestion['text']],
+            suggestions: $suggestion,
         ), $suggestions);
     }
 }
