@@ -102,8 +102,9 @@ class QueryPerformanceListener
 
     /**
      * Format query with bindings for better readability.
-     *
-     * @param  array<mixed>  $bindings
+     */
+    /**
+     * @param  array<string, mixed>  $bindings
      */
     private function formatQuery(string $sql, array $bindings): string
     {
@@ -135,8 +136,9 @@ class QueryPerformanceListener
 
     /**
      * Get simplified backtrace for debugging.
-     *
-     * @return array<array{file: string, line: int, function: string}>
+     */
+    /**
+     * @return array<int, array<string, int|string>>
      */
     private function getSimplifiedBacktrace(): array
     {

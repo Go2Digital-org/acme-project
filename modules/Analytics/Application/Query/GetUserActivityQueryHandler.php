@@ -152,7 +152,7 @@ class GetUserActivityQueryHandler
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<string, mixed>
      */
     private function collectUserTimeline(GetUserActivityQuery $query, TimeRange $timeRange): array
     {
@@ -176,7 +176,7 @@ class GetUserActivityQueryHandler
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<string, mixed>
      */
     private function collectAggregateTimeline(GetUserActivityQuery $query, TimeRange $timeRange): array
     {
@@ -311,7 +311,7 @@ class GetUserActivityQueryHandler
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<string, mixed>
      */
     private function collectActivityByType(GetUserActivityQuery $query, TimeRange $timeRange): array
     {
@@ -333,7 +333,7 @@ class GetUserActivityQueryHandler
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<string, mixed>
      */
     private function collectMostActiveUsers(GetUserActivityQuery $query, TimeRange $timeRange): array
     {
@@ -396,7 +396,7 @@ class GetUserActivityQueryHandler
     }
 
     /**
-     * @param  array<string, int>  $metrics
+     * @param  array<string, mixed>  $metrics
      */
     private function calculateEngagementScore(array $metrics): float
     {

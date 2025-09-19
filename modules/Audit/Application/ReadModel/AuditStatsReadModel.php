@@ -324,14 +324,16 @@ class AuditStatsReadModel extends AbstractReadModel
 
     // Top Users by Activity
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopUsers(): array
     {
         return $this->get('top_users', []);
     }
 
-    /** @return array<string, mixed>|null */
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getMostActiveUser(): ?array
     {
         $topUsers = $this->getTopUsers();
@@ -341,14 +343,16 @@ class AuditStatsReadModel extends AbstractReadModel
 
     // Top Entities by Changes
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopEntities(): array
     {
         return $this->get('top_entities', []);
     }
 
-    /** @return array<string, mixed>|null */
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getMostChangedEntity(): ?array
     {
         $topEntities = $this->getTopEntities();
@@ -358,7 +362,7 @@ class AuditStatsReadModel extends AbstractReadModel
 
     // Activity Distribution
     /**
-     * @return array<string, int>
+     * @return array<int, int>
      */
     public function getHourlyDistribution(): array
     {
@@ -384,7 +388,7 @@ class AuditStatsReadModel extends AbstractReadModel
         $maxValue = max($hourlyDistribution);
         $keys = array_keys($hourlyDistribution, $maxValue);
 
-        return (int) $keys[0];
+        return $keys[0];
     }
 
     public function getPeakActivityDay(): string
@@ -402,7 +406,9 @@ class AuditStatsReadModel extends AbstractReadModel
     }
 
     // Comparison Metrics
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getComparisonMetrics(): array
     {
         $current = $this->getTotalAudits();
@@ -421,7 +427,9 @@ class AuditStatsReadModel extends AbstractReadModel
     }
 
     // Health Indicators
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getHealthIndicators(): array
     {
         return [

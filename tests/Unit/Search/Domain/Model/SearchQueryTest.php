@@ -6,8 +6,8 @@ use Modules\Search\Domain\Model\SearchQuery;
 use Modules\Search\Domain\ValueObject\SearchFilters;
 use Modules\Search\Domain\ValueObject\SearchSort;
 
-describe('SearchQuery Model', function () {
-    it('creates search query with required parameters', function () {
+describe('SearchQuery Model', function (): void {
+    it('creates search query with required parameters', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
         $query = new SearchQuery(
@@ -29,7 +29,7 @@ describe('SearchQuery Model', function () {
             ->and($query->enableTypoTolerance)->toBeTrue(); // Default
     });
 
-    it('creates search query with custom parameters', function () {
+    it('creates search query with custom parameters', function (): void {
         $filters = new SearchFilters(entityTypes: ['campaign']);
         $sort = new SearchSort(SearchSort::FIELD_CREATED_AT, SearchSort::DIRECTION_DESC);
         $query = new SearchQuery(
@@ -57,7 +57,7 @@ describe('SearchQuery Model', function () {
             ->and($query->enableTypoTolerance)->toBeFalse();
     });
 
-    it('converts to array for search engine', function () {
+    it('converts to array for search engine', function (): void {
         $filters = new SearchFilters(entityTypes: ['campaign'], isActive: true);
         $sort = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_ASC);
         $query = new SearchQuery(
@@ -89,7 +89,7 @@ describe('SearchQuery Model', function () {
         ]);
     });
 
-    it('creates query for single index', function () {
+    it('creates query for single index', function (): void {
         $query = SearchQuery::forIndex(
             index: 'campaigns',
             query: 'climate change',
@@ -107,7 +107,7 @@ describe('SearchQuery Model', function () {
             ->and($query->offset)->toBe(30);
     });
 
-    it('creates query for single index with custom filters and sort', function () {
+    it('creates query for single index with custom filters and sort', function (): void {
         $filters = new SearchFilters(statuses: ['active']);
         $sort = new SearchSort(SearchSort::FIELD_DATE, SearchSort::DIRECTION_DESC);
 
@@ -125,7 +125,7 @@ describe('SearchQuery Model', function () {
             ->and($query->offset)->toBe(0); // Default
     });
 
-    it('creates query for multiple indexes', function () {
+    it('creates query for multiple indexes', function (): void {
         $indexes = ['campaigns', 'donations', 'organizations'];
         $query = SearchQuery::forIndexes(
             indexes: $indexes,
@@ -144,7 +144,7 @@ describe('SearchQuery Model', function () {
             ->and($query->offset)->toBe(80);
     });
 
-    it('creates query for multiple indexes with custom filters and sort', function () {
+    it('creates query for multiple indexes with custom filters and sort', function (): void {
         $indexes = ['campaigns', 'donations'];
         $filters = new SearchFilters(organizationIds: [1, 2, 3]);
         $sort = new SearchSort(SearchSort::FIELD_UPDATED_AT, SearchSort::DIRECTION_ASC);
@@ -161,7 +161,7 @@ describe('SearchQuery Model', function () {
             ->and($query->sort)->toBe($sort);
     });
 
-    it('calculates page number from offset correctly', function () {
+    it('calculates page number from offset correctly', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
 
@@ -176,7 +176,7 @@ describe('SearchQuery Model', function () {
             ->and($page5Query->getPage())->toBe(5);
     });
 
-    it('handles zero limit when calculating page', function () {
+    it('handles zero limit when calculating page', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
         $query = new SearchQuery('test', ['campaigns'], $filters, $sort, 0, 100);
@@ -184,7 +184,7 @@ describe('SearchQuery Model', function () {
         expect($query->getPage())->toBe(1); // Should return 1 for zero limit
     });
 
-    it('calculates page for fractional results', function () {
+    it('calculates page for fractional results', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
         $query = new SearchQuery('test', ['campaigns'], $filters, $sort, 15, 25);
@@ -192,7 +192,7 @@ describe('SearchQuery Model', function () {
         expect($query->getPage())->toBe(2); // floor(25/15) + 1 = floor(1.67) + 1 = 2
     });
 
-    it('detects empty query correctly', function () {
+    it('detects empty query correctly', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
 
@@ -205,7 +205,7 @@ describe('SearchQuery Model', function () {
             ->and($spaceQuery->isEmpty())->toBeFalse(); // Space is not empty
     });
 
-    it('generates cache key consistently', function () {
+    it('generates cache key consistently', function (): void {
         $filters = new SearchFilters(entityTypes: ['campaign']);
         $sort = new SearchSort(SearchSort::FIELD_CREATED_AT, SearchSort::DIRECTION_DESC);
 
@@ -242,7 +242,7 @@ describe('SearchQuery Model', function () {
             ->and(strlen($query1->getCacheKey()))->toBe(39); // 'search:' + 32 char MD5
     });
 
-    it('generates different cache keys for different queries', function () {
+    it('generates different cache keys for different queries', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
 
@@ -254,7 +254,7 @@ describe('SearchQuery Model', function () {
             ->and($query1->getCacheKey())->not->toBe($query3->getCacheKey()); // Different indexes
     });
 
-    it('handles complex cache key generation', function () {
+    it('handles complex cache key generation', function (): void {
         $filters = new SearchFilters(
             entityTypes: ['campaign', 'donation'],
             statuses: ['active'],
@@ -283,7 +283,7 @@ describe('SearchQuery Model', function () {
             ->and($cacheKey)->toMatch('/^search:[a-f0-9]{32}$/');
     });
 
-    it('preserves immutability of value objects', function () {
+    it('preserves immutability of value objects', function (): void {
         $filters = new SearchFilters(entityTypes: ['campaign']);
         $sort = new SearchSort(SearchSort::FIELD_CREATED_AT, SearchSort::DIRECTION_DESC);
 
@@ -295,7 +295,7 @@ describe('SearchQuery Model', function () {
             ->and($query->sort)->toBeInstanceOf(SearchSort::class);
     });
 
-    it('handles array index immutability', function () {
+    it('handles array index immutability', function (): void {
         $indexes = ['campaigns', 'donations'];
         $filters = new SearchFilters;
         $sort = new SearchSort;
@@ -308,7 +308,7 @@ describe('SearchQuery Model', function () {
         expect($query->indexes)->toBe(['campaigns', 'donations']); // Unchanged
     });
 
-    it('creates queries with different configurations', function () {
+    it('creates queries with different configurations', function (): void {
         $baseFilters = new SearchFilters;
         $baseSort = new SearchSort;
 
@@ -345,7 +345,7 @@ describe('SearchQuery Model', function () {
             ->and($complexQuery->enableTypoTolerance)->toBeFalse();
     });
 
-    it('validates factory method behaviors', function () {
+    it('validates factory method behaviors', function (): void {
         $customFilters = new SearchFilters(categories: ['health']);
         $customSort = new SearchSort(SearchSort::FIELD_NAME, SearchSort::DIRECTION_ASC);
 
@@ -364,7 +364,7 @@ describe('SearchQuery Model', function () {
             ->and($multiIndexQuery->offset)->toBe(60);
     });
 
-    it('handles edge cases in pagination', function () {
+    it('handles edge cases in pagination', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
 
@@ -375,7 +375,7 @@ describe('SearchQuery Model', function () {
             ->and($largeOffsetQuery->getPage())->toBe(501); // floor(10000/20) + 1 = 500 + 1 = 501
     });
 
-    it('maintains consistent serialization', function () {
+    it('maintains consistent serialization', function (): void {
         $filters = new SearchFilters(entityTypes: ['campaign']);
         $sort = new SearchSort(SearchSort::FIELD_CREATED_AT, SearchSort::DIRECTION_ASC);
 
@@ -391,7 +391,7 @@ describe('SearchQuery Model', function () {
             ->and($array1['offset'])->toBe(50);
     });
 
-    it('handles special characters in query text', function () {
+    it('handles special characters in query text', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
 
@@ -407,7 +407,7 @@ describe('SearchQuery Model', function () {
             ->and($symbolQuery->isEmpty())->toBeFalse();
     });
 
-    it('validates readonly properties immutability', function () {
+    it('validates readonly properties immutability', function (): void {
         $filters = new SearchFilters;
         $sort = new SearchSort;
         $query = new SearchQuery('test', ['campaigns'], $filters, $sort);

@@ -9,19 +9,21 @@ use Illuminate\Support\Collection;
 class SearchResult
 {
     /**
-     * @param  array<array<string, mixed>>  $hits
-     * @param  array<string, array<string, int>>  $facets
-     * @param  array<string, mixed>  $suggestions
+     * @param  array<string, mixed>  $hits
+     * @param  array<string, mixed>  $facets
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public readonly array $hits,
         public readonly int $totalHits,
         public readonly float $processingTime,
+        /** @var array<string, mixed> */
         public readonly array $facets = [],
         public readonly string $query = '',
         public readonly int $limit = 20,
         public readonly int $offset = 0,
         public readonly ?int $estimatedTotalHits = null,
+        /** @var array<int, string> */
         public readonly array $suggestions = [],
         public readonly ?string $engine = null,
     ) {}
@@ -29,7 +31,7 @@ class SearchResult
     /**
      * Get hits as a collection.
      *
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<string, mixed>
      */
     public function getHitsCollection(): Collection
     {
@@ -79,7 +81,7 @@ class SearchResult
     /**
      * Get facet distribution for a specific attribute.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getFacetDistribution(string $attribute): array
     {
@@ -153,7 +155,7 @@ class SearchResult
     /**
      * Get the search results (alias for hits).
      *
-     * @return array<array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getResults(): array
     {
@@ -163,7 +165,7 @@ class SearchResult
     /**
      * Get the facets.
      *
-     * @return array<string, array<string, int>>
+     * @return array<string, mixed>
      */
     public function getFacets(): array
     {
@@ -173,7 +175,7 @@ class SearchResult
     /**
      * Get search suggestions.
      *
-     * @return array<string, mixed>
+     * @return array<int, string>
      */
     public function getSuggestions(): array
     {

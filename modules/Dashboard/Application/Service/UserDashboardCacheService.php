@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Modules\Dashboard\Infrastructure\Laravel\Jobs\WarmUserDashboardCacheJob;
 
-final class UserDashboardCacheService
+class UserDashboardCacheService
 {
     private const CACHE_TTL = 604800; // 7 days
 

@@ -97,7 +97,9 @@ class AddHexFormRequestCommand extends Command
     /**
      * Get form request types to generate.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     protected function getFormRequestTypes(): array
     {
         $options = [
@@ -146,8 +148,9 @@ class AddHexFormRequestCommand extends Command
 
     /**
      * Display summary of generated form requests.
-     *
-     * @param  array<int, string>  $types
+     */
+    /**
+     * @param  array<string, mixed>  $types
      */
     protected function displayFormRequestSummary(string $domain, string $name, array $types): void
     {

@@ -33,7 +33,7 @@ class ListNotificationsController extends Controller
         );
 
         // Format notifications for both JSON and view responses
-        /** @var array<int, array<string, mixed>> $formattedNotifications */
+        /** @var array<string, mixed> $formattedNotifications */
         $formattedNotifications = [];
         foreach ($notifications->items() as $notification) {
             /** @var array<string, mixed> $data */

@@ -12,6 +12,9 @@ class ListCurrencies extends ListRecords
 {
     protected static string $resource = CurrencyResource::class;
 
+    /**
+     * @return array<int, CreateAction>
+     */
     protected function getHeaderActions(): array
     {
         return [

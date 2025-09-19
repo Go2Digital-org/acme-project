@@ -82,7 +82,7 @@ class PageResource extends Resource
                         ->suffixAction(
                             Action::make('generate_slug')
                                 ->icon('heroicon-m-arrow-path')
-                                ->action(function (Get $get, callable $set): void {
+                                ->action(function (Get $get, $set): void {
                                     $title = $get('title.en') ?? $get('title.nl') ?? $get('title.fr');
 
                                     if ($title) {
@@ -317,6 +317,9 @@ class PageResource extends Resource
             ->persistFiltersInSession();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

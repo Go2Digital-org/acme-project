@@ -39,7 +39,9 @@ class RoleResource extends Resource implements HasShieldPermissions
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string>
+     */
     public static function getPermissionPrefixes(): array
     {
         return [
@@ -147,6 +149,9 @@ class RoleResource extends Resource implements HasShieldPermissions
             ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelations(): array
     {
         return [
@@ -154,6 +159,9 @@ class RoleResource extends Resource implements HasShieldPermissions
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

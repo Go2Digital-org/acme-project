@@ -14,6 +14,10 @@ use Modules\Auth\Infrastructure\ApiPlatform\Resource\AuthenticationResource;
  */
 final readonly class UserProfileProvider implements ProviderInterface
 {
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function provide(
         Operation $operation,
         array $uriVariables = [],

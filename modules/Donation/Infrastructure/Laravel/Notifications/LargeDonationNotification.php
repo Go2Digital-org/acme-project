@@ -21,7 +21,8 @@ final class LargeDonationNotification extends Notification implements ShouldQueu
 
     /**
      * Get the notification's delivery channels.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public function via(mixed $notifiable): array

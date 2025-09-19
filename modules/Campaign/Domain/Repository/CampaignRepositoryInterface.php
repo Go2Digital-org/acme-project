@@ -20,7 +20,7 @@ interface CampaignRepositoryInterface
     public function findByIdWithTrashed(int $id): ?Campaign;
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findActiveByOrganization(int $organizationId): array;
 
@@ -64,12 +64,12 @@ interface CampaignRepositoryInterface
     public function restore(int $id): bool;
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findActiveCampaigns(): array;
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findExpiredCampaigns(): array;
 
@@ -90,14 +90,14 @@ interface CampaignRepositoryInterface
     /**
      * Find campaigns with complete translations for specific locale.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findWithCompleteTranslations(string $locale): array;
 
     /**
      * Find campaigns missing translations for specific locale.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findMissingTranslations(string $locale): array;
 
@@ -126,7 +126,7 @@ interface CampaignRepositoryInterface
     /**
      * Find campaigns created by a specific user.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByUserId(int $userId): array;
 
@@ -150,36 +150,36 @@ interface CampaignRepositoryInterface
      *
      * @param  CampaignStatus  $status  Campaign status filter
      * @param  int|null  $limit  Maximum number of campaigns to return
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByStatus(CampaignStatus $status, ?int $limit = null): array;
 
     /**
      * Find campaigns by user and status.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByUserAndStatus(int $userId, CampaignStatus $status): array;
 
     /**
      * Find campaigns by employee and status.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
-    public function findByEmployeeAndStatus(int $employeeId, CampaignStatus $status): array;
+    public function findByEmployeeAndStatus(int $userId, CampaignStatus $status): array;
 
     /**
      * Get featured campaigns for homepage display.
      *
      * @param  int  $limit  Number of featured campaigns to return
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getFeaturedCampaigns(int $limit = 3): array;
 
     /**
      * Find all campaigns.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findAll(): array;
 
@@ -219,14 +219,14 @@ interface CampaignRepositoryInterface
      * Find campaigns by multiple IDs.
      *
      * @param  array<int>  $ids
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByIds(array $ids): array;
 
     /**
      * Find campaigns by organization ID.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByOrganizationId(int $organizationId): array;
 
@@ -238,7 +238,7 @@ interface CampaignRepositoryInterface
     /**
      * Find campaigns for indexing with offset and limit.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findForIndexing(int $offset, int $limit): array;
 

@@ -11,7 +11,7 @@ final class AvailableCurrenciesReadModel extends AbstractReadModel
     protected int $cacheTtl = 86400; // 24 hours for currencies
 
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getCurrencies(): array
     {
@@ -19,7 +19,7 @@ final class AvailableCurrenciesReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getCurrencyCodes(): array
     {

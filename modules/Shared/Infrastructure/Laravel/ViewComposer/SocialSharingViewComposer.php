@@ -26,7 +26,11 @@ final readonly class SocialSharingViewComposer
     }
 
     /**
-     * @param  array<array-key, mixed>  $viewData
+     * @param  array<string, mixed>  $viewData
+     */
+
+    /**
+     * @param  array<string, mixed>  $viewData
      * @return array<string, mixed>
      */
     private function resolveShareData(array $viewData): array
@@ -40,7 +44,7 @@ final readonly class SocialSharingViewComposer
 
     /**
      * @param  array<string, mixed>  $shareData
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     private function generateSharingUrls(array $shareData): array
     {

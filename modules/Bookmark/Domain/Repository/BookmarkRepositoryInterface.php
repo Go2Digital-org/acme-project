@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Bookmark\Domain\Repository;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Modules\Bookmark\Domain\Model\Bookmark;
 use Modules\Campaign\Domain\Model\Campaign;
 
@@ -54,9 +55,9 @@ interface BookmarkRepositoryInterface
     /**
      * Get user bookmarks with detailed information.
      *
-     * @return Collection<int, Bookmark>
+     * @return SupportCollection<int, array<string, mixed>>
      */
-    public function getUserBookmarksWithDetails(int $userId): Collection;
+    public function getUserBookmarksWithDetails(int $userId): SupportCollection;
 
     /**
      * Check if user has bookmarked a campaign.

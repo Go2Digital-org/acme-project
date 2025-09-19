@@ -32,10 +32,11 @@ final class WarmCacheJob implements ShouldQueue
     public int $timeout = 900; // 15 minutes
 
     /**
-     * @param  array<string>  $specificKeys
+     * @param  array<string, mixed>  $specificKeys
      */
     public function __construct(
         private readonly string $strategyType,
+        /** @var array<string, mixed> */
         private readonly array $specificKeys = [],
         private readonly bool $force = false
     ) {
@@ -47,7 +48,7 @@ final class WarmCacheJob implements ShouldQueue
      */
     public static function forKey(string $cacheKey): self
     {
-        return new self('single', [$cacheKey], false);
+        return new self('single', ['key' => $cacheKey], false);
     }
 
     public function handle(StartCacheWarmingCommandHandler $handler): void
@@ -180,7 +181,7 @@ final class WarmCacheJob implements ShouldQueue
     }
 
     /**
-     * @param  array<string>  $specificKeys
+     * @param  array<string, mixed>  $specificKeys
      */
     public static function dispatch(string $strategyType, array $specificKeys = [], bool $force = false): self
     {
@@ -198,7 +199,7 @@ final class WarmCacheJob implements ShouldQueue
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     private function createSpecificKeys(): array
     {
@@ -207,7 +208,10 @@ final class WarmCacheJob implements ShouldQueue
         }
 
         $keys = [];
-        foreach ($this->specificKeys as $keyString) {
+        foreach ($this->specificKeys as $key => $value) {
+            // Handle both indexed arrays and associative arrays
+            $keyString = is_string($value) ? $value : (is_string($key) ? $key : (string) $value);
+
             try {
                 new CacheKey($keyString); // Validate the key
                 $keys[] = $keyString;

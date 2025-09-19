@@ -10,7 +10,7 @@ final readonly class CancelDonationCommand implements CommandInterface
 {
     public function __construct(
         public int $donationId,
-        public ?int $employeeId = null,
+        public ?int $userId = null,
         public ?string $reason = null,
     ) {}
 }

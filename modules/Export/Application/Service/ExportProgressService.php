@@ -71,7 +71,7 @@ final readonly class ExportProgressService
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, ExportProgressValueObject>
      */
     public function getAllActiveProgress(): array
     {

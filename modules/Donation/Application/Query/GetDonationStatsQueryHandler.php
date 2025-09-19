@@ -31,28 +31,28 @@ final readonly class GetDonationStatsQueryHandler implements QueryHandlerInterfa
         // Get total amount by campaign
         if ($query->campaignId !== null) {
             $stats['campaign_total'] = $this->repository->getTotalDonationsByCampaign($query->campaignId);
-            /** @var array<Donation> */
+            /** @var array<int, Donation> */
             $campaignDonations = $this->repository->findByCampaign($query->campaignId);
             $stats['campaign_donations'] = $campaignDonations;
             $stats['campaign_donation_count'] = count($campaignDonations);
         }
 
-        // Get total amount by employee
-        if ($query->employeeId !== null) {
-            $stats['employee_total'] = $this->repository->getTotalDonationsByEmployee($query->employeeId);
-            /** @var array<Donation> */
-            $employeeDonations = $this->repository->findByEmployee($query->employeeId);
-            $stats['employee_donations'] = $employeeDonations;
-            $stats['employee_donation_count'] = count($employeeDonations);
+        // Get total amount by user
+        if ($query->userId !== null) {
+            $stats['user_total'] = $this->repository->getTotalDonationsByEmployee($query->userId);
+            /** @var array<int, Donation> */
+            $userDonations = $this->repository->findByEmployee($query->userId);
+            $stats['user_donations'] = $userDonations;
+            $stats['user_donation_count'] = count($userDonations);
         }
 
         // Get pending donations count
-        /** @var array<Donation> */
+        /** @var array<int, Donation> */
         $pendingDonations = $this->repository->findPendingDonations();
         $stats['pending_donations_count'] = count($pendingDonations);
 
         // Get processing donations count
-        /** @var array<Donation> */
+        /** @var array<int, Donation> */
         $processingDonations = $this->repository->findProcessingDonations();
         $stats['processing_donations_count'] = count($processingDonations);
 

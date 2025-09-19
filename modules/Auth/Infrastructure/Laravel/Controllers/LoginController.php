@@ -12,10 +12,10 @@ use Modules\Auth\Domain\Exception\AuthenticationException;
 use Modules\Shared\Infrastructure\Laravel\Http\ApiResponse;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
-final class LoginController
+final readonly class LoginController
 {
     public function __construct(
-        private readonly AuthenticateUserCommandHandler $authenticateUserHandler,
+        private AuthenticateUserCommandHandler $authenticateUserHandler,
     ) {}
 
     /**

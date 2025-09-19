@@ -33,7 +33,7 @@ class EnableTwoFactorCommandHandler implements CommandHandlerInterface
         /** @var Collection<int, int> $range */
         $range = collect(range(1, 8));
 
-        /** @var array<int, string> $recoveryCodes */
+        /** @var array<string> $recoveryCodes */
         $recoveryCodes = $range->map(fn (): string => str_replace('-', '', (string) Str::uuid()))->toArray();
 
         $user->forceFill([

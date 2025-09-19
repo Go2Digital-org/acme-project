@@ -238,13 +238,14 @@ class TenantSearchIndexManager
 
     /**
      * Get statistics for tenant indexes.
-     *
-     * @return array<string, array{numberOfDocuments: int, isIndexing: bool, error?: string}>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getIndexStats(Organization $organization): array
     {
         $tenantPrefix = $this->getTenantPrefix($organization);
-        /** @var array<string, array{numberOfDocuments: int, isIndexing: bool, error?: string}> $stats */
+        /** @var array<string, mixed> $stats */
         $stats = [];
 
         $indexes = ['campaigns', 'users', 'donations'];

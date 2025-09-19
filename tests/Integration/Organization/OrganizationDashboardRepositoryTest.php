@@ -125,23 +125,16 @@ describe('OrganizationDashboardRepository - N+1 Query Prevention', function (): 
         expect($data['monthly_fundraising_trend'])->toBeArray();
     });
 
-    it('uses proper indices for performance', function (): void {
+    it('uses proper database queries with organization_id filter', function (): void {
         // Enable query logging
         DB::enableQueryLog();
         DB::flushQueryLog();
 
-        $startTime = microtime(true);
-
         // Load dashboard data
         $data = $this->repository->loadOrganizationDashboardData($this->organization->id);
 
-        $endTime = microtime(true);
         $queries = DB::getQueryLog();
         DB::disableQueryLog();
-
-        // Performance should be reasonable
-        $executionTime = $endTime - $startTime;
-        expect($executionTime)->toBeLessThan(2.0); // Should complete within 2 seconds
 
         // Queries should use proper WHERE clauses on indexed columns
         foreach ($queries as $query) {

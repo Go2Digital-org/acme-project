@@ -32,7 +32,8 @@ final readonly class PaymentGatewayService
 
     /**
      * Configure a new or existing payment gateway.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function configureGateway(array $data): PaymentGateway
@@ -205,7 +206,8 @@ final readonly class PaymentGatewayService
 
     /**
      * Get all active and configured payment gateways.
-     *
+     */
+    /**
      * @return array<int, PaymentGateway>
      */
     public function getActiveGateways(): array
@@ -253,7 +255,8 @@ final readonly class PaymentGatewayService
 
     /**
      * Validate payment gateway configuration data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     private function validateGatewayData(array $data): void
@@ -289,7 +292,8 @@ final readonly class PaymentGatewayService
 
     /**
      * Validate provider-specific settings.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $settings
      */
     private function validateProviderSettings(string $provider, array $settings): void

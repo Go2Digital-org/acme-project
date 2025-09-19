@@ -19,7 +19,8 @@ final class UpdateCampaignStatusRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function rules(): array
@@ -36,8 +37,9 @@ final class UpdateCampaignStatusRequest extends FormRequest
 
     /**
      * Get custom error messages for validator errors.
-     *
-     * @return array<string, string>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function messages(): array
     {

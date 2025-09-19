@@ -14,8 +14,9 @@ final class ApiResponse
 {
     /**
      * Return a successful response with data.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function success(
         mixed $data = null,
@@ -43,7 +44,7 @@ final class ApiResponse
      * Return a success response with paginated data.
      *
      * @param  LengthAwarePaginator<int, mixed>  $paginator
-     * @param  array<string, string>  $headers
+     * @param  array<string, mixed>  $headers
      */
     public static function paginated(
         LengthAwarePaginator $paginator,
@@ -76,8 +77,8 @@ final class ApiResponse
     /**
      * Return a success response with collection data.
      *
-     * @param  Collection<int, mixed>|array<array-key, mixed>  $data
-     * @param  array<string, string>  $headers
+     * @param  Collection<int, mixed>|array<mixed>  $data
+     * @param  array<string, mixed>  $headers
      */
     public static function collection(
         Collection|array $data,
@@ -96,7 +97,7 @@ final class ApiResponse
     /**
      * Return a success response with resource data.
      *
-     * @param  array<string, string>  $headers
+     * @param  array<string, mixed>  $headers
      */
     public static function resource(
         JsonResource $resource,
@@ -116,8 +117,9 @@ final class ApiResponse
 
     /**
      * Return a success response with resource collection data.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function resourceCollection(
         ResourceCollection $collection,
@@ -137,9 +139,10 @@ final class ApiResponse
 
     /**
      * Return an error response.
-     *
-     * @param  array<string, mixed>|null  $errors
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $errors
+     * @param  array<string, mixed>  $headers
      */
     public static function error(
         string $message,
@@ -162,9 +165,10 @@ final class ApiResponse
 
     /**
      * Return a validation error response.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $errors
-     * @param  array<string, string>  $headers
+     * @param  array<string, mixed>  $headers
      */
     public static function validationError(
         array $errors,
@@ -182,8 +186,9 @@ final class ApiResponse
 
     /**
      * Return an unauthorized error response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function unauthorized(
         string $message = 'Unauthorized.',
@@ -198,8 +203,9 @@ final class ApiResponse
 
     /**
      * Return a forbidden error response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function forbidden(
         string $message = 'Forbidden.',
@@ -214,8 +220,9 @@ final class ApiResponse
 
     /**
      * Return a not found error response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function notFound(
         string $message = 'Resource not found.',
@@ -230,8 +237,9 @@ final class ApiResponse
 
     /**
      * Return a bad request error response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function badRequest(
         string $message = 'Bad request.',
@@ -246,8 +254,9 @@ final class ApiResponse
 
     /**
      * Return a server error response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function serverError(
         string $message = 'Internal server error.',
@@ -262,8 +271,9 @@ final class ApiResponse
 
     /**
      * Return a created response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function created(
         mixed $data = null,
@@ -280,8 +290,9 @@ final class ApiResponse
 
     /**
      * Return a no content response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     public static function noContent(array $headers = []): JsonResponse
     {

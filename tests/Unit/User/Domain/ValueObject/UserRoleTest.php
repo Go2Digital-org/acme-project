@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use Modules\User\Domain\ValueObject\UserRole;
 
-describe('UserRole Value Object', function () {
-    it('has all expected role cases', function () {
+describe('UserRole Value Object', function (): void {
+    it('has all expected role cases', function (): void {
         expect(UserRole::cases())->toHaveCount(5)
             ->and(UserRole::SUPER_ADMIN->value)->toBe('super_admin')
             ->and(UserRole::ADMIN->value)->toBe('admin')
@@ -14,8 +14,8 @@ describe('UserRole Value Object', function () {
             ->and(UserRole::GUEST->value)->toBe('guest');
     });
 
-    describe('getLabel method', function () {
-        it('returns correct labels for all roles', function () {
+    describe('getLabel method', function (): void {
+        it('returns correct labels for all roles', function (): void {
             expect(UserRole::SUPER_ADMIN->getLabel())->toBe('Super Administrator')
                 ->and(UserRole::ADMIN->getLabel())->toBe('Administrator')
                 ->and(UserRole::MANAGER->getLabel())->toBe('Manager')
@@ -23,7 +23,7 @@ describe('UserRole Value Object', function () {
                 ->and(UserRole::GUEST->getLabel())->toBe('Guest');
         });
 
-        it('labels are human readable strings', function () {
+        it('labels are human readable strings', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role) {
@@ -35,8 +35,8 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('getPermissions method', function () {
-        it('returns array of permissions for SUPER_ADMIN', function () {
+    describe('getPermissions method', function (): void {
+        it('returns array of permissions for SUPER_ADMIN', function (): void {
             $permissions = UserRole::SUPER_ADMIN->getPermissions();
 
             expect($permissions)->toBeArray()
@@ -51,7 +51,7 @@ describe('UserRole Value Object', function () {
                 ->toContain('manage_organizations');
         });
 
-        it('returns array of permissions for ADMIN', function () {
+        it('returns array of permissions for ADMIN', function (): void {
             $permissions = UserRole::ADMIN->getPermissions();
 
             expect($permissions)->toBeArray()
@@ -66,7 +66,7 @@ describe('UserRole Value Object', function () {
                 ->not->toContain('view_audit_logs');
         });
 
-        it('returns array of permissions for MANAGER', function () {
+        it('returns array of permissions for MANAGER', function (): void {
             $permissions = UserRole::MANAGER->getPermissions();
 
             expect($permissions)->toBeArray()
@@ -78,7 +78,7 @@ describe('UserRole Value Object', function () {
                 ->not->toContain('manage_system');
         });
 
-        it('returns array of permissions for EMPLOYEE', function () {
+        it('returns array of permissions for EMPLOYEE', function (): void {
             $permissions = UserRole::EMPLOYEE->getPermissions();
 
             expect($permissions)->toBeArray()
@@ -90,7 +90,7 @@ describe('UserRole Value Object', function () {
                 ->not->toContain('manage_users');
         });
 
-        it('returns array of permissions for GUEST', function () {
+        it('returns array of permissions for GUEST', function (): void {
             $permissions = UserRole::GUEST->getPermissions();
 
             expect($permissions)->toBeArray()
@@ -100,7 +100,7 @@ describe('UserRole Value Object', function () {
                 ->not->toContain('make_donations');
         });
 
-        it('all permissions are non-empty strings', function () {
+        it('all permissions are non-empty strings', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role) {
@@ -115,7 +115,7 @@ describe('UserRole Value Object', function () {
             }
         });
 
-        it('super admin has all admin permissions plus extra', function () {
+        it('super admin has all admin permissions plus extra', function (): void {
             $superAdminPermissions = UserRole::SUPER_ADMIN->getPermissions();
             $adminPermissions = UserRole::ADMIN->getPermissions();
 
@@ -127,8 +127,8 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('hasPermission method', function () {
-        it('returns true when role has specific permission', function () {
+    describe('hasPermission method', function (): void {
+        it('returns true when role has specific permission', function (): void {
             expect(UserRole::SUPER_ADMIN->hasPermission('manage_users'))->toBeTrue()
                 ->and(UserRole::ADMIN->hasPermission('manage_campaigns'))->toBeTrue()
                 ->and(UserRole::MANAGER->hasPermission('view_analytics'))->toBeTrue()
@@ -136,20 +136,20 @@ describe('UserRole Value Object', function () {
                 ->and(UserRole::GUEST->hasPermission('view_public_campaigns'))->toBeTrue();
         });
 
-        it('returns false when role does not have specific permission', function () {
+        it('returns false when role does not have specific permission', function (): void {
             expect(UserRole::GUEST->hasPermission('manage_users'))->toBeFalse()
                 ->and(UserRole::EMPLOYEE->hasPermission('manage_system'))->toBeFalse()
                 ->and(UserRole::MANAGER->hasPermission('manage_users'))->toBeFalse()
                 ->and(UserRole::ADMIN->hasPermission('manage_system'))->toBeFalse();
         });
 
-        it('is case sensitive for permission names', function () {
+        it('is case sensitive for permission names', function (): void {
             expect(UserRole::SUPER_ADMIN->hasPermission('MANAGE_USERS'))->toBeFalse()
                 ->and(UserRole::SUPER_ADMIN->hasPermission('Manage_Users'))->toBeFalse()
                 ->and(UserRole::SUPER_ADMIN->hasPermission('manage_users'))->toBeTrue();
         });
 
-        it('returns false for empty permission string', function () {
+        it('returns false for empty permission string', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role) {
@@ -157,7 +157,7 @@ describe('UserRole Value Object', function () {
             }
         });
 
-        it('returns false for non-existent permission', function () {
+        it('returns false for non-existent permission', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role) {
@@ -167,99 +167,99 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('canManageUsers method', function () {
-        it('returns true for roles with manage_users permission', function () {
+    describe('canManageUsers method', function (): void {
+        it('returns true for roles with manage_users permission', function (): void {
             expect(UserRole::SUPER_ADMIN->canManageUsers())->toBeTrue()
                 ->and(UserRole::ADMIN->canManageUsers())->toBeTrue();
         });
 
-        it('returns false for roles without manage_users permission', function () {
+        it('returns false for roles without manage_users permission', function (): void {
             expect(UserRole::MANAGER->canManageUsers())->toBeFalse()
                 ->and(UserRole::EMPLOYEE->canManageUsers())->toBeFalse()
                 ->and(UserRole::GUEST->canManageUsers())->toBeFalse();
         });
     });
 
-    describe('canManageCampaigns method', function () {
-        it('returns true for roles with manage_campaigns permission', function () {
+    describe('canManageCampaigns method', function (): void {
+        it('returns true for roles with manage_campaigns permission', function (): void {
             expect(UserRole::SUPER_ADMIN->canManageCampaigns())->toBeTrue()
                 ->and(UserRole::ADMIN->canManageCampaigns())->toBeTrue()
                 ->and(UserRole::MANAGER->canManageCampaigns())->toBeTrue();
         });
 
-        it('returns false for roles without manage_campaigns permission', function () {
+        it('returns false for roles without manage_campaigns permission', function (): void {
             expect(UserRole::EMPLOYEE->canManageCampaigns())->toBeFalse()
                 ->and(UserRole::GUEST->canManageCampaigns())->toBeFalse();
         });
     });
 
-    describe('canCreateCampaigns method', function () {
-        it('returns true for roles with create_campaigns permission', function () {
+    describe('canCreateCampaigns method', function (): void {
+        it('returns true for roles with create_campaigns permission', function (): void {
             expect(UserRole::EMPLOYEE->canCreateCampaigns())->toBeTrue();
         });
 
-        it('returns true for roles with manage_campaigns permission', function () {
+        it('returns true for roles with manage_campaigns permission', function (): void {
             expect(UserRole::SUPER_ADMIN->canCreateCampaigns())->toBeTrue()
                 ->and(UserRole::ADMIN->canCreateCampaigns())->toBeTrue()
                 ->and(UserRole::MANAGER->canCreateCampaigns())->toBeTrue();
         });
 
-        it('returns false for guest role', function () {
+        it('returns false for guest role', function (): void {
             expect(UserRole::GUEST->canCreateCampaigns())->toBeFalse();
         });
     });
 
-    describe('canMakeDonations method', function () {
-        it('returns true for roles with make_donations permission', function () {
+    describe('canMakeDonations method', function (): void {
+        it('returns true for roles with make_donations permission', function (): void {
             expect(UserRole::EMPLOYEE->canMakeDonations())->toBeTrue();
         });
 
-        it('returns true for roles with manage_donations permission', function () {
+        it('returns true for roles with manage_donations permission', function (): void {
             expect(UserRole::SUPER_ADMIN->canMakeDonations())->toBeTrue()
                 ->and(UserRole::ADMIN->canMakeDonations())->toBeTrue();
         });
 
-        it('returns false for roles without donation permissions', function () {
+        it('returns false for roles without donation permissions', function (): void {
             expect(UserRole::GUEST->canMakeDonations())->toBeFalse();
         });
 
-        it('manager can make donations through team donations permission', function () {
+        it('manager can make donations through team donations permission', function (): void {
             expect(UserRole::MANAGER->canMakeDonations())->toBeFalse();
         });
     });
 
-    describe('canViewAnalytics method', function () {
-        it('returns true for roles with view_analytics permission', function () {
+    describe('canViewAnalytics method', function (): void {
+        it('returns true for roles with view_analytics permission', function (): void {
             expect(UserRole::SUPER_ADMIN->canViewAnalytics())->toBeTrue()
                 ->and(UserRole::ADMIN->canViewAnalytics())->toBeTrue()
                 ->and(UserRole::MANAGER->canViewAnalytics())->toBeTrue();
         });
 
-        it('returns false for roles without view_analytics permission', function () {
+        it('returns false for roles without view_analytics permission', function (): void {
             expect(UserRole::EMPLOYEE->canViewAnalytics())->toBeFalse()
                 ->and(UserRole::GUEST->canViewAnalytics())->toBeFalse();
         });
     });
 
-    describe('isAdmin method', function () {
-        it('returns true for admin roles', function () {
+    describe('isAdmin method', function (): void {
+        it('returns true for admin roles', function (): void {
             expect(UserRole::SUPER_ADMIN->isAdmin())->toBeTrue()
                 ->and(UserRole::ADMIN->isAdmin())->toBeTrue();
         });
 
-        it('returns false for non-admin roles', function () {
+        it('returns false for non-admin roles', function (): void {
             expect(UserRole::MANAGER->isAdmin())->toBeFalse()
                 ->and(UserRole::EMPLOYEE->isAdmin())->toBeFalse()
                 ->and(UserRole::GUEST->isAdmin())->toBeFalse();
         });
     });
 
-    describe('isManager method', function () {
-        it('returns true only for manager role', function () {
+    describe('isManager method', function (): void {
+        it('returns true only for manager role', function (): void {
             expect(UserRole::MANAGER->isManager())->toBeTrue();
         });
 
-        it('returns false for all non-manager roles', function () {
+        it('returns false for all non-manager roles', function (): void {
             expect(UserRole::SUPER_ADMIN->isManager())->toBeFalse()
                 ->and(UserRole::ADMIN->isManager())->toBeFalse()
                 ->and(UserRole::EMPLOYEE->isManager())->toBeFalse()
@@ -267,12 +267,12 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('isEmployee method', function () {
-        it('returns true only for employee role', function () {
+    describe('isEmployee method', function (): void {
+        it('returns true only for employee role', function (): void {
             expect(UserRole::EMPLOYEE->isEmployee())->toBeTrue();
         });
 
-        it('returns false for all non-employee roles', function () {
+        it('returns false for all non-employee roles', function (): void {
             expect(UserRole::SUPER_ADMIN->isEmployee())->toBeFalse()
                 ->and(UserRole::ADMIN->isEmployee())->toBeFalse()
                 ->and(UserRole::MANAGER->isEmployee())->toBeFalse()
@@ -280,8 +280,8 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('getPriority method', function () {
-        it('returns correct priority values for all roles', function () {
+    describe('getPriority method', function (): void {
+        it('returns correct priority values for all roles', function (): void {
             expect(UserRole::SUPER_ADMIN->getPriority())->toBe(100)
                 ->and(UserRole::ADMIN->getPriority())->toBe(80)
                 ->and(UserRole::MANAGER->getPriority())->toBe(60)
@@ -289,7 +289,7 @@ describe('UserRole Value Object', function () {
                 ->and(UserRole::GUEST->getPriority())->toBe(20);
         });
 
-        it('priorities are in descending order of authority', function () {
+        it('priorities are in descending order of authority', function (): void {
             expect(UserRole::SUPER_ADMIN->getPriority())
                 ->toBeGreaterThan(UserRole::ADMIN->getPriority())
                 ->and(UserRole::ADMIN->getPriority())
@@ -300,7 +300,7 @@ describe('UserRole Value Object', function () {
                 ->toBeGreaterThan(UserRole::GUEST->getPriority());
         });
 
-        it('all priorities are positive integers', function () {
+        it('all priorities are positive integers', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role) {
@@ -311,28 +311,28 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('isHigherThan method', function () {
-        it('returns true when role has higher priority', function () {
+    describe('isHigherThan method', function (): void {
+        it('returns true when role has higher priority', function (): void {
             expect(UserRole::SUPER_ADMIN->isHigherThan(UserRole::ADMIN))->toBeTrue()
                 ->and(UserRole::ADMIN->isHigherThan(UserRole::MANAGER))->toBeTrue()
                 ->and(UserRole::MANAGER->isHigherThan(UserRole::EMPLOYEE))->toBeTrue()
                 ->and(UserRole::EMPLOYEE->isHigherThan(UserRole::GUEST))->toBeTrue();
         });
 
-        it('returns false when role has lower or equal priority', function () {
+        it('returns false when role has lower or equal priority', function (): void {
             expect(UserRole::GUEST->isHigherThan(UserRole::EMPLOYEE))->toBeFalse()
                 ->and(UserRole::EMPLOYEE->isHigherThan(UserRole::MANAGER))->toBeFalse()
                 ->and(UserRole::MANAGER->isHigherThan(UserRole::ADMIN))->toBeFalse()
                 ->and(UserRole::ADMIN->isHigherThan(UserRole::SUPER_ADMIN))->toBeFalse();
         });
 
-        it('returns false when comparing same roles', function () {
+        it('returns false when comparing same roles', function (): void {
             expect(UserRole::ADMIN->isHigherThan(UserRole::ADMIN))->toBeFalse()
                 ->and(UserRole::MANAGER->isHigherThan(UserRole::MANAGER))->toBeFalse()
                 ->and(UserRole::EMPLOYEE->isHigherThan(UserRole::EMPLOYEE))->toBeFalse();
         });
 
-        it('super admin is higher than all other roles', function () {
+        it('super admin is higher than all other roles', function (): void {
             $otherRoles = [UserRole::ADMIN, UserRole::MANAGER, UserRole::EMPLOYEE, UserRole::GUEST];
 
             foreach ($otherRoles as $role) {
@@ -340,7 +340,7 @@ describe('UserRole Value Object', function () {
             }
         });
 
-        it('guest is not higher than any role', function () {
+        it('guest is not higher than any role', function (): void {
             $otherRoles = [UserRole::SUPER_ADMIN, UserRole::ADMIN, UserRole::MANAGER, UserRole::EMPLOYEE];
 
             foreach ($otherRoles as $role) {
@@ -349,28 +349,28 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('isLowerThan method', function () {
-        it('returns true when role has lower priority', function () {
+    describe('isLowerThan method', function (): void {
+        it('returns true when role has lower priority', function (): void {
             expect(UserRole::GUEST->isLowerThan(UserRole::EMPLOYEE))->toBeTrue()
                 ->and(UserRole::EMPLOYEE->isLowerThan(UserRole::MANAGER))->toBeTrue()
                 ->and(UserRole::MANAGER->isLowerThan(UserRole::ADMIN))->toBeTrue()
                 ->and(UserRole::ADMIN->isLowerThan(UserRole::SUPER_ADMIN))->toBeTrue();
         });
 
-        it('returns false when role has higher or equal priority', function () {
+        it('returns false when role has higher or equal priority', function (): void {
             expect(UserRole::SUPER_ADMIN->isLowerThan(UserRole::ADMIN))->toBeFalse()
                 ->and(UserRole::ADMIN->isLowerThan(UserRole::MANAGER))->toBeFalse()
                 ->and(UserRole::MANAGER->isLowerThan(UserRole::EMPLOYEE))->toBeFalse()
                 ->and(UserRole::EMPLOYEE->isLowerThan(UserRole::GUEST))->toBeFalse();
         });
 
-        it('returns false when comparing same roles', function () {
+        it('returns false when comparing same roles', function (): void {
             expect(UserRole::ADMIN->isLowerThan(UserRole::ADMIN))->toBeFalse()
                 ->and(UserRole::MANAGER->isLowerThan(UserRole::MANAGER))->toBeFalse()
                 ->and(UserRole::EMPLOYEE->isLowerThan(UserRole::EMPLOYEE))->toBeFalse();
         });
 
-        it('guest is lower than all other roles', function () {
+        it('guest is lower than all other roles', function (): void {
             $otherRoles = [UserRole::SUPER_ADMIN, UserRole::ADMIN, UserRole::MANAGER, UserRole::EMPLOYEE];
 
             foreach ($otherRoles as $role) {
@@ -378,7 +378,7 @@ describe('UserRole Value Object', function () {
             }
         });
 
-        it('super admin is not lower than any role', function () {
+        it('super admin is not lower than any role', function (): void {
             $otherRoles = [UserRole::ADMIN, UserRole::MANAGER, UserRole::EMPLOYEE, UserRole::GUEST];
 
             foreach ($otherRoles as $role) {
@@ -387,8 +387,8 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('getSelectOptions static method', function () {
-        it('returns array with all role values as keys and labels as values', function () {
+    describe('getSelectOptions static method', function (): void {
+        it('returns array with all role values as keys and labels as values', function (): void {
             $options = UserRole::getSelectOptions();
 
             expect($options)->toBeArray()
@@ -400,7 +400,7 @@ describe('UserRole Value Object', function () {
                 ->toHaveKey('guest');
         });
 
-        it('maps role values to correct labels', function () {
+        it('maps role values to correct labels', function (): void {
             $options = UserRole::getSelectOptions();
 
             expect($options['super_admin'])->toBe('Super Administrator')
@@ -410,7 +410,7 @@ describe('UserRole Value Object', function () {
                 ->and($options['guest'])->toBe('Guest');
         });
 
-        it('includes all enum cases in options', function () {
+        it('includes all enum cases in options', function (): void {
             $options = UserRole::getSelectOptions();
             $roles = UserRole::cases();
 
@@ -422,7 +422,7 @@ describe('UserRole Value Object', function () {
             }
         });
 
-        it('returns consistent results on multiple calls', function () {
+        it('returns consistent results on multiple calls', function (): void {
             $options1 = UserRole::getSelectOptions();
             $options2 = UserRole::getSelectOptions();
 
@@ -430,8 +430,8 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('Role hierarchy and permission inheritance', function () {
-        it('higher roles have more or equal permissions than lower roles', function () {
+    describe('Role hierarchy and permission inheritance', function (): void {
+        it('higher roles have more or equal permissions than lower roles', function (): void {
             $superAdminPerms = count(UserRole::SUPER_ADMIN->getPermissions());
             $adminPerms = count(UserRole::ADMIN->getPermissions());
             $managerPerms = count(UserRole::MANAGER->getPermissions());
@@ -443,7 +443,7 @@ describe('UserRole Value Object', function () {
                 ->and($guestPerms)->toBeLessThanOrEqual($employeePerms);
         });
 
-        it('each role has unique set of permissions', function () {
+        it('each role has unique set of permissions', function (): void {
             $roles = UserRole::cases();
             $permissionSets = [];
 
@@ -457,7 +457,7 @@ describe('UserRole Value Object', function () {
             }
         });
 
-        it('all permission checking methods are consistent with getPermissions', function () {
+        it('all permission checking methods are consistent with getPermissions', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role) {
@@ -470,8 +470,8 @@ describe('UserRole Value Object', function () {
         });
     });
 
-    describe('Edge cases and error handling', function () {
-        it('handles all enum methods without throwing exceptions', function () {
+    describe('Edge cases and error handling', function (): void {
+        it('handles all enum methods without throwing exceptions', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role) {
@@ -489,7 +489,7 @@ describe('UserRole Value Object', function () {
             }
         });
 
-        it('comparison methods work with all role combinations', function () {
+        it('comparison methods work with all role combinations', function (): void {
             $roles = UserRole::cases();
 
             foreach ($roles as $role1) {

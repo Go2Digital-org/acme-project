@@ -6,13 +6,11 @@ namespace Modules\Category\Application\Command;
 
 final class UpdateCategoryCommand
 {
-    /**
-     * @param  array<string, string>  $name
-     * @param  array<string, string>  $description
-     */
     public function __construct(
         public string $id,
+        /** @var array<string, mixed> */
         public array $name,
+        /** @var array<string, mixed> */
         public array $description,
         public ?string $parentId = null,
         public ?string $icon = null,

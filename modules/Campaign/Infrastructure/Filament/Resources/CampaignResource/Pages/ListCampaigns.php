@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Campaign\Infrastructure\Filament\Resources\CampaignResource\Pages;
 
-use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -17,7 +16,7 @@ class ListCampaigns extends ListRecords
     protected static string $resource = CampaignResource::class;
 
     /**
-     * @return array<Action>
+     * @return array<int, CreateAction>
      */
     protected function getHeaderActions(): array
     {

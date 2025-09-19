@@ -279,7 +279,7 @@ final readonly class SocialSharingService
     /**
      * Get social media platform metadata.
      *
-     * @return array<string, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getSocialPlatformsMetadata(): array
     {

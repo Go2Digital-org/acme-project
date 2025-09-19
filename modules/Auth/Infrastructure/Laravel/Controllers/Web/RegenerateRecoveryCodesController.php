@@ -20,8 +20,9 @@ final readonly class RegenerateRecoveryCodesController
     public function __invoke(RegenerateRecoveryCodesRequest $request): JsonResponse
     {
         $user = $this->getAuthenticatedUser($request);
+        $password = $request->input('password', '');
 
-        $codes = $this->twoFactorService->regenerateRecoveryCodes($user->getId());
+        $codes = $this->twoFactorService->regenerateRecoveryCodes($user->getId(), $password);
 
         return response()->json([
             'codes' => $codes,

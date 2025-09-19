@@ -11,7 +11,7 @@ export interface Campaign {
   status: 'draft' | 'active' | 'completed' | 'cancelled';
   category: string;
   organizationId: number;
-  employeeId: number;
+  userId: number;
   imageUrl?: string;
   donationsCount: number;
   progress: number;
@@ -24,7 +24,7 @@ export interface Campaign {
 export interface Donation {
   id: number;
   campaignId: number;
-  employeeId: number;
+  userId: number;
   amount: number;
   currency: string;
   message?: string;

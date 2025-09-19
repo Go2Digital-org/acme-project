@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit\Shared\Domain\Specification;
 
 use Modules\Shared\Domain\Specification\CompositeSpecification;
-use PHPUnit\Framework\TestCase;
+use Tests\UnitTestCase;
 
-class CompositeSpecificationTest extends TestCase
+class CompositeSpecificationTest extends UnitTestCase
 {
     private MockSpecification $trueSpec;
 

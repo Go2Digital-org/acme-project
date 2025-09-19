@@ -10,6 +10,9 @@ use Modules\Audit\Domain\Model\Audit;
 
 class AuditStatsWidget extends BaseWidget
 {
+    /**
+     * @return array<int, Stat>
+     */
     protected function getStats(): array
     {
         $today = Audit::whereDate('created_at', today())->count();

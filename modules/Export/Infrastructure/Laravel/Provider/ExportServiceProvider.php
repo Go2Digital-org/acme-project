@@ -140,12 +140,6 @@ class ExportServiceProvider extends ServiceProvider
     private function registerCommands(): void
     {
         if ($this->app->runningInConsole()) {
-            // Commands will be registered when created
-            // $this->commands([
-            //     \Modules\Export\Infrastructure\Laravel\Console\ProcessExportsCommand::class,
-            //     \Modules\Export\Infrastructure\Laravel\Console\CleanupExpiredExportsCommand::class,
-            //     \Modules\Export\Infrastructure\Laravel\Console\ExportStatsCommand::class,
-            // ]);
         }
     }
 
@@ -272,29 +266,12 @@ class ExportServiceProvider extends ServiceProvider
     /**
      * Register middleware
      */
-    private function registerMiddleware(): void
-    {
-        // Register export-specific middleware
-        // TODO: Create middleware classes when needed
-        // $router = $this->app['router'];
-        // $router->aliasMiddleware('export.throttle', \Modules\Export\Infrastructure\Laravel\Middleware\ExportThrottleMiddleware::class);
-        // $router->aliasMiddleware('export.auth', \Modules\Export\Infrastructure\Laravel\Middleware\ExportAuthMiddleware::class);
-    }
+    private function registerMiddleware(): void {}
 
     /**
      * Register view composers
      */
-    private function registerViewComposers(): void
-    {
-        // Register view composers for export-related views
-        // TODO: Create view composer when needed
-        // if ($this->app->bound('view')) {
-        //     $this->app['view']->composer(
-        //         'export.*',
-        //         \Modules\Export\Infrastructure\Laravel\View\ExportViewComposer::class
-        //     );
-        // }
-    }
+    private function registerViewComposers(): void {}
 
     /**
      * Register validation rules
@@ -322,7 +299,7 @@ class ExportServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider
      *
-     * @return array<int, class-string>
+     * @return array<int, string>
      */
     public function provides(): array
     {

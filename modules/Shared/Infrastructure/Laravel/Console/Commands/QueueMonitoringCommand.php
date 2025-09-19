@@ -96,7 +96,7 @@ class QueueMonitoringCommand extends Command
     }
 
     /**
-     * @return array<int, array<int, mixed>>
+     * @return list<array<int, mixed>>
      */
     private function collectMetrics(): array
     {
@@ -138,7 +138,7 @@ class QueueMonitoringCommand extends Command
     }
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     private function getQueueSizes(): array
     {
@@ -224,8 +224,8 @@ class QueueMonitoringCommand extends Command
     }
 
     /**
-     * @param  array<string, int>  $queueSizes
-     * @return array<int, array<int, mixed>>
+     * @param  array<string, mixed>  $queueSizes
+     * @return list<array<int, mixed>>
      */
     private function formatQueueData(array $queueSizes): array
     {

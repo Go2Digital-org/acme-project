@@ -12,7 +12,6 @@ use Modules\Currency\Domain\Event\ExchangeRatesUpdatedEvent;
 use Modules\Currency\Domain\Exception\ExchangeRateProviderException;
 use Modules\Currency\Domain\Model\Currency;
 use Modules\Currency\Domain\Port\ExchangeRateProviderInterface;
-use Modules\Currency\Domain\ValueObject\ExchangeRate;
 
 final readonly class UpdateExchangeRatesCommandHandler
 {
@@ -20,6 +19,7 @@ final readonly class UpdateExchangeRatesCommandHandler
      * @param  ExchangeRateProviderInterface[]  $providers
      */
     public function __construct(
+        /** @var array<string, mixed> */
         private array $providers,
     ) {}
 
@@ -128,7 +128,7 @@ final readonly class UpdateExchangeRatesCommandHandler
     }
 
     /**
-     * @param  array<string, ExchangeRate>  $rates
+     * @param  array<string, mixed>  $rates
      */
     private function updateDatabaseRates(array $rates, string $baseCurrency, string $provider): void
     {
@@ -161,7 +161,7 @@ final readonly class UpdateExchangeRatesCommandHandler
     }
 
     /**
-     * @param  array<string, ExchangeRate>  $rates
+     * @param  array<string, mixed>  $rates
      * @return array<string, float>
      */
     private function formatRatesForEvent(array $rates): array

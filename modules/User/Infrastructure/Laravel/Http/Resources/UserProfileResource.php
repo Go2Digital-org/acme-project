@@ -15,7 +15,7 @@ class UserProfileResource extends BaseApiResource
      * @param  Request  $request
      * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         $user = $this->resource;
 
@@ -50,25 +50,19 @@ class UserProfileResource extends BaseApiResource
 
         // Add organization information (lazy loaded)
         if ($this->shouldIncludeField($request, 'organization')) {
-            $data['organization'] = $this->whenLoadedRelation('organization', function ($organization) {
-                return [
-                    'id' => $organization->id,
-                    'name' => $organization->getName(),
-                    'logo_url' => $organization->logo_url ?? null,
-                ];
-            });
+            $data['organization'] = $this->whenLoadedRelation('organization', fn ($organization): array => [
+                'id' => $organization->id,
+                'name' => $organization->getName(),
+                'logo_url' => $organization->logo_url ?? null,
+            ]);
         }
 
         // Add role information (lazy loaded)
         if ($this->shouldIncludeField($request, 'roles')) {
-            $data['roles'] = $this->whenLoadedRelation('roles', function ($roles) {
-                return $roles->map(function ($role) {
-                    return [
-                        'name' => $role->name,
-                        'display_name' => $role->display_name ?? $role->name,
-                    ];
-                })->toArray();
-            });
+            $data['roles'] = $this->whenLoadedRelation('roles', fn ($roles) => $roles->map(fn ($role): array => [
+                'name' => $role->name,
+                'display_name' => $role->display_name ?? $role->name,
+            ])->toArray());
         }
 
         // Add donation statistics (only if specifically requested)
@@ -108,8 +102,10 @@ class UserProfileResource extends BaseApiResource
 
     /**
      * Add additional metadata for profile response.
+     *
+     * @return array<string, mixed>
      */
-    public function with($request)
+    public function with($request): array
     {
         return array_merge(parent::with($request), [
             'meta' => [

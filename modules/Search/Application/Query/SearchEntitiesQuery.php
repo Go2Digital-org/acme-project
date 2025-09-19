@@ -10,11 +10,9 @@ use Modules\Shared\Application\Query\QueryInterface;
 
 final readonly class SearchEntitiesQuery implements QueryInterface
 {
-    /**
-     * @param  array<string>  $entityTypes
-     */
     public function __construct(
         public string $query,
+        /** @var array<int, string> */
         public array $entityTypes = ['campaign', 'donation', 'user', 'organization'],
         public ?SearchFilters $filters = null,
         public ?SearchSort $sort = null,
@@ -52,7 +50,8 @@ final readonly class SearchEntitiesQuery implements QueryInterface
 
     /**
      * Create from request data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self

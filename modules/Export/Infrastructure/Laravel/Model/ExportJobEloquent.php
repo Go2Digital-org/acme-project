@@ -45,6 +45,7 @@ class ExportJobEloquent extends Model
 {
     protected $table = 'export_jobs';
 
+    /** @var list<string> */
     protected $fillable = [
         'export_id',
         'user_id',
@@ -63,12 +64,6 @@ class ExportJobEloquent extends Model
         'processed_records',
         'current_percentage',
         'current_message',
-    ];
-
-    protected $attributes = [
-        'status' => 'pending',
-        'processed_records' => 0,
-        'current_percentage' => 0,
     ];
 
     /**
@@ -247,6 +242,21 @@ class ExportJobEloquent extends Model
         });
     }
 
+    /**
+     * Boot the model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $export): void {
+            $export->status ??= 'pending';
+            $export->processed_records ??= 0;
+            $export->current_percentage ??= 0;
+        });
+    }
+
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

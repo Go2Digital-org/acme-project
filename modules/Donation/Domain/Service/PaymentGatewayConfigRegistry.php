@@ -15,14 +15,7 @@ final class PaymentGatewayConfigRegistry
     /**
      * Gateway configuration definitions.
      *
-     * @var array<string, array{
-     *     required_fields: array<string>,
-     *     optional_fields: array<string>,
-     *     test_mode_detection: ?string,
-     *     supports_webhook_secret: bool,
-     *     api_key_field: string,
-     *     display_name: string
-     * }>
+     * @var array<string, array<string, mixed>>
      */
     public const GATEWAY_CONFIGS = [
         'mollie' => [
@@ -55,8 +48,8 @@ final class PaymentGatewayConfigRegistry
      * Get configuration for a specific provider.
      *
      * @return array{
-     *     required_fields: array<string>,
-     *     optional_fields: array<string>,
+     *     required_fields: array<int, string>,
+     *     optional_fields: array<int, string>,
      *     test_mode_detection: ?string,
      *     supports_webhook_secret: bool,
      *     api_key_field: string,
@@ -71,7 +64,7 @@ final class PaymentGatewayConfigRegistry
     /**
      * Get all available provider names.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public static function getAvailableProviders(): array
     {
@@ -109,7 +102,7 @@ final class PaymentGatewayConfigRegistry
     /**
      * Get required fields for provider.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public static function getRequiredFields(string $provider): array
     {

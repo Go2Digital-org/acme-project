@@ -26,19 +26,26 @@ use Modules\Shared\Infrastructure\ApiPlatform\Filter\RelationshipFilter;
 use Modules\Shared\Infrastructure\Laravel\Exception\FatalErrorFoundException;
 use Modules\Shared\Infrastructure\Laravel\Exception\ResourceNotFoundException;
 
+/**
+ * @template TModel of Model
+ */
 abstract class AbstractEloquentRepository
 {
+    /**
+     * @param  TModel  $model
+     */
     public function __construct(protected Model $model) {}
 
     /**
      * Get results without pagination.
      *
      * @param  array<string, mixed>  $filters
-     * @param  array<string, string>  $sorts
-     * @return iterable<Model>
+     * @param  array<string, mixed>  $sorts
+     * @return iterable<int, TModel>
      */
     public function withoutPagination(array $filters, array $sorts, Operation $operation): iterable
     {
+        /** @var Builder<TModel> $query */
         $query = $this->model->newQuery();
         $this->applyFiltersAndSorting($query, $filters, $sorts, $operation);
 
@@ -49,8 +56,8 @@ abstract class AbstractEloquentRepository
      * Get results with pagination.
      *
      * @param  array<string, mixed>  $filters
-     * @param  array<string, string>  $sorts
-     * @return LengthAwarePaginator<int, Model>
+     * @param  array<string, mixed>  $sorts
+     * @return LengthAwarePaginator<int, TModel>
      */
     public function withPagination(
         int $page,
@@ -60,6 +67,7 @@ abstract class AbstractEloquentRepository
         Operation $operation,
     ): LengthAwarePaginator {
         try {
+            /** @var Builder<TModel> $query */
             $query = $this->model::query();
             $this->applyFiltersAndSorting($query, $filters, $sorts, $operation);
 
@@ -72,13 +80,18 @@ abstract class AbstractEloquentRepository
     }
 
     /**
+     * @return TModel
+     *
      * @throws ResourceNotFoundException
      * @throws FatalErrorFoundException
      */
     public function find(int $id): Model
     {
         try {
-            return $this->model::findOrFail($id);
+            /** @var TModel $result */
+            $result = $this->model::findOrFail($id);
+
+            return $result;
         } catch (ModelNotFoundException) {
             throw new ResourceNotFoundException(
                 class_basename($this->model) . ' not found for ID ' . $id,
@@ -98,14 +111,18 @@ abstract class AbstractEloquentRepository
     /**
      * Update a model using PUT method (full replacement).
      *
-     * @param  array<string, mixed>  $updatedData
      *
      * @throws ResourceNotFoundException
      * @throws FatalErrorFoundException
      */
+    /**
+     * @param  array<string, mixed>  $updatedData
+     * @return TModel
+     */
     public function put(int $id, array $updatedData): Model
     {
         try {
+            /** @var TModel $entity */
             $entity = $this->model::findOrFail($id);
             $entity->update($updatedData);
 
@@ -129,14 +146,18 @@ abstract class AbstractEloquentRepository
     /**
      * Update a model using PATCH method (partial update).
      *
-     * @param  array<string, mixed>  $partialData
      *
      * @throws ResourceNotFoundException
      * @throws FatalErrorFoundException
      */
+    /**
+     * @param  array<string, mixed>  $partialData
+     * @return TModel
+     */
     public function patch(int $id, array $partialData): Model
     {
         try {
+            /** @var TModel $entity */
             $entity = $this->model::findOrFail($id);
             $partialData = array_filter($partialData, fn ($value): bool => $value !== null);
             $entity->update($partialData);
@@ -157,12 +178,15 @@ abstract class AbstractEloquentRepository
     }
 
     /**
+     * @return TModel
+     *
      * @throws ResourceNotFoundException
      * @throws FatalErrorFoundException
      */
     public function remove(int $id): Model
     {
         try {
+            /** @var TModel $entity */
             $entity = $this->model::findOrFail($id);
             $entity->delete();
 
@@ -184,10 +208,10 @@ abstract class AbstractEloquentRepository
     /**
      * Apply filters and sorting to the query.
      *
-     * @param  Builder<Model>  $query
+     * @param  Builder<TModel>  $query
      * @param  array<string, mixed>  $filters
-     * @param  array<string, string>  $sorts
-     * @return Builder<Model>
+     * @param  array<string, mixed>  $sorts
+     * @return Builder<TModel>
      */
     protected function applyFiltersAndSorting(
         Builder $query,
@@ -208,7 +232,7 @@ abstract class AbstractEloquentRepository
         foreach ($sorts as $sort => $direction) {
             $parameter = $this->getParameter($sort, $operation);
 
-            if ($parameter instanceof Parameter && in_array(strtolower($direction), ['asc', 'desc'], true)) {
+            if ($parameter instanceof Parameter && in_array(strtolower((string) $direction), ['asc', 'desc'], true)) {
                 $orderFilter->apply($query, $direction, $parameter);
             }
         }
@@ -219,7 +243,7 @@ abstract class AbstractEloquentRepository
     /**
      * Apply a single filter to the query.
      *
-     * @param  Builder<Model>  $query
+     * @param  Builder<TModel>  $query
      */
     protected function applyFilter(Builder $query, string $key, mixed $value, Parameter $parameter): void
     {
@@ -234,7 +258,9 @@ abstract class AbstractEloquentRepository
         ];
 
         if ($parameter->getFilter() === MultiSearchFilter::class) {
-            $multiSearchFilter = new MultiSearchFilter($parameter->getExtraProperties());
+            $extraProperties = $parameter->getExtraProperties();
+            $allowedFields = $extraProperties['fields'] ?? [];
+            $multiSearchFilter = new MultiSearchFilter($allowedFields);
             $multiSearchFilter->apply($query, $value);
 
             return;

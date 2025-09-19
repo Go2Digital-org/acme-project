@@ -20,6 +20,10 @@ final readonly class DonationItemProvider implements ProviderInterface
         private QueryBusInterface $queryBus,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function provide(
         Operation $operation,
         array $uriVariables = [],

@@ -24,14 +24,16 @@ interface TeamRepositoryInterface
 
     /**
      * Create new team
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function create(array $data): Team;
 
     /**
      * Update team
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function update(TeamId $id, array $data): bool;

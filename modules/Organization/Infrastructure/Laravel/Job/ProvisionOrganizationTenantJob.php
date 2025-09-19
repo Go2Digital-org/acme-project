@@ -63,6 +63,8 @@ class ProvisionOrganizationTenantJob implements ShouldQueue
         public Organization $organization,
         /**
          * Admin data structure.
+         *
+         * @var array{name: string, email: string, password: string}
          */
         private array $adminData
     ) {

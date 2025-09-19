@@ -102,7 +102,7 @@ final readonly class DonationExportService
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     private function getCSVHeaders(?string $locale = null): array
     {

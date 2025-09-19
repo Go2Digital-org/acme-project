@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Organization\Infrastructure\Laravel\Controllers\Api;
 
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Organization\Infrastructure\Laravel\Http\Resources\OrganizationDashboardResource;
 use Modules\Organization\Infrastructure\Laravel\Repository\OrganizationDashboardRepository;
+use Modules\Shared\Application\ReadModel\ReadModelInterface;
 use Modules\Shared\Infrastructure\Laravel\Http\ApiResponse;
 
 final readonly class OrganizationDashboardController
@@ -37,7 +39,7 @@ final readonly class OrganizationDashboardController
         // Get dashboard read model with optimized caching
         $dashboard = $this->dashboardRepository->find($organizationId);
 
-        if (! $dashboard) {
+        if (! $dashboard instanceof ReadModelInterface) {
             return ApiResponse::notFound('Organization dashboard not found');
         }
 
@@ -107,7 +109,7 @@ final readonly class OrganizationDashboardController
                 data: ['organization_id' => $organizationId, 'cache_warmed' => true],
                 message: 'Cache warmed successfully'
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ApiResponse::error('Failed to warm cache: ' . $e->getMessage(), null, 500);
         }
     }
@@ -124,7 +126,7 @@ final readonly class OrganizationDashboardController
                 data: ['organization_id' => $organizationId, 'cache_invalidated' => true],
                 message: 'Cache invalidated successfully'
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ApiResponse::error('Failed to invalidate cache: ' . $e->getMessage(), null, 500);
         }
     }

@@ -15,6 +15,8 @@ use Modules\User\Infrastructure\Laravel\Models\User;
 
 class AuditActivityWidget extends BaseWidget
 {
+    /** @var int|string|array<string, int|null> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 2;

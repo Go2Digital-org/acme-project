@@ -21,7 +21,7 @@ final class CommandServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Register console commands
-        /** @var array<class-string> $commands */
+        /** @var array<int, string> $commands */
         $commands = [
             MeilisearchConfigureCommand::class,
             PostDeployCommand::class,

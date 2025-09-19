@@ -42,6 +42,11 @@ final class BulkNotificationProcessingJob implements ShouldQueue
     /** @var array<int, int> */
     public array $backoff = [300, 900]; // 5 and 15 minute backoff
 
+    /**
+     * @param  array<string, mixed>  $operationData
+     * @param  array<string, mixed>  $recipientFilters
+     * @param  array<string, mixed>  $options
+     */
     public function __construct(
         private readonly string $operationType,
         /** @var array<string, mixed> */
@@ -380,7 +385,7 @@ final class BulkNotificationProcessingJob implements ShouldQueue
     }
 
     /**
-     * @param  array<int, int>  $campaignIds
+     * @param  array<string, mixed>  $campaignIds
      * @return Collection<int, stdClass>
      */
     private function getDonationReminderRecipients(array $campaignIds, int $daysInactive): Collection
@@ -404,7 +409,7 @@ final class BulkNotificationProcessingJob implements ShouldQueue
     }
 
     /**
-     * @return array<int, array<string, mixed>|int>
+     * @return array<int|string, mixed>
      */
     private function getCampaignsForMilestoneAlert(string $milestoneType, int $thresholdDays): array
     {
@@ -417,7 +422,7 @@ final class BulkNotificationProcessingJob implements ShouldQueue
     }
 
     /**
-     * @return array<int, int>
+     * @return array<int, object>
      */
     private function getCampaignsApproachingDeadline(int $thresholdDays): array
     {
@@ -431,7 +436,7 @@ final class BulkNotificationProcessingJob implements ShouldQueue
     }
 
     /**
-     * @return array<int, int>
+     * @return array<string, mixed>
      */
     private function getCampaignsWithLowFunding(): array
     {
@@ -483,9 +488,7 @@ final class BulkNotificationProcessingJob implements ShouldQueue
     }
 
     /**
-     * @param  array<Queueable>  $jobs
-     *
-     * @phpstan-ignore-next-line parameter.trait
+     * @param  array<object>  $jobs
      */
     private function dispatchBatches(array $jobs, string $batchName, int $totalRecipients): void
     {
@@ -562,7 +565,7 @@ final class BulkNotificationProcessingJob implements ShouldQueue
      * Static factory methods for different bulk operations
      */
     /**
-     * @param  array<int, int>  $campaignIds
+     * @param  array<string, mixed>  $campaignIds
      * @param  array<string, mixed>  $options
      */
     public static function campaignUpdateBroadcast(

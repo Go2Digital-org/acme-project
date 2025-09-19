@@ -14,18 +14,16 @@ use Modules\Shared\Domain\ValueObject\Money;
  */
 final readonly class PaymentIntent
 {
-    /**
-     * @param  array<array-key, mixed>  $metadata
-     */
     public function __construct(
         public int $donationId,
         public int $campaignId,
-        public int $employeeId,
+        public int $userId,
         public Money $amount,
         public PaymentMethod $paymentMethod,
         public string $description,
         public string $returnUrl,
         public string $cancelUrl,
+        /** @var array<string, mixed> */
         public array $metadata = [],
         public bool $captureMethod = true,
         public ?string $customerId = null,
@@ -71,13 +69,15 @@ final readonly class PaymentIntent
     /**
      * Get metadata with donation context.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getEnrichedMetadata(): array
     {
         return array_merge($this->metadata, [
             'donation_id' => (string) $this->donationId,
             'campaign_id' => (string) $this->campaignId,
-            'user_id' => (string) $this->employeeId,
+            'user_id' => (string) $this->userId,
             'amount' => (string) $this->amount->amount,
             'currency' => $this->amount->currency,
             'payment_method' => $this->paymentMethod->value,

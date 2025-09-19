@@ -7,8 +7,8 @@ use Modules\Shared\Domain\Specification\NotSpecification;
 use Modules\Shared\Domain\Specification\OrSpecification;
 use Modules\Shared\Domain\Specification\SpecificationInterface;
 
-describe('NotSpecification', function () {
-    beforeEach(function () {
+describe('NotSpecification', function (): void {
+    beforeEach(function (): void {
         $this->trueSpec = new class implements SpecificationInterface
         {
             public function isSatisfiedBy(mixed $candidate): bool
@@ -56,8 +56,8 @@ describe('NotSpecification', function () {
         };
     });
 
-    describe('Construction', function () {
-        it('creates NOT specification with a specification', function () {
+    describe('Construction', function (): void {
+        it('creates NOT specification with a specification', function (): void {
             $notSpec = new NotSpecification($this->trueSpec);
 
             expect($notSpec)->toBeInstanceOf(NotSpecification::class)
@@ -65,22 +65,22 @@ describe('NotSpecification', function () {
         });
     });
 
-    describe('Logical NOT Operations', function () {
-        it('returns false when wrapped specification is true', function () {
+    describe('Logical NOT Operations', function (): void {
+        it('returns false when wrapped specification is true', function (): void {
             $notSpec = new NotSpecification($this->trueSpec);
 
             expect($notSpec->isSatisfiedBy('any_candidate'))->toBeFalse();
         });
 
-        it('returns true when wrapped specification is false', function () {
+        it('returns true when wrapped specification is false', function (): void {
             $notSpec = new NotSpecification($this->falseSpec);
 
             expect($notSpec->isSatisfiedBy('any_candidate'))->toBeTrue();
         });
     });
 
-    describe('Double Negation', function () {
-        it('handles double negation correctly', function () {
+    describe('Double Negation', function (): void {
+        it('handles double negation correctly', function (): void {
             $notNotTrueSpec = new NotSpecification(new NotSpecification($this->trueSpec));
             $notNotFalseSpec = new NotSpecification(new NotSpecification($this->falseSpec));
 
@@ -88,7 +88,7 @@ describe('NotSpecification', function () {
                 ->and($notNotFalseSpec->isSatisfiedBy('test'))->toBeFalse(); // NOT(NOT(false)) = false
         });
 
-        it('handles triple negation correctly', function () {
+        it('handles triple negation correctly', function (): void {
             $tripleNotTrueSpec = new NotSpecification(new NotSpecification(new NotSpecification($this->trueSpec)));
             $tripleNotFalseSpec = new NotSpecification(new NotSpecification(new NotSpecification($this->falseSpec)));
 
@@ -97,8 +97,8 @@ describe('NotSpecification', function () {
         });
     });
 
-    describe('Complex Specifications', function () {
-        it('negates conditional specifications correctly', function () {
+    describe('Complex Specifications', function (): void {
+        it('negates conditional specifications correctly', function (): void {
             $positiveSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -130,7 +130,7 @@ describe('NotSpecification', function () {
                 ->and($notPositiveSpec->isSatisfiedBy('string'))->toBeTrue(); // string is not positive, so NOT positive = true
         });
 
-        it('works with string specifications', function () {
+        it('works with string specifications', function (): void {
             $containsTestSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -162,7 +162,7 @@ describe('NotSpecification', function () {
                 ->and($doesNotContainTestSpec->isSatisfiedBy(123))->toBeTrue(); // not a string, so doesn't contain 'test'
         });
 
-        it('works with array specifications', function () {
+        it('works with array specifications', function (): void {
             $emptyArraySpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -194,8 +194,8 @@ describe('NotSpecification', function () {
         });
     });
 
-    describe('Combining with Other Specifications', function () {
-        it('works in AND combinations', function () {
+    describe('Combining with Other Specifications', function (): void {
+        it('works in AND combinations', function (): void {
             $positiveSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -254,7 +254,7 @@ describe('NotSpecification', function () {
                 ->and($positiveOddSpec->isSatisfiedBy(0))->toBeFalse(); // even and not positive
         });
 
-        it('works in OR combinations', function () {
+        it('works in OR combinations', function (): void {
             $nullSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -322,8 +322,8 @@ describe('NotSpecification', function () {
         });
     });
 
-    describe('Performance and Evaluation', function () {
-        it('evaluates wrapped specification exactly once', function () {
+    describe('Performance and Evaluation', function (): void {
+        it('evaluates wrapped specification exactly once', function (): void {
             $evaluationCount = 0;
 
             $countingSpec = new class($evaluationCount) implements SpecificationInterface
@@ -360,7 +360,7 @@ describe('NotSpecification', function () {
                 ->and($evaluationCount)->toBe(1);
         });
 
-        it('handles expensive operations correctly', function () {
+        it('handles expensive operations correctly', function (): void {
             $expensiveSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -398,8 +398,8 @@ describe('NotSpecification', function () {
         });
     });
 
-    describe('Edge Cases', function () {
-        it('handles null values correctly', function () {
+    describe('Edge Cases', function (): void {
+        it('handles null values correctly', function (): void {
             $nullCheckSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -432,7 +432,7 @@ describe('NotSpecification', function () {
                 ->and($notNullSpec->isSatisfiedBy([]))->toBeTrue();
         });
 
-        it('handles boolean false values correctly', function () {
+        it('handles boolean false values correctly', function (): void {
             $falseCheckSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -465,7 +465,7 @@ describe('NotSpecification', function () {
                 ->and($notFalseSpec->isSatisfiedBy(null))->toBeTrue(); // null is not false
         });
 
-        it('handles type-specific specifications', function () {
+        it('handles type-specific specifications', function (): void {
             $stringTypeSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -499,8 +499,8 @@ describe('NotSpecification', function () {
         });
     });
 
-    describe('Nested Complex Scenarios', function () {
-        it('handles deeply nested NOT specifications', function () {
+    describe('Nested Complex Scenarios', function (): void {
+        it('handles deeply nested NOT specifications', function (): void {
             $baseSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -534,7 +534,7 @@ describe('NotSpecification', function () {
                 ->and($level4->isSatisfiedBy('other'))->toBeFalse();
         });
 
-        it('works with complex business logic specifications', function () {
+        it('works with complex business logic specifications', function (): void {
             $userSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool

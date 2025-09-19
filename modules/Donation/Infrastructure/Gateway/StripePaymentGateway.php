@@ -423,7 +423,7 @@ final readonly class StripePaymentGateway implements PaymentGatewayInterface
     /**
      * Gets the list of supported currencies.
      *
-     * @return array<string> List of supported currency codes
+     * @return array<int, string> List of supported currency codes
      */
     public function getSupportedCurrencies(): array
     {

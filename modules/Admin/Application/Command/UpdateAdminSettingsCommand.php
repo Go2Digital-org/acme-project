@@ -17,7 +17,9 @@ final readonly class UpdateAdminSettingsCommand implements CommandInterface
         public string $siteDescription,
         public bool $maintenanceMode,
         public bool $debugMode,
+        /** @var array<string, mixed> */
         public array $emailSettings,
+        /** @var array<string, mixed> */
         public array $notificationSettings,
         public int $updatedBy
     ) {}

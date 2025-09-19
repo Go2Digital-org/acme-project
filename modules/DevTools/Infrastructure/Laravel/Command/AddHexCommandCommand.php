@@ -72,7 +72,9 @@ class AddHexCommandCommand extends Command
         return $this->choice('Select a domain', $domains);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function askTypes(): array
     {
         $options = [
@@ -95,7 +97,7 @@ class AddHexCommandCommand extends Command
     }
 
     /**
-     * @param  array<int, string>  $types
+     * @param  array<string, mixed>  $types
      */
     private function createFiles(string $basePath, string $domain, string $prefix, array $types): void
     {
@@ -134,7 +136,7 @@ class AddHexCommandCommand extends Command
     }
 
     /**
-     * @param  array<int, array{string, string, array<string, mixed>}>  $files
+     * @param  array<int, array<int, mixed>>  $files
      */
     private function createFilesFromStubs(string $basePath, string $domain, string $prefix, array $files): void
     {

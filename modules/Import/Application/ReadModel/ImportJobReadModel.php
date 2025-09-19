@@ -9,15 +9,17 @@ use Modules\Import\Domain\Model\ImportJob;
 final class ImportJobReadModel
 {
     /**
-     * @param  array<string, string>  $mapping
+     * @param  array<string, mixed>  $mapping
      * @param  array<string, mixed>  $options
-     * @param  array<string>  $errors
+     * @param  array<int, string>  $errors
      */
     public function __construct(
         public string $id,
         public string $type,
         public string $filePath,
+        /** @var array<string, mixed> */
         public array $mapping,
+        /** @var array<string, mixed> */
         public array $options,
         public ?string $organizationId,
         public string $status,
@@ -25,6 +27,7 @@ final class ImportJobReadModel
         public int $processedRecords,
         public int $successfulRecords,
         public int $failedRecords,
+        /** @var array<int, string> */
         public array $errors,
         public ?string $startedAt,
         public ?string $completedAt,

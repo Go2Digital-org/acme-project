@@ -36,7 +36,7 @@ class SubmitForApprovalCommandHandler implements CommandHandlerInterface
             }
 
             // Validate employee permissions
-            if ($campaign->user_id !== $command->employeeId) {
+            if ($campaign->user_id !== $command->userId) {
                 throw CampaignException::unauthorizedAccess($campaign);
             }
 
@@ -72,12 +72,12 @@ class SubmitForApprovalCommandHandler implements CommandHandlerInterface
                 campaign: $updatedCampaign,
                 previousStatus: $previousStatus,
                 newStatus: CampaignStatus::PENDING_APPROVAL,
-                changedByUserId: $command->employeeId
+                changedByUserId: $command->userId
             ));
 
             Event::dispatch(new CampaignSubmittedForApprovalEvent(
                 campaign: $updatedCampaign,
-                submitterId: $command->employeeId
+                submitterId: $command->userId
             ));
 
             return $updatedCampaign;

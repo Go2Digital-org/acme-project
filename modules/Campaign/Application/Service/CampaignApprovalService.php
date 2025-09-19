@@ -33,7 +33,7 @@ class CampaignApprovalService
     {
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $submitter->id,
+            userId: $submitter->id,
         );
 
         return $this->submitHandler->handle($command);
@@ -121,21 +121,36 @@ class CampaignApprovalService
 
     /**
      * Get campaigns pending approval
-     *
-     * @return array<Campaign>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getPendingApprovalCampaigns(): array
     {
-        return $this->repository->findByStatus(CampaignStatus::PENDING_APPROVAL);
+        $campaigns = $this->repository->findByStatus(CampaignStatus::PENDING_APPROVAL);
+
+        return [
+            'campaigns' => array_map(fn (Campaign $campaign) => $campaign->toArray(), $campaigns),
+            'total' => count($campaigns),
+            'status' => 'pending_approval',
+        ];
     }
 
     /**
      * Get rejected campaigns for a user
-     *
-     * @return array<Campaign>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getRejectedCampaigns(User $user): array
     {
-        return $this->repository->findByEmployeeAndStatus($user->id, CampaignStatus::REJECTED);
+        $campaigns = $this->repository->findByEmployeeAndStatus($user->id, CampaignStatus::REJECTED);
+
+        return [
+            'campaigns' => array_map(fn (Campaign $campaign) => $campaign->toArray(), $campaigns),
+            'total' => count($campaigns),
+            'status' => 'rejected',
+            'user_id' => $user->id,
+        ];
     }
 }

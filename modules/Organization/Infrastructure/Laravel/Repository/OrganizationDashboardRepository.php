@@ -31,7 +31,7 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
+     * @param  array<string, mixed>  $filters
      */
     protected function buildReadModel(string|int $id, ?array $filters = null): ?ReadModelInterface
     {
@@ -51,9 +51,12 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string|int>  $ids
-     * @param  array<string, mixed>|null  $filters
-     * @return array<int, OrganizationDashboardReadModel>
+     * @param  array<string, mixed>  $ids
+     * @param  array<string, mixed>  $filters
+     */
+
+    /**
+     * @return array<int, ReadModelInterface>
      */
     protected function buildReadModels(array $ids, ?array $filters = null): array
     {
@@ -76,8 +79,11 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
-     * @return array<ReadModelInterface>
+     * @param  array<string, mixed>  $filters
+     */
+
+    /**
+     * @return array<int, ReadModelInterface>
      */
     protected function buildAllReadModels(?array $filters = null, ?int $limit = null, ?int $offset = null): array
     {
@@ -111,7 +117,7 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
+     * @param  array<string, mixed>  $filters
      */
     protected function buildCount(?array $filters = null): int
     {
@@ -127,7 +133,7 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     protected function getDefaultCacheTags(): array
     {
@@ -144,7 +150,8 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
 
     /**
      * Build comprehensive dashboard data for an organization with advanced caching.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function buildOrganizationDashboardData(int $organizationId): array
@@ -155,7 +162,8 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
 
     /**
      * Load comprehensive dashboard data for an organization.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function loadOrganizationDashboardData(int $organizationId): array
@@ -544,7 +552,7 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
     /**
      * Warm cache for multiple organizations to prevent N+1 cache misses.
      *
-     * @param  array<int>  $organizationIds
+     * @param  array<int, int>  $organizationIds
      */
     public function warmCacheForOrganizations(array $organizationIds): void
     {
@@ -578,7 +586,8 @@ class OrganizationDashboardRepository extends AbstractReadModelRepository
 
     /**
      * Get cache statistics for dashboard data.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getCacheStatistics(int $organizationId): array

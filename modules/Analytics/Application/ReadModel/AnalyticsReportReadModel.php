@@ -338,7 +338,7 @@ class AnalyticsReportReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, string>
+     * @return array<string>
      */
     public function getExportFormats(): array
     {
@@ -376,7 +376,8 @@ class AnalyticsReportReadModel extends AbstractReadModel
     // Summary Methods
     /**
      * Get a comprehensive summary of the report.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getReportSummary(): array
@@ -420,7 +421,8 @@ class AnalyticsReportReadModel extends AbstractReadModel
 
     /**
      * Get key metrics from the report.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getReportKPIs(): array

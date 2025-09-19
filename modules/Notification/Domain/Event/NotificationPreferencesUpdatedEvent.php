@@ -16,6 +16,9 @@ final readonly class NotificationPreferencesUpdatedEvent implements DomainEventI
 {
     public DateTimeImmutable $occurredAt;
 
+    /**
+     * @param  array<string, mixed>  $context
+     */
     public function __construct(
         public int $userId,
         public NotificationPreferences $preferences,
@@ -34,7 +37,9 @@ final readonly class NotificationPreferencesUpdatedEvent implements DomainEventI
         return 'notification.preferences.updated';
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getPayload(): array
     {
         return [
@@ -57,6 +62,9 @@ final readonly class NotificationPreferencesUpdatedEvent implements DomainEventI
         return new DateTimeImmutable($this->updatedAt->toDateTimeString());
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return $this->getPayload();

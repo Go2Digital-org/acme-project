@@ -13,15 +13,7 @@ interface AdminNavigationPort
     /**
      * Register system monitoring navigation items.
      *
-     * @return array<int, array{
-     *     label: string,
-     *     url: string,
-     *     icon: string,
-     *     group: string,
-     *     shouldOpenInNewTab: bool,
-     *     visible: bool,
-     *     sort?: int
-     * }>
+     * @return array<int, array<string, mixed>>
      */
     public function getSystemMonitoringItems(): array;
 

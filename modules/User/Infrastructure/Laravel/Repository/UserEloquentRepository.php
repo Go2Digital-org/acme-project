@@ -22,7 +22,7 @@ use RuntimeException;
  * Laravel Eloquent implementation of the UserRepositoryInterface.
  * Handles conversion between domain models and Eloquent models.
  */
-final class UserEloquentRepository implements UserRepositoryInterface
+class UserEloquentRepository implements UserRepositoryInterface
 {
     public function findById(int $id): ?User
     {
@@ -138,7 +138,7 @@ final class UserEloquentRepository implements UserRepositoryInterface
     // findByDepartment method removed as department field was removed from User model
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getUserStats(): array
     {
@@ -348,8 +348,10 @@ final class UserEloquentRepository implements UserRepositoryInterface
     }
 
     /**
-     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, User>
+     */
+    /**
+     * @param  array<string, mixed>  $filters
      */
     public function paginate(
         int $page = 1,

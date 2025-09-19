@@ -17,6 +17,7 @@ final readonly class ConfigureSearchIndexCommand implements CommandInterface
      */
     public function __construct(
         public ?string $modelClass = null,
+        /** @var array<string, mixed> */
         public array $settings = [],
     ) {}
 }

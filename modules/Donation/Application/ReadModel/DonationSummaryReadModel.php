@@ -17,10 +17,8 @@ final class DonationSummaryReadModel extends AbstractReadModel implements JsonSe
 
     private readonly string $baseCurrency;
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
     public function __construct(
+        /** @param array<string, mixed> $data */
         array $data,
         ?string $version = null,
         ?string $locale = null,
@@ -166,7 +164,7 @@ final class DonationSummaryReadModel extends AbstractReadModel implements JsonSe
 
     // Top Donors (anonymized for privacy)
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopDonors(int $limit = 10): array
     {
@@ -182,7 +180,7 @@ final class DonationSummaryReadModel extends AbstractReadModel implements JsonSe
 
     // Campaign Performance
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopCampaigns(int $limit = 5): array
     {
@@ -198,7 +196,7 @@ final class DonationSummaryReadModel extends AbstractReadModel implements JsonSe
 
     // Payment Method Breakdown
     /**
-     * @return array<string, mixed>
+     * @return array<string, array<string, mixed>>
      */
     public function getPaymentMethodBreakdown(): array
     {
@@ -297,7 +295,7 @@ final class DonationSummaryReadModel extends AbstractReadModel implements JsonSe
 
     // Currency Conversion (pre-calculated)
     /**
-     * @return array<string, float>
+     * @return array<string, array<string, mixed>>
      */
     public function getCurrencyBreakdown(): array
     {
@@ -350,7 +348,8 @@ final class DonationSummaryReadModel extends AbstractReadModel implements JsonSe
 
     /**
      * JsonSerializable implementation for optimized API responses.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function jsonSerialize(): array
@@ -410,7 +409,8 @@ final class DonationSummaryReadModel extends AbstractReadModel implements JsonSe
 
     /**
      * Get data optimized for API responses.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toApiResponse(): array

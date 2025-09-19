@@ -40,8 +40,9 @@ interface IndexManagerInterface
 
     /**
      * Get list of all managed indexes.
-     *
-     * @return array<string>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function listIndexes(): array;
 

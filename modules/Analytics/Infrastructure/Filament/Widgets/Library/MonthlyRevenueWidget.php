@@ -15,6 +15,8 @@ class MonthlyRevenueWidget extends ChartWidget
 
     protected ?string $pollingInterval = '15m';
 
+    /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 7;
@@ -39,7 +41,10 @@ class MonthlyRevenueWidget extends ChartWidget
         return true; // Simplified - always visible
     }
 
-    protected function getData(): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function getData(): array
     {
         $stats = ApplicationCache::getStats('revenue_summary');
 
@@ -124,7 +129,7 @@ class MonthlyRevenueWidget extends ChartWidget
         ];
     }
 
-    protected function getType(): string
+    public function getType(): string
     {
         return 'line';
     }
@@ -132,7 +137,7 @@ class MonthlyRevenueWidget extends ChartWidget
     /**
      * @return array<string, mixed>
      */
-    protected function getOptions(): array
+    public function getOptions(): array
     {
         return [
             'responsive' => true,

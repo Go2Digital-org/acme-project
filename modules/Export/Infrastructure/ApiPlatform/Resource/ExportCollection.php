@@ -9,10 +9,8 @@ namespace Modules\Export\Infrastructure\ApiPlatform\Resource;
  */
 readonly class ExportCollection
 {
-    /**
-     * @param  array<ExportResource>  $data
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         public array $data,
         public int $current_page,
         public int $last_page,

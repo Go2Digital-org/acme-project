@@ -109,7 +109,8 @@ class AdminNotificationService
 
     /**
      * Send security alert notifications.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $details
      */
     public function notifySecurityAlert(string $event, array $details): void
@@ -147,7 +148,8 @@ class AdminNotificationService
 
     /**
      * Send real-time dashboard updates.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $metadata
      */
     public function broadcastDashboardUpdate(string $metric, mixed $value, array $metadata = []): void
@@ -162,7 +164,8 @@ class AdminNotificationService
 
     /**
      * Send custom notification to specific admin roles with enhanced type support.
-     *
+     */
+    /**
      * @param  array<int, string>  $roles
      * @param  array<int, NotificationChannel>  $channels
      * @param  array<string, mixed>  $data
@@ -285,8 +288,9 @@ class AdminNotificationService
 
     /**
      * Send notification for compliance issues.
-     *
-     * @param  array<int, string>  $issues
+     */
+    /**
+     * @param  array<string, mixed>  $issues
      */
     public function notifyComplianceIssue(Organization $organization, array $issues): void
     {
@@ -322,8 +326,9 @@ class AdminNotificationService
 
     /**
      * Send notification when a translation is completed.
-     *
-     * @param  array<int, string>  $translatedFields
+     */
+    /**
+     * @param  array<string, mixed>  $translatedFields
      */
     public function notifyTranslationCompleted(
         string $modelType,
@@ -360,7 +365,8 @@ class AdminNotificationService
 
     /**
      * Send generic notification to admins with subject, data and template.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      * @param  array<int, string>  $recipients
      */
@@ -395,9 +401,10 @@ class AdminNotificationService
 
     /**
      * Send typed notification with enhanced domain support.
-     *
+     */
+    /**
      * @param  array<int, string>  $roles
-     * @param  array<NotificationChannel>  $channels
+     * @param  array<int, NotificationChannel>  $channels
      * @param  array<string, mixed>  $data
      */
     public function sendTypedNotification(
@@ -469,7 +476,8 @@ class AdminNotificationService
 
     /**
      * Broadcast message to all admin users.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     private function broadcastToAdmins(string $event, array $data): void
@@ -485,7 +493,8 @@ class AdminNotificationService
 
     /**
      * Broadcast message to specific roles.
-     *
+     */
+    /**
      * @param  array<int, string>  $roles
      * @param  array<string, mixed>  $data
      */
@@ -504,7 +513,8 @@ class AdminNotificationService
 
     /**
      * Format notification body from data and template.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     private function formatNotificationBody(array $data, string $template): string
@@ -526,7 +536,8 @@ class AdminNotificationService
 
     /**
      * Get default notification template.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     private function getDefaultNotificationTemplate(array $data): string
@@ -564,8 +575,9 @@ class AdminNotificationService
 
     /**
      * Determine if notification should be sent via real-time channels.
-     *
-     * @param  array<NotificationChannel>  $channels
+     */
+    /**
+     * @param  array<int, NotificationChannel>  $channels
      */
     private function shouldSendRealTime(array $channels, NotificationPriority $priority): bool
     {

@@ -5,10 +5,10 @@ declare(strict_types=1);
 use Modules\Auth\Domain\Event\TwoFactorDisabledEvent;
 use Modules\Shared\Domain\Event\DomainEventInterface;
 
-describe('TwoFactorDisabledEvent', function () {
+describe('TwoFactorDisabledEvent', function (): void {
 
-    describe('Construction', function () {
-        it('creates event with all required parameters', function () {
+    describe('Construction', function (): void {
+        it('creates event with all required parameters', function (): void {
             $userId = 123;
             $ipAddress = '192.168.1.1';
             $userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
@@ -24,7 +24,7 @@ describe('TwoFactorDisabledEvent', function () {
                 ->and($event->getOccurredAt())->toBe($occurredAt);
         });
 
-        it('creates event with default disabled reason when not provided', function () {
+        it('creates event with default disabled reason when not provided', function (): void {
             $userId = 123;
             $ipAddress = '192.168.1.1';
             $userAgent = 'User Agent';
@@ -34,7 +34,7 @@ describe('TwoFactorDisabledEvent', function () {
             expect($event->getDisabledReason())->toBe('user_request');
         });
 
-        it('creates event with default occurredAt when not provided', function () {
+        it('creates event with default occurredAt when not provided', function (): void {
             $userId = 123;
             $ipAddress = '192.168.1.1';
             $userAgent = 'User Agent';
@@ -47,36 +47,36 @@ describe('TwoFactorDisabledEvent', function () {
                 ->and($event->getOccurredAt())->toBeLessThanOrEqual($afterCreation);
         });
 
-        it('implements DomainEventInterface', function () {
+        it('implements DomainEventInterface', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
 
             expect($event)->toBeInstanceOf(DomainEventInterface::class);
         });
     });
 
-    describe('Getters', function () {
-        it('returns correct user ID', function () {
+    describe('Getters', function (): void {
+        it('returns correct user ID', function (): void {
             $userId = 456;
             $event = new TwoFactorDisabledEvent($userId, '192.168.1.1', 'User Agent');
 
             expect($event->getUserId())->toBe($userId);
         });
 
-        it('returns correct IP address', function () {
+        it('returns correct IP address', function (): void {
             $ipAddress = '10.0.0.1';
             $event = new TwoFactorDisabledEvent(123, $ipAddress, 'User Agent');
 
             expect($event->getIpAddress())->toBe($ipAddress);
         });
 
-        it('returns correct user agent', function () {
+        it('returns correct user agent', function (): void {
             $userAgent = 'Custom User Agent String';
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', $userAgent);
 
             expect($event->getUserAgent())->toBe($userAgent);
         });
 
-        it('returns correct disabled reason', function () {
+        it('returns correct disabled reason', function (): void {
             $reasons = ['user_request', 'security_breach', 'admin_action', 'device_lost'];
 
             foreach ($reasons as $reason) {
@@ -85,7 +85,7 @@ describe('TwoFactorDisabledEvent', function () {
             }
         });
 
-        it('returns correct occurred at timestamp', function () {
+        it('returns correct occurred at timestamp', function (): void {
             $occurredAt = new DateTimeImmutable('2025-06-15 14:30:00');
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'user_request', $occurredAt);
 
@@ -93,14 +93,14 @@ describe('TwoFactorDisabledEvent', function () {
         });
     });
 
-    describe('Domain Event Interface Methods', function () {
-        it('returns correct event name', function () {
+    describe('Domain Event Interface Methods', function (): void {
+        it('returns correct event name', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
 
             expect($event->getEventName())->toBe('auth.two_factor.disabled');
         });
 
-        it('returns correct event data with all fields', function () {
+        it('returns correct event data with all fields', function (): void {
             $userId = 789;
             $ipAddress = '172.16.0.1';
             $userAgent = 'Test User Agent';
@@ -120,65 +120,65 @@ describe('TwoFactorDisabledEvent', function () {
             expect($event->getEventData())->toBe($expectedData);
         });
 
-        it('returns correct aggregate ID', function () {
+        it('returns correct aggregate ID', function (): void {
             $userId = 555;
             $event = new TwoFactorDisabledEvent($userId, '192.168.1.1', 'User Agent');
 
             expect($event->getAggregateId())->toBe($userId);
         });
 
-        it('returns correct event version', function () {
+        it('returns correct event version', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
 
             expect($event->getEventVersion())->toBe(1);
         });
 
-        it('returns correct context', function () {
+        it('returns correct context', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
 
             expect($event->getContext())->toBe('Auth');
         });
 
-        it('indicates event is not async', function () {
+        it('indicates event is not async', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
 
             expect($event->isAsync())->toBeFalse();
         });
     });
 
-    describe('Disabled Reason Scenarios', function () {
-        it('handles user request reason', function () {
+    describe('Disabled Reason Scenarios', function (): void {
+        it('handles user request reason', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'user_request');
 
             expect($event->getDisabledReason())->toBe('user_request');
         });
 
-        it('handles security breach reason', function () {
+        it('handles security breach reason', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'security_breach');
 
             expect($event->getDisabledReason())->toBe('security_breach');
         });
 
-        it('handles admin action reason', function () {
+        it('handles admin action reason', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'admin_action');
 
             expect($event->getDisabledReason())->toBe('admin_action');
         });
 
-        it('handles device lost reason', function () {
+        it('handles device lost reason', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'device_lost');
 
             expect($event->getDisabledReason())->toBe('device_lost');
         });
 
-        it('handles custom disabled reason', function () {
+        it('handles custom disabled reason', function (): void {
             $customReason = 'company_policy_change';
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', $customReason);
 
             expect($event->getDisabledReason())->toBe($customReason);
         });
 
-        it('includes disabled reason in event data', function () {
+        it('includes disabled reason in event data', function (): void {
             $reason = 'emergency_access';
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', $reason);
 
@@ -188,54 +188,54 @@ describe('TwoFactorDisabledEvent', function () {
         });
     });
 
-    describe('Edge Cases', function () {
-        it('handles zero user ID', function () {
+    describe('Edge Cases', function (): void {
+        it('handles zero user ID', function (): void {
             $event = new TwoFactorDisabledEvent(0, '192.168.1.1', 'User Agent');
 
             expect($event->getUserId())->toBe(0)
                 ->and($event->getAggregateId())->toBe(0);
         });
 
-        it('handles negative user ID', function () {
+        it('handles negative user ID', function (): void {
             $event = new TwoFactorDisabledEvent(-1, '192.168.1.1', 'User Agent');
 
             expect($event->getUserId())->toBe(-1)
                 ->and($event->getAggregateId())->toBe(-1);
         });
 
-        it('handles empty IP address', function () {
+        it('handles empty IP address', function (): void {
             $event = new TwoFactorDisabledEvent(123, '', 'User Agent');
 
             expect($event->getIpAddress())->toBe('');
         });
 
-        it('handles empty user agent', function () {
+        it('handles empty user agent', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', '');
 
             expect($event->getUserAgent())->toBe('');
         });
 
-        it('handles empty disabled reason', function () {
+        it('handles empty disabled reason', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', '');
 
             expect($event->getDisabledReason())->toBe('');
         });
 
-        it('handles IPv6 addresses', function () {
+        it('handles IPv6 addresses', function (): void {
             $ipv6Address = '2001:0db8:85a3:0000:0000:8a2e:0370:7334';
             $event = new TwoFactorDisabledEvent(123, $ipv6Address, 'User Agent');
 
             expect($event->getIpAddress())->toBe($ipv6Address);
         });
 
-        it('handles very long disabled reason', function () {
+        it('handles very long disabled reason', function (): void {
             $longReason = str_repeat('reason_', 100);
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', $longReason);
 
             expect($event->getDisabledReason())->toBe($longReason);
         });
 
-        it('handles special characters in disabled reason', function () {
+        it('handles special characters in disabled reason', function (): void {
             $specialReason = 'user-requested (急須) & "urgent"';
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', $specialReason);
 
@@ -243,8 +243,8 @@ describe('TwoFactorDisabledEvent', function () {
         });
     });
 
-    describe('Real-world Scenarios', function () {
-        it('represents user voluntarily disabling 2FA', function () {
+    describe('Real-world Scenarios', function (): void {
+        it('represents user voluntarily disabling 2FA', function (): void {
             $event = new TwoFactorDisabledEvent(
                 userId: 123,
                 ipAddress: '192.168.1.100',
@@ -257,7 +257,7 @@ describe('TwoFactorDisabledEvent', function () {
                 ->and($event->getEventData()['disabled_reason'])->toBe('user_request');
         });
 
-        it('represents admin disabling 2FA for security reasons', function () {
+        it('represents admin disabling 2FA for security reasons', function (): void {
             $event = new TwoFactorDisabledEvent(
                 userId: 456,
                 ipAddress: '10.0.0.50',
@@ -268,7 +268,7 @@ describe('TwoFactorDisabledEvent', function () {
             expect($event->getDisabledReason())->toBe('security_breach');
         });
 
-        it('represents 2FA disabled due to lost device', function () {
+        it('represents 2FA disabled due to lost device', function (): void {
             $event = new TwoFactorDisabledEvent(
                 userId: 789,
                 ipAddress: '203.0.113.1',
@@ -279,7 +279,7 @@ describe('TwoFactorDisabledEvent', function () {
             expect($event->getDisabledReason())->toBe('device_lost');
         });
 
-        it('represents emergency access scenario', function () {
+        it('represents emergency access scenario', function (): void {
             $event = new TwoFactorDisabledEvent(
                 userId: 999,
                 ipAddress: '127.0.0.1',
@@ -291,8 +291,8 @@ describe('TwoFactorDisabledEvent', function () {
         });
     });
 
-    describe('Immutability', function () {
-        it('creates immutable event object', function () {
+    describe('Immutability', function (): void {
+        it('creates immutable event object', function (): void {
             $userId = 123;
             $ipAddress = '192.168.1.1';
             $userAgent = 'User Agent';
@@ -308,7 +308,7 @@ describe('TwoFactorDisabledEvent', function () {
                 ->and($event->getOccurredAt())->toBe($occurredAt);
         });
 
-        it('maintains consistent event data across multiple calls', function () {
+        it('maintains consistent event data across multiple calls', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
 
             $firstCall = $event->getEventData();
@@ -318,8 +318,8 @@ describe('TwoFactorDisabledEvent', function () {
         });
     });
 
-    describe('Event Data Structure', function () {
-        it('includes all required fields in event data', function () {
+    describe('Event Data Structure', function (): void {
+        it('includes all required fields in event data', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
             $eventData = $event->getEventData();
 
@@ -332,7 +332,7 @@ describe('TwoFactorDisabledEvent', function () {
             ]);
         });
 
-        it('has consistent data types in event data', function () {
+        it('has consistent data types in event data', function (): void {
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'user_request');
             $eventData = $event->getEventData();
 
@@ -343,7 +343,7 @@ describe('TwoFactorDisabledEvent', function () {
                 ->and($eventData['occurred_at'])->toBeString();
         });
 
-        it('maintains data integrity across serialization', function () {
+        it('maintains data integrity across serialization', function (): void {
             $userId = 789;
             $ipAddress = '203.0.113.1';
             $userAgent = 'Test Agent';
@@ -361,8 +361,8 @@ describe('TwoFactorDisabledEvent', function () {
         });
     });
 
-    describe('Comparison with Other Auth Events', function () {
-        it('has different event name than other auth events', function () {
+    describe('Comparison with Other Auth Events', function (): void {
+        it('has different event name than other auth events', function (): void {
             $disabledEvent = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
 
             expect($disabledEvent->getEventName())->toBe('auth.two_factor.disabled')
@@ -370,14 +370,14 @@ describe('TwoFactorDisabledEvent', function () {
                 ->and($disabledEvent->getEventName())->not->toBe('auth.password.changed');
         });
 
-        it('has unique disabled_reason field', function () {
+        it('has unique disabled_reason field', function (): void {
             $disabledEvent = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
             $eventData = $disabledEvent->getEventData();
 
             expect($eventData)->toHaveKey('disabled_reason');
         });
 
-        it('shares common fields with other auth events', function () {
+        it('shares common fields with other auth events', function (): void {
             $disabledEvent = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent');
             $eventData = $disabledEvent->getEventData();
 
@@ -389,8 +389,8 @@ describe('TwoFactorDisabledEvent', function () {
         });
     });
 
-    describe('Date Formatting', function () {
-        it('formats occurred at timestamp correctly in event data', function () {
+    describe('Date Formatting', function (): void {
+        it('formats occurred at timestamp correctly in event data', function (): void {
             $occurredAt = new DateTimeImmutable('2025-12-25 15:45:30');
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'user_request', $occurredAt);
 
@@ -399,7 +399,7 @@ describe('TwoFactorDisabledEvent', function () {
             expect($eventData['occurred_at'])->toBe($occurredAt->format(DateTimeImmutable::ATOM));
         });
 
-        it('handles different timezone formats', function () {
+        it('handles different timezone formats', function (): void {
             $occurredAt = new DateTimeImmutable('2025-01-01 12:00:00', new DateTimeZone('Europe/London'));
             $event = new TwoFactorDisabledEvent(123, '192.168.1.1', 'User Agent', 'user_request', $occurredAt);
 

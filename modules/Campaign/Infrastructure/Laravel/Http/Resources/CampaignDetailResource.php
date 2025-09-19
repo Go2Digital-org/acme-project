@@ -16,7 +16,7 @@ class CampaignDetailResource extends BaseApiResource
      * @param  Request  $request
      * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         /** @var Campaign $campaign */
         $campaign = $this->resource;
@@ -54,22 +54,18 @@ class CampaignDetailResource extends BaseApiResource
                 'is_ending_soon' => $campaign->getDaysRemaining() <= 7 && $campaign->getDaysRemaining() >= 0,
             ],
 
-            'creator' => $this->whenLoaded('creator', function ($creator) {
-                return [
-                    'id' => $creator->getId(),
-                    'name' => $creator->getName(),
-                    'title' => $creator->title ?? 'ACME Employee',
-                    'avatar_url' => $creator->profile_photo_url,
-                ];
-            }),
+            'creator' => $this->whenLoaded('creator', fn ($creator): array => [
+                'id' => $creator->getId(),
+                'name' => $creator->getName(),
+                'title' => $creator->title ?? 'ACME Employee',
+                'avatar_url' => $creator->profile_photo_url,
+            ]),
 
-            'organization' => $this->whenLoaded('organization', function ($organization) {
-                return [
-                    'id' => $organization->id,
-                    'name' => $organization->getName(),
-                    'logo_url' => $organization->logo_url,
-                ];
-            }),
+            'organization' => $this->whenLoaded('organization', fn ($organization): array => [
+                'id' => $organization->id,
+                'name' => $organization->getName(),
+                'logo_url' => $organization->logo_url,
+            ]),
 
             'metadata' => [
                 'featured_image' => $campaign->featured_image,
@@ -91,13 +87,11 @@ class CampaignDetailResource extends BaseApiResource
             // Include donation statistics if requested
             'donation_stats' => $this->when(
                 $this->shouldIncludeRelation($request, 'donation_stats'),
-                function () use ($campaign) {
-                    return [
-                        'recent_donations_count' => $this->getRecentDonationsCount($campaign),
-                        'top_donation_amount' => $this->getTopDonationAmount($campaign),
-                        'donation_velocity' => $this->getDonationVelocity($campaign),
-                    ];
-                }
+                fn (): array => [
+                    'recent_donations_count' => $this->getRecentDonationsCount($campaign),
+                    'top_donation_amount' => $this->getTopDonationAmount($campaign),
+                    'donation_velocity' => $this->getDonationVelocity($campaign),
+                ]
             ),
         ];
     }

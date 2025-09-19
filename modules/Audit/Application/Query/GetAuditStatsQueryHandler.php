@@ -14,7 +14,9 @@ class GetAuditStatsQueryHandler
         private readonly AuditRepositoryInterface $repository
     ) {}
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function handle(GetAuditStatsQuery $query): array
     {
         $queryBuilder = $this->repository->newQuery();

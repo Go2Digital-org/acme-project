@@ -109,7 +109,8 @@ final readonly class ListCampaignsController
 
     /**
      * Calculate appropriate cache max-age based on data volatility.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function calculateCacheMaxAge(array $filters): int

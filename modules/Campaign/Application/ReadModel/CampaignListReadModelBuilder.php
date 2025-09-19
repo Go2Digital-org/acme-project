@@ -26,7 +26,8 @@ final readonly class CampaignListReadModelBuilder
 
     /**
      * Build a CampaignListReadModel from paginated data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function build(array $filters = [], string $locale = 'en'): CampaignListReadModel
@@ -58,6 +59,9 @@ final readonly class CampaignListReadModelBuilder
     /**
      * Build from existing collection without pagination.
      *
+     * @param  Collection<int, Campaign>  $campaigns
+     */
+    /**
      * @param  Collection<int, Campaign>  $campaigns
      * @param  array<string, mixed>  $filters
      */
@@ -105,6 +109,13 @@ final readonly class CampaignListReadModelBuilder
     /**
      * Transform campaigns with optimized data structure.
      *
+     * @param  iterable<Campaign>  $campaigns
+     * @return array<int, array<string, mixed>>
+     */
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    /**
      * @param  iterable<Campaign>  $campaigns
      * @return array<int, array<string, mixed>>
      */
@@ -178,7 +189,8 @@ final readonly class CampaignListReadModelBuilder
 
     /**
      * Build statistics for the campaign list.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -198,6 +210,9 @@ final readonly class CampaignListReadModelBuilder
      *
      * @return array<int, array<string, mixed>>
      */
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function getCategories(): array
     {
         // This would be injected via CategoryRepositoryInterface if it exists
@@ -208,23 +223,30 @@ final readonly class CampaignListReadModelBuilder
     /**
      * Get available organizations for filtering.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, array<string, mixed>>
      */
     private function getOrganizations(): array
     {
         $organizations = $this->organizationRepository->findActiveOrganizations();
 
-        return array_map(fn ($org) => [
-            'id' => $org->getId(),
-            'name' => $org->getName(),
-            'slug' => $org->getSlug(),
-            'campaign_count' => $org->campaigns_count ?? 0,
-        ], $organizations);
+        /** @var array<string, array<string, mixed>> $result */
+        $result = [];
+        foreach ($organizations as $org) {
+            $result[(string) $org->getId()] = [
+                'id' => $org->getId(),
+                'name' => $org->getName(),
+                'slug' => $org->getSlug(),
+                'campaign_count' => $org->campaigns_count ?? 0,
+            ];
+        }
+
+        return $result;
     }
 
     /**
      * Generate version hash based on filters and current time.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function generateVersion(array $filters): string
@@ -276,7 +298,8 @@ final readonly class CampaignListReadModelBuilder
 
     /**
      * Create a quick build for campaigns by organization.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $additionalFilters
      */
     public function buildByOrganization(int $organizationId, array $additionalFilters = [], string $locale = 'en'): CampaignListReadModel

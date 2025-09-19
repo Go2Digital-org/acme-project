@@ -54,8 +54,8 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @param  array<int, string>  $excludeDomains
-     * @param  array<int, string>  $includeDomains
+     * @param  array<string>  $excludeDomains
+     * @param  array<string>  $includeDomains
      */
     private function completeSpecificComponent(string $component, array $excludeDomains, array $includeDomains, bool $isDryRun, bool $isBatch): int
     {
@@ -87,8 +87,8 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @param  array<int, string>  $excludeDomains
-     * @param  array<int, string>  $includeDomains
+     * @param  array<string>  $excludeDomains
+     * @param  array<string>  $includeDomains
      */
     private function completePartialDomains(int $minCompleteness, int $maxCompleteness, array $excludeDomains, array $includeDomains, bool $isDryRun, bool $isBatch): int
     {
@@ -134,8 +134,8 @@ class CompletePartialDomainsCommand extends Command
 
     /**
      * @param  array<string, mixed>  $domains
-     * @param  array<int, string>  $excludeDomains
-     * @param  array<int, string>  $includeDomains
+     * @param  array<string>  $excludeDomains
+     * @param  array<string>  $includeDomains
      * @return array<string, mixed>
      */
     private function filterDomains(array $domains, array $excludeDomains, array $includeDomains): array
@@ -309,7 +309,7 @@ class CompletePartialDomainsCommand extends Command
 
     /**
      * @param  array<string, mixed>  $analysis
-     * @return array<int, string>
+     * @return array<string>
      */
     private function getPriorityActions(array $analysis): array
     {
@@ -346,7 +346,7 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @return array<int, string>
+     * @return array<string>
      */
     private function parseList(?string $list): array
     {

@@ -24,6 +24,10 @@ final readonly class DeleteCampaignProcessor implements ProcessorInterface
         private Guard $auth,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,
@@ -40,7 +44,7 @@ final readonly class DeleteCampaignProcessor implements ProcessorInterface
 
         $command = new DeleteCampaignCommand(
             campaignId: $campaignId,
-            employeeId: $user->id,
+            userId: $user->id,
         );
 
         try {

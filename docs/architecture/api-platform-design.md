@@ -114,7 +114,7 @@ final readonly class CampaignCreateProcessor implements ProcessorInterface
             description: $data->description,
             goalAmount: $data->goal->amount,
             currency: $data->goal->currency,
-            employeeId: $context['user']->getId(),
+            userId: $context['user']->getId(),
             organizationId: $data->organizationId
         );
         
@@ -156,15 +156,15 @@ use Modules\\Campaign\\Infrastructure\\ApiPlatform\\State\\CampaignProvider;
         ),
         new Post(
             processor: CampaignCreateProcessor::class,
-            security: \"is_granted('ROLE_EMPLOYEE')\"
+            security: \"is_granted('ROLE_USER')\"
         ),
         new Put(
             processor: CampaignUpdateProcessor::class,
-            security: \"is_granted('ROLE_EMPLOYEE') and object.ownerId == user.getId()\"
+            security: \"is_granted('ROLE_USER') and object.ownerId == user.getId()\"
         ),
         new Delete(
             processor: CampaignDeleteProcessor::class,
-            security: \"is_granted('ROLE_EMPLOYEE') and object.ownerId == user.getId()\"
+            security: \"is_granted('ROLE_USER') and object.ownerId == user.getId()\"
         )
     ],
     normalizationContext: ['groups' => ['campaign:read']],
@@ -179,7 +179,7 @@ class CampaignResource
         public readonly ?MoneyResource $goal = null,
         public readonly ?MoneyResource $raised = null,
         public readonly ?string $status = null,
-        public readonly ?string $employeeId = null,
+        public readonly ?string $userId = null,
         public readonly ?string $organizationId = null,
         public readonly ?\\DateTimeImmutable $createdAt = null
     ) {}
@@ -193,7 +193,7 @@ class CampaignResource
             goal: MoneyResource::fromDomain($campaign->getGoal()),
             raised: MoneyResource::fromDomain($campaign->getRaised()),
             status: $campaign->getStatus()->toString(),
-            employeeId: $campaign->getEmployeeId()->toString(),
+            userId: $campaign->getUserId()->toString(),
             organizationId: $campaign->getOrganizationId()->toString(),
             createdAt: $campaign->getCreatedAt()
         );
@@ -360,7 +360,7 @@ api_platform:
     openapi:
         contact:
             name: 'Go2Digital Development Team'
-            email: 'dev@go2digit.al'
+            email: 'info@go2digit.al'
         license:
             name: 'Proprietary'
 ```
@@ -372,17 +372,17 @@ api_platform:
     operations: [
         new Post(
             processor: CampaignCreateProcessor::class,
-            security: \"is_granted('ROLE_EMPLOYEE')\",
-            securityMessage: 'Only authenticated employees can create campaigns'
+            security: \"is_granted('ROLE_USER')\",
+            securityMessage: 'Only authenticated users can create campaigns'
         ),
         new Put(
             processor: CampaignUpdateProcessor::class,
-            security: \"is_granted('ROLE_EMPLOYEE') and object.employeeId == user.getId()\",
+            security: \"is_granted('ROLE_EMPLOYEE') and object.userId == user.getId()\",
             securityMessage: 'You can only edit your own campaigns'
         ),
         new Delete(
             processor: CampaignDeleteProcessor::class,
-            security: \"is_granted('ROLE_ADMIN') or (is_granted('ROLE_EMPLOYEE') and object.employeeId == user.getId())\",
+            security: \"is_granted('ROLE_ADMIN') or (is_granted('ROLE_EMPLOYEE') and object.userId == user.getId())\",
             securityMessage: 'Only admins or campaign owners can delete campaigns'
         )
     ]
@@ -551,7 +551,7 @@ class CampaignV2Resource
         public readonly ?string $status = null,
         public readonly ?array $tags = null, // New in V2
         public readonly ?string $visibility = null, // New in V2
-        public readonly ?EmployeeResource $owner = null, // Embedded resource in V2
+        public readonly ?UserResource $owner = null, // Embedded resource in V2
         public readonly ?\\DateTimeImmutable $createdAt = null
     ) {}
 }
@@ -626,7 +626,7 @@ final readonly class DocumentationProvider implements OpenApiFactoryInterface
         $openApi = $openApi->withInfo($openApi->getInfo()->withDescription('
             # ACME Corp CSR Donation Platform API
             
-            This API enables employees to create and manage fundraising campaigns
+            This API enables users to create and manage fundraising campaigns
             and make donations to causes they believe in.
             
             ## Authentication

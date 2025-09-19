@@ -6,7 +6,7 @@ namespace Modules\Auth\Infrastructure\Laravel\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\Auth\Application\Service\SessionManagementService;
+use Modules\Auth\Application\Services\SessionManagementService;
 use Modules\Shared\Infrastructure\Laravel\Controllers\Traits\AuthenticatedUserTrait;
 
 final readonly class DestroyOtherSessionsController
@@ -22,8 +22,9 @@ final readonly class DestroyOtherSessionsController
         $user = $this->getAuthenticatedUser($request);
         $sessionStore = session();
         $currentSessionId = $sessionStore->getId();
+        $password = $request->input('password', '');
 
-        $this->sessionService->deleteOtherSessions($user->getId(), $currentSessionId);
+        $this->sessionService->deleteOtherSessions($user->getId(), $currentSessionId, $password);
 
         return response()->json([
             'message' => 'All other sessions terminated successfully.',

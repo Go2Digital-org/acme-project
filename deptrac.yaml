@@ -507,6 +507,11 @@ deptrac:
           value: '^Illuminate\\Contracts'
         - type: classLike
           value: '^Illuminate\\Support\\Collection$'
+        # Twilio SDK and notification packages
+        - type: classLike
+          value: '^Twilio'
+        - type: classLike
+          value: '^NotificationChannels\\Twilio'
 
   ruleset:
     # Pragmatic Hexagonal Architecture - allowing existing architectural patterns

@@ -76,7 +76,7 @@ class SocialMediaEloquentRepository implements SocialMediaRepositoryInterface
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $items
+     * @param  array<string, mixed>  $items
      */
     public function reorder(array $items): bool
     {

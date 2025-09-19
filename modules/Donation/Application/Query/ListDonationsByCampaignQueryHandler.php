@@ -17,7 +17,7 @@ final readonly class ListDonationsByCampaignQueryHandler implements QueryHandler
     ) {}
 
     /**
-     * @return array<Donation>
+     * @return array<int, Donation>
      */
     public function handle(QueryInterface $query): array
     {

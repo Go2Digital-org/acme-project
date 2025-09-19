@@ -100,7 +100,7 @@ interface ExportJobRepositoryInterface
     public function exists(ExportId $exportId): bool;
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getStatistics(?int $organizationId = null, ?Carbon $from = null, ?Carbon $to = null): array;
 

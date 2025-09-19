@@ -19,7 +19,9 @@ class CampaignGoalReachedNotification extends Notification implements ShouldQueu
         private readonly string $goalAmount,
     ) {}
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, string>
+     */
     public function via(object $notifiable): array
     {
         return ['database', 'mail'];
@@ -35,7 +37,9 @@ class CampaignGoalReachedNotification extends Notification implements ShouldQueu
             ->line(__('notifications.thank_you_support'));
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(object $notifiable): array
     {
         return [

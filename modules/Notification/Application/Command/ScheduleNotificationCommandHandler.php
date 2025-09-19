@@ -190,7 +190,7 @@ final readonly class ScheduleNotificationCommandHandler implements CommandHandle
     /**
      * Validate recurring notification configuration.
      *
-     * @param  ?array<string, mixed>  $recurringConfig
+     * @param  array<string, mixed>|null  $recurringConfig
      */
     private function validateRecurringConfig(?array $recurringConfig): void
     {

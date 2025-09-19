@@ -14,6 +14,9 @@ class SocialMediaFactory extends Factory
 {
     protected $model = SocialMedia::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         // Use the platforms from the SocialMedia model

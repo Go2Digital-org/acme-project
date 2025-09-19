@@ -173,17 +173,14 @@ final class SendPaymentConfirmationJob implements ShouldQueue
     }
 
     /**
-     * @param  array<array-key, mixed>  $data
-     */
-    /**
-     * @param  array<array-key, mixed>  $data
+     * @param  array<string, mixed>  $data
      */
     private function createConfirmationMailable(array $data): Mailable
     {
         return new class($data) extends Mailable
         {
             /**
-             * @param  array<array-key, mixed>  $data
+             * @param  array<string, mixed>  $data
              */
             public function __construct(private array $data) {}
 
@@ -207,17 +204,14 @@ final class SendPaymentConfirmationJob implements ShouldQueue
     }
 
     /**
-     * @param  array<array-key, mixed>  $data
-     */
-    /**
-     * @param  array<array-key, mixed>  $data
+     * @param  array<string, mixed>  $data
      */
     private function createOrganizerCopyMailable(array $data): Mailable
     {
         return new class($data) extends Mailable
         {
             /**
-             * @param  array<array-key, mixed>  $data
+             * @param  array<string, mixed>  $data
              */
             public function __construct(private array $data) {}
 

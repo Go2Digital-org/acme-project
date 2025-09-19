@@ -38,7 +38,7 @@ final readonly class CampaignWorkflowService
         string $startDate,
         string $endDate,
         int $organizationId,
-        int $employeeId,
+        int $userId,
     ): Campaign {
         return DB::transaction(function () use (
             $title,
@@ -47,7 +47,7 @@ final readonly class CampaignWorkflowService
             $startDate,
             $endDate,
             $organizationId,
-            $employeeId
+            $userId
         ): Campaign {
             // Validate organization can create campaigns
             $organization = $this->organizationRepository->findById($organizationId);
@@ -65,7 +65,7 @@ final readonly class CampaignWorkflowService
                     startDate: $startDate,
                     endDate: $endDate,
                     organizationId: $organizationId,
-                    employeeId: $employeeId,
+                    userId: $userId,
                 ),
             );
 
@@ -73,7 +73,7 @@ final readonly class CampaignWorkflowService
             $this->activateCampaignHandler->handle(
                 new ActivateCampaignCommand(
                     campaignId: $campaign->id,
-                    employeeId: $employeeId,
+                    userId: $userId,
                 ),
             );
 
@@ -101,7 +101,7 @@ final readonly class CampaignWorkflowService
                 $this->completeCampaignHandler->handle(
                     new CompleteCampaignCommand(
                         campaignId: $campaign->id,
-                        employeeId: $campaign->user_id,
+                        userId: $campaign->user_id,
                     ),
                 );
                 $processedCount++;

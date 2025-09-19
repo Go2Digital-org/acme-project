@@ -63,7 +63,7 @@ class DashboardCacheStatusResource
     public ?string $jobId = null;
 
     /**
-     * @param  array<string, mixed>|null  $progress
+     * @param  array<string, mixed>  $progress
      * @param  array<string, mixed>  $cacheDetails
      */
     public static function fromCacheStatus(

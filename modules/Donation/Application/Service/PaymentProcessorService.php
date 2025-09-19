@@ -28,7 +28,8 @@ final readonly class PaymentProcessorService
 
     /**
      * Process webhook notification from payment gateway.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $payload
      */
     public function processWebhookNotification(

@@ -106,7 +106,7 @@ class CampaignIndexManagerCommand extends Command
                 $bar = $this->output->createProgressBar($total);
                 $bar->start();
 
-                $indexed = $this->indexingService->reindexSync($chunkSize, function ($processed) use ($bar) {
+                $indexed = $this->indexingService->reindexSync($chunkSize, function ($processed) use ($bar): void {
                     $bar->advance($processed);
                 });
 

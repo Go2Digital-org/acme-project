@@ -68,6 +68,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         );
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function getUserActivityFeed(int $userId, int $limit = 10): array
     {
         $activities = [];
@@ -173,6 +176,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         );
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function getTopDonatorsLeaderboard(int $organizationId, int $limit = 5): array
     {
         // Cache leaderboard for 30 minutes as it doesn't change frequently
@@ -244,6 +250,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
             ->count());
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptimizedCampaignStats(): array
     {
         return Cache::remember('dashboard:campaign_stats', 1800, function (): array {
@@ -284,6 +293,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOrganizationStats(): array
     {
         return Cache::remember('dashboard:organization_stats', 1800, function (): array {
@@ -334,6 +346,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getPaymentAnalytics(): array
     {
         return Cache::remember('dashboard:payment_analytics', 300, function (): array {
@@ -392,6 +407,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRealtimeStats(): array
     {
         return Cache::remember('dashboard:realtime_stats', 300, function (): array {
@@ -453,6 +471,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRevenueSummary(): array
     {
         return Cache::remember('dashboard:revenue_summary', 900, function (): array {
@@ -523,6 +544,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getSuccessRates(): array
     {
         return Cache::remember('dashboard:success_rates', 900, function (): array {
@@ -599,6 +623,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getTimeBasedAnalytics(): array
     {
         return Cache::remember('dashboard:time_analytics', 600, function (): array {
@@ -672,6 +699,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getTotalDonationsStats(): array
     {
         return Cache::remember('dashboard:total_donations_stats', 600, function (): array {
@@ -766,6 +796,9 @@ class EloquentDashboardRepository implements DashboardRepositoryInterface
         });
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getUserEngagementStats(): array
     {
         return Cache::remember('dashboard:user_engagement_stats', 600, function (): array {

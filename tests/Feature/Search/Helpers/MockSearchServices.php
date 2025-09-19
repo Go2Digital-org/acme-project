@@ -94,6 +94,8 @@ class MockSearchServices
 
     /**
      * Create search results for campaigns matching a query.
+     *
+     * @return array<string, mixed>
      */
     public static function createCampaignSearchResults(string $query, array $campaigns = []): array
     {
@@ -133,6 +135,8 @@ class MockSearchServices
 
     /**
      * Generate facets from search hits.
+     *
+     * @return array<string, array<string, int>>
      */
     private static function generateFacetsFromHits(array $hits): array
     {
@@ -154,6 +158,8 @@ class MockSearchServices
 
     /**
      * Generate suggestions based on query and available hits.
+     *
+     * @return array<int, array<string, mixed>>
      */
     private static function generateSuggestionsFromQuery(string $query, array $hits): array
     {

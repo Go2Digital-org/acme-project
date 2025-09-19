@@ -23,11 +23,16 @@ final readonly class TranslationNotificationHandler implements ShouldQueue
         }
 
         // Send notification to admins about translation completion
+        // Transform array<int, string> to array<string, mixed> for PHPStan compliance
+        // Create associative array with field names as both keys and values to preserve
+        // field names for implode() operation in the notification service
+        $transformedFields = array_combine($event->translatedFields, $event->translatedFields) ?: [];
+
         $this->notificationService->notifyTranslationCompleted(
             modelType: $event->modelType,
             modelId: $event->modelId,
             locale: $event->locale,
-            translatedFields: $event->translatedFields,
+            translatedFields: $transformedFields,
             translatorId: $event->translatorId,
         );
 

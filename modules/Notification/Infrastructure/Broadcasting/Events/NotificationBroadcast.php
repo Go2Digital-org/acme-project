@@ -25,7 +25,7 @@ class NotificationBroadcast implements ShouldBroadcast
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, Channel>
+     * @return array<int, Channel|PrivateChannel>
      */
     public function broadcastOn(): array
     {
@@ -73,7 +73,8 @@ class NotificationBroadcast implements ShouldBroadcast
 
     /**
      * Get the data to broadcast.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function broadcastWith(): array
@@ -155,11 +156,11 @@ class NotificationBroadcast implements ShouldBroadcast
     /**
      * Format notification actions for broadcasting.
      *
-     * @return array<int, array<string, string>>
+     * @return array<int, array<string, mixed>>
      */
     private function formatActions(): array
     {
-        /** @var array<int, array<string, string>> $actions */
+        /** @var array<int, array<string, mixed>> $actions */
         $actions = [];
         /** @var array<string, mixed> $metadata */
         $metadata = $this->notification->metadata ?? [];

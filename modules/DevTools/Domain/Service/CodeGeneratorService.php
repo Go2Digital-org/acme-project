@@ -22,7 +22,8 @@ final readonly class CodeGeneratorService
 
     /**
      * Process a stub template by replacing variables with values.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $variables
      */
     public function processStub(string $stubName, array $variables): string
@@ -44,7 +45,8 @@ final readonly class CodeGeneratorService
 
     /**
      * Replace variables in content using double curly braces syntax.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $variables
      */
     public function replaceVariables(string $content, array $variables): string
@@ -63,7 +65,8 @@ final readonly class CodeGeneratorService
 
     /**
      * Create a file from a stub template.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $variables
      */
     public function createFileFromStub(
@@ -90,8 +93,9 @@ final readonly class CodeGeneratorService
 
     /**
      * Get available domains in the modules directory.
+     *
+     * @return list<string>
      */
-    /** @return array<array-key, mixed> */
     public function getAvailableDomains(): array
     {
         if (! is_dir($this->modulesPath)) {
@@ -137,8 +141,9 @@ final readonly class CodeGeneratorService
 
     /**
      * Get available stub files.
+     *
+     * @return list<string>
      */
-    /** @return array<array-key, mixed> */
     public function getAvailableStubs(): array
     {
         if (! is_dir($this->stubsPath)) {

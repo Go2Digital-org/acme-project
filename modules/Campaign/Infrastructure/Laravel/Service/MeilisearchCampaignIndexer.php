@@ -29,7 +29,7 @@ final readonly class MeilisearchCampaignIndexer implements CampaignIndexerInterf
     }
 
     /**
-     * @param  array<Campaign>  $campaigns
+     * @param  array<string, mixed>  $campaigns
      */
     public function indexBatch(array $campaigns): void
     {

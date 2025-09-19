@@ -12,12 +12,14 @@ namespace Modules\Donation\Domain\ValueObject;
  */
 final readonly class RefundRequest
 {
+    /**
+     * @param  array<string, mixed>|null  $metadata
+     */
     public function __construct(
         public string $transactionId,
         public float $amount,
         public string $currency,
         public ?string $reason = null,
-        /** @var array<string, mixed>|null */
         public ?array $metadata = null,
     ) {}
 
@@ -44,7 +46,9 @@ final readonly class RefundRequest
     /**
      * Get enriched metadata with refund context.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getEnrichedMetadata(): array
     {
         return array_merge($this->metadata ?? [], [

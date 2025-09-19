@@ -14,6 +14,9 @@ class RoleFactory extends Factory
 {
     protected $model = Role::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $roleNames = [

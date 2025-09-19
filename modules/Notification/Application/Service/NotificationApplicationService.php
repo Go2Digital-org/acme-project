@@ -328,7 +328,7 @@ final readonly class NotificationApplicationService
     /**
      * Generate and send notification digests for users.
      *
-     * @param  array<int, int>  $userIds
+     * @param  array<int>  $userIds
      * @return array<string, mixed>
      */
     public function generateAndSendDigests(string $digestType = 'daily', array $userIds = []): array
@@ -353,7 +353,7 @@ final readonly class NotificationApplicationService
     /**
      * Process a batch of notification operations.
      *
-     * @param  array<int, array<string, mixed>>  $operations
+     * @param  array<string, mixed>  $operations
      * @return array<string, mixed>
      */
     public function processBatchOperations(array $operations): array
@@ -473,7 +473,7 @@ final readonly class NotificationApplicationService
     // =======================================================================
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     private function checkDatabaseHealth(): array
     {

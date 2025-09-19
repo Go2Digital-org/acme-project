@@ -146,8 +146,9 @@ final readonly class BreadcrumbManager implements BreadcrumbManagerInterface
 
     /**
      * Get breadcrumbs formatted for API responses.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function toApiFormat(): array
     {
         $breadcrumbs = $this->toArray();
@@ -166,8 +167,9 @@ final readonly class BreadcrumbManager implements BreadcrumbManagerInterface
 
     /**
      * Get breadcrumbs formatted for view rendering with enhanced metadata.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function toViewData(): array
     {
         return [

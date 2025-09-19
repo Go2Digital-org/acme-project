@@ -19,8 +19,8 @@ use OwenIt\Auditing\Models\Audit as BaseAudit;
  * @property string $event
  * @property string $auditable_type
  * @property int $auditable_id
- * @property array<string,mixed>|null $old_values
- * @property array<string,mixed>|null $new_values
+ * @property array<string, mixed>|null $old_values
+ * @property array<string, mixed>|null $new_values
  * @property string|null $url
  * @property string|null $ip_address
  * @property string|null $user_agent
@@ -29,13 +29,14 @@ use OwenIt\Auditing\Models\Audit as BaseAudit;
  * @property Carbon $updated_at
  * @property string $formatted_created_at
  * @property string $formatted_event
- * @property array<string,mixed> $diff
+ * @property array<string, mixed> $diff
  * @property int $change_count
  */
 class Audit extends BaseAudit
 {
     protected $table = 'audits';
 
+    /** @var array<int, string> */
     protected $guarded = [];
 
     /**
@@ -71,7 +72,7 @@ class Audit extends BaseAudit
     }
 
     /**
-     * @return Attribute<array<string, array{old: mixed, new: mixed, changed: bool}>, never>
+     * @return Attribute<array<string, array<string, mixed>>, never>
      */
     protected function diff(): Attribute
     {
@@ -151,6 +152,9 @@ class Audit extends BaseAudit
         return $query->where('created_at', '>=', now()->subDays($days));
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

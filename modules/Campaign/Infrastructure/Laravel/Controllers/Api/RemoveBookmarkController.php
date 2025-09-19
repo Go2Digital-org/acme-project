@@ -7,6 +7,7 @@ namespace Modules\Campaign\Infrastructure\Laravel\Controllers\Api;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Campaign\Application\Service\BookmarkService;
+use Modules\Campaign\Domain\Model\Campaign;
 use Modules\Campaign\Domain\Repository\CampaignRepositoryInterface;
 use Modules\Shared\Infrastructure\Laravel\Controllers\Traits\AuthenticatedUserTrait;
 use Modules\Shared\Infrastructure\Laravel\Http\ApiResponse;
@@ -32,7 +33,7 @@ final readonly class RemoveBookmarkController
         // Check if campaign exists
         $campaign = $this->campaignRepository->findById($campaignId);
 
-        if (! $campaign) {
+        if (! $campaign instanceof Campaign) {
             return ApiResponse::notFound('Campaign not found');
         }
 

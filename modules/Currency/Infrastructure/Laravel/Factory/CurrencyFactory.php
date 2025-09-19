@@ -16,31 +16,21 @@ class CurrencyFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function definition(): array
     {
-        $currencies = [
-            'USD' => ['name' => 'US Dollar', 'symbol' => '$', 'flag' => '🇺🇸'],
-            'EUR' => ['name' => 'Euro', 'symbol' => '€', 'flag' => '🇪🇺'],
-            'GBP' => ['name' => 'British Pound', 'symbol' => '£', 'flag' => '🇬🇧'],
-            'CAD' => ['name' => 'Canadian Dollar', 'symbol' => 'C$', 'flag' => '🇨🇦'],
-            'AUD' => ['name' => 'Australian Dollar', 'symbol' => 'A$', 'flag' => '🇦🇺'],
-            'JPY' => ['name' => 'Japanese Yen', 'symbol' => '¥', 'flag' => '🇯🇵'],
-            'CHF' => ['name' => 'Swiss Franc', 'symbol' => 'Fr', 'flag' => '🇨🇭'],
-            'CNY' => ['name' => 'Chinese Yuan', 'symbol' => '¥', 'flag' => '🇨🇳'],
-        ];
-
-        $code = fake()->randomElement(array_keys($currencies));
-        $currencyData = $currencies[$code];
+        // Generate a unique 3-letter currency code to avoid conflicts
+        $code = $this->getUniqueCode();
 
         return [
             'code' => $code,
-            'name' => $currencyData['name'],
-            'symbol' => $currencyData['symbol'],
-            'flag' => $currencyData['flag'],
-            'decimal_places' => $code === 'JPY' ? 0 : 2,
+            'name' => fake()->sentence(2, false) . ' Currency',
+            'symbol' => fake()->randomElement(['$', '€', '£', '¥', 'Fr', 'C$', 'A$', '₹', '₽', 'kr']),
+            'flag' => fake()->randomElement(['🇺🇸', '🇪🇺', '🇬🇧', '🇯🇵', '🇨🇦', '🇦🇺', '🇨🇭', '🇮🇳', '🇷🇺', '🇸🇪']),
+            'decimal_places' => fake()->randomElement([0, 2]),
             'decimal_separator' => fake()->randomElement(['.', ',']),
             'thousands_separator' => fake()->randomElement([',', ' ', '.']),
             'symbol_position' => fake()->randomElement(['before', 'after']),
@@ -49,6 +39,18 @@ class CurrencyFactory extends Factory
             'exchange_rate' => fake()->randomFloat(4, 0.5, 2.0),
             'sort_order' => fake()->numberBetween(1, 100),
         ];
+    }
+
+    /**
+     * Generate a unique 3-letter currency code.
+     */
+    private function getUniqueCode(): string
+    {
+        do {
+            $code = strtoupper(fake()->regexify('[A-Z]{3}'));
+        } while (Currency::where('code', $code)->exists());
+
+        return $code;
     }
 
     /**
@@ -190,5 +192,26 @@ class CurrencyFactory extends Factory
         return $this->state(fn (array $attributes): array => [
             'sort_order' => $order,
         ]);
+    }
+
+    /**
+     * Create or update a currency by code to avoid duplicates.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function createOrUpdate(array $attributes = []): Currency
+    {
+        $currency = Currency::where('code', $attributes['code'] ?? $this->definition()['code'])->first();
+
+        if ($currency) {
+            $currency->update($attributes);
+
+            return $currency;
+        }
+
+        /** @var Currency */
+        $result = $this->createOne($attributes);
+
+        return $result;
     }
 }

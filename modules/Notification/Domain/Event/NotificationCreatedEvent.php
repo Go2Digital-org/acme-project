@@ -19,7 +19,6 @@ class NotificationCreatedEvent extends AbstractDomainEvent
         public Notification $notification,
         public string $source = 'system',
         /** @var array<string, mixed> */
-        /** @var array<string, mixed> */
         public array $context = [],
     ) {
         parent::__construct();
@@ -35,7 +34,8 @@ class NotificationCreatedEvent extends AbstractDomainEvent
 
     /**
      * Get event data for serialization.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getEventData(): array

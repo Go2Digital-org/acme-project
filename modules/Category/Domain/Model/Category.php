@@ -285,6 +285,9 @@ class Category extends Model
         return CategoryFactory::new();
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

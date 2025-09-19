@@ -17,7 +17,7 @@ final readonly class ListPendingDonationsQueryHandler implements QueryHandlerInt
     ) {}
 
     /**
-     * @return array<Donation>
+     * @return array<int, Donation>
      */
     public function handle(QueryInterface $query): array
     {

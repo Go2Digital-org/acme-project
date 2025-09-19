@@ -7,20 +7,17 @@ namespace Modules\Search\Domain\ValueObject;
 class IndexConfiguration
 {
     /**
-     * @param  array<string>  $searchableFields
-     * @param  array<string>  $filterableFields
-     * @param  array<string>  $sortableFields
-     * @param  array<string>  $rankingRules
-     * @param  array<string>  $stopWords
-     * @param  array<string, array<string>>  $synonyms
-     * @param  array<string, mixed>  $faceting
-     * @param  array<string>  $displayedAttributes
+     * @param  array<string, mixed>  $synonyms
      */
     public function __construct(
         public readonly string $primaryKey = 'id',
+        /** @var array<int, string> */
         public readonly array $searchableFields = [],
+        /** @var array<int, string> */
         public readonly array $filterableFields = [],
+        /** @var array<int, string> */
         public readonly array $sortableFields = [],
+        /** @var array<int, string> */
         public readonly array $rankingRules = [
             'words',
             'typo',
@@ -29,12 +26,16 @@ class IndexConfiguration
             'sort',
             'exactness',
         ],
+        /** @var array<int, string> */
         public readonly array $stopWords = [],
+        /** @var array<string, mixed> */
         public readonly array $synonyms = [],
         public readonly ?string $distinctAttribute = null,
+        /** @var array<string, mixed> */
         public readonly array $faceting = [
             'maxValuesPerFacet' => 100,
         ],
+        /** @var array<int, string> */
         public readonly array $displayedAttributes = ['*'],
         public readonly bool $typoToleranceEnabled = true,
         public readonly int $maxTotalHits = 1000,
@@ -42,7 +43,8 @@ class IndexConfiguration
 
     /**
      * Convert to Meilisearch settings format.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toMeilisearchSettings(): array
@@ -88,7 +90,8 @@ class IndexConfiguration
 
     /**
      * Create configuration from array.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $config
      */
     public static function fromArray(array $config): self
@@ -152,7 +155,7 @@ class IndexConfiguration
 
         foreach ($this->rankingRules as $rule) {
             if (! in_array($rule, ['words', 'typo', 'proximity', 'attribute', 'sort', 'exactness'], true)
-                && ! str_contains($rule, ':')) {
+                && ! str_contains((string) $rule, ':')) {
                 return false;
             }
         }

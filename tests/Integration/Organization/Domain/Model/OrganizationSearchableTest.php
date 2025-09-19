@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Campaign\Domain\Model\Campaign;
 use Modules\Organization\Domain\Model\Organization;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->organization = Organization::factory()->make([

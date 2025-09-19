@@ -33,6 +33,7 @@ use Modules\Campaign\Infrastructure\Laravel\Controllers\Web\StoreCampaignControl
 use Modules\Campaign\Infrastructure\Laravel\Controllers\Web\UpdateCampaignController;
 use Modules\Campaign\Infrastructure\Laravel\Controllers\Web\UpdateCampaignWebController;
 use Modules\Currency\Infrastructure\Laravel\Controllers\Web\ChangeCurrencyController;
+use Modules\Currency\Infrastructure\Laravel\Controllers\Web\SetCurrencyController;
 use Modules\Donation\Infrastructure\Laravel\Controllers\Api\DonationStatusApiController;
 use Modules\Donation\Infrastructure\Laravel\Controllers\MollieWebhookController;
 use Modules\Donation\Infrastructure\Laravel\Controllers\StripeWebhookController;
@@ -69,6 +70,9 @@ Route::get('/cache-warming', CacheWarmingController::class)->name('cache.warming
 
 // Currency and Locale switching (outside localization)
 Route::post('/currency/change', ChangeCurrencyController::class)->name('currency.change');
+Route::get('/currency/{currency}', SetCurrencyController::class)
+    ->name('currency.switch')
+    ->where('currency', '[A-Z]{3}');
 
 Route::get('/locale/{locale}', LocaleSwitchController::class)->name('locale.switch');
 

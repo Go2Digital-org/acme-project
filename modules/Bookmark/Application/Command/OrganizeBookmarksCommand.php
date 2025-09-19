@@ -12,10 +12,11 @@ use Modules\Shared\Application\Command\CommandInterface;
 final readonly class OrganizeBookmarksCommand implements CommandInterface
 {
     /**
-     * @param  array<int, int>  $campaignIds  Campaign IDs to organize
+     * @param  array<int>  $campaignIds  Campaign IDs to organize
      */
     public function __construct(
         public int $userId,
+        /** @var array<string, mixed> */
         public array $campaignIds,
         public string $action // 'remove_all', 'remove_selected', 'remove_inactive'
     ) {}

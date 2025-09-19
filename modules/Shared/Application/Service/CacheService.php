@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Application\Service;
 
+use Exception;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -36,7 +37,7 @@ class CacheService
      * @template T
      *
      * @param  callable(): T  $callback
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      * @return T
      */
     public function remember(string $key, callable $callback, string $type = 'medium', array $tags = [])
@@ -52,14 +53,14 @@ class CacheService
      * @template T
      *
      * @param  callable(): T  $callback
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      * @return T
      */
     public function rememberWithTtl(string $key, callable $callback, int $ttl, array $tags = [])
     {
         $startTime = microtime(true);
 
-        if (! empty($tags)) {
+        if ($tags !== []) {
             /** @phpstan-ignore-next-line argument.type,argument.templateType */
             $result = Cache::tags($tags)->remember($key, $ttl, $callback);
         } else {
@@ -92,9 +93,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            function () use ($organizationId, $type, $status) {
-                return $this->loadCampaigns($organizationId, $type, $status);
-            },
+            fn (): Collection => $this->loadCampaigns(),
             'medium',
             $tags
         );
@@ -112,9 +111,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            function () use ($organizationId) {
-                return $this->loadOrganizationMetrics($organizationId);
-            },
+            fn (): array => $this->loadOrganizationMetrics(),
             'medium',
             $tags
         );
@@ -132,9 +129,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            function () use ($campaignId) {
-                return $this->loadCampaignAnalytics($campaignId);
-            },
+            fn (): array => $this->loadCampaignAnalytics(),
             'short',
             $tags
         );
@@ -144,7 +139,7 @@ class CacheService
      * Remember donation metrics with comprehensive filters.
      *
      * @param  array<string, mixed>  $filters
-     * @param  array<string>  $metrics
+     * @param  array<int, string>  $metrics
      * @return array<string, mixed>
      */
     public function rememberDonationMetrics(array $filters, string $timeRange, array $metrics = []): array
@@ -154,9 +149,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            function () use ($filters, $timeRange, $metrics) {
-                return $this->loadDonationMetrics($filters, $timeRange, $metrics);
-            },
+            fn (): array => $this->loadDonationMetrics(),
             'short',
             $tags
         );
@@ -165,7 +158,7 @@ class CacheService
     /**
      * Remember search facets for improved search performance.
      *
-     * @param  list<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -176,9 +169,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            function () use ($entityTypes, $filters) {
-                return $this->loadSearchFacets($entityTypes, $filters);
-            },
+            fn (): array => $this->loadSearchFacets(),
             'long',
             $tags
         );
@@ -196,9 +187,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            function () use ($userId) {
-                return $this->loadUserPermissions($userId);
-            },
+            fn (): array => $this->loadUserPermissions(),
             'long',
             $tags
         );
@@ -229,7 +218,7 @@ class CacheService
             $this->logger->info('Cache warming completed successfully', [
                 'total_time_ms' => $totalTime,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Cache warming failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -314,13 +303,13 @@ class CacheService
     /**
      * Check if a key exists in cache with tags.
      *
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     public function hasWithTags(string $key, array $tags): bool
     {
         try {
             return Cache::tags($tags)->has($key);
-        } catch (\Exception) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -328,7 +317,7 @@ class CacheService
     /**
      * Flush cache by tags.
      *
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     public function flushByTags(array $tags): void
     {
@@ -380,7 +369,7 @@ class CacheService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @param  array<string>  $metrics
+     * @param  array<int, string>  $metrics
      */
     private function buildDonationMetricsCacheKey(array $filters, string $timeRange, array $metrics): string
     {
@@ -392,7 +381,7 @@ class CacheService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return array<string>
+     * @return array<int, string>
      */
     private function buildDonationMetricsTags(array $filters): array
     {
@@ -410,7 +399,7 @@ class CacheService
     }
 
     /**
-     * @param  array<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      */
     private function buildSearchFacetsCacheKey(array $entityTypes, array $filters): string
@@ -422,7 +411,7 @@ class CacheService
     }
 
     /**
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     private function invalidateByTags(array $tags): void
     {
@@ -432,7 +421,7 @@ class CacheService
             $this->logger->info('Cache invalidated by tags', [
                 'tags' => $tags,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->warning('Cache invalidation by tags failed', [
                 'tags' => $tags,
                 'error' => $e->getMessage(),
@@ -441,17 +430,17 @@ class CacheService
     }
 
     /**
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     private function wasHit(string $key, array $tags = []): bool
     {
         try {
-            if (! empty($tags)) {
+            if ($tags !== []) {
                 return Cache::tags($tags)->has($key);
             }
 
             return $this->cache->has($key);
-        } catch (\Exception) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -483,7 +472,7 @@ class CacheService
     /**
      * @return Collection<int, mixed>
      */
-    private function loadCampaigns(int $organizationId, string $type, ?string $status = null): Collection
+    private function loadCampaigns(): Collection
     {
         // This would be implemented by the calling service
         return collect([]);
@@ -492,7 +481,7 @@ class CacheService
     /**
      * @return array<string, mixed>
      */
-    private function loadOrganizationMetrics(int $organizationId): array
+    private function loadOrganizationMetrics(): array
     {
         // This would be implemented by the calling service
         return [];
@@ -501,29 +490,7 @@ class CacheService
     /**
      * @return array<string, mixed>
      */
-    private function loadCampaignAnalytics(int $campaignId): array
-    {
-        // This would be implemented by the calling service
-        return [];
-    }
-
-    /**
-     * @param  array<string, mixed>  $filters
-     * @param  array<string>  $metrics
-     * @return array<string, mixed>
-     */
-    private function loadDonationMetrics(array $filters, string $timeRange, array $metrics): array
-    {
-        // This would be implemented by the calling service
-        return [];
-    }
-
-    /**
-     * @param  list<string>  $entityTypes
-     * @param  array<string, mixed>  $filters
-     * @return array<string, mixed>
-     */
-    private function loadSearchFacets(array $entityTypes, array $filters): array
+    private function loadCampaignAnalytics(): array
     {
         // This would be implemented by the calling service
         return [];
@@ -532,7 +499,25 @@ class CacheService
     /**
      * @return array<string, mixed>
      */
-    private function loadUserPermissions(int $userId): array
+    private function loadDonationMetrics(): array
+    {
+        // This would be implemented by the calling service
+        return [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function loadSearchFacets(): array
+    {
+        // This would be implemented by the calling service
+        return [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function loadUserPermissions(): array
     {
         // This would be implemented by the calling service
         return [];

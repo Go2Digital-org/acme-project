@@ -25,6 +25,9 @@ class EcbProvider implements ExchangeRateProviderInterface
 
     private const PRIORITY = 1; // High priority as it's free and reliable
 
+    /**
+     * @return array<string, mixed>
+     */
     public function fetchRates(string $baseCurrency): array
     {
         if ($baseCurrency !== 'EUR') {
@@ -75,7 +78,7 @@ class EcbProvider implements ExchangeRateProviderInterface
     }
 
     /**
-     * @return array<string, ExchangeRate>
+     * @return array<string, mixed>
      */
     private function parseXmlResponse(SimpleXMLElement $xml): array
     {

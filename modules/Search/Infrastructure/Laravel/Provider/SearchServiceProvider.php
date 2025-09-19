@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Search\Infrastructure\Laravel\Provider;
 
+use Exception;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Meilisearch\Client;
@@ -41,11 +42,23 @@ class SearchServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Register Meilisearch client
-        $this->app->singleton(Client::class, fn (): Client => new Client(
-            config('scout.meilisearch.host') ?? 'http://localhost:7700',
-            config('scout.meilisearch.key'),
-        ));
+        // Register Meilisearch client with error handling
+        $this->app->singleton(function (): Client {
+            try {
+                return new Client(
+                    config('scout.meilisearch.host') ?? 'http://localhost:7700',
+                    config('scout.meilisearch.key'),
+                );
+            } catch (Exception $e) {
+                // Log the error but don't fail the application
+                logger()->warning('Failed to create Meilisearch client', [
+                    'error' => $e->getMessage(),
+                ]);
+
+                // Return a client that will fail gracefully
+                return new Client('http://localhost:7700', null);
+            }
+        });
 
         // Register core search services
         $this->app->bind(
@@ -96,9 +109,7 @@ class SearchServiceProvider extends ServiceProvider
         // Load migrations
         $this->loadMigrationsFrom(__DIR__ . '/../Migration');
 
-        // Load routes
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        // No routes to load - Search module uses API Platform resources only
 
         // Publish configuration
         if ($this->app->runningInConsole()) {
@@ -114,7 +125,7 @@ class SearchServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public function provides(): array
     {

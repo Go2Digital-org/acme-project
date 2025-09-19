@@ -34,7 +34,7 @@ final readonly class CreateCampaignController
             startDate: (string) $validated['start_date'],
             endDate: (string) $validated['end_date'],
             organizationId: (int) $validated['organization_id'],
-            employeeId: $this->getAuthenticatedUserId($request),
+            userId: $this->getAuthenticatedUserId($request),
         );
 
         $campaign = $this->handler->handle($command);

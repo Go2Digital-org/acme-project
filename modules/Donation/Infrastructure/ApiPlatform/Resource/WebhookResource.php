@@ -37,6 +37,11 @@ use Modules\Donation\Infrastructure\ApiPlatform\Handler\Processor\StripeWebhookP
 )]
 class WebhookResource
 {
+    /**
+     * @param  array<string, mixed>|null  $data
+     * @param  array<string, mixed>|null  $amount
+     * @param  array<string, mixed>|null  $metadata
+     */
     public function __construct(
         public ?string $id = null,
         public ?string $type = null,

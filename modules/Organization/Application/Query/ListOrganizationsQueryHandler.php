@@ -31,7 +31,7 @@ final readonly class ListOrganizationsQueryHandler
         ];
 
         // Remove null filters
-        $filters = array_filter($filters, fn ($value) => $value !== null);
+        $filters = array_filter($filters, fn (array|bool|int|string|null $value): bool => $value !== null);
 
         $paginatedResults = $this->organizationRepository->paginate(
             page: $query->page,
@@ -79,9 +79,9 @@ final readonly class ListOrganizationsQueryHandler
         // Calculate statistics
         $statistics = [
             'total_organizations' => $paginatedResults->total(),
-            'active_organizations' => count(array_filter($organizations, fn ($o) => $o['status'] === 'active')),
-            'verified_organizations' => count(array_filter($organizations, fn ($o) => $o['is_verified'])),
-            'featured_organizations' => count(array_filter($organizations, fn ($o) => $o['is_featured'])),
+            'active_organizations' => count(array_filter($organizations, fn (array $o): bool => $o['status'] === 'active')),
+            'verified_organizations' => count(array_filter($organizations, fn (array $o) => $o['is_verified'])),
+            'featured_organizations' => count(array_filter($organizations, fn (array $o) => $o['is_featured'])),
             'total_campaigns' => $totalCampaigns,
             'total_amount_raised' => $totalAmountRaised,
             'average_amount_per_organization' => count($organizations) > 0 ? $totalAmountRaised / count($organizations) : 0,

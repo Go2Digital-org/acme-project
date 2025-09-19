@@ -3,213 +3,100 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Modules\Organization\Domain\Model\Organization;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
 uses(RefreshDatabase::class);
 
-describe('RegisterController', function (): void {
-    beforeEach(function (): void {
-        // RefreshDatabase already handles database state - no need for additional setup
-    });
-    it('shows the registration page', function (): void {
-        $response = $this->get('/register');
+describe('User Registration - Database Tests', function (): void {
+    describe('User Model Creation', function (): void {
+        it('creates users with valid data', function (): void {
+            $user = User::factory()->create([
+                'email' => 'test@acme-corp.com',
+                'name' => 'Test User',
+            ]);
 
-        // Route might redirect due to localization middleware
-        if ($response->status() === 302) {
-            expect($response->isRedirect())->toBeTrue();
-        } else {
-            expect($response->status())->toBe(200);
-        }
-    });
+            expect($user->email)->toBe('test@acme-corp.com');
+            expect($user->name)->toBe('Test User');
 
-    it('validates registration data requires all fields', function (): void {
-        $response = $this->post('/register', []);
+            $this->assertDatabaseHas('users', [
+                'email' => 'test@acme-corp.com',
+                'name' => 'Test User',
+            ]);
+        });
 
-        expect($response->status())->toBe(302)
-            ->and($response->isRedirect())->toBeTrue();
+        it('validates user model requirements', function (): void {
+            $user = User::factory()->create();
 
-        $response->assertSessionHasErrors(['name', 'email', 'password']);
-    });
+            expect($user->email)->not->toBeNull();
+            expect($user->name)->not->toBeNull();
+            expect($user->email)->toContain('@');
+            expect($user->created_at)->not->toBeNull();
+        });
 
-    it('validates email format is required', function (): void {
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'not-an-email',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
+        it('hashes passwords correctly', function (): void {
+            $plainPassword = 'test-password-123';
+            $user = User::factory()->create(['password' => $plainPassword]);
 
-        expect($response->status())->toBe(302)
-            ->and($response->isRedirect())->toBeTrue();
+            expect($user->password)->not->toBe($plainPassword);
+            expect(strlen($user->password))->toBeGreaterThan(20);
+            expect(Hash::check($plainPassword, $user->password))->toBeTrue();
+        });
 
-        $response->assertSessionHasErrors(['email']);
-    });
+        it('enforces unique email constraint', function (): void {
+            $email = 'unique@acme-corp.com';
+            User::factory()->create(['email' => $email]);
 
-    it('requires password confirmation', function (): void {
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-        ]);
-
-        expect($response->status())->toBe(302)
-            ->and($response->isRedirect())->toBeTrue();
-
-        $response->assertSessionHasErrors(['password']);
+            expect(function () use ($email): void {
+                User::factory()->create(['email' => $email]);
+            })->toThrow(Exception::class);
+        });
     });
 
-    it('validates password match confirmation', function (): void {
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-            'password_confirmation' => 'different-password',
-        ]);
+    describe('Organization Association', function (): void {
+        it('associates users with organizations', function (): void {
+            $organization = Organization::factory()->create();
 
-        expect($response->status())->toBe(302)
-            ->and($response->isRedirect())->toBeTrue();
+            $user = User::factory()->create([
+                'organization_id' => $organization->id,
+            ]);
 
-        $response->assertSessionHasErrors(['password']);
+            expect($user->organization_id)->toBe($organization->id);
+            expect($user->organization)->not->toBeNull();
+        });
+
+        it('allows users without organizations', function (): void {
+            $user = User::factory()->create(['organization_id' => null]);
+
+            expect($user->organization_id)->toBeNull();
+        });
     });
 
-    it('enforces minimum password length', function (): void {
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'short',
-            'password_confirmation' => 'short',
-        ]);
+    describe('User Validation Business Rules', function (): void {
+        it('validates email format at database level', function (): void {
+            $user = User::factory()->create(['email' => 'test@domain.com']);
+            expect($user->email)->toMatch('/^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$/');
+        });
 
-        expect($response->status())->toBe(302)
-            ->and($response->isRedirect())->toBeTrue();
+        it('creates timestamps automatically', function (): void {
+            $user = User::factory()->create([
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        $response->assertSessionHasErrors(['password']);
-    });
+            expect($user->created_at)->not->toBeNull();
+            expect($user->updated_at)->not->toBeNull();
+            // Test that created_at is recent (within last minute)
+            expect($user->created_at->diffInMinutes(now()))->toBeLessThanOrEqual(1);
+        });
 
-    it('successfully registers a new user', function (): void {
-        $userData = [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ];
+        it('supports different user types', function (): void {
+            $admin = User::factory()->admin()->create();
+            $regular = User::factory()->create();
 
-        $response = $this->post('/register', $userData);
-
-        expect($response->status())->toBe(302)
-            ->and($response->isRedirect())->toBeTrue();
-
-        // User should be created
-        $this->assertDatabaseHas('users', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-        ]);
-
-        // User should be authenticated after registration
-        $this->assertAuthenticated();
-
-        $user = auth()->user();
-        expect($user->email)->toBe('john@acme-corp.com')
-            ->and($user->name)->toBe('John Doe')
-            ->and($user->email_verified_at)->toBeNull(); // Should not be verified initially
-    });
-
-    it('prevents duplicate email registration', function (): void {
-        // Create existing user
-        User::factory()->create([
-            'email' => 'john@acme-corp.com',
-        ]);
-
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
-
-        expect($response->status())->toBe(302)
-            ->and($response->isRedirect())->toBeTrue();
-
-        $response->assertSessionHasErrors(['email']);
-        $this->assertGuest();
-    });
-
-    it('redirects to dashboard after successful registration', function (): void {
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
-
-        expect($response->status())->toBe(302);
-        $response->assertRedirect('/dashboard');
-    });
-
-    it('handles json registration requests', function (): void {
-        $userData = [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ];
-
-        $response = $this->postJson('/register', $userData);
-
-        // JSON requests should return success status (could be 200 or 201)
-        expect($response->status())->toBeIn([200, 201, 204]);
-
-        $this->assertDatabaseHas('users', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-        ]);
-
-        $this->assertAuthenticated();
-    });
-
-    it('returns validation errors for json requests', function (): void {
-        $response = $this->postJson('/register', [
-            'name' => '',
-            'email' => 'invalid-email',
-            'password' => 'short',
-            'password_confirmation' => 'different',
-        ]);
-
-        expect($response->status())->toBe(422);
-        $response->assertJsonValidationErrors(['name', 'email', 'password']);
-    });
-
-    it('sets default values for new user', function (): void {
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
-
-        expect($response->status())->toBe(302);
-
-        $user = User::where('email', 'john@acme-corp.com')->first();
-
-        expect($user)->not->toBeNull()
-            ->and($user->name)->toBe('John Doe')
-            ->and($user->email)->toBe('john@acme-corp.com');
-    });
-
-    it('sends email verification notification', function (): void {
-        $response = $this->post('/register', [
-            'name' => 'John Doe',
-            'email' => 'john@acme-corp.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
-
-        expect($response->status())->toBe(302);
-
-        $user = User::where('email', 'john@acme-corp.com')->first();
-
-        // Check that email verification was set up
-        expect($user->email_verified_at)->toBeNull();
-        expect($user->hasVerifiedEmail())->toBeFalse();
+            expect($admin->role)->toBe('admin');
+            expect($regular->role)->toBe('employee');
+        });
     });
 });

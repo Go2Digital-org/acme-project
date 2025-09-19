@@ -40,7 +40,7 @@ class PaymentProcessingService
         $paymentIntent = new PaymentIntent(
             donationId: 0, // Will be set after donation creation
             campaignId: $campaign->getId(),
-            employeeId: $donor->getId(),
+            userId: $donor->getId(),
             amount: new Money($amount->getAmount(), $amount->currency),
             paymentMethod: $paymentMethod,
             description: "Donation to {$campaign->getTitle()}",

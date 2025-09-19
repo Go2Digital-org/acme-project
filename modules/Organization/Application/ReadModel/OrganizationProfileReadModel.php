@@ -129,7 +129,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getGalleryImages(): array
     {
@@ -137,7 +137,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getVideos(): array
     {
@@ -156,7 +156,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
 
     // Address and Location
     /**
-     * @return array<string, string|null>
+     * @return array<string, mixed>
      */
     public function getHeadquartersAddress(): array
     {
@@ -171,7 +171,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array<string, mixed>
      */
     public function getMailingAddress(): array
     {
@@ -193,7 +193,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getBranches(): array
     {
@@ -243,7 +243,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
 
     // Leadership and Staff
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getExecutiveTeam(): array
     {
@@ -251,7 +251,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getBoardMembers(): array
     {
@@ -259,7 +259,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getKeyStaff(): array
     {
@@ -304,7 +304,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
 
     // Programs and Services
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getPrograms(): array
     {
@@ -312,7 +312,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getServices(): array
     {
@@ -362,7 +362,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
 
     // Partnerships and Affiliations
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getPartners(): array
     {
@@ -370,7 +370,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getAffiliations(): array
     {
@@ -378,7 +378,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, string>
+     * @return array<string, mixed>
      */
     public function getCertifications(): array
     {
@@ -402,7 +402,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
 
     // Awards and Recognition
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getAwards(): array
     {
@@ -410,7 +410,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getRecognitions(): array
     {
@@ -466,7 +466,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function getAllSocialMediaLinks(): array
     {
@@ -499,7 +499,7 @@ final class OrganizationProfileReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, float>
+     * @return array<string, mixed>
      */
     public function getSuggestedDonationAmounts(): array
     {

@@ -19,6 +19,10 @@ class CreateRole extends CreateRecord
 
     protected static string $resource = RoleResource::class;
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $this->permissions = collect($data)

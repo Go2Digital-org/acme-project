@@ -6,15 +6,13 @@ namespace Modules\Tenancy\Application\Command;
 
 final class CreateTenantCommand
 {
-    /**
-     * @param  array<string, mixed>  $config
-     * @param  array<string, mixed>  $adminData
-     */
     public function __construct(
         public string $name,
         public string $subdomain,
         public string $email,
+        /** @var array<string, mixed> */
         public array $config = [],
+        /** @var array<string, mixed> */
         public array $adminData = []
     ) {}
 }

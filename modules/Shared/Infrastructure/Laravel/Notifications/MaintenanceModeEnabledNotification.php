@@ -43,7 +43,8 @@ final class MaintenanceModeEnabledNotification extends Notification implements S
 
     /**
      * Get the array representation of the notification.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toArray(object $notifiable): array

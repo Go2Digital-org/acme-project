@@ -101,7 +101,9 @@ enum OrganizationCategory: string
         };
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public static function getOptions(): array
     {
         return collect(self::cases())

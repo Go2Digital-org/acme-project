@@ -7,6 +7,13 @@ use Modules\Campaign\Domain\Specification\CampaignApprovalSpecification;
 use Modules\Campaign\Domain\ValueObject\CampaignStatus;
 use Modules\Shared\Domain\Contract\CampaignInterface;
 
+// Fixed dates for performance optimization - avoids repeated Carbon::parse(TEST_BASE_DATE) calls
+const TEST_BASE_DATE = '2025-01-15 10:00:00';
+const TEST_FUTURE_DATE = '2025-01-16 10:00:00';
+const TEST_FAR_FUTURE_DATE = '2025-02-14 10:00:00';
+const TEST_PAST_DATE = '2024-12-16 10:00:00';
+const TEST_FAR_PAST_DATE = '2024-11-16 10:00:00';
+
 test('campaign specification returns false for non-campaign objects', function (): void {
     $specification = new CampaignApprovalSpecification;
     $mockObject = createMockCampaign([]);
@@ -29,8 +36,8 @@ test('campaign cannot be approved when not in pending approval status', function
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -51,10 +58,10 @@ test('campaign cannot be approved when already approved', function (): void {
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
-        'approved_at' => Carbon::now(),
+        'approved_at' => Carbon::parse(TEST_BASE_DATE),
         'rejected_at' => null,
         'organization' => $organization,
     ]);
@@ -75,11 +82,11 @@ test('campaign cannot be approved when already rejected', function (): void {
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'approved_at' => null,
-        'rejected_at' => Carbon::now(),
+        'rejected_at' => Carbon::parse(TEST_BASE_DATE),
         'organization' => $organization,
     ]);
 
@@ -100,8 +107,8 @@ test('campaign cannot be approved when title is invalid', function (): void {
         'title' => '',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -116,8 +123,8 @@ test('campaign cannot be approved when title is invalid', function (): void {
         'title' => 'Untitled',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -136,8 +143,8 @@ test('campaign cannot be approved when description is empty', function (): void 
         'title' => 'Test Campaign',
         'description' => '',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -158,8 +165,8 @@ test('campaign cannot be approved when goal amount is invalid', function (): voi
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 0.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -174,8 +181,8 @@ test('campaign cannot be approved when goal amount is invalid', function (): voi
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => -100.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -195,8 +202,8 @@ test('campaign cannot be approved when date range is invalid', function (): void
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(30),
-        'end_date' => Carbon::now()->addDays(1),
+        'start_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -217,8 +224,8 @@ test('campaign cannot be approved when end date is in the past', function (): vo
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->subDays(30),
-        'end_date' => Carbon::now()->subDays(1),
+        'start_date' => Carbon::parse(TEST_FAR_PAST_DATE),
+        'end_date' => Carbon::parse(TEST_PAST_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -239,8 +246,8 @@ test('campaign cannot be approved when organization is inactive', function (): v
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -261,8 +268,8 @@ test('campaign cannot be approved when organization is not verified', function (
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'organization' => $organization,
     ]);
@@ -283,8 +290,8 @@ test('campaign cannot be approved when it has no category', function (): void {
         'title' => 'Test Campaign',
         'description' => 'A valid test campaign description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => null,
         'category_id' => null,
         'organization' => $organization,
@@ -327,8 +334,8 @@ function createMockCampaign(array $attributes = []): object
         'title' => 'Test Campaign',
         'description' => 'Test Description',
         'goal_amount' => 1000.00,
-        'start_date' => Carbon::now()->addDays(1),
-        'end_date' => Carbon::now()->addDays(30),
+        'start_date' => Carbon::parse(TEST_FUTURE_DATE),
+        'end_date' => Carbon::parse(TEST_FAR_FUTURE_DATE),
         'category' => 'health',
         'category_id' => null,
         'approved_at' => null,

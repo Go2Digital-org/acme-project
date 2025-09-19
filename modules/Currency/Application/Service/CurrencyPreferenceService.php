@@ -113,7 +113,7 @@ class CurrencyPreferenceService
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<int, Currency>
      */
     public function getAvailableCurrencies(): array
     {

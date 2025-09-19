@@ -22,7 +22,7 @@ class SearchAuditLogsQueryHandler
         // Search functionality
         if ($query->search !== null) {
             $searchTerm = '%' . $query->search . '%';
-            $queryBuilder->where(function ($q) use ($searchTerm) {
+            $queryBuilder->where(function ($q) use ($searchTerm): void {
                 $q->where('event', 'like', $searchTerm)
                     ->orWhere('url', 'like', $searchTerm)
                     ->orWhere('ip_address', 'like', $searchTerm)

@@ -23,7 +23,7 @@ final class DonationStatsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, string>
+     * @return array<string>
      */
     public function getCacheTags(): array
     {
@@ -280,9 +280,6 @@ final class DonationStatsReadModel extends AbstractReadModel
 
     // Payment Method Statistics
     /**
-     * @return array<string, array<string, mixed>>
-     */
-    /**
      * @return array<string, mixed>
      */
     public function getPaymentMethodStats(): array
@@ -338,9 +335,6 @@ final class DonationStatsReadModel extends AbstractReadModel
 
     // Top Performers
     /**
-     * @return array<int, array<string, mixed>>
-     */
-    /**
      * @return array<string, mixed>
      */
     public function getTopDonorsByCampaign(): array
@@ -348,9 +342,6 @@ final class DonationStatsReadModel extends AbstractReadModel
         return $this->get('top_donors_by_campaign', []);
     }
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
     /**
      * @return array<string, mixed>
      */
@@ -360,9 +351,6 @@ final class DonationStatsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
-     */
-    /**
      * @return array<string, mixed>
      */
     public function getTopCampaignsByDonations(): array
@@ -370,9 +358,6 @@ final class DonationStatsReadModel extends AbstractReadModel
         return $this->get('top_campaigns_by_donations', []);
     }
 
-    /**
-     * @return array<int, array<string, mixed>>
-     */
     /**
      * @return array<string, mixed>
      */
@@ -382,9 +367,6 @@ final class DonationStatsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
-     */
-    /**
      * @return array<string, mixed>
      */
     public function getLargestDonations(): array
@@ -393,9 +375,7 @@ final class DonationStatsReadModel extends AbstractReadModel
     }
 
     // Trends and Patterns
-    /**
-     * @return array<string, mixed>
-     */
+
     /**
      * @return array<string, mixed>
      */
@@ -407,17 +387,11 @@ final class DonationStatsReadModel extends AbstractReadModel
     /**
      * @return array<string, mixed>
      */
-    /**
-     * @return array<string, mixed>
-     */
     public function getDailyPattern(): array
     {
         return $this->get('daily_pattern', []);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     /**
      * @return array<string, mixed>
      */
@@ -429,17 +403,11 @@ final class DonationStatsReadModel extends AbstractReadModel
     /**
      * @return array<string, mixed>
      */
-    /**
-     * @return array<string, mixed>
-     */
     public function getMonthlyPattern(): array
     {
         return $this->get('monthly_pattern', []);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     /**
      * @return array<string, mixed>
      */
@@ -589,9 +557,7 @@ final class DonationStatsReadModel extends AbstractReadModel
     }
 
     // Formatted Output
-    /**
-     * @return array<string, mixed>
-     */
+
     /**
      * @return array<string, mixed>
      */
@@ -706,8 +672,6 @@ final class DonationStatsReadModel extends AbstractReadModel
 
     /**
      * Get summary data for dashboard widgets
-     *
-     * @return array<string, mixed>
      */
     /**
      * @return array<string, mixed>

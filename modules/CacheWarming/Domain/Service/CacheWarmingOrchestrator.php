@@ -311,7 +311,7 @@ final readonly class CacheWarmingOrchestrator
     /**
      * Create a warming strategy based on cache type
      *
-     * @return array<CacheKey>
+     * @return array<int, CacheKey>
      */
     public function createWarmingStrategy(string $type): array
     {
@@ -359,7 +359,7 @@ final readonly class CacheWarmingOrchestrator
     /**
      * Validate that all provided keys are CacheKey instances
      *
-     * @param  array<mixed>  $keys
+     * @param  array<CacheKey>  $keys
      */
     private function validateCacheKeys(array $keys): void
     {

@@ -71,6 +71,9 @@ class ExportProgress extends Model
         return max(0, $this->total_records - $this->processed_records);
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

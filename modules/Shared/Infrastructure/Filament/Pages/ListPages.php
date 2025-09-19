@@ -25,6 +25,9 @@ class ListPages extends ListRecords
         return null;
     }
 
+    /**
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [

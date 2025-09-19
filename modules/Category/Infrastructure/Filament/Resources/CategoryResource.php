@@ -74,7 +74,7 @@ class CategoryResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (string $context, ?string $state, callable $set) => $context === 'create' && $state ? $set('slug', Str::slug($state)) : null),
+                                    ->afterStateUpdated(fn (string $context, ?string $state, $set) => $context === 'create' && $state ? $set('slug', Str::slug($state)) : null),
                                 Textarea::make('description')
                                     ->rows(2)
                                     ->maxLength(500)
@@ -243,6 +243,9 @@ class CategoryResource extends Resource
             ->striped();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelations(): array
     {
         return [
@@ -250,6 +253,9 @@ class CategoryResource extends Resource
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

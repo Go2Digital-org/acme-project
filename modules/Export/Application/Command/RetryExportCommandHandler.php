@@ -17,10 +17,10 @@ use Modules\Export\Infrastructure\Laravel\Jobs\ProcessDonationExportJob;
  * Handles retrying failed export jobs through the domain layer.
  * Validates export ownership and status before retry.
  */
-final class RetryExportCommandHandler
+final readonly class RetryExportCommandHandler
 {
     public function __construct(
-        private readonly ExportJobRepositoryInterface $exportRepository,
+        private ExportJobRepositoryInterface $exportRepository,
     ) {}
 
     /**
@@ -33,7 +33,7 @@ final class RetryExportCommandHandler
         $exportId = ExportId::fromString($command->exportId);
         $export = $this->exportRepository->findById($exportId);
 
-        if (! $export) {
+        if (! $export instanceof ExportJob) {
             throw ExportException::exportNotFound($exportId);
         }
 

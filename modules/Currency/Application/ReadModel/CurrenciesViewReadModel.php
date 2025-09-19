@@ -17,7 +17,7 @@ final class CurrenciesViewReadModel extends AbstractReadModel
     /**
      * Get all currencies formatted for dropdown display.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getCurrenciesForDropdown(): array
     {
@@ -26,7 +26,8 @@ final class CurrenciesViewReadModel extends AbstractReadModel
 
     /**
      * Get current user currency data.
-     *
+     */
+    /**
      * @return array<string, mixed>|null
      */
     public function getCurrentCurrency(): ?array
@@ -36,7 +37,8 @@ final class CurrenciesViewReadModel extends AbstractReadModel
 
     /**
      * Get default currency data.
-     *
+     */
+    /**
      * @return array<string, mixed>|null
      */
     public function getDefaultCurrency(): ?array
@@ -56,7 +58,8 @@ final class CurrenciesViewReadModel extends AbstractReadModel
 
     /**
      * Get currency data by code.
-     *
+     */
+    /**
      * @return array<string, mixed>|null
      */
     public function getCurrencyByCode(string $code): ?array

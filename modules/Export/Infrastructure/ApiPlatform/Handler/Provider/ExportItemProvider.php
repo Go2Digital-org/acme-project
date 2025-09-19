@@ -21,6 +21,10 @@ class ExportItemProvider implements ProviderInterface
         private readonly Request $request
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): ExportResource
     {
         $user = $this->request->user();

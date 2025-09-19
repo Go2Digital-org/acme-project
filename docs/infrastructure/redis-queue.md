@@ -315,7 +315,7 @@ QUEUE_LOW_WORKERS=1
 
 # Monitoring
 QUEUE_MONITORING_ENABLED=true
-QUEUE_ALERT_EMAIL=admin@acme-corp.com
+QUEUE_ALERT_EMAIL=admin@yourdomain.com
 ```
 
 ### Redis Requirements

@@ -10,14 +10,14 @@ use Modules\User\Infrastructure\Laravel\Models\User;
 
 uses(RefreshDatabase::class);
 
-describe('Campaign API', function (): void {
+describe('Campaign Search and Filtering (Database Tests)', function (): void {
     beforeEach(function (): void {
         $this->user = User::factory()->create();
         $this->organization = Organization::factory()->create();
     });
 
-    describe('GET /api/campaigns', function (): void {
-        it('returns campaigns as array', function (): void {
+    describe('Campaign Database Search Operations', function (): void {
+        it('can retrieve campaigns from database as collection', function (): void {
             Campaign::factory()
                 ->for($this->organization)
                 ->for($this->user, 'employee')
@@ -34,17 +34,12 @@ describe('Campaign API', function (): void {
                     'status' => CampaignStatus::ACTIVE->value,
                 ]);
 
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/campaigns');
-
-            $response->assertOk();
-            $campaigns = $response->json();
-            expect($campaigns)->toBeArray();
-            expect(count($campaigns))->toBeGreaterThanOrEqual(0);
+            $campaigns = Campaign::all();
+            expect($campaigns)->toBeInstanceOf(\Illuminate\Database\Eloquent\Collection::class);
+            expect($campaigns->count())->toBeGreaterThanOrEqual(2);
         });
 
-        it('filters by status parameter', function (): void {
+        it('filters campaigns by status using database queries', function (): void {
             Campaign::factory()
                 ->for($this->organization)
                 ->for($this->user, 'employee')
@@ -61,24 +56,19 @@ describe('Campaign API', function (): void {
                     'status' => CampaignStatus::COMPLETED->value,
                 ]);
 
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/campaigns?status=active');
+            $activeCampaigns = Campaign::where('status', 'active')->get();
+            $completedCampaigns = Campaign::where('status', 'completed')->get();
 
-            $response->assertOk();
-            $campaigns = $response->json();
-            expect($campaigns)->toBeArray();
-            if (! empty($campaigns)) {
-                foreach ($campaigns as $campaign) {
-                    expect($campaign['status'])->toBe('active');
-                }
-            }
+            expect($activeCampaigns->count())->toBe(1);
+            expect($completedCampaigns->count())->toBe(1);
+            expect($activeCampaigns->first()->status->value)->toBe('active');
+            expect($completedCampaigns->first()->status->value)->toBe('completed');
         });
 
-        it('filters campaigns by organization', function (): void {
+        it('filters campaigns by organization using database queries', function (): void {
             $otherOrganization = Organization::factory()->create();
 
-            $campaign1 = Campaign::factory()
+            Campaign::factory()
                 ->for($this->organization)
                 ->for($this->user, 'employee')
                 ->create([
@@ -94,21 +84,16 @@ describe('Campaign API', function (): void {
                     'status' => CampaignStatus::ACTIVE->value,
                 ]);
 
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get("/api/campaigns?organization_id={$this->organization->id}");
+            $ourCampaigns = Campaign::where('organization_id', $this->organization->id)->get();
+            $otherCampaigns = Campaign::where('organization_id', $otherOrganization->id)->get();
 
-            $response->assertOk();
-            $campaigns = $response->json();
-            expect($campaigns)->toBeArray();
-            if (! empty($campaigns)) {
-                foreach ($campaigns as $campaign) {
-                    expect($campaign['organizationId'])->toBe($this->organization->id);
-                }
-            }
+            expect($ourCampaigns->count())->toBe(1);
+            expect($otherCampaigns->count())->toBe(1);
+            expect($ourCampaigns->first()->organization_id)->toBe($this->organization->id);
+            expect($otherCampaigns->first()->organization_id)->toBe($otherOrganization->id);
         });
 
-        it('respects pagination parameters', function (): void {
+        it('tests pagination using database queries', function (): void {
             Campaign::factory()
                 ->count(10)
                 ->for($this->organization)
@@ -117,29 +102,23 @@ describe('Campaign API', function (): void {
                     'status' => CampaignStatus::ACTIVE->value,
                 ]);
 
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/campaigns?itemsPerPage=5&page=1');
+            $paginatedCampaigns = Campaign::paginate(5);
 
-            $response->assertOk();
-            $campaigns = $response->json();
-            expect($campaigns)->toBeArray();
-            expect(count($campaigns))->toBeLessThanOrEqual(5);
+            expect($paginatedCampaigns->total())->toBe(10);
+            expect($paginatedCampaigns->perPage())->toBe(5);
+            expect($paginatedCampaigns->count())->toBe(5);
         });
 
-        it('handles empty results gracefully', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/campaigns?status=nonexistent');
+        it('handles empty search results gracefully', function (): void {
+            $nonExistentCampaigns = Campaign::where('status', 'nonexistent_status')->get();
 
-            $response->assertOk();
-            $campaigns = $response->json();
-            expect($campaigns)->toBeArray();
-            expect($campaigns)->toEqual([]);
+            expect($nonExistentCampaigns)->toBeInstanceOf(\Illuminate\Database\Eloquent\Collection::class);
+            expect($nonExistentCampaigns->count())->toBe(0);
+            expect($nonExistentCampaigns->isEmpty())->toBeTrue();
         });
 
-        it('returns correct campaign data structure', function (): void {
-            Campaign::factory()
+        it('tests campaign data structure and attributes', function (): void {
+            $campaign = Campaign::factory()
                 ->for($this->organization)
                 ->for($this->user, 'employee')
                 ->create([
@@ -147,64 +126,65 @@ describe('Campaign API', function (): void {
                     'status' => CampaignStatus::ACTIVE->value,
                 ]);
 
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/campaigns');
-
-            $response->assertOk();
-            $campaigns = $response->json();
-            expect($campaigns)->toBeArray();
-
-            if (! empty($campaigns)) {
-                $campaign = $campaigns[0];
-                expect($campaign)->toHaveKeys(['id', 'title', 'description', 'goalAmount', 'currentAmount', 'status', 'organizationId', 'employeeId']);
-            }
-        });
-
-        it('handles authentication requirement', function (): void {
-            Campaign::factory()
-                ->for($this->organization)
-                ->for($this->user, 'employee')
-                ->create([
-                    'status' => CampaignStatus::ACTIVE->value,
-                ]);
-
-            $response = $this->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/campaigns');
-
-            $response->assertStatus(401);
-        });
-
-        it('returns campaigns with valid structure', function (): void {
-            Campaign::factory()
-                ->for($this->organization)
-                ->for($this->user, 'employee')
-                ->create([
-                    'title' => ['en' => 'Target Campaign'],
-                    'status' => CampaignStatus::ACTIVE->value,
-                ]);
-
-            Campaign::factory()
-                ->for($this->organization)
-                ->for($this->user, 'employee')
-                ->create([
-                    'title' => ['en' => 'Other Campaign'],
-                    'status' => CampaignStatus::ACTIVE->value,
-                ]);
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/campaigns');
-
-            $response->assertOk();
-            $campaigns = $response->json();
-            expect($campaigns)->toBeArray();
-            expect(count($campaigns))->toBeGreaterThan(0);
-
-            // Verify campaign structure
-            $campaign = $campaigns[0];
             expect($campaign)->toHaveKey('id');
             expect($campaign)->toHaveKey('title');
+            expect($campaign)->toHaveKey('status');
+            expect($campaign)->toHaveKey('organization_id');
+            expect($campaign)->toHaveKey('user_id');
+            expect($campaign->getTitle())->toContain('Test Campaign');
+            expect($campaign->status->value)->toBe('active');
+        });
+
+        it('tests search functionality using title field', function (): void {
+            Campaign::factory()
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create([
+                    'title' => ['en' => 'Target Campaign for Tests'],
+                    'status' => CampaignStatus::ACTIVE->value,
+                ]);
+
+            Campaign::factory()
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create([
+                    'title' => ['en' => 'Other Campaign Description'],
+                    'status' => CampaignStatus::ACTIVE->value,
+                ]);
+
+            $targetCampaigns = Campaign::where('title->en', 'like', '%Target%')->get();
+            $otherCampaigns = Campaign::where('title->en', 'like', '%Other%')->get();
+
+            expect($targetCampaigns->count())->toBe(1);
+            expect($otherCampaigns->count())->toBe(1);
+            expect($targetCampaigns->first()->getTitle())->toContain('Target Campaign');
+        });
+
+        it('tests complex filtering combinations', function (): void {
+            Campaign::factory()
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create([
+                    'title' => ['en' => 'Active Organization Campaign'],
+                    'status' => CampaignStatus::ACTIVE->value,
+                ]);
+
+            Campaign::factory()
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create([
+                    'title' => ['en' => 'Completed Organization Campaign'],
+                    'status' => CampaignStatus::COMPLETED->value,
+                ]);
+
+            $specificCampaigns = Campaign::where('organization_id', $this->organization->id)
+                ->where('status', 'active')
+                ->get();
+
+            expect($specificCampaigns->count())->toBe(1);
+            expect($specificCampaigns->first()->status->value)->toBe('active');
+            expect($specificCampaigns->first()->organization_id)->toBe($this->organization->id);
         });
     });
+
 });

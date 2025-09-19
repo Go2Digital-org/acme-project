@@ -174,13 +174,14 @@ enum PaymentMethod: string
 
     /**
      * Get available payment methods for a given currency.
+     *
+     * @return list<PaymentMethod>
      */
-    /** @return array<array-key, mixed> */
     public static function getAvailableForCurrency(string $currency): array
     {
         $allMethods = self::cases();
 
-        return array_filter($allMethods, fn (self $method): bool => $method->supportsCurrency($currency));
+        return array_values(array_filter($allMethods, fn (self $method): bool => $method->supportsCurrency($currency)));
     }
 
     public static function fromString(string $method): self

@@ -14,7 +14,7 @@ final readonly class ListCategoriesQueryHandler
     ) {}
 
     /**
-     * @return array<CategoryReadModel>
+     * @return array<int, CategoryReadModel>
      */
     public function handle(ListCategoriesQuery $query): array
     {
@@ -27,7 +27,7 @@ final readonly class ListCategoriesQueryHandler
         $categories = $this->categoryRepository->findByFilters($filters);
 
         return array_map(
-            fn ($category) => CategoryReadModel::fromDomainModel($category),
+            fn ($category): CategoryReadModel => CategoryReadModel::fromDomainModel($category),
             $categories->toArray()
         );
     }

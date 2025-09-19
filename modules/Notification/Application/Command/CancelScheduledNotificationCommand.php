@@ -19,6 +19,7 @@ final readonly class CancelScheduledNotificationCommand implements CommandInterf
         public int $userId,
         public ?string $reason = null,
         public bool $cancelRecurring = false,
+        /** @var array<string, mixed> */
         public array $metadata = [],
     ) {}
 }

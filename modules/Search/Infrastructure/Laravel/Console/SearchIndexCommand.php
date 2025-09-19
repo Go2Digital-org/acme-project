@@ -36,7 +36,7 @@ class SearchIndexCommand extends Command
     /**
      * Models that are searchable in the application.
      *
-     * @var array<class-string>
+     * @var array<int, class-string>
      */
     private array $searchableModels = [
         Campaign::class,
@@ -87,8 +87,9 @@ class SearchIndexCommand extends Command
 
     /**
      * Show the status of search indexes.
-     *
-     * @param  array<class-string>  $models
+     */
+    /**
+     * @param  array<int, class-string>  $models
      */
     private function showStatus(array $models): int
     {
@@ -149,8 +150,9 @@ class SearchIndexCommand extends Command
 
     /**
      * Rebuild search indexes.
-     *
-     * @param  array<class-string>  $models
+     */
+    /**
+     * @param  array<int, class-string>  $models
      */
     private function rebuildIndexes(array $models): int
     {
@@ -192,8 +194,9 @@ class SearchIndexCommand extends Command
 
     /**
      * Clear search indexes.
-     *
-     * @param  array<class-string>  $models
+     */
+    /**
+     * @param  array<int, class-string>  $models
      */
     private function clearIndexes(array $models): int
     {
@@ -231,8 +234,9 @@ class SearchIndexCommand extends Command
 
     /**
      * Configure search indexes with proper settings.
-     *
-     * @param  array<class-string>  $models
+     */
+    /**
+     * @param  array<int, class-string>  $models
      */
     private function configureIndexes(array $models): int
     {

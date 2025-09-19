@@ -27,6 +27,10 @@ final readonly class DashboardDataProvider implements ProviderInterface
         private GetUserDashboardDataQueryHandler $queryHandler
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function provide(
         Operation $operation,
         array $uriVariables = [],
@@ -57,7 +61,7 @@ final readonly class DashboardDataProvider implements ProviderInterface
                     ? $dashboardData->statistics->toArray()
                     : $dashboardData->statistics,
                 activityFeed: array_map(
-                    fn ($item) => $item instanceof ActivityFeedItem
+                    fn ($item): mixed => $item instanceof ActivityFeedItem
                         ? $item->toArray()
                         : $item,
                     $dashboardData->activityFeed
@@ -67,7 +71,7 @@ final readonly class DashboardDataProvider implements ProviderInterface
                     : $dashboardData->impactMetrics,
                 ranking: $dashboardData->ranking,
                 leaderboard: array_map(
-                    fn ($entry) => $entry instanceof LeaderboardEntry
+                    fn ($entry): mixed => $entry instanceof LeaderboardEntry
                         ? $entry->toArray()
                         : $entry,
                     $dashboardData->leaderboard

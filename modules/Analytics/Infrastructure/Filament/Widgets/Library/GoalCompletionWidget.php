@@ -14,6 +14,8 @@ class GoalCompletionWidget extends BaseWidget
 
     protected ?string $pollingInterval = '10m';
 
+    /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 5;
@@ -23,6 +25,9 @@ class GoalCompletionWidget extends BaseWidget
         return true;
     }
 
+    /**
+     * @return array<int, Stat>
+     */
     protected function getStats(): array
     {
         $stats = ApplicationCache::getStats('goal_completion');
@@ -61,7 +66,7 @@ class GoalCompletionWidget extends BaseWidget
     }
 
     /**
-     * @return array<Stat>
+     * @return array<int, Stat>
      */
     private function getEmptyData(): array
     {

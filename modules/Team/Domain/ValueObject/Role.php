@@ -30,7 +30,7 @@ enum Role: string
     }
 
     /**
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getPermissions(): array
     {

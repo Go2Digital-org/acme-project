@@ -8,13 +8,11 @@ use Modules\Category\Domain\Model\Category;
 
 final class CategoryReadModel
 {
-    /**
-     * @param  array<string, string>  $name
-     * @param  array<string, string>  $description
-     */
     public function __construct(
         public string $id,
+        /** @var array<string, mixed> */
         public array $name,
+        /** @var array<string, mixed> */
         public array $description,
         public string $slug,
         public ?string $parentId,

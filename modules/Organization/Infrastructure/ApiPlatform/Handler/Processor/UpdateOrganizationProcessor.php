@@ -20,6 +20,10 @@ final readonly class UpdateOrganizationProcessor implements ProcessorInterface
         private CommandBusInterface $commandBus,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,

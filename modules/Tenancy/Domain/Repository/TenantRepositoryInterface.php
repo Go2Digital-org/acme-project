@@ -20,12 +20,12 @@ interface TenantRepositoryInterface
     public function delete(Tenant $tenant): void;
 
     /**
-     * @return array<Tenant>
+     * @return array<int, Tenant>
      */
     public function findAll(): array;
 
     /**
-     * @return array<Tenant>
+     * @return array<int, Tenant>
      */
     public function findActive(): array;
 }

@@ -13,7 +13,7 @@ final readonly class GetDonationReportQuery implements QueryInterface
 {
     /**
      * @param  array<string, mixed>|null  $filters
-     * @param  array<string>|null  $dateRange
+     * @param  array<string, mixed>|null  $dateRange
      */
     public function __construct(
         public string $reportType,

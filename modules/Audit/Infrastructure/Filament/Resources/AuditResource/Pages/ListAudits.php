@@ -19,6 +19,9 @@ class ListAudits extends ListRecords
 {
     protected static string $resource = AuditResource::class;
 
+    /**
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -75,6 +78,9 @@ class ListAudits extends ListRecords
         ];
     }
 
+    /**
+     * @return array<string, Tab>
+     */
     public function getTabs(): array
     {
         return [
@@ -107,6 +113,9 @@ class ListAudits extends ListRecords
         ];
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function getHeaderWidgets(): array
     {
         return [

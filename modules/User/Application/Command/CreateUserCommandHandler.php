@@ -18,11 +18,11 @@ use Modules\User\Domain\ValueObject\UserStatus;
  * Handles the creation of new users through the domain layer.
  * Ensures proper validation and business rules are enforced.
  */
-final class CreateUserCommandHandler
+final readonly class CreateUserCommandHandler
 {
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository,
-        private readonly UserFactory $userFactory,
+        private UserRepositoryInterface $userRepository,
+        private UserFactory $userFactory,
     ) {}
 
     /**

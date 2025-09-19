@@ -103,7 +103,7 @@ final readonly class ProcessDonationWebController
                 $paymentIntent = new PaymentIntent(
                     donationId: $donation->id,
                     campaignId: $campaign->id,
-                    employeeId: $domainUser->getId(),
+                    userId: $domainUser->getId(),
                     amount: new Money(
                         amount: (float) $donation->amount,
                         currency: $donation->currency,

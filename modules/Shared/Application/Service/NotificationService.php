@@ -86,8 +86,7 @@ class NotificationService
 
     /**
      * Format notification data for API response.
-     */
-    /**
+     *
      * @return array<string, mixed>
      */
     public function formatNotificationForApi(DatabaseNotification $notification): array

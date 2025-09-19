@@ -26,10 +26,8 @@ final class CleanupExpiredDataJob implements ShouldQueue
 
     public int $tries = 1; // Don't retry cleanup jobs
 
-    /**
-     * @param  array<int, string>  $cleanupTasks
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         private readonly array $cleanupTasks = [],
         private readonly bool $dryRun = false,
     ) {
@@ -144,14 +142,16 @@ final class CleanupExpiredDataJob implements ShouldQueue
      * Create a dry run to see what would be cleaned.
      */
     /**
-     * @param  array<int, string>  $tasks
+     * @param  array<string, mixed>  $tasks
      */
     public static function dryRun(array $tasks = []): self
     {
         return new self($tasks, true);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function cleanupJobProgress(): array
     {
         $daysToKeep = config('queue.cleanup.job_progress_days', 30);
@@ -177,7 +177,9 @@ final class CleanupExpiredDataJob implements ShouldQueue
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function cleanupFailedJobs(): array
     {
         $daysToKeep = config('queue.cleanup.failed_jobs_days', 90);
@@ -205,7 +207,9 @@ final class CleanupExpiredDataJob implements ShouldQueue
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function cleanupExportFiles(): array
     {
         $daysToKeep = config('exports.cleanup_days', 30);
@@ -244,7 +248,9 @@ final class CleanupExpiredDataJob implements ShouldQueue
         }
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function cleanupTempFiles(): array
     {
         $tempDisk = Storage::disk('local');
@@ -291,7 +297,9 @@ final class CleanupExpiredDataJob implements ShouldQueue
         }
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function cleanupExpiredCache(): array
     {
         if ($this->dryRun) {
@@ -309,7 +317,9 @@ final class CleanupExpiredDataJob implements ShouldQueue
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function cleanupExpiredSessions(): array
     {
         $daysToKeep = config('session.cleanup_days', 7);
@@ -337,7 +347,9 @@ final class CleanupExpiredDataJob implements ShouldQueue
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function cleanupAuditLogs(): array
     {
         $daysToKeep = config('audit.cleanup_days', 365);
@@ -366,7 +378,7 @@ final class CleanupExpiredDataJob implements ShouldQueue
     }
 
     /**
-     * @param  array<string, array<string, mixed>>  $results
+     * @param  array<string, mixed>  $results
      */
     private function logCleanupSummary(array $results): void
     {
@@ -394,7 +406,7 @@ final class CleanupExpiredDataJob implements ShouldQueue
     }
 
     /**
-     * @param  array<string, array<string, mixed>>  $results
+     * @param  array<string, mixed>  $results
      */
     private function sendNotificationIfNeeded(array $results): void
     {

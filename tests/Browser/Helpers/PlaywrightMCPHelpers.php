@@ -13,6 +13,8 @@ class PlaywrightMCPHelpers
     /**
      * Batch multiple DOM operations in a single evaluate call.
      * This reduces token usage compared to multiple individual actions.
+     *
+     * @return array<string, string>
      */
     public static function getBatchDOMOperations(): array
     {
@@ -153,6 +155,8 @@ class PlaywrightMCPHelpers
 
     /**
      * Smart waiting strategies to avoid token-heavy polling.
+     *
+     * @return array<string, string>
      */
     public static function getWaitStrategies(): array
     {
@@ -242,6 +246,8 @@ class PlaywrightMCPHelpers
 
     /**
      * State extraction patterns for efficient debugging without screenshots.
+     *
+     * @return array<string, string>
      */
     public static function getStateExtractionPatterns(): array
     {

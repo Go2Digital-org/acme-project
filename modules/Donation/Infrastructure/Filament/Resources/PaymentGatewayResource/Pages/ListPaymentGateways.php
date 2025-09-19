@@ -28,6 +28,9 @@ class ListPaymentGateways extends ListRecords
         return null;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -38,7 +41,9 @@ class ListPaymentGateways extends ListRecords
         ];
     }
 
-    /** @return array<BulkAction> */
+    /**
+     * @return array<string, mixed>
+     */
     protected function getTableBulkActions(): array
     {
         return [

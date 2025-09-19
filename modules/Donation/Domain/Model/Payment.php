@@ -37,8 +37,8 @@ use Modules\Shared\Domain\ValueObject\Money;
  * @property string|null $failure_code
  * @property string|null $failure_message
  * @property string|null $decline_code
- * @property array<array-key, mixed>|null $gateway_data
- * @property array<array-key, mixed>|null $metadata
+ * @property array<string, mixed>|null $gateway_data
+ * @property array<string, mixed>|null $metadata
  * @property Carbon|null $authorized_at
  * @property Carbon|null $captured_at
  * @property Carbon|null $failed_at
@@ -183,8 +183,8 @@ class Payment extends Model
     public function getMoney(): Money
     {
         return new Money(
-            (float) $this->amount,
-            $this->currency ?? 'USD',
+            $this->amount,
+            $this->currency,
         );
     }
 
@@ -199,8 +199,7 @@ class Payment extends Model
 
     /**
      * Mark payment as authorized.
-     */
-    /**
+     *
      * @param  array<string, mixed>|null  $gatewayData
      */
     public function authorize(string $transactionId, ?array $gatewayData = null): void
@@ -219,8 +218,7 @@ class Payment extends Model
 
     /**
      * Mark payment as captured/completed.
-     */
-    /**
+     *
      * @param  array<string, mixed>|null  $gatewayData
      */
     public function capture(?array $gatewayData = null): void
@@ -240,7 +238,7 @@ class Payment extends Model
      * Mark payment as failed.
      */
     /**
-     * @param  array<string, mixed>|null  $gatewayData
+     * @param  array<string, mixed>  $gatewayData
      */
     public function fail(
         string $failureMessage,
@@ -264,8 +262,7 @@ class Payment extends Model
 
     /**
      * Mark payment as cancelled.
-     */
-    /**
+     *
      * @param  array<string, mixed>|null  $gatewayData
      */
     public function cancel(?array $gatewayData = null): void
@@ -285,7 +282,7 @@ class Payment extends Model
      * Update payment status from gateway.
      */
     /**
-     * @param  array<string, mixed>|null  $gatewayData
+     * @param  array<string, mixed>  $gatewayData
      */
     public function updateFromGateway(
         PaymentStatus $status,
@@ -461,7 +458,7 @@ class Payment extends Model
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     protected function casts(): array
     {

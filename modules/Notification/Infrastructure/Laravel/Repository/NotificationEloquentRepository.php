@@ -72,7 +72,8 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
      */
     public function getSendableNotifications(int $limit = 100): Collection
     {
-        return $this->model->sendable()
+        return $this->model->query()->where('status', 'pending')
+            ->where('scheduled_for', '<=', now())
             ->limit($limit)
             ->get();
     }
@@ -82,7 +83,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         int $page = 1,
         int $perPage = 20,
     ): LengthAwarePaginator {
-        return $this->model->ofType($type)
+        return $this->model->query()->where('type', $type)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
     }
@@ -92,7 +93,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         int $page = 1,
         int $perPage = 20,
     ): LengthAwarePaginator {
-        return $this->model->byPriority($priority)
+        return $this->model->query()->where('priority', $priority)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
     }
@@ -212,6 +213,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->get();
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     */
     public function search(
         array $filters = [],
         string $sortBy = 'created_at',
@@ -243,10 +247,16 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             }
         }
 
-        return $query->orderBy($sortBy, $sortOrder)
+        /** @var LengthAwarePaginator<int, Notification> $result */
+        $result = $query->orderBy($sortBy, $sortOrder)
             ->paginate($perPage, ['*'], 'page', $page);
+
+        return $result;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getStatistics(
         ?string $recipientId = null,
         ?DateTime $startDate = null,
@@ -303,6 +313,10 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->get();
     }
 
+    /**
+     * @param  array<string>  $ids
+     * @param  array<string, mixed>  $data
+     */
     public function bulkUpdate(array $ids, array $data): int
     {
         return $this->model->whereIn('id', $ids)->update($data);
@@ -318,6 +332,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->paginate($perPage, ['*'], 'page', $page);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getStatusCountsForRecipient(string $recipientId): array
     {
         return $this->model->where('notifiable_id', $recipientId)
@@ -342,6 +359,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         return $query->exists();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getDeliveryMetrics(
         ?DateTime $startDate = null,
         ?DateTime $endDate = null,
@@ -372,6 +392,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         ];
     }
 
+    /**
+     * @param  array<array<string, mixed>>  $notifications
+     */
     public function bulkCreate(array $notifications): int
     {
         $now = now();
@@ -397,6 +420,14 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         return $totalInserted;
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return array<string, mixed>
+     */
     public function cursorPaginate(
         string $recipientId,
         ?string $cursor = null,
@@ -460,6 +491,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getDigest(string $recipientId, int $hours = 24): array
     {
         $since = now()->subHours($hours);
@@ -489,6 +523,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         ];
     }
 
+    /**
+     * @param  array<string>  $notificationIds
+     */
     public function batchMarkAsRead(array $notificationIds, string $recipientId): int
     {
         return $this->model->whereIn('id', $notificationIds)
@@ -497,6 +534,13 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->update(['read_at' => now()]);
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+
+    /**
+     * @return array<string, mixed>
+     */
     public function getTimeSeriesData(
         $periodOrDateRange,
         string|int $groupBy = 'day',
@@ -554,6 +598,14 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->toArray();
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return array<string, mixed>
+     */
     public function getCountsByField(string $field, array $filters = []): array
     {
         $query = $this->model->newQuery();
@@ -598,6 +650,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->count(); // For now just return count, actual archiving would move to another table
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     */
     public function deleteByFilters(array $filters): int
     {
         $query = $this->model->newQuery();
@@ -606,6 +661,10 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         return $query->delete();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return Collection<int, Notification>
+     */
     public function findDuplicateNotifications(
         string $recipientId,
         string $type,
@@ -622,6 +681,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->get();
     }
 
+    /**
+     * @return Collection<int, Notification>
+     */
     public function getNotificationsForRetry(
         int $maxRetries = 3,
         int $minFailureAgeMinutes = 30,
@@ -671,6 +733,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         return $archivedCount;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRealTimeCounts(): array
     {
         return [
@@ -690,6 +755,10 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return Collection<int, Notification>
+     */
     public function fullTextSearch(
         string $query,
         ?string $recipientId = null,
@@ -712,6 +781,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->get();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEngagementMetrics(
         ?DateTime $startDate = null,
         ?DateTime $endDate = null,
@@ -767,6 +839,9 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
             ->paginate($perPage, ['*'], 'page', $page);
     }
 
+    /**
+     * @param  array<string, mixed>  $metadata
+     */
     public function updateMetadata(string $id, array $metadata): bool
     {
         return $this->model->where('id', $id)

@@ -217,33 +217,33 @@ Cache-Control: public, max-age=300, s-maxage=600
 ### Language Negotiation
 ```bash
 # Request Dutch content
-curl -H "Accept-Language: nl" https://api.acme-corp.com/v1/campaigns
+curl -H "Accept-Language: nl" https://api.yourdomain.com/v1/campaigns
 
 # Force French via query parameter
-curl https://api.acme-corp.com/v1/campaigns?locale=fr
+curl https://api.yourdomain.com/v1/campaigns?locale=fr
 
 # Complex language preferences
-curl -H "Accept-Language: nl,fr;q=0.9,en;q=0.8" https://api.acme-corp.com/v1/campaigns
+curl -H "Accept-Language: nl,fr;q=0.9,en;q=0.8" https://api.yourdomain.com/v1/campaigns
 ```
 
 ### Authentication Flow
 ```bash
 # Login
-curl -X POST https://api.acme-corp.com/v1/auth/login \
+curl -X POST https://api.yourdomain.com/v1/auth/login \
   -H "Content-Type: application/json" \
   -H "Accept-Language: nl" \
-  -d '{"email":"user@acme.com","password":"secret"}'
+  -d '{"email":"user@example.com","password":"[password]"}'
 
 # Use token
 curl -H "Authorization: Bearer {token}" \
      -H "Accept-Language: nl" \
-     https://api.acme-corp.com/v1/campaigns
+     https://api.yourdomain.com/v1/campaigns
 ```
 
 ### Performance Monitoring
 ```bash
 # Check response performance
-curl -v https://api.acme-corp.com/v1/campaigns | grep "X-Response-Time"
+curl -v https://api.yourdomain.com/v1/campaigns | grep "X-Response-Time"
 # X-Response-Time: 23.45ms
 ```
 

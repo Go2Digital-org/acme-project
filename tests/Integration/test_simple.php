@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Str;
 use Modules\Campaign\Domain\Model\Campaign;
 
-test('simple campaign creation', function () {
+test('simple campaign creation', function (): void {
     // Disable Scout for this test
     config(['scout.driver' => null]);
 

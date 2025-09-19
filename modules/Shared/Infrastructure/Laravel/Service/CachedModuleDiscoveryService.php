@@ -8,7 +8,7 @@ use Modules\Shared\Application\Command\ModuleManifestCacheInterface;
 use Modules\Shared\Domain\Service\ModuleDiscoveryInterface;
 use Modules\Shared\Domain\ValueObject\ModuleManifest;
 
-final class CachedModuleDiscoveryService implements ModuleDiscoveryInterface
+class CachedModuleDiscoveryService implements ModuleDiscoveryInterface
 {
     public function __construct(
         private readonly ModuleDiscoveryInterface $filesystemDiscovery,

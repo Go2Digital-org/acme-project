@@ -17,6 +17,8 @@ class CacheWarmingTestHelper
 {
     /**
      * Create a set of test cache warming jobs with realistic data
+     *
+     * @return array<int, CacheWarmingJob>
      */
     public static function createTestJobsScenario(array $config = []): array
     {
@@ -57,6 +59,8 @@ class CacheWarmingTestHelper
 
     /**
      * Create cache metrics for testing with various states
+     *
+     * @return array<int, CacheMetric>
      */
     public static function createTestMetricsScenario(array $config = []): array
     {
@@ -109,6 +113,8 @@ class CacheWarmingTestHelper
 
     /**
      * Create massive dataset for performance testing
+     *
+     * @return array<string, mixed>
      */
     public static function createMassiveDataset(int $jobCount = 10000, int $metricCount = 50000): array
     {
@@ -173,6 +179,8 @@ class CacheWarmingTestHelper
 
     /**
      * Simulate cache warming execution with realistic timing
+     *
+     * @return array<string, mixed>
      */
     public static function simulateCacheWarmingExecution(CacheWarmingJob $job): array
     {
@@ -216,6 +224,8 @@ class CacheWarmingTestHelper
 
     /**
      * Generate realistic cache data for testing
+     *
+     * @return array<string, mixed>
      */
     public static function generateCacheTestData(int $keyCount = 100): array
     {
@@ -248,6 +258,8 @@ class CacheWarmingTestHelper
 
     /**
      * Warm cache with test data and track performance
+     *
+     * @return array<string, mixed>
      */
     public static function warmCacheWithTestData(array $data, int $ttl = 3600): array
     {
@@ -305,6 +317,8 @@ class CacheWarmingTestHelper
 
     /**
      * Benchmark cache warming performance
+     *
+     * @return array<int, array<string, mixed>>
      */
     public static function benchmarkCacheWarmingPerformance(array $config = []): array
     {
@@ -348,6 +362,8 @@ class CacheWarmingTestHelper
 
     /**
      * Create test scenario with specific job distribution
+     *
+     * @return array<int, CacheWarmingJob>
      */
     public static function createJobDistributionScenario(array $distribution): array
     {

@@ -19,6 +19,7 @@ final readonly class DeleteNotificationCommand implements CommandInterface
         public int $userId,
         public bool $hardDelete = false,
         public ?string $reason = null,
+        /** @var array<string, mixed> */
         public array $metadata = [],
     ) {}
 }

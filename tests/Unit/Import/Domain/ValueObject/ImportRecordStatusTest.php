@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 use Modules\Import\Domain\ValueObject\ImportRecordStatus;
 
-describe('ImportRecordStatus', function () {
-    describe('enum cases', function () {
-        it('has correct enum values', function () {
+describe('ImportRecordStatus', function (): void {
+    describe('enum cases', function (): void {
+        it('has correct enum values', function (): void {
             expect(ImportRecordStatus::PENDING->value)->toBe('pending')
                 ->and(ImportRecordStatus::SUCCESS->value)->toBe('success')
                 ->and(ImportRecordStatus::FAILED->value)->toBe('failed')
                 ->and(ImportRecordStatus::SKIPPED->value)->toBe('skipped');
         });
 
-        it('can be instantiated from string values', function () {
+        it('can be instantiated from string values', function (): void {
             expect(ImportRecordStatus::from('pending'))->toBe(ImportRecordStatus::PENDING)
                 ->and(ImportRecordStatus::from('success'))->toBe(ImportRecordStatus::SUCCESS)
                 ->and(ImportRecordStatus::from('failed'))->toBe(ImportRecordStatus::FAILED)
                 ->and(ImportRecordStatus::from('skipped'))->toBe(ImportRecordStatus::SKIPPED);
         });
 
-        it('lists all cases', function () {
+        it('lists all cases', function (): void {
             $cases = ImportRecordStatus::cases();
 
             expect($cases)->toHaveCount(4)
@@ -31,18 +31,18 @@ describe('ImportRecordStatus', function () {
         });
     });
 
-    describe('isProcessed method', function () {
-        it('returns false for pending status', function () {
+    describe('isProcessed method', function (): void {
+        it('returns false for pending status', function (): void {
             expect(ImportRecordStatus::PENDING->isProcessed())->toBeFalse();
         });
 
-        it('returns true for all other statuses', function () {
+        it('returns true for all other statuses', function (): void {
             expect(ImportRecordStatus::SUCCESS->isProcessed())->toBeTrue()
                 ->and(ImportRecordStatus::FAILED->isProcessed())->toBeTrue()
                 ->and(ImportRecordStatus::SKIPPED->isProcessed())->toBeTrue();
         });
 
-        it('works with all enum cases', function () {
+        it('works with all enum cases', function (): void {
             $processedStatuses = [];
             $unprocessedStatuses = [];
 
@@ -60,18 +60,18 @@ describe('ImportRecordStatus', function () {
         });
     });
 
-    describe('isSuccessful method', function () {
-        it('returns true only for success status', function () {
+    describe('isSuccessful method', function (): void {
+        it('returns true only for success status', function (): void {
             expect(ImportRecordStatus::SUCCESS->isSuccessful())->toBeTrue();
         });
 
-        it('returns false for all other statuses', function () {
+        it('returns false for all other statuses', function (): void {
             expect(ImportRecordStatus::PENDING->isSuccessful())->toBeFalse()
                 ->and(ImportRecordStatus::FAILED->isSuccessful())->toBeFalse()
                 ->and(ImportRecordStatus::SKIPPED->isSuccessful())->toBeFalse();
         });
 
-        it('works with all enum cases', function () {
+        it('works with all enum cases', function (): void {
             $successfulStatuses = [];
             $unsuccessfulStatuses = [];
 
@@ -89,29 +89,29 @@ describe('ImportRecordStatus', function () {
         });
     });
 
-    describe('combined behavior', function () {
-        it('pending is not processed and not successful', function () {
+    describe('combined behavior', function (): void {
+        it('pending is not processed and not successful', function (): void {
             $status = ImportRecordStatus::PENDING;
 
             expect($status->isProcessed())->toBeFalse()
                 ->and($status->isSuccessful())->toBeFalse();
         });
 
-        it('success is processed and successful', function () {
+        it('success is processed and successful', function (): void {
             $status = ImportRecordStatus::SUCCESS;
 
             expect($status->isProcessed())->toBeTrue()
                 ->and($status->isSuccessful())->toBeTrue();
         });
 
-        it('failed is processed but not successful', function () {
+        it('failed is processed but not successful', function (): void {
             $status = ImportRecordStatus::FAILED;
 
             expect($status->isProcessed())->toBeTrue()
                 ->and($status->isSuccessful())->toBeFalse();
         });
 
-        it('skipped is processed but not successful', function () {
+        it('skipped is processed but not successful', function (): void {
             $status = ImportRecordStatus::SKIPPED;
 
             expect($status->isProcessed())->toBeTrue()
@@ -119,8 +119,8 @@ describe('ImportRecordStatus', function () {
         });
     });
 
-    describe('enum behavior', function () {
-        it('supports strict comparison', function () {
+    describe('enum behavior', function (): void {
+        it('supports strict comparison', function (): void {
             $status1 = ImportRecordStatus::PENDING;
             $status2 = ImportRecordStatus::PENDING;
             $status3 = ImportRecordStatus::SUCCESS;
@@ -129,7 +129,7 @@ describe('ImportRecordStatus', function () {
                 ->and($status1 === $status3)->toBeFalse();
         });
 
-        it('works with switch statements', function () {
+        it('works with switch statements', function (): void {
             $getDescription = function (ImportRecordStatus $status): string {
                 return match ($status) {
                     ImportRecordStatus::PENDING => 'Record is waiting to be processed',
@@ -145,14 +145,14 @@ describe('ImportRecordStatus', function () {
                 ->and($getDescription(ImportRecordStatus::SKIPPED))->toBe('Record was skipped');
         });
 
-        it('can be serialized to string', function () {
+        it('can be serialized to string', function (): void {
             expect(ImportRecordStatus::PENDING->value)->toBe('pending')
                 ->and(ImportRecordStatus::SUCCESS->value)->toBe('success')
                 ->and(ImportRecordStatus::FAILED->value)->toBe('failed')
                 ->and(ImportRecordStatus::SKIPPED->value)->toBe('skipped');
         });
 
-        it('works in arrays', function () {
+        it('works in arrays', function (): void {
             $statuses = [
                 ImportRecordStatus::PENDING,
                 ImportRecordStatus::SUCCESS,
@@ -166,18 +166,18 @@ describe('ImportRecordStatus', function () {
         });
     });
 
-    describe('edge cases', function () {
-        it('throws exception for invalid string values', function () {
+    describe('edge cases', function (): void {
+        it('throws exception for invalid string values', function (): void {
             expect(fn () => ImportRecordStatus::from('invalid'))
                 ->toThrow(ValueError::class);
         });
 
-        it('handles tryFrom with invalid values', function () {
+        it('handles tryFrom with invalid values', function (): void {
             expect(ImportRecordStatus::tryFrom('invalid'))->toBeNull()
                 ->and(ImportRecordStatus::tryFrom('pending'))->toBe(ImportRecordStatus::PENDING);
         });
 
-        it('handles tryFrom with all valid values', function () {
+        it('handles tryFrom with all valid values', function (): void {
             expect(ImportRecordStatus::tryFrom('pending'))->toBe(ImportRecordStatus::PENDING)
                 ->and(ImportRecordStatus::tryFrom('success'))->toBe(ImportRecordStatus::SUCCESS)
                 ->and(ImportRecordStatus::tryFrom('failed'))->toBe(ImportRecordStatus::FAILED)
@@ -185,8 +185,8 @@ describe('ImportRecordStatus', function () {
         });
     });
 
-    describe('logical groupings', function () {
-        it('can group statuses by processing state', function () {
+    describe('logical groupings', function (): void {
+        it('can group statuses by processing state', function (): void {
             $processed = [];
             $unprocessed = [];
 
@@ -206,7 +206,7 @@ describe('ImportRecordStatus', function () {
                 ->and($unprocessed)->toEqual([ImportRecordStatus::PENDING]);
         });
 
-        it('can group statuses by success state', function () {
+        it('can group statuses by success state', function (): void {
             $successful = [];
             $unsuccessful = [];
 

@@ -34,7 +34,9 @@ abstract class PerformanceSuperSeeder
 
     protected int $targetRecords = 0;
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function __construct(protected PerformanceMonitor $monitor, protected array $options = [])
     {
         $this->batchProcessor = new BatchProcessor($this->getTableName());
@@ -138,8 +140,9 @@ abstract class PerformanceSuperSeeder
     /**
      * Generate batch data ready for raw insert
      * Must be implemented by concrete seeders
+     *
+     * @return list<array<string, mixed>>
      */
-    /** @return array<int, array<string, mixed>> */
     abstract protected function generateBatchData(int $batchSize): array;
 
     /**
@@ -161,7 +164,9 @@ abstract class PerformanceSuperSeeder
     /**
      * Get progress information
      */
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getProgress(): array
     {
         return [
@@ -193,7 +198,9 @@ abstract class PerformanceSuperSeeder
      * Generate realistic fake data for seeding
      * Optimized for memory efficiency
      */
-    /** @param array<string, mixed> $params */
+    /**
+     * @param  array<string, mixed>  $params
+     */
     protected function generateFakeData(string $type, array $params = []): mixed
     {
         static $faker = null;

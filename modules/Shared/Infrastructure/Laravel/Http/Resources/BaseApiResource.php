@@ -14,10 +14,9 @@ class BaseApiResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
      * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         // Default implementation - should be overridden by child classes
         /** @phpstan-ignore-next-line return.type */
@@ -72,7 +71,7 @@ class BaseApiResource extends JsonResource
     /**
      * Get requested relationship includes from query parameters.
      *
-     * @return array<string>
+     * @return list<string>
      */
     protected function getRequestedIncludes(Request $request): array
     {
@@ -95,7 +94,8 @@ class BaseApiResource extends JsonResource
 
     /**
      * Transform money value with formatting options.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     protected function transformMoney(float $amount, bool $compact = false): array
@@ -134,8 +134,9 @@ class BaseApiResource extends JsonResource
 
     /**
      * Transform date with multiple format options.
-     *
-     * @return array<string, mixed>|null
+     */
+    /**
+     * @return array<string, mixed>
      */
     protected function transformDate(mixed $date, bool $compact = false): ?array
     {
@@ -160,6 +161,8 @@ class BaseApiResource extends JsonResource
 
     /**
      * Apply conditional loading based on request parameters.
+     *
+     * @param  callable(mixed): mixed|null  $callback
      */
     protected function whenLoadedRelation(string $relationship, ?callable $callback = null): mixed
     {

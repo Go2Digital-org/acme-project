@@ -93,7 +93,7 @@ class TestNotificationBroadcastCommand extends Command
                 'timestamp' => now()->toISOString(),
                 'triggered_by' => 'artisan_command',
             ],
-            $userId ? [(int) $userId] : null,
+            $userId ? [(string) $userId] : null,
         );
     }
 

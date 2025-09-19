@@ -23,7 +23,8 @@ class NotificationStatus
 
     /**
      * All valid notification statuses.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function all(): array
@@ -47,7 +48,8 @@ class NotificationStatus
 
     /**
      * Get statuses that represent successful delivery.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function successStates(): array
@@ -57,7 +59,8 @@ class NotificationStatus
 
     /**
      * Get statuses that represent failure or problems.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function failureStates(): array

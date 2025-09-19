@@ -60,8 +60,8 @@ interface CacheRepositoryInterface
      * Warm multiple cache keys in batch
      * Returns array of successfully warmed keys
      *
-     * @param  array<CacheKey>  $keys
-     * @return array<string>
+     * @param  array<int, CacheKey>  $keys
+     * @return array<int, string>
      */
     public function warmBatch(array $keys): array;
 

@@ -23,15 +23,17 @@ interface NotificationPreferencesRepositoryInterface
 
     /**
      * Create or update user preferences.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function upsert(string $userId, array $data): NotificationPreferences;
 
     /**
      * Get channel preferences for a user and notification type.
-     *
-     * @return array<string, bool>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getChannelPreferences(string $userId, string $notificationType): array;
 
@@ -76,12 +78,9 @@ interface NotificationPreferencesRepositoryInterface
 
     /**
      * Get users who should receive notifications of a specific type.
-     *
-     * @param  array<int, string>  $userIds
-     * @return array<int, string>
      */
     /**
-     * @param  array<int, string>  $userIds
+     * @param  array<string>  $userIds
      * @return array<int, string>
      */
     public function filterUsersForNotificationType(array $userIds, string $notificationType): array;
@@ -103,7 +102,7 @@ interface NotificationPreferencesRepositoryInterface
     /**
      * Bulk update preferences for multiple users.
      *
-     * @param  array<string, array<string, mixed>>  $userPreferences
+     * @param  array<string, mixed>  $userPreferences
      */
     public function bulkUpdate(array $userPreferences): int;
 
@@ -117,7 +116,7 @@ interface NotificationPreferencesRepositoryInterface
     /**
      * Get users who should receive notifications via a specific channel.
      *
-     * @param  array<int, string>  $userIds
+     * @param  array<string>  $userIds
      * @return array<int, string>
      */
     public function filterUsersByChannel(array $userIds, string $channel, string $notificationType): array;
@@ -140,20 +139,22 @@ interface NotificationPreferencesRepositoryInterface
     /**
      * Get users for notification batching based on frequency preferences.
      *
-     * @return array<string, array<int, string>>
+     * @return array<string, mixed>
      */
     public function getUsersForBatching(): array;
 
     /**
      * Create new notification preferences.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function create(array $data): NotificationPreferences;
 
     /**
      * Update existing notification preferences.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function update(NotificationPreferences $preferences, array $data): bool;

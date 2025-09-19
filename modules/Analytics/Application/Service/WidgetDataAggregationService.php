@@ -22,7 +22,8 @@ final readonly class WidgetDataAggregationService
 
     /**
      * Aggregate donation statistics efficiently.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -122,7 +123,8 @@ final readonly class WidgetDataAggregationService
 
     /**
      * Aggregate campaign performance efficiently.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -138,10 +140,10 @@ final readonly class WidgetDataAggregationService
                 COUNT(*) as total_campaigns,
                 COUNT(CASE WHEN status = "active" THEN 1 END) as active_campaigns,
                 COUNT(CASE WHEN status = "completed" THEN 1 END) as completed_campaigns,
-                COUNT(CASE WHEN current_amount >= target_amount THEN 1 END) as successful_campaigns,
-                SUM(target_amount) as total_target,
+                COUNT(CASE WHEN current_amount >= goal_amount THEN 1 END) as successful_campaigns,
+                SUM(goal_amount) as total_target,
                 SUM(current_amount) as total_raised,
-                AVG(current_amount / NULLIF(target_amount, 0) * 100) as average_completion_rate
+                AVG(current_amount / NULLIF(goal_amount, 0) * 100) as average_completion_rate
             ')
             ->first();
 
@@ -194,7 +196,8 @@ final readonly class WidgetDataAggregationService
 
     /**
      * Aggregate top performers with efficient ranking.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -210,13 +213,13 @@ final readonly class WidgetDataAggregationService
             ->selectRaw('
                 users.id,
                 users.name,
-                users.avatar_url,
+                users.profile_photo_path as avatar_url,
                 COUNT(donations.id) as donation_count,
                 SUM(donations.amount) as total_amount,
                 AVG(donations.amount) as average_amount,
                 MAX(donations.created_at) as last_donation_at
             ')
-            ->groupBy('users.id', 'users.name', 'users.avatar_url')
+            ->groupBy('users.id', 'users.name', 'users.profile_photo_path')
             ->orderByDesc('total_amount')
             ->limit($limit)
             ->get();
@@ -244,7 +247,8 @@ final readonly class WidgetDataAggregationService
 
     /**
      * Aggregate donation trends over time with configurable intervals.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -290,7 +294,8 @@ final readonly class WidgetDataAggregationService
 
     /**
      * Aggregate organization statistics.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -301,7 +306,7 @@ final readonly class WidgetDataAggregationService
         $stats = DB::table('organizations')
             ->leftJoin('users', 'organizations.id', '=', 'users.organization_id')
             ->leftJoin('donations', function ($join) use ($timeRange): void {
-                $join->on('users.id', '=', 'donations.donor_id')
+                $join->on('users.id', '=', 'donations.user_id')
                     ->whereBetween('donations.created_at', [$timeRange->start, $timeRange->end])
                     ->where('donations.status', 'completed');
             })
@@ -312,7 +317,7 @@ final readonly class WidgetDataAggregationService
                 COUNT(DISTINCT users.id) as employee_count,
                 COUNT(donations.id) as donation_count,
                 COALESCE(SUM(donations.amount), 0) as total_donations,
-                COUNT(DISTINCT donations.donor_id) as active_donors
+                COUNT(DISTINCT donations.user_id) as active_donors
             ')
             ->groupBy('organizations.id', 'organizations.name')
             ->orderByDesc('total_donations')
@@ -347,7 +352,8 @@ final readonly class WidgetDataAggregationService
 
     /**
      * Build base query for donations with common filters.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function buildDonationBaseQuery(TimeRange $timeRange, array $filters = []): QueryBuilder
@@ -365,7 +371,8 @@ final readonly class WidgetDataAggregationService
 
     /**
      * Build base query for campaigns with common filters.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function buildCampaignBaseQuery(TimeRange $timeRange, array $filters = []): QueryBuilder

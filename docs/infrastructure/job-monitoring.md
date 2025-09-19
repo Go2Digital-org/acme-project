@@ -148,10 +148,9 @@ PAYMENT_QUEUE_LENGTH_THRESHOLD=100      # jobs
 # Sample alert script
 if [ $(redis-cli llen "queues:payments") -gt $PAYMENT_QUEUE_LENGTH_THRESHOLD ]; then
     echo "CRITICAL: Payment queue length exceeded threshold"
-    # Send Slack notification
-    curl -X POST -H 'Content-type: application/json' \
-        --data '{"text":"CRITICAL: Payment queue critical: '$(redis-cli llen "queues:payments")' jobs waiting"}' \
-        $SLACK_WEBHOOK_URL
+    # Send notification
+    # Configure your notification system here
+    echo "CRITICAL: Payment queue critical: $(redis-cli llen "queues:payments") jobs waiting"
 fi
 ```
 
@@ -541,7 +540,7 @@ php artisan queue:stats --week >> /tmp/queue-report.txt
 php artisan queue:failed | wc -l >> /tmp/queue-report.txt
 
 # 4. Send report to team
-mail -s "Weekly Queue Report" team@acme-corp.com < /tmp/queue-report.txt
+mail -s "Weekly Queue Report" admin@yourdomain.com < /tmp/queue-report.txt
 ```
 
 ---

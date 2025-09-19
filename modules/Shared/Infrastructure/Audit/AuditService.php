@@ -19,7 +19,8 @@ class AuditService
 {
     /**
      * Log an admin action.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $old_values
      * @param  array<string, mixed>  $new_values
      * @param  array<string, mixed>  $metadata
@@ -58,7 +59,8 @@ class AuditService
 
     /**
      * Log campaign actions.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $old_values
      * @param  array<string, mixed>  $new_values
      */
@@ -80,7 +82,8 @@ class AuditService
 
     /**
      * Log donation actions.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $old_values
      * @param  array<string, mixed>  $new_values
      */
@@ -104,7 +107,8 @@ class AuditService
 
     /**
      * Log organization actions.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $old_values
      * @param  array<string, mixed>  $new_values
      */
@@ -127,7 +131,8 @@ class AuditService
 
     /**
      * Log employee actions.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $old_values
      * @param  array<string, mixed>  $new_values
      */
@@ -149,7 +154,8 @@ class AuditService
 
     /**
      * Log system actions.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $metadata
      */
     public function logSystemAction(string $action, array $metadata = []): AuditLog
@@ -163,8 +169,9 @@ class AuditService
 
     /**
      * Log bulk actions.
-     *
-     * @param  array<int, int>  $entity_ids
+     */
+    /**
+     * @param  array<string, mixed>  $entity_ids
      * @param  array<string, mixed>  $metadata
      */
     public function logBulkAction(string $action, string $entity_type, array $entity_ids, array $metadata = []): AuditLog
@@ -181,7 +188,8 @@ class AuditService
 
     /**
      * Log security events.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $metadata
      */
     public function logSecurityEvent(string $event, array $metadata = []): AuditLog
@@ -265,7 +273,9 @@ class AuditService
     /**
      * Generate compliance report.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function generateComplianceReport(Carbon $from, Carbon $to): array
     {
         $logs = AuditLog::whereBetween('performed_at', [$from, $to])

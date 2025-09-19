@@ -30,22 +30,18 @@ abstract class BrowserTestCase extends TestCase
         // Check environment variable or default to headless
         $headless = env('BROWSER_HEADLESS', true);
 
-        if ($headless === false) {
+        if ($headless === false || $headless === 'false') {
             Playwright::headed();
         }
 
-        // Set reasonable timeout to prevent hanging
-        Playwright::setTimeout(15000); // 15 seconds default timeout
-
-        // Configure browser options for better stability
-        Playwright::withOptions([
-            'ignoreHTTPSErrors' => true,
-            'viewport' => ['width' => 1920, 'height' => 1080],
-        ]);
+        // Set realistic timeouts for browser page loading
+        Playwright::setTimeout(30000); // 30 seconds default timeout to handle Laravel startup
     }
 
     /**
      * Skip cache warming for browser tests by setting a cookie
+     *
+     * @return array<string, mixed>
      */
     public static function skipCacheWarming(): array
     {

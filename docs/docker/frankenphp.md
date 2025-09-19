@@ -17,11 +17,11 @@ The platform supports two types of domains:
 1. **Central Domains** (Admin/Management)
    - `localhost`, `127.0.0.1` (development)
    - `acme-corp-optimy.test` (development)
-   - `acme-corp.com` (production)
+   - `yourdomain.com` (production)
 
 2. **Tenant Domains** (Customer-facing)
    - `*.localhost` (development)
-   - `*.app.acme-corp.com` (production)
+   - `*.app.yourdomain.com` (production)
 
 ## Development Configuration (`Caddyfile.dev`)
 
@@ -64,21 +64,21 @@ docker-compose up -d
 
 ```bash
 # Production domain configuration
-CENTRAL_DOMAIN=acme-corp.com              # Central app domain
-TENANT_DOMAIN=app.acme-corp.com           # Tenant base domain
-ACME_EMAIL=admin@acme-corp.com           # Let's Encrypt email
+CENTRAL_DOMAIN=yourdomain.com              # Central app domain
+TENANT_DOMAIN=app.yourdomain.com           # Tenant base domain
+ACME_EMAIL=admin@yourdomain.com           # Let's Encrypt email
 
 # Mercure configuration (optional)
-MERCURE_PUBLISHER_JWT_KEY=your-secret-key
-MERCURE_SUBSCRIBER_JWT_KEY=your-secret-key
+MERCURE_PUBLISHER_JWT_KEY=# Set in .env
+MERCURE_SUBSCRIBER_JWT_KEY=# Set in .env
 ```
 
 ### Domain Examples
 
 With the above configuration:
-- Central: `https://acme-corp.com` (admin panel, management)
-- Tenant: `https://client1.app.acme-corp.com` (client-facing app)
-- Tenant: `https://nonprofit1.app.acme-corp.com` (another client)
+- Central: `https://yourdomain.com` (admin panel, management)
+- Tenant: `https://client1.app.yourdomain.com` (client-facing app)
+- Tenant: `https://nonprofit1.app.yourdomain.com` (another client)
 
 ## Security Features
 
@@ -162,15 +162,15 @@ The Caddyfile automatically sets these environment variables for Laravel:
 ### Central Domains
 ```bash
 TENANT_CENTRAL=true
-SERVER_NAME=acme-corp.com
+SERVER_NAME=yourdomain.com
 ```
 
 ### Tenant Domains
 ```bash
 TENANT_CENTRAL=false
 TENANT_SUBDOMAIN=client1                    # Extracted from subdomain
-TENANT_DOMAIN=client1.app.acme-corp.com    # Full tenant domain
-SERVER_NAME=client1.app.acme-corp.com      # Full host
+TENANT_DOMAIN=client1.app.yourdomain.com    # Full tenant domain
+SERVER_NAME=client1.app.yourdomain.com      # Full host
 ```
 
 ## Laravel Integration
@@ -203,14 +203,14 @@ Add to `/etc/hosts`:
 
 **Central Domain (A/AAAA records):**
 ```
-acme-corp.com.          300   IN  A      YOUR_SERVER_IP
-www.acme-corp.com.      300   IN  CNAME  acme-corp.com.
+yourdomain.com.          300   IN  A      YOUR_SERVER_IP
+www.yourdomain.com.      300   IN  CNAME  yourdomain.com.
 ```
 
 **Wildcard Tenant Domain:**
 ```
-*.app.acme-corp.com.    300   IN  A      YOUR_SERVER_IP
-app.acme-corp.com.      300   IN  A      YOUR_SERVER_IP
+*.app.yourdomain.com.    300   IN  A      YOUR_SERVER_IP
+app.yourdomain.com.      300   IN  A      YOUR_SERVER_IP
 ```
 
 ## Deployment
@@ -223,9 +223,9 @@ services:
     build:
       target: frankenphp_prod
     environment:
-      CENTRAL_DOMAIN: acme-corp.com
-      TENANT_DOMAIN: app.acme-corp.com
-      ACME_EMAIL: admin@acme-corp.com
+      CENTRAL_DOMAIN: yourdomain.com
+      TENANT_DOMAIN: app.yourdomain.com
+      ACME_EMAIL: admin@yourdomain.com
       MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY}
       MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY}
 ```

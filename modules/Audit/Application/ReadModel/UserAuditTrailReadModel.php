@@ -157,21 +157,21 @@ class UserAuditTrailReadModel extends AbstractReadModel
     {
         $breakdown = $this->getEntityTypeBreakdown();
 
-        return array_sum(array_filter($breakdown, fn ($key) => str_contains($key, 'Campaign'), ARRAY_FILTER_USE_KEY));
+        return array_sum(array_filter($breakdown, fn ($key): bool => str_contains($key, 'Campaign'), ARRAY_FILTER_USE_KEY));
     }
 
     public function getDonationActivities(): int
     {
         $breakdown = $this->getEntityTypeBreakdown();
 
-        return array_sum(array_filter($breakdown, fn ($key) => str_contains($key, 'Donation'), ARRAY_FILTER_USE_KEY));
+        return array_sum(array_filter($breakdown, fn ($key): bool => str_contains($key, 'Donation'), ARRAY_FILTER_USE_KEY));
     }
 
     public function getUserManagementActivities(): int
     {
         $breakdown = $this->getEntityTypeBreakdown();
 
-        return array_sum(array_filter($breakdown, fn ($key) => str_contains($key, 'User'), ARRAY_FILTER_USE_KEY));
+        return array_sum(array_filter($breakdown, fn ($key): bool => str_contains($key, 'User'), ARRAY_FILTER_USE_KEY));
     }
 
     // Risk Analysis
@@ -226,7 +226,7 @@ class UserAuditTrailReadModel extends AbstractReadModel
 
     // Activity Patterns
     /**
-     * @return array<string, int>
+     * @return array<int, int>
      */
     public function getHourlyActivity(): array
     {
@@ -252,7 +252,7 @@ class UserAuditTrailReadModel extends AbstractReadModel
         $maxValue = max($hourlyActivity);
         $keys = array_keys($hourlyActivity, $maxValue);
 
-        return (int) $keys[0];
+        return $keys[0];
     }
 
     public function getMostActiveDay(): string
@@ -271,7 +271,7 @@ class UserAuditTrailReadModel extends AbstractReadModel
 
     // Recent Activities
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getRecentActivities(): array
     {
@@ -279,7 +279,7 @@ class UserAuditTrailReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopChanges(): array
     {

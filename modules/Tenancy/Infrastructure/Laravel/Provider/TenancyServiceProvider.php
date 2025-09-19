@@ -82,7 +82,6 @@ class TenancyServiceProvider extends ServiceProvider
         $this->bootMiddleware();
         $this->bootEvents();
         $this->bootCommands();
-        // $this->publishConfig(); // Not needed - using main config file
     }
 
     /**

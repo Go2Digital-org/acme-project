@@ -15,9 +15,6 @@ class EloquentCurrencyRepository implements CurrencyRepositoryInterface
         return Currency::findByCode($code);
     }
 
-    /**
-     * @return Collection<int, Currency>
-     */
     public function getActive(): Collection
     {
         return Currency::getActiveCurrencies();
@@ -28,9 +25,6 @@ class EloquentCurrencyRepository implements CurrencyRepositoryInterface
         return Currency::getDefaultCurrency();
     }
 
-    /**
-     * @return Collection<int, Currency>
-     */
     public function getAll(): Collection
     {
         return Currency::orderBy('sort_order')->get();

@@ -25,7 +25,8 @@ class NotificationPriority
 
     /**
      * Get all notification priorities.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function all(): array
@@ -50,7 +51,8 @@ class NotificationPriority
 
     /**
      * Get priorities that require immediate attention.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function urgentPriorities(): array
@@ -60,7 +62,8 @@ class NotificationPriority
 
     /**
      * Get priorities that can be batched or delayed.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function batchablePriorities(): array

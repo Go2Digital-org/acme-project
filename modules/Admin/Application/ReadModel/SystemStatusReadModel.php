@@ -9,12 +9,14 @@ use DateTimeImmutable;
 final readonly class SystemStatusReadModel
 {
     /**
-     * @param  array<string, array<string, mixed>>  $healthChecks
-     * @param  array<string, array<string, mixed>>  $performanceMetrics
+     * @param  array<string, mixed>  $healthChecks
+     * @param  array<string, mixed>  $performanceMetrics
      */
     public function __construct(
         public string $status, // 'healthy', 'warning', 'critical'
+        /** @var array<string, mixed> */
         public array $healthChecks,
+        /** @var array<string, mixed> */
         public array $performanceMetrics,
         public QueueStatusReadModel $queueStatus,
         public CacheStatusReadModel $cacheStatus,
@@ -57,11 +59,12 @@ final readonly class SystemStatusReadModel
 final readonly class QueueStatusReadModel
 {
     /**
-     * @param  array<array<string, mixed>>  $queueWorkers
+     * @param  array<int, array<string, int|string>>  $queueWorkers
      */
     public function __construct(
         public int $pendingJobs,
         public int $failedJobs,
+        /** @var array<int, array<string, int|string>> */
         public array $queueWorkers,
         public string $status
     ) {}
@@ -88,6 +91,7 @@ final readonly class CacheStatusReadModel
     public function __construct(
         public string $driver,
         public bool $isConnected,
+        /** @var array<string, mixed> */
         public array $stats,
         public string $status
     ) {}
@@ -112,6 +116,7 @@ final readonly class StorageStatusReadModel
      * @param  array<string, mixed>  $disks
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public array $disks,
         public int $totalSpace,
         public int $usedSpace,

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Modules\Category\Domain\Exception\CategoryException;
 
-describe('CategoryException', function () {
-    describe('slugAlreadyExists', function () {
-        it('creates exception with correct message for string slug', function () {
+describe('CategoryException', function (): void {
+    describe('slugAlreadyExists', function (): void {
+        it('creates exception with correct message for string slug', function (): void {
             $slug = 'environment';
             $exception = CategoryException::slugAlreadyExists($slug);
 
@@ -15,7 +15,7 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe("Category with slug 'environment' already exists");
         });
 
-        it('creates exception with correct message for slug with special characters', function () {
+        it('creates exception with correct message for slug with special characters', function (): void {
             $slug = 'environment_protection-2024';
             $exception = CategoryException::slugAlreadyExists($slug);
 
@@ -23,7 +23,7 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe("Category with slug 'environment_protection-2024' already exists");
         });
 
-        it('creates exception with correct message for short slug', function () {
+        it('creates exception with correct message for short slug', function (): void {
             $slug = 'a';
             $exception = CategoryException::slugAlreadyExists($slug);
 
@@ -31,7 +31,7 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe("Category with slug 'a' already exists");
         });
 
-        it('creates exception with correct message for long slug', function () {
+        it('creates exception with correct message for long slug', function (): void {
             $slug = 'very_long_category_slug_that_contains_many_words_and_underscores';
             $exception = CategoryException::slugAlreadyExists($slug);
 
@@ -39,7 +39,7 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe("Category with slug 'very_long_category_slug_that_contains_many_words_and_underscores' already exists");
         });
 
-        it('creates exception with correct message for numeric slug', function () {
+        it('creates exception with correct message for numeric slug', function (): void {
             $slug = '123456';
             $exception = CategoryException::slugAlreadyExists($slug);
 
@@ -47,7 +47,7 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe("Category with slug '123456' already exists");
         });
 
-        it('creates exception with correct message for empty string', function () {
+        it('creates exception with correct message for empty string', function (): void {
             $slug = '';
             $exception = CategoryException::slugAlreadyExists($slug);
 
@@ -55,19 +55,19 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe("Category with slug '' already exists");
         });
 
-        it('has default exception code', function () {
+        it('has default exception code', function (): void {
             $exception = CategoryException::slugAlreadyExists('test');
 
             expect($exception->getCode())->toBe(0);
         });
 
-        it('has no previous exception', function () {
+        it('has no previous exception', function (): void {
             $exception = CategoryException::slugAlreadyExists('test');
 
             expect($exception->getPrevious())->toBeNull();
         });
 
-        it('message format is consistent', function () {
+        it('message format is consistent', function (): void {
             $slugs = ['test', 'environment', 'health_care', 'category-123'];
 
             foreach ($slugs as $slug) {
@@ -77,8 +77,8 @@ describe('CategoryException', function () {
         });
     });
 
-    describe('notFound', function () {
-        it('creates exception with generic message when no id provided', function () {
+    describe('notFound', function (): void {
+        it('creates exception with generic message when no id provided', function (): void {
             $exception = CategoryException::notFound();
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
@@ -86,68 +86,68 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe('Category not found');
         });
 
-        it('creates exception with generic message when null id provided', function () {
+        it('creates exception with generic message when null id provided', function (): void {
             $exception = CategoryException::notFound(null);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category not found');
         });
 
-        it('creates exception with specific message for integer id', function () {
+        it('creates exception with specific message for integer id', function (): void {
             $exception = CategoryException::notFound(123);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID 123 not found');
         });
 
-        it('creates exception with specific message for string id', function () {
+        it('creates exception with specific message for string id', function (): void {
             $exception = CategoryException::notFound('abc123');
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID abc123 not found');
         });
 
-        it('creates exception with specific message for zero id', function () {
+        it('creates exception with specific message for zero id', function (): void {
             $exception = CategoryException::notFound(0);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID 0 not found');
         });
 
-        it('creates exception with specific message for negative id', function () {
+        it('creates exception with specific message for negative id', function (): void {
             $exception = CategoryException::notFound(-1);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID -1 not found');
         });
 
-        it('creates exception with specific message for large integer id', function () {
+        it('creates exception with specific message for large integer id', function (): void {
             $exception = CategoryException::notFound(999999999);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID 999999999 not found');
         });
 
-        it('creates exception with specific message for empty string id', function () {
+        it('creates exception with specific message for empty string id', function (): void {
             $exception = CategoryException::notFound('');
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID  not found');
         });
 
-        it('has default exception code', function () {
+        it('has default exception code', function (): void {
             $exception = CategoryException::notFound(123);
 
             expect($exception->getCode())->toBe(0);
         });
 
-        it('has no previous exception', function () {
+        it('has no previous exception', function (): void {
             $exception = CategoryException::notFound(123);
 
             expect($exception->getPrevious())->toBeNull();
         });
 
-        it('message format is consistent for ids', function () {
+        it('message format is consistent for ids', function (): void {
             $ids = [1, 123, 'abc', '123abc', 0, -1];
 
             foreach ($ids as $id) {
@@ -157,8 +157,8 @@ describe('CategoryException', function () {
         });
     });
 
-    describe('categoryNotFound', function () {
-        it('creates exception with specific message for positive integer id', function () {
+    describe('categoryNotFound', function (): void {
+        it('creates exception with specific message for positive integer id', function (): void {
             $exception = CategoryException::categoryNotFound(42);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
@@ -166,40 +166,40 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe('Category with ID 42 not found');
         });
 
-        it('creates exception with specific message for zero id', function () {
+        it('creates exception with specific message for zero id', function (): void {
             $exception = CategoryException::categoryNotFound(0);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID 0 not found');
         });
 
-        it('creates exception with specific message for negative id', function () {
+        it('creates exception with specific message for negative id', function (): void {
             $exception = CategoryException::categoryNotFound(-5);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID -5 not found');
         });
 
-        it('creates exception with specific message for large integer id', function () {
+        it('creates exception with specific message for large integer id', function (): void {
             $exception = CategoryException::categoryNotFound(2147483647);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Category with ID 2147483647 not found');
         });
 
-        it('has default exception code', function () {
+        it('has default exception code', function (): void {
             $exception = CategoryException::categoryNotFound(123);
 
             expect($exception->getCode())->toBe(0);
         });
 
-        it('has no previous exception', function () {
+        it('has no previous exception', function (): void {
             $exception = CategoryException::categoryNotFound(123);
 
             expect($exception->getPrevious())->toBeNull();
         });
 
-        it('message format is consistent', function () {
+        it('message format is consistent', function (): void {
             $ids = [1, 42, 100, 999, 0, -1, -100];
 
             foreach ($ids as $id) {
@@ -208,7 +208,7 @@ describe('CategoryException', function () {
             }
         });
 
-        it('is equivalent to notFound for integer ids', function () {
+        it('is equivalent to notFound for integer ids', function (): void {
             $id = 123;
             $exception1 = CategoryException::categoryNotFound($id);
             $exception2 = CategoryException::notFound($id);
@@ -217,8 +217,8 @@ describe('CategoryException', function () {
         });
     });
 
-    describe('cannotDeleteCategoryWithCampaigns', function () {
-        it('creates exception with specific message for positive integer id', function () {
+    describe('cannotDeleteCategoryWithCampaigns', function (): void {
+        it('creates exception with specific message for positive integer id', function (): void {
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns(15);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
@@ -226,40 +226,40 @@ describe('CategoryException', function () {
                 ->and($exception->getMessage())->toBe('Cannot delete category with ID 15 because it has associated campaigns');
         });
 
-        it('creates exception with specific message for zero id', function () {
+        it('creates exception with specific message for zero id', function (): void {
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns(0);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Cannot delete category with ID 0 because it has associated campaigns');
         });
 
-        it('creates exception with specific message for negative id', function () {
+        it('creates exception with specific message for negative id', function (): void {
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns(-10);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Cannot delete category with ID -10 because it has associated campaigns');
         });
 
-        it('creates exception with specific message for large integer id', function () {
+        it('creates exception with specific message for large integer id', function (): void {
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns(999999);
 
             expect($exception)->toBeInstanceOf(CategoryException::class)
                 ->and($exception->getMessage())->toBe('Cannot delete category with ID 999999 because it has associated campaigns');
         });
 
-        it('has default exception code', function () {
+        it('has default exception code', function (): void {
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns(123);
 
             expect($exception->getCode())->toBe(0);
         });
 
-        it('has no previous exception', function () {
+        it('has no previous exception', function (): void {
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns(123);
 
             expect($exception->getPrevious())->toBeNull();
         });
 
-        it('message format is consistent', function () {
+        it('message format is consistent', function (): void {
             $ids = [1, 25, 100, 500, 0, -1, -50];
 
             foreach ($ids as $id) {
@@ -268,7 +268,7 @@ describe('CategoryException', function () {
             }
         });
 
-        it('message clearly explains the constraint', function () {
+        it('message clearly explains the constraint', function (): void {
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns(123);
             $message = $exception->getMessage();
 
@@ -278,8 +278,8 @@ describe('CategoryException', function () {
         });
     });
 
-    describe('Exception Inheritance', function () {
-        it('all factory methods return CategoryException instances', function () {
+    describe('Exception Inheritance', function (): void {
+        it('all factory methods return CategoryException instances', function (): void {
             $exceptions = [
                 CategoryException::slugAlreadyExists('test'),
                 CategoryException::notFound(123),
@@ -294,7 +294,7 @@ describe('CategoryException', function () {
             }
         });
 
-        it('all exceptions have string messages', function () {
+        it('all exceptions have string messages', function (): void {
             $exceptions = [
                 CategoryException::slugAlreadyExists('test'),
                 CategoryException::notFound(123),
@@ -308,7 +308,7 @@ describe('CategoryException', function () {
             }
         });
 
-        it('all exceptions have integer codes', function () {
+        it('all exceptions have integer codes', function (): void {
             $exceptions = [
                 CategoryException::slugAlreadyExists('test'),
                 CategoryException::notFound(123),
@@ -321,7 +321,7 @@ describe('CategoryException', function () {
             }
         });
 
-        it('all exceptions can be thrown and caught', function () {
+        it('all exceptions can be thrown and caught', function (): void {
             $exceptions = [
                 CategoryException::slugAlreadyExists('test'),
                 CategoryException::notFound(123),
@@ -341,8 +341,8 @@ describe('CategoryException', function () {
         });
     });
 
-    describe('Message Uniqueness', function () {
-        it('different exception types have different messages', function () {
+    describe('Message Uniqueness', function (): void {
+        it('different exception types have different messages', function (): void {
             $messages = [
                 CategoryException::slugAlreadyExists('test')->getMessage(),
                 CategoryException::notFound(123)->getMessage(),
@@ -355,7 +355,7 @@ describe('CategoryException', function () {
             expect(count($uniqueMessages))->toBeGreaterThanOrEqual(3);
         });
 
-        it('same exception type with different parameters have different messages', function () {
+        it('same exception type with different parameters have different messages', function (): void {
             $slugMessages = [
                 CategoryException::slugAlreadyExists('environment')->getMessage(),
                 CategoryException::slugAlreadyExists('health')->getMessage(),
@@ -374,15 +374,15 @@ describe('CategoryException', function () {
         });
     });
 
-    describe('Error Context', function () {
-        it('slug already exists exception contains the problematic slug', function () {
+    describe('Error Context', function (): void {
+        it('slug already exists exception contains the problematic slug', function (): void {
             $slug = 'environment-protection-2024';
             $exception = CategoryException::slugAlreadyExists($slug);
 
             expect($exception->getMessage())->toContain($slug);
         });
 
-        it('not found exceptions contain the requested id', function () {
+        it('not found exceptions contain the requested id', function (): void {
             $id = 12345;
             $exception1 = CategoryException::notFound($id);
             $exception2 = CategoryException::categoryNotFound($id);
@@ -391,14 +391,14 @@ describe('CategoryException', function () {
                 ->and($exception2->getMessage())->toContain((string) $id);
         });
 
-        it('cannot delete exception contains the category id', function () {
+        it('cannot delete exception contains the category id', function (): void {
             $id = 98765;
             $exception = CategoryException::cannotDeleteCategoryWithCampaigns($id);
 
             expect($exception->getMessage())->toContain((string) $id);
         });
 
-        it('exception messages are suitable for logging', function () {
+        it('exception messages are suitable for logging', function (): void {
             $exceptions = [
                 CategoryException::slugAlreadyExists('test'),
                 CategoryException::notFound(123),

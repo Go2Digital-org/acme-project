@@ -289,7 +289,9 @@ class Money implements Stringable
         return new self(0.0, $currency);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [

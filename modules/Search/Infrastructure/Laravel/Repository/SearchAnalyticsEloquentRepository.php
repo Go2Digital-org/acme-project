@@ -9,6 +9,9 @@ use Modules\Search\Domain\Repository\SearchAnalyticsRepositoryInterface;
 
 class SearchAnalyticsEloquentRepository implements SearchAnalyticsRepositoryInterface
 {
+    /**
+     * @param  array<string, mixed>  $metadata
+     */
     public function trackSearch(
         string $query,
         int $resultCount,
@@ -41,6 +44,9 @@ class SearchAnalyticsEloquentRepository implements SearchAnalyticsRepositoryInte
         ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAnalytics(string $startDate, string $endDate): array
     {
         $analytics = DB::table('search_analytics')
@@ -63,6 +69,9 @@ class SearchAnalyticsEloquentRepository implements SearchAnalyticsRepositoryInte
         ])->toArray();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getTopQueries(int $limit = 10, string $period = 'day'): array
     {
         $startDate = match ($period) {
@@ -95,6 +104,9 @@ class SearchAnalyticsEloquentRepository implements SearchAnalyticsRepositoryInte
         ])->toArray();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getNoResultQueries(int $limit = 10): array
     {
         $queries = DB::table('search_analytics')

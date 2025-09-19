@@ -42,23 +42,39 @@ class DashboardResource
     #[Groups(['dashboard:read'])]
     public ?int $userId = null;
 
-    /** @var array<string, mixed>|null */
     #[Groups(['dashboard:read'])]
+    /**
+     * @var array<string, mixed>|null
+     *
+     * @phpstan-ignore-next-line missingType.iterableValue
+     */
     public ?array $statistics = null;
 
-    /** @var array<int, mixed>|null */
     #[Groups(['dashboard:read'])]
+    /**
+     * @var array<int, mixed>|null
+     *
+     * @phpstan-ignore-next-line missingType.iterableValue
+     */
     public ?array $activityFeed = null;
 
-    /** @var array<string, mixed>|null */
     #[Groups(['dashboard:read'])]
+    /**
+     * @var array<string, mixed>|null
+     *
+     * @phpstan-ignore-next-line missingType.iterableValue
+     */
     public ?array $impactMetrics = null;
 
     #[Groups(['dashboard:read'])]
     public ?int $ranking = null;
 
-    /** @var array<int, mixed>|null */
     #[Groups(['dashboard:read'])]
+    /**
+     * @var array<int, mixed>|null
+     *
+     * @phpstan-ignore-next-line missingType.iterableValue
+     */
     public ?array $leaderboard = null;
 
     #[Groups(['dashboard:read'])]
@@ -78,9 +94,9 @@ class DashboardResource
 
     /**
      * @param  array<string, mixed>  $statistics
-     * @param  array<int, mixed>  $activityFeed
+     * @param  array<string, mixed>  $activityFeed
      * @param  array<string, mixed>  $impactMetrics
-     * @param  array<int, mixed>  $leaderboard
+     * @param  array<string, mixed>  $leaderboard
      */
     public static function fromDashboardData(
         int $userId,

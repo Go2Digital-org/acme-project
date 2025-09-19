@@ -26,7 +26,7 @@ final class UserCurrencyReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, float>
      */
     public function getExchangeRates(): array
     {

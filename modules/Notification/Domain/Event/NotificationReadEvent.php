@@ -15,6 +15,9 @@ final class NotificationReadEvent extends AbstractDomainEvent
 {
     public readonly DateTimeImmutable $readAt;
 
+    /**
+     * @param  array<string, mixed>  $readContext
+     */
     public function __construct(
         public Notification $notification,
         public string $readBy,

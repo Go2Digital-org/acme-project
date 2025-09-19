@@ -379,13 +379,12 @@ For complex Meilisearch issues:
 1. Check this troubleshooting guide first
 2. Review application logs for specific error messages
 3. Test with the diagnostic commands provided
-4. Contact development team with specific error messages and steps to reproduce
+4. Contact the development team with specific error messages and steps to reproduce
 
 ---
 
-**Developed and Maintained by [Go2digit.al](https://go2digit.al)**
+---
 
-**Last Updated**: September 2025
-**Platform Version**: Laravel 12.x with Meilisearch 1.0+
+Developed and Maintained by Go2Digital
 
-Copyright 2025 Go2digit.al - All Rights Reserved
+Copyright 2025 Go2Digital - All Rights Reserved

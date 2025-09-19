@@ -17,6 +17,9 @@ class ListDonations extends ListRecords
         return 'Donations';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderActions(): array
     {
         return [

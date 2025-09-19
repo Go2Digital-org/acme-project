@@ -24,6 +24,10 @@ final readonly class CreateCampaignProcessor implements ProcessorInterface
         private Guard $auth,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,
@@ -60,7 +64,7 @@ final readonly class CreateCampaignProcessor implements ProcessorInterface
             startDate: $startDate,
             endDate: $endDate,
             organizationId: property_exists($data, 'organization_id') ? (int) $data->organization_id : 0,
-            employeeId: $user->id,
+            userId: $user->id,
         );
 
         /** @var Campaign $campaign */

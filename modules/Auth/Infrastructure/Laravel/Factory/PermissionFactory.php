@@ -14,6 +14,9 @@ class PermissionFactory extends Factory
 {
     protected $model = Permission::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $resources = ['campaign', 'donation', 'organization', 'user', 'role', 'page', 'social_media', 'payment_gateway'];

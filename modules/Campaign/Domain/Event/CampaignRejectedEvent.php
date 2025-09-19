@@ -27,6 +27,9 @@ class CampaignRejectedEvent extends AbstractDomainEvent
         return 'campaign.rejected';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return array_merge(parent::getEventData(), [

@@ -131,9 +131,9 @@ Breadcrumbs::for('verification.notice', function (BreadcrumbTrail $trail): void 
     $trail->push(__('auth.verify_email'), route('verification.notice'));
 });
 
-Breadcrumbs::for('password.confirm', function (BreadcrumbTrail $trail): void {
+Breadcrumbs::for('password.confirm.custom', function (BreadcrumbTrail $trail): void {
     $trail->parent('dashboard');
-    $trail->push(__('auth.confirm_password'), route('password.confirm'));
+    $trail->push(__('auth.confirm_password'), route('password.confirm.custom'));
 });
 
 Breadcrumbs::for('two-factor.login', function (BreadcrumbTrail $trail): void {

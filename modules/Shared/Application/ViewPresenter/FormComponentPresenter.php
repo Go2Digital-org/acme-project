@@ -10,7 +10,7 @@ final class FormComponentPresenter
 {
     /**
      * @param  array<string, mixed>  $props
-     * @return array<array-key, mixed>
+     * @return array<string, mixed>
      */
     public static function generateInputData(array $props): array
     {
@@ -36,7 +36,7 @@ final class FormComponentPresenter
 
     /**
      * @param  array<string, mixed>  $props
-     * @return array<array-key, mixed>
+     * @return array<string, mixed>
      */
     public static function generateTextareaData(array $props): array
     {
@@ -62,7 +62,7 @@ final class FormComponentPresenter
 
     /**
      * @param  array<string, mixed>  $props
-     * @return array<array-key, mixed>
+     * @return array<string, mixed>
      */
     public static function generateSelectData(array $props): array
     {
@@ -87,7 +87,7 @@ final class FormComponentPresenter
 
     /**
      * @param  array<string, mixed>  $props
-     * @return array<array-key, mixed>
+     * @return array<string, mixed>
      */
     public static function generateEnhancedInputData(array $props): array
     {
@@ -118,7 +118,7 @@ final class FormComponentPresenter
 
     /**
      * @param  array<string, mixed>  $props
-     * @return array<array-key, mixed>
+     * @return array<string, mixed>
      */
     public static function generateEnhancedSelectData(array $props): array
     {

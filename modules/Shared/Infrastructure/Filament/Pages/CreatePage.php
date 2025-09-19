@@ -17,6 +17,10 @@ class CreatePage extends CreateRecord
         return 'Create New Page';
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Auto-generate slug if not provided and title exists

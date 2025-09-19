@@ -7,8 +7,8 @@ use Modules\Shared\Domain\Specification\NotSpecification;
 use Modules\Shared\Domain\Specification\OrSpecification;
 use Modules\Shared\Domain\Specification\SpecificationInterface;
 
-describe('OrSpecification', function () {
-    beforeEach(function () {
+describe('OrSpecification', function (): void {
+    beforeEach(function (): void {
         $this->trueSpec = new class implements SpecificationInterface
         {
             public function isSatisfiedBy(mixed $candidate): bool
@@ -56,8 +56,8 @@ describe('OrSpecification', function () {
         };
     });
 
-    describe('Construction', function () {
-        it('creates OR specification with two specifications', function () {
+    describe('Construction', function (): void {
+        it('creates OR specification with two specifications', function (): void {
             $orSpec = new OrSpecification($this->trueSpec, $this->falseSpec);
 
             expect($orSpec)->toBeInstanceOf(OrSpecification::class)
@@ -65,34 +65,34 @@ describe('OrSpecification', function () {
         });
     });
 
-    describe('Logical OR Operations', function () {
-        it('returns true when both specifications are true', function () {
+    describe('Logical OR Operations', function (): void {
+        it('returns true when both specifications are true', function (): void {
             $orSpec = new OrSpecification($this->trueSpec, $this->trueSpec);
 
             expect($orSpec->isSatisfiedBy('any_candidate'))->toBeTrue();
         });
 
-        it('returns true when left specification is true', function () {
+        it('returns true when left specification is true', function (): void {
             $orSpec = new OrSpecification($this->trueSpec, $this->falseSpec);
 
             expect($orSpec->isSatisfiedBy('any_candidate'))->toBeTrue();
         });
 
-        it('returns true when right specification is true', function () {
+        it('returns true when right specification is true', function (): void {
             $orSpec = new OrSpecification($this->falseSpec, $this->trueSpec);
 
             expect($orSpec->isSatisfiedBy('any_candidate'))->toBeTrue();
         });
 
-        it('returns false when both specifications are false', function () {
+        it('returns false when both specifications are false', function (): void {
             $orSpec = new OrSpecification($this->falseSpec, $this->falseSpec);
 
             expect($orSpec->isSatisfiedBy('any_candidate'))->toBeFalse();
         });
     });
 
-    describe('Short-circuit Evaluation', function () {
-        it('short-circuits when left specification is true', function () {
+    describe('Short-circuit Evaluation', function (): void {
+        it('short-circuits when left specification is true', function (): void {
             $leftEvaluated = false;
             $rightEvaluated = false;
 
@@ -158,7 +158,7 @@ describe('OrSpecification', function () {
                 ->and($rightEvaluated)->toBeFalse(); // Should short-circuit
         });
 
-        it('evaluates both when left specification is false', function () {
+        it('evaluates both when left specification is false', function (): void {
             $leftEvaluated = false;
             $rightEvaluated = false;
 
@@ -225,8 +225,8 @@ describe('OrSpecification', function () {
         });
     });
 
-    describe('Complex Specifications', function () {
-        it('works with conditional specifications for inclusive conditions', function () {
+    describe('Complex Specifications', function (): void {
+        it('works with conditional specifications for inclusive conditions', function (): void {
             $adminSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -286,7 +286,7 @@ describe('OrSpecification', function () {
                 ->and($canAccessSpec->isSatisfiedBy($regular))->toBeFalse();
         });
 
-        it('combines with different data type specifications', function () {
+        it('combines with different data type specifications', function (): void {
             $stringSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -345,8 +345,8 @@ describe('OrSpecification', function () {
         });
     });
 
-    describe('Nested OR Specifications', function () {
-        it('handles multiple OR conditions', function () {
+    describe('Nested OR Specifications', function (): void {
+        it('handles multiple OR conditions', function (): void {
             $spec1 = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -427,8 +427,8 @@ describe('OrSpecification', function () {
         });
     });
 
-    describe('Performance Characteristics', function () {
-        it('evaluates efficiently with complex conditions', function () {
+    describe('Performance Characteristics', function (): void {
+        it('evaluates efficiently with complex conditions', function (): void {
             $expensiveSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -489,8 +489,8 @@ describe('OrSpecification', function () {
         });
     });
 
-    describe('Edge Cases with Collections', function () {
-        it('handles empty and non-empty collection conditions', function () {
+    describe('Edge Cases with Collections', function (): void {
+        it('handles empty and non-empty collection conditions', function (): void {
             $emptyArraySpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -547,8 +547,8 @@ describe('OrSpecification', function () {
         });
     });
 
-    describe('Type Safety', function () {
-        it('handles mixed type specifications safely', function () {
+    describe('Type Safety', function (): void {
+        it('handles mixed type specifications safely', function (): void {
             $nullSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool

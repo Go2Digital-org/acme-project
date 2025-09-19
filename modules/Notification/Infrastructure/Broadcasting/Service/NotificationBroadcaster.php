@@ -54,7 +54,8 @@ class NotificationBroadcaster
 
     /**
      * Broadcast a notification creation event with additional context.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $context
      */
     public function broadcastNotificationCreated(Notification $notification, array $context = []): void
@@ -82,7 +83,8 @@ class NotificationBroadcaster
 
     /**
      * Broadcast a donation-related notification.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $additionalData
      */
     public function broadcastDonationNotification(
@@ -112,7 +114,8 @@ class NotificationBroadcaster
 
     /**
      * Broadcast a campaign-related notification.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $additionalData
      */
     public function broadcastCampaignNotification(
@@ -142,9 +145,10 @@ class NotificationBroadcaster
 
     /**
      * Broadcast a system notification.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $metadata
-     * @param  array<int, int>|null  $targetUserIds
+     * @param  array<int, string>|null  $targetUserIds
      */
     public function broadcastSystemNotification(
         string $eventType,
@@ -235,7 +239,8 @@ class NotificationBroadcaster
 
     /**
      * Broadcast security alert to administrators.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $details
      */
     public function broadcastSecurityAlert(
@@ -255,7 +260,8 @@ class NotificationBroadcaster
 
     /**
      * Broadcast system maintenance notification.
-     *
+     */
+    /**
      * @param  array<int, string>  $affectedServices
      */
     public function broadcastMaintenanceNotification(
@@ -280,8 +286,9 @@ class NotificationBroadcaster
 
     /**
      * Broadcast compliance issues alert.
-     *
-     * @param  array<int, string>  $issues
+     */
+    /**
+     * @param  array<string, mixed>  $issues
      */
     public function broadcastComplianceAlert(
         int $organizationId,
@@ -305,8 +312,9 @@ class NotificationBroadcaster
 
     /**
      * Broadcast multiple notifications in batch.
-     *
-     * @param  array<int, Notification>  $notifications
+     */
+    /**
+     * @param  array<string, mixed>  $notifications
      */
     public function broadcastBatch(array $notifications): void
     {

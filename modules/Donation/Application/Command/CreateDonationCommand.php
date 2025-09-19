@@ -10,7 +10,7 @@ final readonly class CreateDonationCommand implements CommandInterface
 {
     public function __construct(
         public int $campaignId,
-        public ?int $employeeId,
+        public ?int $userId,
         public float $amount,
         public string $currency,
         public string $paymentMethod,

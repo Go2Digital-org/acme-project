@@ -37,10 +37,8 @@ final class ExportDonationsJob implements ShouldQueue
     /** @var array<int, int> */
     public array $backoff = [60, 180];
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         private readonly array $filters = [],
         private readonly string $format = 'excel',
         private readonly int $requestedByUserId = 0,
@@ -176,7 +174,9 @@ final class ExportDonationsJob implements ShouldQueue
         $this->handleExportFailure($exception);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, string>
+     */
     private function getExportHeaders(): array
     {
         $headers = [
@@ -218,7 +218,7 @@ final class ExportDonationsJob implements ShouldQueue
     }
 
     /**
-     * @return array<array-key, mixed>
+     * @return array<string, mixed>
      */
     private function mapDonationToExportRow(Donation $donation): array
     {
@@ -269,8 +269,8 @@ final class ExportDonationsJob implements ShouldQueue
     }
 
     /**
-     * @param  array<array-key, mixed>  $exportData
-     * @return array<array-key, mixed>
+     * @param  array<int, array<string, mixed>>  $exportData
+     * @return array<int, array<int|string, mixed>>
      */
     private function addSummaryData(array $exportData, int $donationCount, float $totalAmount): array
     {
@@ -312,7 +312,9 @@ final class ExportDonationsJob implements ShouldQueue
         }
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function calculateCurrencyBreakdown(): array
     {
         // This would ideally be calculated during the chunked processing
@@ -540,6 +542,9 @@ final class ExportDonationsJob implements ShouldQueue
         return Donation::query()->count();
     }
 
+    /**
+     * @param  callable(Collection<int, Donation>): bool  $callback
+     */
     private function processChunkedDonations(
         int $chunkSize,
         callable $callback,
@@ -551,8 +556,8 @@ final class ExportDonationsJob implements ShouldQueue
     }
 
     /**
-     * @param  array<array-key, mixed>  $headers
-     * @param  array<array-key, mixed>  $exportData
+     * @param  array<int, string>  $headers
+     * @param  array<int, array<string, mixed>>  $exportData
      */
     private function finalizeExport(
         string $filename,
@@ -583,8 +588,8 @@ final class ExportDonationsJob implements ShouldQueue
     }
 
     /**
-     * @param  array<array-key, mixed>  $headers
-     * @param  array<array-key, mixed>  $exportData
+     * @param  array<int, string>  $headers
+     * @param  array<int, array<int|string, mixed>>  $exportData
      */
     private function createCsvExport(string $filename, array $headers, array $exportData): string
     {

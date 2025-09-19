@@ -36,7 +36,8 @@ class CurrencyConversionService
 
     /**
      * Convert amount to user's preferred currency.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function convertToUserCurrency(float $amount, string $fromCurrency = 'EUR'): array
@@ -115,7 +116,7 @@ class CurrencyConversionService
     /**
      * Get all available currencies with their exchange rates.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getAvailableCurrencies(): array
     {

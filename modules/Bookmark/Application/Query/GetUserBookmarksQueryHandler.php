@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Bookmark\Application\Query;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Modules\Bookmark\Application\ReadModel\UserBookmarksReadModel;
 use Modules\Bookmark\Domain\Model\Bookmark;
 use Modules\Bookmark\Domain\Repository\BookmarkRepositoryInterface;
@@ -52,7 +53,7 @@ final readonly class GetUserBookmarksQueryHandler
         $recentBookmarks = $bookmarksWithDetails->where('created_at', '>=', now()->subDays(30))->count();
 
         // Group by organization
-        $bookmarksByOrg = $bookmarkedCampaigns->groupBy('organization.id')->map(function ($campaigns, $orgId) {
+        $bookmarksByOrg = $bookmarkedCampaigns->groupBy('organization.id')->map(function ($campaigns, $orgId): array {
             $orgData = $campaigns->first()->organization ?? null;
 
             return [
@@ -80,7 +81,7 @@ final readonly class GetUserBookmarksQueryHandler
             'bookmarks_by_category' => [], // TODO: implement when categories are available
             'average_success_rate' => $averageSuccessRate,
             'total_amount_raised' => $totalAmountRaised,
-            'last_bookmark_at' => $bookmarksWithDetails->first()?->created_at?->toISOString(),
+            'last_bookmark_at' => $this->getLastBookmarkDate($bookmarksWithDetails),
             'bookmarks_by_status' => [
                 'active' => $bookmarkedCampaigns->where('status', 'active')->toArray(),
                 'completed' => $bookmarkedCampaigns->where('status', 'completed')->toArray(),
@@ -89,5 +90,18 @@ final readonly class GetUserBookmarksQueryHandler
         ];
 
         return new UserBookmarksReadModel($query->userId, $data);
+    }
+
+    /**
+     * @param  SupportCollection<int, array<string, mixed>>  $bookmarksWithDetails
+     */
+    private function getLastBookmarkDate(SupportCollection $bookmarksWithDetails): ?string
+    {
+        $firstBookmark = $bookmarksWithDetails->first();
+        if (is_array($firstBookmark) && isset($firstBookmark['created_at'])) {
+            return (string) $firstBookmark['created_at'];
+        }
+
+        return null;
     }
 }

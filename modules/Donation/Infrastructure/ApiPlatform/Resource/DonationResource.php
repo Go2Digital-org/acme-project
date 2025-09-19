@@ -76,6 +76,9 @@ use Modules\Donation\Infrastructure\ApiPlatform\Handler\Provider\DonationItemPro
 )]
 class DonationResource
 {
+    /**
+     * @param  array<string, mixed>|null  $metadata
+     */
     public function __construct(
         public ?int $id = null,
         public ?int $campaign_id = null,
@@ -100,7 +103,7 @@ class DonationResource
         public ?string $failure_reason = null,
         public ?string $refund_reason = null,
         public ?string $notes = null,
-        /** @var array<array-key, mixed>|null */
+        /** @var array<string, mixed>|null */
         public ?array $metadata = null,
         public ?string $formatted_amount = null,
         public ?int $days_since_donation = null,

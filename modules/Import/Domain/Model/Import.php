@@ -26,7 +26,7 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  * @property int $successful_records
  * @property int $failed_records
  * @property array<string, mixed>|null $metadata
- * @property array<string, mixed>|null $errors
+ * @property array<int, string>|null $errors
  * @property Carbon|null $started_at
  * @property Carbon|null $completed_at
  * @property Carbon $created_at

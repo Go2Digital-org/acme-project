@@ -10,18 +10,18 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 final class LanguageSelector extends Component
 {
-    /** @var array<string, array<string, string>> */
+    /** @var array<string, mixed> */
     public array $supportedLocales;
 
     public string $currentLocale;
 
-    /** @var array<string, array<string, string>> */
+    /** @var array<string, mixed> */
     public array $localeData;
 
-    /** @var array<string, string> */
+    /** @var array<string, mixed> */
     public array $languageUrls;
 
-    /** @var array<string, array<string, string>> */
+    /** @var array<string, mixed> */
     public array $activeLanguages;
 
     public function __construct()

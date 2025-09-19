@@ -64,6 +64,8 @@ abstract class CacheWarmingTestCase extends TestCase
 
     /**
      * Create standard test scenario
+     *
+     * @return array<int, \Modules\CacheWarming\Domain\Model\CacheWarmingJob>
      */
     protected function createStandardTestScenario(): array
     {
@@ -77,6 +79,8 @@ abstract class CacheWarmingTestCase extends TestCase
 
     /**
      * Create metrics test scenario
+     *
+     * @return array<int, \Modules\CacheWarming\Domain\Model\CacheMetric>
      */
     protected function createMetricsTestScenario(): array
     {
@@ -235,6 +239,8 @@ abstract class CacheWarmingTestCase extends TestCase
 
     /**
      * Create performance test data
+     *
+     * @return array<string, mixed>
      */
     protected function createPerformanceTestData(int $count = 1000): array
     {
@@ -243,6 +249,8 @@ abstract class CacheWarmingTestCase extends TestCase
 
     /**
      * Run performance benchmark
+     *
+     * @return array<int, array<string, mixed>>
      */
     protected function runPerformanceBenchmark(array $config = []): array
     {
@@ -251,6 +259,8 @@ abstract class CacheWarmingTestCase extends TestCase
 
     /**
      * Assert queue job was dispatched
+     *
+     * @param  \Closure(mixed): bool|null  $callback
      */
     protected function assertQueueJobDispatched(string $jobClass, ?\Closure $callback = null): void
     {

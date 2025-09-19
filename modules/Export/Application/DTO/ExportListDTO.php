@@ -7,9 +7,10 @@ namespace Modules\Export\Application\DTO;
 final readonly class ExportListDTO
 {
     /**
-     * @param  array<int, array<string, mixed>>  $exports
+     * @param  array<string, mixed>  $exports
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public array $exports,
         public int $totalCount,
         public int $currentPage,
@@ -84,6 +85,9 @@ final readonly class ExportListDTO
     /**
      * @return array<int, array<string, mixed>>
      */
+    /**
+     * @return array<string, mixed>
+     */
     public function getCompletedExports(): array
     {
         return array_filter(
@@ -94,6 +98,9 @@ final readonly class ExportListDTO
 
     /**
      * @return array<int, array<string, mixed>>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getActiveExports(): array
     {

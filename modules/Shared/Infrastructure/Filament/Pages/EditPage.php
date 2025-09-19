@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Infrastructure\Filament\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
@@ -18,6 +19,9 @@ class EditPage extends EditRecord
         return 'Edit Page';
     }
 
+    /**
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -26,6 +30,10 @@ class EditPage extends EditRecord
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Auto-generate slug if empty and title changed

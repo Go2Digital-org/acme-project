@@ -48,7 +48,7 @@ class CampaignServiceProvider extends ServiceProvider
         );
 
         // Register indexing service
-        $this->app->singleton(CampaignIndexingService::class, fn ($app) => new CampaignIndexingService(
+        $this->app->singleton(CampaignIndexingService::class, fn ($app): CampaignIndexingService => new CampaignIndexingService(
             $app->make(Client::class),
             $app->make(CampaignRepositoryInterface::class),
             config('scout.prefix', '')

@@ -24,7 +24,7 @@ class DonationReportReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getCacheTags(): array
     {
@@ -47,7 +47,7 @@ class DonationReportReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function getDateRange(): array
     {
@@ -367,7 +367,7 @@ class DonationReportReadModel extends AbstractReadModel
 
     // Top Donors (anonymized for privacy)
     /**
-     * @return array<string, mixed>
+     * @return array<int, float>
      */
     public function getTopDonationAmounts(): array
     {

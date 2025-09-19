@@ -162,7 +162,7 @@ final readonly class CampaignProgressCalculator
     /**
      * Calculate performance metrics for comparison.
      *
-     * @return array<string, float>
+     * @return array<string, mixed>
      */
     public function calculatePerformanceMetrics(Campaign $campaign): array
     {
@@ -273,7 +273,7 @@ final readonly class CampaignProgressCalculator
     /**
      * Generate recommendations based on campaign progress.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public function generateRecommendations(Campaign $campaign): array
     {

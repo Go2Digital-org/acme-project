@@ -33,6 +33,10 @@ final readonly class StripeWebhookProcessor implements ProcessorInterface
         private LoggerInterface $logger,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,
@@ -210,7 +214,8 @@ final readonly class StripeWebhookProcessor implements ProcessorInterface
 
     /**
      * Verify Stripe webhook signature.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $payload
      */
     private function verifyStripeWebhookSignature(array $payload, string $signature): bool

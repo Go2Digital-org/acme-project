@@ -25,7 +25,7 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  * @property int $total_items
  * @property int $processed_items
  * @property int $failed_items
- * @property array<array-key, mixed>|null $metadata
+ * @property array<string, mixed>|null $metadata
  * @property Carbon|null $started_at
  * @property Carbon|null $completed_at
  * @property Carbon|null $failed_at
@@ -114,7 +114,7 @@ final class JobProgress extends Model
     }
 
     /**
-     * @param  array<array-key, mixed>  $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public static function createForJob(
         string $jobId,
@@ -210,7 +210,7 @@ final class JobProgress extends Model
 
     public function markAsFailed(string $message, ?string $errorDetails = null): void
     {
-        /** @var array<array-key, mixed> $metadata */
+        /** @var array<string, mixed> $metadata */
         $metadata = $this->metadata ?? [];
 
         if ($errorDetails !== null) {
@@ -296,7 +296,9 @@ final class JobProgress extends Model
         };
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toProgressArray(): array
     {
         return [
@@ -393,7 +395,8 @@ final class JobProgress extends Model
     }
 
     /**
-     * @return array<string, string> */
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

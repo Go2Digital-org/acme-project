@@ -75,7 +75,7 @@ class UserBookmarksReadModel extends AbstractReadModel
     /**
      * Get all bookmarked campaigns with details.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getBookmarkedCampaigns(): array
     {
@@ -85,7 +85,7 @@ class UserBookmarksReadModel extends AbstractReadModel
     /**
      * Get recent bookmarked campaigns.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getRecentCampaigns(): array
     {
@@ -95,7 +95,7 @@ class UserBookmarksReadModel extends AbstractReadModel
     /**
      * Get bookmark statistics by organization.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getBookmarksByOrganization(): array
     {
@@ -105,7 +105,7 @@ class UserBookmarksReadModel extends AbstractReadModel
     /**
      * Get bookmark statistics by category.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getBookmarksByCategory(): array
     {
@@ -171,7 +171,7 @@ class UserBookmarksReadModel extends AbstractReadModel
     /**
      * Get bookmarks grouped by status.
      *
-     * @return array<string, array<int, array<string, mixed>>>
+     * @return array<string, array<string, mixed>>
      */
     public function getBookmarksByStatus(): array
     {

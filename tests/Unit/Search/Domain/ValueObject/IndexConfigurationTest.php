@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use Modules\Search\Domain\ValueObject\IndexConfiguration;
 
-describe('IndexConfiguration Value Object', function () {
-    it('creates default configuration with sensible defaults', function () {
+describe('IndexConfiguration Value Object', function (): void {
+    it('creates default configuration with sensible defaults', function (): void {
         $config = new IndexConfiguration;
 
         expect($config->primaryKey)->toBe('id')
@@ -29,14 +29,14 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->maxTotalHits)->toBe(1000);
     });
 
-    it('creates configuration with custom primary key', function () {
+    it('creates configuration with custom primary key', function (): void {
         $config = new IndexConfiguration(primaryKey: 'uuid');
 
         expect($config->primaryKey)->toBe('uuid')
             ->and($config->searchableFields)->toBe([]);
     });
 
-    it('creates configuration with searchable fields', function () {
+    it('creates configuration with searchable fields', function (): void {
         $searchableFields = ['title', 'description', 'content'];
         $config = new IndexConfiguration(searchableFields: $searchableFields);
 
@@ -44,7 +44,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->primaryKey)->toBe('id');
     });
 
-    it('creates configuration with filterable fields', function () {
+    it('creates configuration with filterable fields', function (): void {
         $filterableFields = ['status', 'category', 'organization_id'];
         $config = new IndexConfiguration(filterableFields: $filterableFields);
 
@@ -52,7 +52,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->searchableFields)->toBe([]);
     });
 
-    it('creates configuration with sortable fields', function () {
+    it('creates configuration with sortable fields', function (): void {
         $sortableFields = ['created_at', 'amount', 'priority'];
         $config = new IndexConfiguration(sortableFields: $sortableFields);
 
@@ -60,7 +60,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->filterableFields)->toBe([]);
     });
 
-    it('creates configuration with custom ranking rules', function () {
+    it('creates configuration with custom ranking rules', function (): void {
         $rankingRules = ['words', 'sort', 'exactness'];
         $config = new IndexConfiguration(rankingRules: $rankingRules);
 
@@ -68,7 +68,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->sortableFields)->toBe([]);
     });
 
-    it('creates configuration with stop words', function () {
+    it('creates configuration with stop words', function (): void {
         $stopWords = ['the', 'a', 'an', 'and', 'or'];
         $config = new IndexConfiguration(stopWords: $stopWords);
 
@@ -83,7 +83,7 @@ describe('IndexConfiguration Value Object', function () {
             ]);
     });
 
-    it('creates configuration with synonyms', function () {
+    it('creates configuration with synonyms', function (): void {
         $synonyms = [
             'car' => ['automobile', 'vehicle'],
             'phone' => ['mobile', 'smartphone'],
@@ -94,14 +94,14 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->stopWords)->toBe([]);
     });
 
-    it('creates configuration with distinct attribute', function () {
+    it('creates configuration with distinct attribute', function (): void {
         $config = new IndexConfiguration(distinctAttribute: 'organization_id');
 
         expect($config->distinctAttribute)->toBe('organization_id')
             ->and($config->synonyms)->toBe([]);
     });
 
-    it('creates configuration with custom faceting', function () {
+    it('creates configuration with custom faceting', function (): void {
         $faceting = ['maxValuesPerFacet' => 50, 'sortFacetValuesBy' => ['*' => 'count']];
         $config = new IndexConfiguration(faceting: $faceting);
 
@@ -109,7 +109,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->distinctAttribute)->toBeNull();
     });
 
-    it('creates configuration with custom displayed attributes', function () {
+    it('creates configuration with custom displayed attributes', function (): void {
         $displayedAttributes = ['id', 'title', 'description', 'status'];
         $config = new IndexConfiguration(displayedAttributes: $displayedAttributes);
 
@@ -117,21 +117,21 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->faceting)->toBe(['maxValuesPerFacet' => 100]);
     });
 
-    it('creates configuration with typo tolerance disabled', function () {
+    it('creates configuration with typo tolerance disabled', function (): void {
         $config = new IndexConfiguration(typoToleranceEnabled: false);
 
         expect($config->typoToleranceEnabled)->toBeFalse()
             ->and($config->displayedAttributes)->toBe(['*']);
     });
 
-    it('creates configuration with custom max total hits', function () {
+    it('creates configuration with custom max total hits', function (): void {
         $config = new IndexConfiguration(maxTotalHits: 5000);
 
         expect($config->maxTotalHits)->toBe(5000)
             ->and($config->typoToleranceEnabled)->toBeTrue();
     });
 
-    it('converts to meilisearch settings format', function () {
+    it('converts to meilisearch settings format', function (): void {
         $config = new IndexConfiguration(
             searchableFields: ['title', 'description'],
             filterableFields: ['status', 'category'],
@@ -164,7 +164,7 @@ describe('IndexConfiguration Value Object', function () {
         ]);
     });
 
-    it('includes stop words in meilisearch settings when not empty', function () {
+    it('includes stop words in meilisearch settings when not empty', function (): void {
         $config = new IndexConfiguration(
             searchableFields: ['title'],
             stopWords: ['the', 'a', 'an']
@@ -176,7 +176,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($settings['stopWords'])->toBe(['the', 'a', 'an']);
     });
 
-    it('excludes stop words from meilisearch settings when empty', function () {
+    it('excludes stop words from meilisearch settings when empty', function (): void {
         $config = new IndexConfiguration(searchableFields: ['title']);
 
         $settings = $config->toMeilisearchSettings();
@@ -184,7 +184,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($settings)->not->toHaveKey('stopWords');
     });
 
-    it('includes synonyms in meilisearch settings when not empty', function () {
+    it('includes synonyms in meilisearch settings when not empty', function (): void {
         $synonyms = ['car' => ['automobile', 'vehicle']];
         $config = new IndexConfiguration(
             searchableFields: ['title'],
@@ -197,7 +197,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($settings['synonyms'])->toBe($synonyms);
     });
 
-    it('excludes synonyms from meilisearch settings when empty', function () {
+    it('excludes synonyms from meilisearch settings when empty', function (): void {
         $config = new IndexConfiguration(searchableFields: ['title']);
 
         $settings = $config->toMeilisearchSettings();
@@ -205,7 +205,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($settings)->not->toHaveKey('synonyms');
     });
 
-    it('includes distinct attribute when set', function () {
+    it('includes distinct attribute when set', function (): void {
         $config = new IndexConfiguration(
             searchableFields: ['title'],
             distinctAttribute: 'organization_id'
@@ -217,7 +217,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($settings['distinctAttribute'])->toBe('organization_id');
     });
 
-    it('excludes distinct attribute when null', function () {
+    it('excludes distinct attribute when null', function (): void {
         $config = new IndexConfiguration(searchableFields: ['title']);
 
         $settings = $config->toMeilisearchSettings();
@@ -225,7 +225,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($settings)->not->toHaveKey('distinctAttribute');
     });
 
-    it('includes faceting settings when not empty', function () {
+    it('includes faceting settings when not empty', function (): void {
         $faceting = ['maxValuesPerFacet' => 50];
         $config = new IndexConfiguration(
             searchableFields: ['title'],
@@ -238,7 +238,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($settings['faceting'])->toBe($faceting);
     });
 
-    it('includes typo tolerance settings with custom configuration', function () {
+    it('includes typo tolerance settings with custom configuration', function (): void {
         $config = new IndexConfiguration(
             searchableFields: ['title'],
             typoToleranceEnabled: false,
@@ -259,7 +259,7 @@ describe('IndexConfiguration Value Object', function () {
             ]);
     });
 
-    it('creates configuration from array data', function () {
+    it('creates configuration from array data', function (): void {
         $data = [
             'primaryKey' => 'uuid',
             'searchableFields' => ['title', 'content'],
@@ -291,7 +291,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->maxTotalHits)->toBe(500);
     });
 
-    it('creates configuration from partial array with defaults', function () {
+    it('creates configuration from partial array with defaults', function (): void {
         $data = [
             'searchableFields' => ['title'],
             'filterableFields' => ['status'],
@@ -315,7 +315,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->maxTotalHits)->toBe(1000); // Default
     });
 
-    it('creates configuration from empty array with all defaults', function () {
+    it('creates configuration from empty array with all defaults', function (): void {
         $config = IndexConfiguration::fromArray([]);
 
         expect($config->primaryKey)->toBe('id')
@@ -325,7 +325,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->maxTotalHits)->toBe(1000);
     });
 
-    it('merges configurations correctly', function () {
+    it('merges configurations correctly', function (): void {
         $base = new IndexConfiguration(
             primaryKey: 'id',
             searchableFields: ['title'],
@@ -366,7 +366,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($merged->maxTotalHits)->toBe(2000); // Overwritten
     });
 
-    it('preserves base values when other has null distinct attribute', function () {
+    it('preserves base values when other has null distinct attribute', function (): void {
         $base = new IndexConfiguration(distinctAttribute: 'base_attr');
         $other = new IndexConfiguration(distinctAttribute: null);
         $merged = $base->merge($other);
@@ -374,7 +374,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($merged->distinctAttribute)->toBe('base_attr');
     });
 
-    it('overwrites with other when other has non-null distinct attribute', function () {
+    it('overwrites with other when other has non-null distinct attribute', function (): void {
         $base = new IndexConfiguration(distinctAttribute: 'base_attr');
         $other = new IndexConfiguration(distinctAttribute: 'other_attr');
         $merged = $base->merge($other);
@@ -382,7 +382,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($merged->distinctAttribute)->toBe('other_attr');
     });
 
-    it('merges faceting configurations', function () {
+    it('merges faceting configurations', function (): void {
         $base = new IndexConfiguration(faceting: ['maxValuesPerFacet' => 100]);
         $other = new IndexConfiguration(faceting: ['sortFacetValuesBy' => ['*' => 'count']]);
         $merged = $base->merge($other);
@@ -393,7 +393,7 @@ describe('IndexConfiguration Value Object', function () {
         ]);
     });
 
-    it('validates configuration correctly', function () {
+    it('validates configuration correctly', function (): void {
         $validConfig = new IndexConfiguration(
             primaryKey: 'id',
             searchableFields: ['title', 'description'],
@@ -403,7 +403,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($validConfig->validate())->toBeTrue();
     });
 
-    it('fails validation with empty primary key', function () {
+    it('fails validation with empty primary key', function (): void {
         $invalidConfig = new IndexConfiguration(
             primaryKey: '',
             searchableFields: ['title']
@@ -412,7 +412,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($invalidConfig->validate())->toBeFalse();
     });
 
-    it('fails validation with zero primary key', function () {
+    it('fails validation with zero primary key', function (): void {
         $invalidConfig = new IndexConfiguration(
             primaryKey: '0',
             searchableFields: ['title']
@@ -421,7 +421,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($invalidConfig->validate())->toBeFalse();
     });
 
-    it('fails validation with empty searchable fields', function () {
+    it('fails validation with empty searchable fields', function (): void {
         $invalidConfig = new IndexConfiguration(
             primaryKey: 'id',
             searchableFields: []
@@ -430,7 +430,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($invalidConfig->validate())->toBeFalse();
     });
 
-    it('validates custom ranking rules with colon', function () {
+    it('validates custom ranking rules with colon', function (): void {
         $customConfig = new IndexConfiguration(
             primaryKey: 'id',
             searchableFields: ['title'],
@@ -440,7 +440,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($customConfig->validate())->toBeTrue();
     });
 
-    it('fails validation with invalid ranking rule', function () {
+    it('fails validation with invalid ranking rule', function (): void {
         $invalidConfig = new IndexConfiguration(
             primaryKey: 'id',
             searchableFields: ['title'],
@@ -450,7 +450,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($invalidConfig->validate())->toBeFalse();
     });
 
-    it('validates all standard ranking rules', function () {
+    it('validates all standard ranking rules', function (): void {
         $standardRules = ['words', 'typo', 'proximity', 'attribute', 'sort', 'exactness'];
         $config = new IndexConfiguration(
             primaryKey: 'id',
@@ -461,7 +461,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($config->validate())->toBeTrue();
     });
 
-    it('is immutable during operations', function () {
+    it('is immutable during operations', function (): void {
         $original = new IndexConfiguration(
             searchableFields: ['title'],
             filterableFields: ['status']
@@ -481,7 +481,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($original)->not->toBe($merged); // Different instances
     });
 
-    it('handles edge cases in array creation', function () {
+    it('handles edge cases in array creation', function (): void {
         $data = [
             'primaryKey' => null, // Should use default
             'searchableFields' => null, // Should use default
@@ -494,7 +494,7 @@ describe('IndexConfiguration Value Object', function () {
             ->and($config->searchableFields)->toBe([]); // Default used
     });
 
-    it('preserves configuration immutability', function () {
+    it('preserves configuration immutability', function (): void {
         $searchableFields = ['title', 'content'];
         $config = new IndexConfiguration(searchableFields: $searchableFields);
 
@@ -504,7 +504,7 @@ describe('IndexConfiguration Value Object', function () {
         expect($config->searchableFields)->toBe(['title', 'content']); // Unchanged
     });
 
-    it('handles complex merge scenarios', function () {
+    it('handles complex merge scenarios', function (): void {
         $base = new IndexConfiguration(
             searchableFields: ['title', 'content'],
             filterableFields: ['status', 'type'],

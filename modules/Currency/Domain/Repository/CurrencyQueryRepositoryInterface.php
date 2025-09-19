@@ -6,7 +6,6 @@ namespace Modules\Currency\Domain\Repository;
 
 use Illuminate\Support\Collection;
 use Modules\Currency\Domain\Model\Currency;
-use stdClass;
 
 interface CurrencyQueryRepositoryInterface
 {
@@ -30,7 +29,7 @@ interface CurrencyQueryRepositoryInterface
     /**
      * Get currencies for view display (optimized for frontend).
      *
-     * @return Collection<int, stdClass>
+     * @return Collection<int, array<string, mixed>>
      */
     public function getCurrenciesForView(): Collection;
 

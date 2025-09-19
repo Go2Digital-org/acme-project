@@ -217,7 +217,8 @@ final readonly class NotificationBroadcaster
 
     /**
      * Format notification data for broadcasting.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function formatNotificationPayload(Notification $notification, string $event): array

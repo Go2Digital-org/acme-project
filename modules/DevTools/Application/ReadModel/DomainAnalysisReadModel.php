@@ -6,25 +6,23 @@ namespace Modules\DevTools\Application\ReadModel;
 
 final class DomainAnalysisReadModel
 {
-    /**
-     * @param  array<string, mixed>  $entities
-     * @param  array<string, mixed>  $valueObjects
-     * @param  array<string, mixed>  $aggregates
-     * @param  array<string, mixed>  $services
-     * @param  array<string, mixed>  $repositories
-     * @param  array<string, mixed>  $events
-     * @param  array<string, mixed>  $metrics
-     * @param  array<string, mixed>  $violations
-     */
     public function __construct(
         public string $module,
+        /** @var array<string, mixed> */
         public array $entities,
+        /** @var array<string, mixed> */
         public array $valueObjects,
+        /** @var array<string, mixed> */
         public array $aggregates,
+        /** @var array<string, mixed> */
         public array $services,
+        /** @var array<string, mixed> */
         public array $repositories,
+        /** @var array<string, mixed> */
         public array $events,
+        /** @var array<string, mixed> */
         public array $metrics,
+        /** @var array<string, mixed> */
         public array $violations,
         public string $timestamp
     ) {}

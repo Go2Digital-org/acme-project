@@ -18,9 +18,8 @@ class EloquentCurrencyPreferenceRepository implements CurrencyPreferenceReposito
 
     /**
      * Request-level cache for users to prevent N+1 queries
-     *
-     * @var array<int, User|null>
      */
+    /** @var array<int, User|null> */
     private static array $userCache = [];
 
     public function getUserCurrency(int $userId): ?CurrencyValueObject

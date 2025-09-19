@@ -21,7 +21,9 @@ final readonly class GetNotificationDigestQuery implements QueryInterface
         public string $digestType = 'daily',
         public ?CarbonInterface $startDate = null,
         public ?CarbonInterface $endDate = null,
+        /** @var array<string, mixed> */
         public array $includeTypes = [],
+        /** @var array<string, mixed> */
         public array $excludeTypes = [],
         public bool $includeRead = false,
         public bool $groupByType = true,

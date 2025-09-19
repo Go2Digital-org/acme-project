@@ -17,7 +17,7 @@ final readonly class RetryExportController
     use AuthenticatedUserTrait;
 
     public function __construct(
-        private readonly RetryExportCommandHandler $retryExportHandler,
+        private RetryExportCommandHandler $retryExportHandler,
     ) {}
 
     /**

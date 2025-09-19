@@ -26,7 +26,5 @@ class FilamentPanelServiceProvider extends ServiceProvider
         // Organization module is skipped when in tenant context
         $this->app->register(AdminPanelProvider::class);
 
-        // TenantPanelProvider no longer needed - AdminPanelProvider handles both contexts
-        // $this->app->register(TenantPanelProvider::class);
     }
 }

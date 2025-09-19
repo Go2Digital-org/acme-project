@@ -21,6 +21,9 @@ class ViewOrganization extends ViewRecord
         return 'View Organization';
     }
 
+    /**
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [

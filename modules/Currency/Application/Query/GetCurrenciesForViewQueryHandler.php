@@ -11,7 +11,6 @@ use Modules\Currency\Domain\Model\Currency;
 use Modules\Currency\Domain\Repository\CurrencyQueryRepositoryInterface;
 use Modules\Shared\Application\Query\QueryHandlerInterface;
 use Modules\Shared\Application\Query\QueryInterface;
-use stdClass;
 
 /**
  * Handler for getting optimized currency data for frontend views.
@@ -41,27 +40,27 @@ final readonly class GetCurrenciesForViewQueryHandler implements QueryHandlerInt
 
         // Get current user currency preference
         $currentCurrencyCode = $this->currencyPreferenceService->getCurrentCurrency()->getCode();
-        $currentCurrency = $currencies->firstWhere('code', $currentCurrencyCode);
+        $currentCurrency = $currencies->firstWhere(fn ($currency): bool => $currency['code'] === $currentCurrencyCode);
 
         // Build ReadModel data
         $readModelData = [
-            'currencies_dropdown' => $currencies->map(fn (stdClass $currency): array => [
-                'id' => $currency->id,
-                'code' => $currency->code,
-                'name' => $currency->name,
-                'symbol' => $currency->symbol,
-                'flag' => $currency->flag,
-                'is_default' => $currency->is_default,
-                'is_active' => $currency->is_active,
-                'sort_order' => $currency->sort_order,
+            'currencies_dropdown' => $currencies->map(fn (array $currency): array => [
+                'id' => $currency['id'],
+                'code' => $currency['code'],
+                'name' => $currency['name'],
+                'symbol' => $currency['symbol'],
+                'flag' => $currency['flag'],
+                'is_default' => $currency['is_default'],
+                'is_active' => $currency['is_active'],
+                'sort_order' => $currency['sort_order'],
             ])->toArray(),
             'current_currency' => $currentCurrency ? [
-                'id' => $currentCurrency->id,
-                'code' => $currentCurrency->code,
-                'name' => $currentCurrency->name,
-                'symbol' => $currentCurrency->symbol,
-                'flag' => $currentCurrency->flag,
-                'is_default' => $currentCurrency->is_default,
+                'id' => $currentCurrency['id'],
+                'code' => $currentCurrency['code'],
+                'name' => $currentCurrency['name'],
+                'symbol' => $currentCurrency['symbol'],
+                'flag' => $currentCurrency['flag'],
+                'is_default' => $currentCurrency['is_default'],
             ] : null,
             'default_currency' => $defaultCurrency instanceof Currency ? [
                 'id' => $defaultCurrency->id,

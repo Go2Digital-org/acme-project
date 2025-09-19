@@ -161,6 +161,6 @@ final readonly class DeleteNotificationCommandHandler implements CommandHandlerI
             );
         }
 
-        // metadata is already typed as array<string, mixed> in the command
+        // metadata is already typed as array in the command
     }
 }

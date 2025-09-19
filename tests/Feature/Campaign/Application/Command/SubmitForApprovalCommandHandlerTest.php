@@ -48,7 +48,7 @@ it('successfully submits campaign for approval', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     $result = $this->handler->handle($command);
@@ -69,7 +69,7 @@ it('dispatches campaign status changed event', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     $this->handler->handle($command);
@@ -87,7 +87,7 @@ it('dispatches campaign submitted for approval event', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     $this->handler->handle($command);
@@ -108,7 +108,7 @@ it('sends notifications to all super admins when campaign is submitted', functio
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     $this->handler->handle($command);
@@ -134,7 +134,7 @@ it('handles super admin submitting their own campaign', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $superAdminCampaign->id,
-        employeeId: $this->superAdmin1->id
+        userId: $this->superAdmin1->id
     );
 
     $result = $this->handler->handle($command);
@@ -161,7 +161,7 @@ it('allows resubmission from rejected status', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     $result = $this->handler->handle($command);
@@ -177,7 +177,7 @@ it('allows resubmission from rejected status', function (): void {
 it('throws exception when campaign not found', function (): void {
     $command = new SubmitForApprovalCommand(
         campaignId: 999999,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     expect(fn () => $this->handler->handle($command))
@@ -189,7 +189,7 @@ it('throws exception when employee unauthorized', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $otherEmployee->id
+        userId: $otherEmployee->id
     );
 
     expect(fn () => $this->handler->handle($command))
@@ -204,7 +204,7 @@ it('throws exception for invalid status transition', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     expect(fn () => $this->handler->handle($command))
@@ -230,7 +230,7 @@ it('validates business rules before submission', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $invalidCampaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     expect(fn () => $this->handler->handle($command))
@@ -249,7 +249,7 @@ it('validates goal amount before submission', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $invalidCampaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     expect(fn () => $this->handler->handle($command))
@@ -272,7 +272,7 @@ it('handles database transaction rollback on error', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     expect(fn () => $handler->handle($command))
@@ -290,7 +290,7 @@ it('updates submission timestamp', function (): void {
 
     $command = new SubmitForApprovalCommand(
         campaignId: $this->campaign->id,
-        employeeId: $this->employee->id
+        userId: $this->employee->id
     );
 
     $result = $this->handler->handle($command);

@@ -70,7 +70,7 @@ final readonly class GetBookmarksByEntityQueryHandler
         $recentBookmarks = $bookmarks->where('created_at', '>=', now()->subDays(7))->count();
 
         // Get users who bookmarked (with details if needed)
-        $bookmarkUsers = $bookmarks->load('user')->map(fn ($bookmark) => [
+        $bookmarkUsers = $bookmarks->load('user')->map(fn ($bookmark): array => [
             'user_id' => $bookmark->user->id,
             'name' => $bookmark->user->name,
             'organization_id' => $bookmark->user->organization_id,
@@ -78,7 +78,7 @@ final readonly class GetBookmarksByEntityQueryHandler
         ])->toArray();
 
         // Group by organization
-        $bookmarksByOrg = collect($bookmarkUsers)->groupBy('organization_id')->map(fn ($users, $orgId) => [
+        $bookmarksByOrg = collect($bookmarkUsers)->groupBy('organization_id')->map(fn ($users, $orgId): array => [
             'organization_id' => $orgId,
             'count' => $users->count(),
             'users' => $users->toArray(),

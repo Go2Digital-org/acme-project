@@ -9,6 +9,9 @@ use Modules\Shared\Domain\ValueObject\Money;
 
 final readonly class ActivityFeedItem
 {
+    /**
+     * @param  array<string, mixed>  $metadata
+     */
     public function __construct(
         public string $id,
         public ActivityType $type,

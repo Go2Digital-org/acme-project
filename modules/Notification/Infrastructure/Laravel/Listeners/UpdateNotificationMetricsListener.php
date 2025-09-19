@@ -154,7 +154,8 @@ final class UpdateNotificationMetricsListener implements ShouldQueue
 
     /**
      * Record engagement pattern for analysis.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $pattern
      */
     private function recordEngagementPattern(array $pattern): void
@@ -173,7 +174,8 @@ final class UpdateNotificationMetricsListener implements ShouldQueue
 
     /**
      * Update metrics specific to notification type.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $context
      */
     private function updateTypeSpecificMetrics(string $type, int $timeToRead, array $context): void
@@ -189,7 +191,8 @@ final class UpdateNotificationMetricsListener implements ShouldQueue
 
     /**
      * Store behavioral data for analysis and personalization.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $patterns
      */
     private function storeBehavioralData(array $patterns): void

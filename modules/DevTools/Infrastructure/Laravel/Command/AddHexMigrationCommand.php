@@ -81,7 +81,7 @@ class AddHexMigrationCommand extends Command
     }
 
     /**
-     * @param  array<string, string>  $variables
+     * @param  array<string, mixed>  $variables
      */
     private function createFileFromStub(string $filePath, string $stubPath, array $variables): void
     {
@@ -106,7 +106,7 @@ class AddHexMigrationCommand extends Command
     }
 
     /**
-     * @param  array<string, string>  $variables
+     * @param  array<string, mixed>  $variables
      */
     private function replaceStubVariables(string $content, array $variables): string
     {

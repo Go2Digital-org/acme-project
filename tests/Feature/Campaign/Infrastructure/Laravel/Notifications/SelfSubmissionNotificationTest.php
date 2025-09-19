@@ -61,7 +61,7 @@ describe('Super Admin Self-Submission Detection', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -87,7 +87,7 @@ describe('Super Admin Self-Submission Detection', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->regularEmployee->id
+            userId: $this->regularEmployee->id
         );
 
         $this->handler->handle($command);
@@ -114,7 +114,7 @@ describe('Super Admin Self-Submission Detection', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminReviewer1->id // Same super admin submits their own
+            userId: $this->superAdminReviewer1->id // Same super admin submits their own
         );
 
         $this->handler->handle($command);
@@ -144,7 +144,7 @@ describe('Self-Submission Notification Messages', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -169,7 +169,7 @@ describe('Self-Submission Notification Messages', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -196,7 +196,7 @@ describe('Action URL Generation Support', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -217,7 +217,7 @@ describe('Action URL Generation Support', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -251,7 +251,7 @@ describe('Multiple Super Admin Scenario Handling', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -277,7 +277,7 @@ describe('Multiple Super Admin Scenario Handling', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -308,7 +308,7 @@ describe('Edge Cases in Self-Submission', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $newSuperAdmin->id
+            userId: $newSuperAdmin->id
         );
 
         $this->handler->handle($command);
@@ -336,7 +336,7 @@ describe('Edge Cases in Self-Submission', function (): void {
         // Resubmit after addressing feedback
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);
@@ -370,7 +370,7 @@ describe('Edge Cases in Self-Submission', function (): void {
 
         $command = new SubmitForApprovalCommand(
             campaignId: $campaign->id,
-            employeeId: $this->superAdminSubmitter->id
+            userId: $this->superAdminSubmitter->id
         );
 
         $this->handler->handle($command);

@@ -5,6 +5,16 @@ declare(strict_types=1);
 namespace Modules\Shared\Infrastructure\Laravel\Provider;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Shared\Application\Query\QueryBusInterface;
+use Modules\Shared\Application\Service\FormComponentService;
+use Modules\Shared\Application\Service\HomepageStatsService;
+use Modules\Shared\Application\Service\SearchHighlightService;
+use Modules\Shared\Application\Service\SocialSharingService;
+use Modules\Shared\Domain\Repository\PageRepositoryInterface;
+use Modules\Shared\Domain\Repository\SocialMediaRepositoryInterface;
+use Modules\Shared\Infrastructure\Laravel\QueryBus\LaravelQueryBus;
+use Modules\Shared\Infrastructure\Laravel\Repository\PageEloquentRepository;
+use Modules\Shared\Infrastructure\Laravel\Repository\SocialMediaEloquentRepository;
 
 /**
  * Service provider for the Shared module routes and services.
@@ -18,15 +28,25 @@ final class SharedServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Services are already registered by ModulesServiceProvider
+        $this->registerRepositories();
+        $this->registerSharedServices();
     }
 
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
+    private function registerRepositories(): void
     {
-        // Load API routes
-        $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
+        $this->app->bind(PageRepositoryInterface::class, PageEloquentRepository::class);
+        $this->app->bind(SocialMediaRepositoryInterface::class, SocialMediaEloquentRepository::class);
+    }
+
+    private function registerSharedServices(): void
+    {
+        // Register QueryBus
+        $this->app->bind(QueryBusInterface::class, LaravelQueryBus::class);
+
+        // Register shared view services
+        $this->app->singleton(SocialSharingService::class);
+        $this->app->singleton(SearchHighlightService::class);
+        $this->app->singleton(FormComponentService::class);
+        $this->app->singleton(HomepageStatsService::class);
     }
 }

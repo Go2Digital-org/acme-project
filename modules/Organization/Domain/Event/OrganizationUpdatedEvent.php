@@ -36,6 +36,9 @@ final class OrganizationUpdatedEvent extends AbstractDomainEvent implements Orga
         return $this->organizationId;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return array_merge(parent::getEventData(), [

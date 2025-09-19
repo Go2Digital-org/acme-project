@@ -153,7 +153,7 @@ final readonly class CancelScheduledNotificationCommandHandler implements Comman
     /**
      * Cancel an entire recurring notification series.
      *
-     * @return array<Notification>
+     * @return array<int, Notification>
      */
     private function cancelRecurringSeries(
         Notification $notification,
@@ -240,6 +240,6 @@ final readonly class CancelScheduledNotificationCommandHandler implements Comman
             );
         }
 
-        // metadata is already typed as array<string, mixed> in the command
+        // metadata is already typed as array in the command
     }
 }

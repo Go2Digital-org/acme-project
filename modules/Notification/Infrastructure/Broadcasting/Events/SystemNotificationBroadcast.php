@@ -17,6 +17,10 @@ class SystemNotificationBroadcast implements ShouldBroadcast
     use InteractsWithSockets;
     use SerializesModels;
 
+    /**
+     * @param  array<string, mixed>  $metadata
+     * @param  array<string, mixed>  $targetUserIds
+     */
     public function __construct(
         public readonly string $eventType,
         public readonly string $title,
@@ -24,14 +28,14 @@ class SystemNotificationBroadcast implements ShouldBroadcast
         public readonly string $severity,
         /** @var array<string, mixed> */
         public readonly array $metadata = [],
-        /** @var array<int, int>|null */
+        /** @var array<int, string>|null */
         public readonly ?array $targetUserIds = null,
     ) {}
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, Channel>
+     * @return array<int, Channel|PrivateChannel>
      */
     public function broadcastOn(): array
     {
@@ -88,7 +92,8 @@ class SystemNotificationBroadcast implements ShouldBroadcast
 
     /**
      * Get the data to broadcast.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function broadcastWith(): array

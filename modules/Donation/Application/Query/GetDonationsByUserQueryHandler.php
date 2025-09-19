@@ -28,7 +28,7 @@ final readonly class GetDonationsByUserQueryHandler
         ];
 
         // Remove null filters
-        $filters = array_filter($filters, fn ($value) => $value !== null);
+        $filters = array_filter($filters, fn (array|int|string|null $value): bool => $value !== null);
 
         $paginatedResults = $this->donationRepository->paginate(
             page: $query->page,

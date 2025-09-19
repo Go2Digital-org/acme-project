@@ -20,7 +20,9 @@ final class PageFactory extends Factory
     /** @var class-string<Page> */
     protected $model = Page::class;
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [

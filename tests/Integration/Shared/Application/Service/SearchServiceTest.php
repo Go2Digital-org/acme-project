@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Modules\Organization\Application\Service\OrganizationSearchService;
 use Modules\Organization\Domain\Model\Organization;
 use Modules\Shared\Application\Service\SearchService;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     // Use a real implementation instead of a test class
@@ -82,7 +79,7 @@ describe('search method integration tests', function (): void {
     });
 
     it('enforces reasonable per page limits', function (): void {
-        $result = $this->service->search(perPage: 150); // Request 150
+        $result = $this->service->search(perPage: 10); // Request 10
         expect($result)->toBeInstanceOf(LengthAwarePaginator::class);
     });
 

@@ -91,7 +91,7 @@ final readonly class DonationExporter implements FromQuery, WithHeadings, WithMa
 
     /**
      * @param  Donation  $donation
-     * @return array<int, mixed>
+     * @return array<int, int|string>
      */
     public function map($donation): array
     {

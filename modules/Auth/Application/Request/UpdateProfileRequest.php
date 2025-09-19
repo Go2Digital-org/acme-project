@@ -13,7 +13,9 @@ final class UpdateProfileRequest extends FormRequest
         return true;
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         $userId = $this->user()?->id;
@@ -25,7 +27,9 @@ final class UpdateProfileRequest extends FormRequest
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [

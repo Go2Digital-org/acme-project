@@ -22,6 +22,8 @@ final readonly class UserCollectionProvider implements ProviderInterface
     ) {}
 
     /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
      * @return Paginator<UserResource>
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): Paginator
@@ -87,7 +89,7 @@ final readonly class UserCollectionProvider implements ProviderInterface
         // Paginate results
         $models = $offset && $limit ? $query->paginate($limit, ['*'], 'page', $offset) : $query->paginate($limit ?? 20);
 
-        /** @var array<UserResource> $resources */
+        /** @var array<int, UserResource> $resources */
         $resources = [];
 
         if (! $models->isEmpty()) {

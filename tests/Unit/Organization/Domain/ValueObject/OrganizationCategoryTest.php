@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Modules\Organization\Domain\ValueObject\OrganizationCategory;
 
-describe('OrganizationCategory', function () {
-    describe('enum cases', function () {
-        it('defines all expected categories', function () {
+describe('OrganizationCategory', function (): void {
+    describe('enum cases', function (): void {
+        it('defines all expected categories', function (): void {
             $expectedCategories = [
                 'TECHNOLOGY',
                 'HEALTHCARE',
@@ -39,7 +39,7 @@ describe('OrganizationCategory', function () {
             }
         });
 
-        it('has correct string values for each case', function () {
+        it('has correct string values for each case', function (): void {
             expect(OrganizationCategory::TECHNOLOGY->value)->toBe('technology')
                 ->and(OrganizationCategory::HEALTHCARE->value)->toBe('healthcare')
                 ->and(OrganizationCategory::FINANCE->value)->toBe('finance')
@@ -61,7 +61,7 @@ describe('OrganizationCategory', function () {
                 ->and(OrganizationCategory::OTHER->value)->toBe('other');
         });
 
-        it('creates from string values correctly', function () {
+        it('creates from string values correctly', function (): void {
             expect(OrganizationCategory::from('technology'))->toBe(OrganizationCategory::TECHNOLOGY)
                 ->and(OrganizationCategory::from('healthcare'))->toBe(OrganizationCategory::HEALTHCARE)
                 ->and(OrganizationCategory::from('finance'))->toBe(OrganizationCategory::FINANCE)
@@ -74,7 +74,7 @@ describe('OrganizationCategory', function () {
                 ->and(OrganizationCategory::from('media'))->toBe(OrganizationCategory::MEDIA);
         });
 
-        it('throws error for invalid string values', function () {
+        it('throws error for invalid string values', function (): void {
             expect(fn () => OrganizationCategory::from('invalid'))
                 ->toThrow(ValueError::class);
 
@@ -86,8 +86,8 @@ describe('OrganizationCategory', function () {
         });
     });
 
-    describe('getLabel method', function () {
-        it('returns correct labels for all categories', function () {
+    describe('getLabel method', function (): void {
+        it('returns correct labels for all categories', function (): void {
             expect(OrganizationCategory::TECHNOLOGY->getLabel())->toBe('Technology')
                 ->and(OrganizationCategory::HEALTHCARE->getLabel())->toBe('Healthcare')
                 ->and(OrganizationCategory::FINANCE->getLabel())->toBe('Finance')
@@ -109,7 +109,7 @@ describe('OrganizationCategory', function () {
                 ->and(OrganizationCategory::OTHER->getLabel())->toBe('Other');
         });
 
-        it('returns string labels for all cases', function () {
+        it('returns string labels for all cases', function (): void {
             foreach (OrganizationCategory::cases() as $category) {
                 $label = $category->getLabel();
 
@@ -119,7 +119,7 @@ describe('OrganizationCategory', function () {
             }
         });
 
-        it('has unique labels for each category', function () {
+        it('has unique labels for each category', function (): void {
             $labels = array_map(fn ($category) => $category->getLabel(), OrganizationCategory::cases());
             $uniqueLabels = array_unique($labels);
 
@@ -128,8 +128,8 @@ describe('OrganizationCategory', function () {
         });
     });
 
-    describe('getColor method', function () {
-        it('returns correct colors for all categories', function () {
+    describe('getColor method', function (): void {
+        it('returns correct colors for all categories', function (): void {
             expect(OrganizationCategory::TECHNOLOGY->getColor())->toBe('blue')
                 ->and(OrganizationCategory::HEALTHCARE->getColor())->toBe('green')
                 ->and(OrganizationCategory::FINANCE->getColor())->toBe('purple')
@@ -151,7 +151,7 @@ describe('OrganizationCategory', function () {
                 ->and(OrganizationCategory::OTHER->getColor())->toBe('neutral');
         });
 
-        it('returns valid color strings for all cases', function () {
+        it('returns valid color strings for all cases', function (): void {
             $validColors = [
                 'blue', 'green', 'purple', 'indigo', 'orange', 'gray', 'cyan', 'pink', 'red',
                 'yellow', 'lime', 'teal', 'amber', 'violet', 'rose', 'emerald', 'stone', 'slate', 'neutral',
@@ -166,7 +166,7 @@ describe('OrganizationCategory', function () {
             }
         });
 
-        it('assigns unique colors to categories', function () {
+        it('assigns unique colors to categories', function (): void {
             $colors = array_map(fn ($category) => $category->getColor(), OrganizationCategory::cases());
             $uniqueColors = array_unique($colors);
 
@@ -175,8 +175,8 @@ describe('OrganizationCategory', function () {
         });
     });
 
-    describe('getIcon method', function () {
-        it('returns correct icons for all categories', function () {
+    describe('getIcon method', function (): void {
+        it('returns correct icons for all categories', function (): void {
             expect(OrganizationCategory::TECHNOLOGY->getIcon())->toBe('heroicon-o-computer-desktop')
                 ->and(OrganizationCategory::HEALTHCARE->getIcon())->toBe('heroicon-o-heart')
                 ->and(OrganizationCategory::FINANCE->getIcon())->toBe('heroicon-o-banknotes')
@@ -198,7 +198,7 @@ describe('OrganizationCategory', function () {
                 ->and(OrganizationCategory::OTHER->getIcon())->toBe('heroicon-o-building-office-2');
         });
 
-        it('returns heroicon format for all icons', function () {
+        it('returns heroicon format for all icons', function (): void {
             foreach (OrganizationCategory::cases() as $category) {
                 $icon = $category->getIcon();
 
@@ -208,7 +208,7 @@ describe('OrganizationCategory', function () {
             }
         });
 
-        it('assigns unique icons to categories', function () {
+        it('assigns unique icons to categories', function (): void {
             $icons = array_map(fn ($category) => $category->getIcon(), OrganizationCategory::cases());
             $uniqueIcons = array_unique($icons);
 
@@ -216,7 +216,7 @@ describe('OrganizationCategory', function () {
                 ->and($icons)->toHaveCount(19);
         });
 
-        it('uses valid heroicon outline icons', function () {
+        it('uses valid heroicon outline icons', function (): void {
             $validIconPrefixes = ['heroicon-o-'];
 
             foreach (OrganizationCategory::cases() as $category) {
@@ -235,8 +235,8 @@ describe('OrganizationCategory', function () {
         });
     });
 
-    describe('getOptions static method', function () {
-        it('returns array with all category options', function () {
+    describe('getOptions static method', function (): void {
+        it('returns array with all category options', function (): void {
             $options = OrganizationCategory::getOptions();
 
             expect($options)->toBeArray()
@@ -244,7 +244,7 @@ describe('OrganizationCategory', function () {
                 ->and(array_keys($options))->toEqual(array_map(fn ($case) => $case->value, OrganizationCategory::cases()));
         });
 
-        it('maps values to labels correctly', function () {
+        it('maps values to labels correctly', function (): void {
             $options = OrganizationCategory::getOptions();
 
             expect($options['technology'])->toBe('Technology')
@@ -259,7 +259,7 @@ describe('OrganizationCategory', function () {
                 ->and($options['media'])->toBe('Media');
         });
 
-        it('includes all categories in options', function () {
+        it('includes all categories in options', function (): void {
             $options = OrganizationCategory::getOptions();
             $expectedKeys = array_map(fn ($case) => $case->value, OrganizationCategory::cases());
             $actualKeys = array_keys($options);
@@ -268,7 +268,7 @@ describe('OrganizationCategory', function () {
                 ->and(count($actualKeys))->toBe(count($expectedKeys));
         });
 
-        it('returns consistent results on multiple calls', function () {
+        it('returns consistent results on multiple calls', function (): void {
             $options1 = OrganizationCategory::getOptions();
             $options2 = OrganizationCategory::getOptions();
 
@@ -276,7 +276,7 @@ describe('OrganizationCategory', function () {
                 ->and($options1)->toHaveCount(count($options2));
         });
 
-        it('contains only string keys and values', function () {
+        it('contains only string keys and values', function (): void {
             $options = OrganizationCategory::getOptions();
 
             foreach ($options as $key => $value) {
@@ -288,15 +288,15 @@ describe('OrganizationCategory', function () {
         });
     });
 
-    describe('enum behavior and consistency', function () {
-        it('maintains case consistency', function () {
+    describe('enum behavior and consistency', function (): void {
+        it('maintains case consistency', function (): void {
             foreach (OrganizationCategory::cases() as $category) {
                 expect($category->name)->toBe(strtoupper(str_replace(' ', '_', $category->name)))
                     ->and($category->value)->toBe(strtolower(str_replace(' ', '_', $category->value)));
             }
         });
 
-        it('supports comparison operations', function () {
+        it('supports comparison operations', function (): void {
             $tech1 = OrganizationCategory::TECHNOLOGY;
             $tech2 = OrganizationCategory::TECHNOLOGY;
             $healthcare = OrganizationCategory::HEALTHCARE;
@@ -306,7 +306,7 @@ describe('OrganizationCategory', function () {
                 ->and($tech1 !== $healthcare)->toBeTrue();
         });
 
-        it('works with match expressions', function () {
+        it('works with match expressions', function (): void {
             $result = match (OrganizationCategory::TECHNOLOGY) {
                 OrganizationCategory::TECHNOLOGY => 'tech_category',
                 OrganizationCategory::HEALTHCARE => 'health_category',
@@ -316,7 +316,7 @@ describe('OrganizationCategory', function () {
             expect($result)->toBe('tech_category');
         });
 
-        it('supports serialization consistency', function () {
+        it('supports serialization consistency', function (): void {
             foreach (OrganizationCategory::cases() as $category) {
                 $serialized = serialize($category);
                 $unserialized = unserialize($serialized);
@@ -327,7 +327,7 @@ describe('OrganizationCategory', function () {
             }
         });
 
-        it('provides exhaustive coverage in switches', function () {
+        it('provides exhaustive coverage in switches', function (): void {
             $allHandled = true;
 
             foreach (OrganizationCategory::cases() as $category) {
@@ -360,8 +360,8 @@ describe('OrganizationCategory', function () {
         });
     });
 
-    describe('integration and practical usage', function () {
-        it('can be used in arrays and collections', function () {
+    describe('integration and practical usage', function (): void {
+        it('can be used in arrays and collections', function (): void {
             $categories = [
                 OrganizationCategory::TECHNOLOGY,
                 OrganizationCategory::HEALTHCARE,
@@ -377,7 +377,7 @@ describe('OrganizationCategory', function () {
                 ->and(in_array(OrganizationCategory::RETAIL, $categories, true))->toBeFalse();
         });
 
-        it('supports filtering and mapping operations', function () {
+        it('supports filtering and mapping operations', function (): void {
             $businessCategories = array_filter(
                 OrganizationCategory::cases(),
                 fn ($cat) => in_array($cat, [
@@ -397,7 +397,7 @@ describe('OrganizationCategory', function () {
                 ->and($labels)->toContain('Retail');
         });
 
-        it('provides consistent string representation', function () {
+        it('provides consistent string representation', function (): void {
             foreach (OrganizationCategory::cases() as $category) {
                 expect((string) $category->value)->toBe($category->value)
                     ->and($category->value)->toBeString()

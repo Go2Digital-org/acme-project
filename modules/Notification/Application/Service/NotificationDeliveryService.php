@@ -9,7 +9,7 @@ use Modules\Notification\Domain\Model\Notification;
 /**
  * Service for delivering notifications through various channels.
  */
-final class NotificationDeliveryService
+class NotificationDeliveryService
 {
     /**
      * Deliver a notification through its configured channel.
@@ -51,8 +51,10 @@ final readonly class DeliveryResult
     public function __construct(
         private bool $successful,
         private string $channel,
+        /** @var array<string, mixed> */
         private array $metadata = [],
         private string $errorMessage = '',
+        /** @var array<string, mixed> */
         private array $errorContext = [],
     ) {}
 

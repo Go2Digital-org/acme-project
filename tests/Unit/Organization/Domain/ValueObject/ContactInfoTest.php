@@ -6,9 +6,9 @@ use Modules\Organization\Domain\ValueObject\Address;
 use Modules\Organization\Domain\ValueObject\ContactInfo;
 use Modules\User\Domain\ValueObject\EmailAddress;
 
-describe('ContactInfo', function () {
-    describe('construction', function () {
-        it('creates contact info with only email', function () {
+describe('ContactInfo', function (): void {
+    describe('construction', function (): void {
+        it('creates contact info with only email', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo = new ContactInfo($email);
 
@@ -21,7 +21,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo)->toBeInstanceOf(Stringable::class);
         });
 
-        it('creates contact info with all fields', function () {
+        it('creates contact info with all fields', function (): void {
             $email = new EmailAddress('contact@acme.com');
             $address = new Address('123 Main St', 'New York', 'NY', '10001', 'USA');
             $contactInfo = new ContactInfo(
@@ -39,7 +39,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo->contactPerson)->toBe('John Doe');
         });
 
-        it('creates contact info with partial fields', function () {
+        it('creates contact info with partial fields', function (): void {
             $email = new EmailAddress('info@company.org');
             $contactInfo = new ContactInfo(
                 email: $email,
@@ -54,7 +54,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo->contactPerson)->toBeNull();
         });
 
-        it('validates phone number format', function () {
+        it('validates phone number format', function (): void {
             $email = new EmailAddress('test@example.com');
 
             expect(fn () => new ContactInfo($email, 'invalid-phone'))
@@ -67,7 +67,7 @@ describe('ContactInfo', function () {
                 ->toThrow(InvalidArgumentException::class, 'Invalid phone number format');
         });
 
-        it('accepts various valid phone formats', function () {
+        it('accepts various valid phone formats', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $validPhones = [
@@ -85,7 +85,7 @@ describe('ContactInfo', function () {
             }
         });
 
-        it('validates website URL format', function () {
+        it('validates website URL format', function (): void {
             $email = new EmailAddress('test@example.com');
 
             expect(fn () => new ContactInfo($email, null, null, 'invalid-url'))
@@ -98,7 +98,7 @@ describe('ContactInfo', function () {
                 ->not->toThrow(InvalidArgumentException::class);
         });
 
-        it('accepts various valid website formats', function () {
+        it('accepts various valid website formats', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $validWebsites = [
@@ -116,7 +116,7 @@ describe('ContactInfo', function () {
             }
         });
 
-        it('validates contact person name', function () {
+        it('validates contact person name', function (): void {
             $email = new EmailAddress('test@example.com');
 
             expect(fn () => new ContactInfo($email, null, null, null, ''))
@@ -126,7 +126,7 @@ describe('ContactInfo', function () {
                 ->toThrow(InvalidArgumentException::class, 'Contact person name cannot be empty');
         });
 
-        it('accepts various contact person names', function () {
+        it('accepts various contact person names', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $validNames = [
@@ -146,8 +146,8 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('minimal factory method', function () {
-        it('creates minimal contact info with only email', function () {
+    describe('minimal factory method', function (): void {
+        it('creates minimal contact info with only email', function (): void {
             $contactInfo = ContactInfo::minimal('admin@example.com');
 
             expect($contactInfo->email)->toBeInstanceOf(EmailAddress::class)
@@ -158,7 +158,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo->contactPerson)->toBeNull();
         });
 
-        it('validates email in minimal factory', function () {
+        it('validates email in minimal factory', function (): void {
             expect(fn () => ContactInfo::minimal('invalid-email'))
                 ->toThrow(InvalidArgumentException::class);
 
@@ -166,7 +166,7 @@ describe('ContactInfo', function () {
                 ->toThrow(InvalidArgumentException::class);
         });
 
-        it('creates minimal contact info with various email formats', function () {
+        it('creates minimal contact info with various email formats', function (): void {
             $validEmails = [
                 'test@example.com',
                 'user.name@domain.org',
@@ -181,8 +181,8 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('complete factory method', function () {
-        it('creates complete contact info with all parameters', function () {
+    describe('complete factory method', function (): void {
+        it('creates complete contact info with all parameters', function (): void {
             $address = new Address('456 Oak St', 'LA', 'CA', '90210', 'USA');
             $contactInfo = ContactInfo::complete(
                 email: 'contact@company.com',
@@ -199,7 +199,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo->contactPerson)->toBe('Jane Smith');
         });
 
-        it('creates complete contact info with partial parameters', function () {
+        it('creates complete contact info with partial parameters', function (): void {
             $contactInfo = ContactInfo::complete(
                 email: 'info@org.net',
                 phone: '123-456-7890'
@@ -212,7 +212,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo->contactPerson)->toBeNull();
         });
 
-        it('validates all parameters in complete factory', function () {
+        it('validates all parameters in complete factory', function (): void {
             expect(fn () => ContactInfo::complete('invalid-email'))
                 ->toThrow(InvalidArgumentException::class);
 
@@ -227,21 +227,21 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('hasPhone method', function () {
-        it('returns false when phone is null', function () {
+    describe('hasPhone method', function (): void {
+        it('returns false when phone is null', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect($contactInfo->hasPhone())->toBeFalse();
         });
 
-        it('returns true when phone is provided', function () {
+        it('returns true when phone is provided', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo = new ContactInfo($email, '555-1234');
 
             expect($contactInfo->hasPhone())->toBeTrue();
         });
 
-        it('returns true for various phone formats', function () {
+        it('returns true for various phone formats', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $phones = [
@@ -258,14 +258,14 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('hasAddress method', function () {
-        it('returns false when address is null', function () {
+    describe('hasAddress method', function (): void {
+        it('returns false when address is null', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect($contactInfo->hasAddress())->toBeFalse();
         });
 
-        it('returns true when address is provided', function () {
+        it('returns true when address is provided', function (): void {
             $email = new EmailAddress('test@example.com');
             $address = new Address('123 Main St', 'City', 'State', '12345', 'Country');
             $contactInfo = new ContactInfo($email, null, $address);
@@ -273,7 +273,7 @@ describe('ContactInfo', function () {
             expect($contactInfo->hasAddress())->toBeTrue();
         });
 
-        it('returns true for various address types', function () {
+        it('returns true for various address types', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $addresses = [
@@ -289,21 +289,21 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('hasWebsite method', function () {
-        it('returns false when website is null', function () {
+    describe('hasWebsite method', function (): void {
+        it('returns false when website is null', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect($contactInfo->hasWebsite())->toBeFalse();
         });
 
-        it('returns true when website is provided', function () {
+        it('returns true when website is provided', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo = new ContactInfo($email, null, null, 'https://example.com');
 
             expect($contactInfo->hasWebsite())->toBeTrue();
         });
 
-        it('returns true for various website formats', function () {
+        it('returns true for various website formats', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $websites = [
@@ -320,21 +320,21 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('hasContactPerson method', function () {
-        it('returns false when contact person is null', function () {
+    describe('hasContactPerson method', function (): void {
+        it('returns false when contact person is null', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect($contactInfo->hasContactPerson())->toBeFalse();
         });
 
-        it('returns true when contact person is provided', function () {
+        it('returns true when contact person is provided', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo = new ContactInfo($email, null, null, null, 'John Doe');
 
             expect($contactInfo->hasContactPerson())->toBeTrue();
         });
 
-        it('returns true for various contact person names', function () {
+        it('returns true for various contact person names', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $names = [
@@ -352,8 +352,8 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('equals method', function () {
-        it('returns true for identical contact info', function () {
+    describe('equals method', function (): void {
+        it('returns true for identical contact info', function (): void {
             $email = new EmailAddress('test@example.com');
             $address = new Address('123 Main St', 'City', 'State', '12345', 'Country');
 
@@ -363,20 +363,20 @@ describe('ContactInfo', function () {
             expect($contactInfo1->equals($contactInfo2))->toBeTrue();
         });
 
-        it('returns true for same instance', function () {
+        it('returns true for same instance', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect($contactInfo->equals($contactInfo))->toBeTrue();
         });
 
-        it('returns false for different emails', function () {
+        it('returns false for different emails', function (): void {
             $contactInfo1 = ContactInfo::minimal('test1@example.com');
             $contactInfo2 = ContactInfo::minimal('test2@example.com');
 
             expect($contactInfo1->equals($contactInfo2))->toBeFalse();
         });
 
-        it('returns false for different phones', function () {
+        it('returns false for different phones', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo1 = new ContactInfo($email, '555-1234');
             $contactInfo2 = new ContactInfo($email, '555-5678');
@@ -384,7 +384,7 @@ describe('ContactInfo', function () {
             expect($contactInfo1->equals($contactInfo2))->toBeFalse();
         });
 
-        it('returns false for different addresses', function () {
+        it('returns false for different addresses', function (): void {
             $email = new EmailAddress('test@example.com');
             $address1 = new Address('123 Main St', 'City1', 'State', '12345', 'Country');
             $address2 = new Address('456 Oak St', 'City2', 'State', '67890', 'Country');
@@ -395,7 +395,7 @@ describe('ContactInfo', function () {
             expect($contactInfo1->equals($contactInfo2))->toBeFalse();
         });
 
-        it('returns false for different websites', function () {
+        it('returns false for different websites', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo1 = new ContactInfo($email, null, null, 'https://example1.com');
             $contactInfo2 = new ContactInfo($email, null, null, 'https://example2.com');
@@ -403,7 +403,7 @@ describe('ContactInfo', function () {
             expect($contactInfo1->equals($contactInfo2))->toBeFalse();
         });
 
-        it('returns false for different contact persons', function () {
+        it('returns false for different contact persons', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo1 = new ContactInfo($email, null, null, null, 'John Doe');
             $contactInfo2 = new ContactInfo($email, null, null, null, 'Jane Smith');
@@ -411,7 +411,7 @@ describe('ContactInfo', function () {
             expect($contactInfo1->equals($contactInfo2))->toBeFalse();
         });
 
-        it('returns true when both have null optional fields', function () {
+        it('returns true when both have null optional fields', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo1 = new ContactInfo($email);
             $contactInfo2 = new ContactInfo($email);
@@ -419,7 +419,7 @@ describe('ContactInfo', function () {
             expect($contactInfo1->equals($contactInfo2))->toBeTrue();
         });
 
-        it('returns false when one has optional field and other does not', function () {
+        it('returns false when one has optional field and other does not', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo1 = new ContactInfo($email);
             $contactInfo2 = new ContactInfo($email, '555-1234');
@@ -428,8 +428,8 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('with methods for immutable updates', function () {
-        it('creates new instance with updated phone', function () {
+    describe('with methods for immutable updates', function (): void {
+        it('creates new instance with updated phone', function (): void {
             $original = ContactInfo::minimal('test@example.com');
             $updated = $original->withPhone('555-1234');
 
@@ -442,7 +442,7 @@ describe('ContactInfo', function () {
                 ->and($updated->contactPerson)->toBe($original->contactPerson);
         });
 
-        it('creates new instance with updated address', function () {
+        it('creates new instance with updated address', function (): void {
             $original = ContactInfo::minimal('test@example.com');
             $address = new Address('123 Main St', 'City', 'State', '12345', 'Country');
             $updated = $original->withAddress($address);
@@ -453,7 +453,7 @@ describe('ContactInfo', function () {
                 ->and($updated->email)->toBe($original->email);
         });
 
-        it('creates new instance with updated website', function () {
+        it('creates new instance with updated website', function (): void {
             $original = ContactInfo::minimal('test@example.com');
             $updated = $original->withWebsite('https://example.com');
 
@@ -462,7 +462,7 @@ describe('ContactInfo', function () {
                 ->and($original)->not->toBe($updated);
         });
 
-        it('creates new instance with updated contact person', function () {
+        it('creates new instance with updated contact person', function (): void {
             $original = ContactInfo::minimal('test@example.com');
             $updated = $original->withContactPerson('John Doe');
 
@@ -471,28 +471,28 @@ describe('ContactInfo', function () {
                 ->and($original)->not->toBe($updated);
         });
 
-        it('validates phone in withPhone method', function () {
+        it('validates phone in withPhone method', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect(fn () => $contactInfo->withPhone('invalid-phone'))
                 ->toThrow(InvalidArgumentException::class, 'Invalid phone number format');
         });
 
-        it('validates website in withWebsite method', function () {
+        it('validates website in withWebsite method', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect(fn () => $contactInfo->withWebsite('invalid-url'))
                 ->toThrow(InvalidArgumentException::class, 'Invalid website URL format');
         });
 
-        it('validates contact person in withContactPerson method', function () {
+        it('validates contact person in withContactPerson method', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect(fn () => $contactInfo->withContactPerson(''))
                 ->toThrow(InvalidArgumentException::class, 'Contact person name cannot be empty');
         });
 
-        it('chains with methods correctly', function () {
+        it('chains with methods correctly', function (): void {
             $original = ContactInfo::minimal('test@example.com');
             $address = new Address('123 Main St', 'City', 'State', '12345', 'Country');
 
@@ -510,22 +510,22 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('toString method', function () {
-        it('converts to string with only email', function () {
+    describe('toString method', function (): void {
+        it('converts to string with only email', function (): void {
             $contactInfo = ContactInfo::minimal('test@example.com');
 
             expect((string) $contactInfo)->toBe('test@example.com')
                 ->and($contactInfo->__toString())->toBe('test@example.com');
         });
 
-        it('converts to string with email and phone', function () {
+        it('converts to string with email and phone', function (): void {
             $email = new EmailAddress('test@example.com');
             $contactInfo = new ContactInfo($email, '555-1234');
 
             expect((string) $contactInfo)->toBe('test@example.com | 555-1234');
         });
 
-        it('converts to string with email, phone, and address', function () {
+        it('converts to string with email, phone, and address', function (): void {
             $email = new EmailAddress('test@example.com');
             $address = new Address('123 Main St', 'New York', 'NY', '10001', 'USA');
             $contactInfo = new ContactInfo($email, '555-1234', $address);
@@ -534,7 +534,7 @@ describe('ContactInfo', function () {
             expect((string) $contactInfo)->toBe($expected);
         });
 
-        it('converts to string with all fields', function () {
+        it('converts to string with all fields', function (): void {
             $email = new EmailAddress('contact@acme.com');
             $address = new Address('456 Oak Ave', 'LA', 'CA', '90210', 'USA');
             $contactInfo = new ContactInfo($email, '555-9876', $address, 'https://acme.com', 'Jane Doe');
@@ -543,14 +543,14 @@ describe('ContactInfo', function () {
             expect((string) $contactInfo)->toBe($expected);
         });
 
-        it('omits null fields in string representation', function () {
+        it('omits null fields in string representation', function (): void {
             $email = new EmailAddress('info@company.org');
             $contactInfo = new ContactInfo($email, null, null, 'https://company.org', 'John Smith');
 
             expect((string) $contactInfo)->toBe('info@company.org');
         });
 
-        it('handles various combinations correctly', function () {
+        it('handles various combinations correctly', function (): void {
             $email = new EmailAddress('test@example.com');
 
             // Email only
@@ -567,8 +567,8 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('validation edge cases', function () {
-        it('handles international phone numbers', function () {
+    describe('validation edge cases', function (): void {
+        it('handles international phone numbers', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $internationalPhones = [
@@ -585,7 +585,7 @@ describe('ContactInfo', function () {
             }
         });
 
-        it('handles various website protocols', function () {
+        it('handles various website protocols', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $websites = [
@@ -601,7 +601,7 @@ describe('ContactInfo', function () {
             }
         });
 
-        it('handles long contact person names', function () {
+        it('handles long contact person names', function (): void {
             $email = new EmailAddress('test@example.com');
             $longName = 'Dr. María José García-López de Mendoza y Fernández-Castro';
 
@@ -610,7 +610,7 @@ describe('ContactInfo', function () {
             expect($contactInfo->contactPerson)->toBe($longName);
         });
 
-        it('handles special characters in contact person names', function () {
+        it('handles special characters in contact person names', function (): void {
             $email = new EmailAddress('test@example.com');
 
             $specialNames = [
@@ -631,8 +631,8 @@ describe('ContactInfo', function () {
         });
     });
 
-    describe('immutability and value object behavior', function () {
-        it('maintains immutable properties', function () {
+    describe('immutability and value object behavior', function (): void {
+        it('maintains immutable properties', function (): void {
             $email = new EmailAddress('test@example.com');
             $address = new Address('123 Main St', 'City', 'State', '12345', 'Country');
             $contactInfo = new ContactInfo($email, '555-1234', $address, 'https://example.com', 'John Doe');
@@ -645,7 +645,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo->contactPerson)->toBe('John Doe');
         });
 
-        it('creates separate instances correctly', function () {
+        it('creates separate instances correctly', function (): void {
             $email1 = new EmailAddress('test1@example.com');
             $email2 = new EmailAddress('test2@example.com');
             $contactInfo1 = new ContactInfo($email1, '555-1111');
@@ -655,7 +655,7 @@ describe('ContactInfo', function () {
                 ->and($contactInfo1->phone)->not->toBe($contactInfo2->phone);
         });
 
-        it('behaves correctly in collections', function () {
+        it('behaves correctly in collections', function (): void {
             $contactInfo1 = ContactInfo::minimal('test1@example.com');
             $contactInfo2 = ContactInfo::minimal('test2@example.com');
             $contactInfo3 = ContactInfo::minimal('test1@example.com');

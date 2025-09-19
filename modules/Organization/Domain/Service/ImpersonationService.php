@@ -19,7 +19,7 @@ use Stancl\Tenancy\Database\Models\ImpersonationToken;
  * This service encapsulates the business logic for validating and executing
  * user impersonation, ensuring security and tenant isolation.
  */
-final class ImpersonationService
+class ImpersonationService
 {
     private const DEFAULT_TTL_SECONDS = 60;
 

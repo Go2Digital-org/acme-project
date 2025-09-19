@@ -15,27 +15,27 @@ interface ImportJobRepositoryInterface
     public function findById(int $id): ?ImportJob;
 
     /**
-     * @return array<ImportJob>
+     * @return array<int, ImportJob>
      */
     public function findByOrganizationId(int $organizationId): array;
 
     /**
-     * @return array<ImportJob>
+     * @return array<int, ImportJob>
      */
     public function findByStatus(ImportStatus $status): array;
 
     /**
-     * @return array<ImportJob>
+     * @return array<int, ImportJob>
      */
     public function findByType(ImportType $type): array;
 
     /**
-     * @return array<ImportJob>
+     * @return array<int, ImportJob>
      */
     public function findByOrganizationIdAndStatus(int $organizationId, ImportStatus $status): array;
 
     /**
-     * @return array<ImportJob>
+     * @return array<int, ImportJob>
      */
     public function findRecentByOrganizationId(int $organizationId, int $limit = 10): array;
 

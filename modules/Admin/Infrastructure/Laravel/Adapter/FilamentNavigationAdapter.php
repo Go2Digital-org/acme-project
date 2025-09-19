@@ -20,7 +20,7 @@ final readonly class FilamentNavigationAdapter
     /**
      * Convert domain navigation items to Filament NavigationItem objects.
      *
-     * @return array<int, NavigationItem>
+     * @return array<NavigationItem>
      */
     public function getNavigationItems(): array
     {

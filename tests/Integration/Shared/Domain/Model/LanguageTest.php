@@ -3,14 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Shared\Domain\Model\Language;
 
-uses(RefreshDatabase::class);
-
-describe('Language Model', function () {
-    describe('Model Configuration', function () {
-        it('has correct fillable attributes', function () {
+describe('Language Model', function (): void {
+    describe('Model Configuration', function (): void {
+        it('has correct fillable attributes', function (): void {
             $language = new Language;
 
             $expectedFillable = [
@@ -26,13 +23,13 @@ describe('Language Model', function () {
             expect($language->getFillable())->toBe($expectedFillable);
         });
 
-        it('uses HasFactory trait', function () {
+        it('uses HasFactory trait', function (): void {
             $language = new Language;
 
             expect(in_array(HasFactory::class, class_uses($language), true))->toBeTrue();
         });
 
-        it('has correct casts for boolean fields', function () {
+        it('has correct casts for boolean fields', function (): void {
             $language = new Language;
             $casts = $language->getCasts();
 
@@ -41,8 +38,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Attribute Assignment', function () {
-        it('can be created with all fillable attributes', function () {
+    describe('Attribute Assignment', function (): void {
+        it('can be created with all fillable attributes', function (): void {
             $attributes = [
                 'code' => 'en',
                 'name' => 'English',
@@ -64,7 +61,7 @@ describe('Language Model', function () {
                 ->and($language->sort_order)->toBe(1);
         });
 
-        it('can be created with minimal attributes', function () {
+        it('can be created with minimal attributes', function (): void {
             $attributes = [
                 'code' => 'fr',
                 'name' => 'French',
@@ -79,7 +76,7 @@ describe('Language Model', function () {
                 ->and($language->sort_order)->toBeNull();
         });
 
-        it('handles boolean casting correctly', function () {
+        it('handles boolean casting correctly', function (): void {
             $language = new Language([
                 'code' => 'es',
                 'name' => 'Spanish',
@@ -91,7 +88,7 @@ describe('Language Model', function () {
                 ->and($language->is_default)->toBeFalse();
         });
 
-        it('handles null boolean values', function () {
+        it('handles null boolean values', function (): void {
             $language = new Language([
                 'code' => 'de',
                 'name' => 'German',
@@ -104,8 +101,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Language Codes', function () {
-        it('handles standard two-letter language codes', function () {
+    describe('Language Codes', function (): void {
+        it('handles standard two-letter language codes', function (): void {
             $codes = ['en', 'fr', 'de', 'es', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'];
 
             foreach ($codes as $code) {
@@ -114,7 +111,7 @@ describe('Language Model', function () {
             }
         });
 
-        it('handles extended language codes', function () {
+        it('handles extended language codes', function (): void {
             $extendedCodes = ['en-US', 'en-GB', 'fr-CA', 'es-ES', 'pt-BR', 'zh-CN', 'zh-TW'];
 
             foreach ($extendedCodes as $code) {
@@ -123,7 +120,7 @@ describe('Language Model', function () {
             }
         });
 
-        it('handles case sensitivity in codes', function () {
+        it('handles case sensitivity in codes', function (): void {
             $language1 = new Language(['code' => 'en', 'name' => 'English']);
             $language2 = new Language(['code' => 'EN', 'name' => 'English Upper']);
 
@@ -133,8 +130,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Names and Localization', function () {
-        it('stores different name formats correctly', function () {
+    describe('Names and Localization', function (): void {
+        it('stores different name formats correctly', function (): void {
             $language = new Language([
                 'code' => 'zh',
                 'name' => 'Chinese',
@@ -145,7 +142,7 @@ describe('Language Model', function () {
                 ->and($language->native_name)->toBe('中文');
         });
 
-        it('handles names with special characters', function () {
+        it('handles names with special characters', function (): void {
             $languages = [
                 ['code' => 'de', 'name' => 'Deutsch', 'native_name' => 'Deutsch'],
                 ['code' => 'fr', 'name' => 'French', 'native_name' => 'Français'],
@@ -162,7 +159,7 @@ describe('Language Model', function () {
             }
         });
 
-        it('handles long language names', function () {
+        it('handles long language names', function (): void {
             $longName = 'A Very Long Language Name That Might Exceed Normal Expectations';
             $language = new Language([
                 'code' => 'test',
@@ -174,7 +171,7 @@ describe('Language Model', function () {
                 ->and($language->native_name)->toBe($longName);
         });
 
-        it('allows null native names', function () {
+        it('allows null native names', function (): void {
             $language = new Language([
                 'code' => 'en',
                 'name' => 'English',
@@ -185,8 +182,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Flags and Symbols', function () {
-        it('stores emoji flags correctly', function () {
+    describe('Flags and Symbols', function (): void {
+        it('stores emoji flags correctly', function (): void {
             $flags = [
                 'en' => '🇺🇸',
                 'fr' => '🇫🇷',
@@ -207,7 +204,7 @@ describe('Language Model', function () {
             }
         });
 
-        it('allows null flags', function () {
+        it('allows null flags', function (): void {
             $language = new Language([
                 'code' => 'unknown',
                 'name' => 'Unknown Language',
@@ -217,7 +214,7 @@ describe('Language Model', function () {
             expect($language->flag)->toBeNull();
         });
 
-        it('handles non-emoji flag representations', function () {
+        it('handles non-emoji flag representations', function (): void {
             $language = new Language([
                 'code' => 'en',
                 'name' => 'English',
@@ -228,8 +225,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Status and Ordering', function () {
-        it('handles active status correctly', function () {
+    describe('Status and Ordering', function (): void {
+        it('handles active status correctly', function (): void {
             $activeLanguage = new Language([
                 'code' => 'en',
                 'name' => 'English',
@@ -246,7 +243,7 @@ describe('Language Model', function () {
                 ->and($inactiveLanguage->is_active)->toBeFalse();
         });
 
-        it('handles default status correctly', function () {
+        it('handles default status correctly', function (): void {
             $defaultLanguage = new Language([
                 'code' => 'en',
                 'name' => 'English',
@@ -263,7 +260,7 @@ describe('Language Model', function () {
                 ->and($nonDefaultLanguage->is_default)->toBeFalse();
         });
 
-        it('handles sort order values', function () {
+        it('handles sort order values', function (): void {
             $orders = [1, 2, 3, 10, 100, 0, -1];
 
             foreach ($orders as $order) {
@@ -276,7 +273,7 @@ describe('Language Model', function () {
             }
         });
 
-        it('handles null sort order', function () {
+        it('handles null sort order', function (): void {
             $language = new Language([
                 'code' => 'test',
                 'name' => 'Test',
@@ -287,8 +284,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Model State', function () {
-        it('tracks dirty attributes correctly', function () {
+    describe('Model State', function (): void {
+        it('tracks dirty attributes correctly', function (): void {
             $language = Language::factory()->create([
                 'code' => 'en',
                 'name' => 'English',
@@ -304,7 +301,7 @@ describe('Language Model', function () {
                 ->and($language->isDirty('code'))->toBeFalse();
         });
 
-        it('tracks original attributes', function () {
+        it('tracks original attributes', function (): void {
             $language = Language::factory()->create([
                 'code' => 'en',
                 'name' => 'English',
@@ -318,7 +315,7 @@ describe('Language Model', function () {
                 ->and($language->getOriginal('name'))->toBe('English');
         });
 
-        it('handles attribute changes correctly', function () {
+        it('handles attribute changes correctly', function (): void {
             $language = Language::factory()->create([
                 'code' => 'en',
                 'name' => 'English',
@@ -342,8 +339,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Validation Scenarios', function () {
-        it('handles empty code gracefully', function () {
+    describe('Validation Scenarios', function (): void {
+        it('handles empty code gracefully', function (): void {
             $language = new Language([
                 'code' => '',
                 'name' => 'Empty Code Language',
@@ -353,7 +350,7 @@ describe('Language Model', function () {
                 ->and($language->name)->toBe('Empty Code Language');
         });
 
-        it('handles empty name gracefully', function () {
+        it('handles empty name gracefully', function (): void {
             $language = new Language([
                 'code' => 'empty',
                 'name' => '',
@@ -363,7 +360,7 @@ describe('Language Model', function () {
                 ->and($language->name)->toBe('');
         });
 
-        it('handles special characters in codes', function () {
+        it('handles special characters in codes', function (): void {
             $specialCodes = ['en-US', 'fr_CA', 'zh-Hans', 'pt-BR'];
 
             foreach ($specialCodes as $code) {
@@ -375,7 +372,7 @@ describe('Language Model', function () {
             }
         });
 
-        it('maintains data integrity with mixed types', function () {
+        it('maintains data integrity with mixed types', function (): void {
             $language = new Language([
                 'code' => 123, // Will be cast to string
                 'name' => 456, // Will be cast to string
@@ -390,8 +387,8 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Array and JSON Conversion', function () {
-        it('converts to array correctly', function () {
+    describe('Array and JSON Conversion', function (): void {
+        it('converts to array correctly', function (): void {
             $attributes = [
                 'code' => 'en',
                 'name' => 'English',
@@ -410,7 +407,7 @@ describe('Language Model', function () {
             }
         });
 
-        it('converts to JSON correctly', function () {
+        it('converts to JSON correctly', function (): void {
             $language = new Language([
                 'code' => 'en',
                 'name' => 'English',
@@ -427,7 +424,7 @@ describe('Language Model', function () {
                 ->and($decoded['is_default'])->toBeFalse();
         });
 
-        it('handles null values in JSON conversion', function () {
+        it('handles null values in JSON conversion', function (): void {
             $language = new Language([
                 'code' => 'test',
                 'name' => 'Test',
@@ -445,15 +442,15 @@ describe('Language Model', function () {
         });
     });
 
-    describe('Model Relationships and Scopes', function () {
-        it('provides chainable query interface', function () {
+    describe('Model Relationships and Scopes', function (): void {
+        it('provides chainable query interface', function (): void {
             // These test the query builder interface, not actual database operations
             $query = Language::query();
 
             expect($query)->toBeInstanceOf(\Illuminate\Database\Eloquent\Builder::class);
         });
 
-        it('supports where clauses through magic methods', function () {
+        it('supports where clauses through magic methods', function (): void {
             // Test that the model supports standard Eloquent methods
             $methods = [
                 'whereCode',

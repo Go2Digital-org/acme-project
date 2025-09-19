@@ -139,7 +139,8 @@ class BroadcastingDebugCommand extends Command
 
     /**
      * Check Pusher configuration.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $config
      */
     private function checkPusherConfig(array $config): bool
@@ -168,7 +169,8 @@ class BroadcastingDebugCommand extends Command
 
     /**
      * Check Redis configuration.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $config
      */
     private function checkRedisConfig(array $config): bool

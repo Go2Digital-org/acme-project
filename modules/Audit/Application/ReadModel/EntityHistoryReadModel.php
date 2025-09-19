@@ -211,7 +211,7 @@ class EntityHistoryReadModel extends AbstractReadModel
 
     // Recent Changes
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getRecentChanges(): array
     {
@@ -219,7 +219,7 @@ class EntityHistoryReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getMajorChanges(): array
     {
@@ -329,7 +329,9 @@ class EntityHistoryReadModel extends AbstractReadModel
     }
 
     // Risk Analysis for Entity
-    /** @return array<string> */
+    /**
+     * @return array<int, string>
+     */
     public function getRiskFactors(): array
     {
         $risks = [];
@@ -381,7 +383,7 @@ class EntityHistoryReadModel extends AbstractReadModel
 
     // Timeline Analysis
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getTimelineBreakdown(): array
     {

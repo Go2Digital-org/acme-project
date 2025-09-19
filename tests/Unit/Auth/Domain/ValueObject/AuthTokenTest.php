@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Modules\Auth\Domain\ValueObject\AuthToken;
 
-describe('AuthToken Value Object', function () {
+describe('AuthToken Value Object', function (): void {
 
-    describe('Construction', function () {
-        it('creates a valid auth token with all parameters', function () {
+    describe('Construction', function (): void {
+        it('creates a valid auth token with all parameters', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $type = 'bearer';
@@ -19,7 +19,7 @@ describe('AuthToken Value Object', function () {
                 ->and($authToken->getType())->toBe($type);
         });
 
-        it('creates a valid auth token with default type', function () {
+        it('creates a valid auth token with default type', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
@@ -30,35 +30,35 @@ describe('AuthToken Value Object', function () {
                 ->and($authToken->getType())->toBe('bearer');
         });
 
-        it('throws exception for empty token', function () {
+        it('throws exception for empty token', function (): void {
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
             expect(fn () => new AuthToken('', $expiresAt))
                 ->toThrow(InvalidArgumentException::class, 'Token cannot be empty');
         });
 
-        it('throws exception for whitespace-only token', function () {
+        it('throws exception for whitespace-only token', function (): void {
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
             expect(fn () => new AuthToken('   ', $expiresAt))
                 ->toThrow(InvalidArgumentException::class, 'Token cannot be empty');
         });
 
-        it('throws exception for token shorter than 16 characters', function () {
+        it('throws exception for token shorter than 16 characters', function (): void {
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
             expect(fn () => new AuthToken('short', $expiresAt))
                 ->toThrow(InvalidArgumentException::class, 'Token must be at least 16 characters long');
         });
 
-        it('throws exception for token with non-alphanumeric characters', function () {
+        it('throws exception for token with non-alphanumeric characters', function (): void {
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
             expect(fn () => new AuthToken('token-with-special!@#', $expiresAt))
                 ->toThrow(InvalidArgumentException::class, 'Token must contain only alphanumeric characters');
         });
 
-        it('throws exception for invalid token type', function () {
+        it('throws exception for invalid token type', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
@@ -66,7 +66,7 @@ describe('AuthToken Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, 'Token type must be one of: bearer, api, refresh, access');
         });
 
-        it('accepts all valid token types', function () {
+        it('accepts all valid token types', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $validTypes = ['bearer', 'api', 'refresh', 'access'];
@@ -77,7 +77,7 @@ describe('AuthToken Value Object', function () {
             }
         });
 
-        it('throws exception for past expiry date', function () {
+        it('throws exception for past expiry date', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('-1 hour');
 
@@ -85,7 +85,7 @@ describe('AuthToken Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, 'Token expiry must be in the future');
         });
 
-        it('throws exception for expiry more than 1 year in future', function () {
+        it('throws exception for expiry more than 1 year in future', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+2 years');
 
@@ -94,8 +94,8 @@ describe('AuthToken Value Object', function () {
         });
     });
 
-    describe('Expiry Validation', function () {
-        it('returns false for isExpired when token is valid', function () {
+    describe('Expiry Validation', function (): void {
+        it('returns false for isExpired when token is valid', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $authToken = new AuthToken($token, $expiresAt);
@@ -103,7 +103,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->isExpired())->toBeFalse();
         });
 
-        it('returns true for isExpired when token is expired', function () {
+        it('returns true for isExpired when token is expired', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $authToken = new AuthToken($token, $expiresAt);
@@ -112,7 +112,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->isExpired($futureTime))->toBeTrue();
         });
 
-        it('returns true for isValid when token is not expired', function () {
+        it('returns true for isValid when token is not expired', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $authToken = new AuthToken($token, $expiresAt);
@@ -120,7 +120,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->isValid())->toBeTrue();
         });
 
-        it('returns false for isValid when token is expired', function () {
+        it('returns false for isValid when token is expired', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $authToken = new AuthToken($token, $expiresAt);
@@ -129,7 +129,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->isValid($futureTime))->toBeFalse();
         });
 
-        it('calculates correct time to expiry', function () {
+        it('calculates correct time to expiry', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+3600 seconds'); // 1 hour
             $authToken = new AuthToken($token, $expiresAt);
@@ -141,7 +141,7 @@ describe('AuthToken Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(3600);
         });
 
-        it('returns zero time to expiry for expired tokens', function () {
+        it('returns zero time to expiry for expired tokens', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $authToken = new AuthToken($token, $expiresAt);
@@ -151,8 +151,8 @@ describe('AuthToken Value Object', function () {
         });
     });
 
-    describe('Array Conversion', function () {
-        it('converts to array correctly', function () {
+    describe('Array Conversion', function (): void {
+        it('converts to array correctly', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $type = 'api';
@@ -167,7 +167,7 @@ describe('AuthToken Value Object', function () {
             ]);
         });
 
-        it('creates from array correctly', function () {
+        it('creates from array correctly', function (): void {
             $futureTime = (new \DateTimeImmutable('+1 hour'))->format(\DateTimeImmutable::ATOM);
             $data = [
                 'token' => 'abcdef123456789012345678',
@@ -182,7 +182,7 @@ describe('AuthToken Value Object', function () {
                 ->and($authToken->getType())->toBe($data['type']);
         });
 
-        it('creates from array with default type when not provided', function () {
+        it('creates from array with default type when not provided', function (): void {
             $futureTime = (new \DateTimeImmutable('+1 hour'))->format(\DateTimeImmutable::ATOM);
             $data = [
                 'token' => 'abcdef123456789012345678',
@@ -196,8 +196,8 @@ describe('AuthToken Value Object', function () {
         });
     });
 
-    describe('Static Factory Methods', function () {
-        it('generates valid token with default parameters', function () {
+    describe('Static Factory Methods', function (): void {
+        it('generates valid token with default parameters', function (): void {
             $authToken = AuthToken::generate();
 
             expect($authToken->getToken())->toHaveLength(64) // 32 bytes = 64 hex chars
@@ -209,7 +209,7 @@ describe('AuthToken Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(3600);
         });
 
-        it('generates valid token with custom expiry minutes', function () {
+        it('generates valid token with custom expiry minutes', function (): void {
             $expiryMinutes = 30;
             $authToken = AuthToken::generate($expiryMinutes);
 
@@ -218,14 +218,14 @@ describe('AuthToken Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(1800);
         });
 
-        it('generates valid token with custom type', function () {
+        it('generates valid token with custom type', function (): void {
             $type = 'refresh';
             $authToken = AuthToken::generate(60, $type);
 
             expect($authToken->getType())->toBe($type);
         });
 
-        it('generates unique tokens on multiple calls', function () {
+        it('generates unique tokens on multiple calls', function (): void {
             $token1 = AuthToken::generate();
             $token2 = AuthToken::generate();
 
@@ -233,8 +233,8 @@ describe('AuthToken Value Object', function () {
         });
     });
 
-    describe('Edge Cases', function () {
-        it('handles minimum valid token length', function () {
+    describe('Edge Cases', function (): void {
+        it('handles minimum valid token length', function (): void {
             $token = '1234567890123456'; // Exactly 16 characters
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
@@ -243,7 +243,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->getToken())->toBe($token);
         });
 
-        it('handles very long valid token', function () {
+        it('handles very long valid token', function (): void {
             $token = str_repeat('a', 256); // Very long but valid
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
@@ -252,7 +252,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->getToken())->toBe($token);
         });
 
-        it('handles expiry at maximum allowed time', function () {
+        it('handles expiry at maximum allowed time', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = (new \DateTimeImmutable)->modify('+1 year');
 
@@ -261,7 +261,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->isValid())->toBeTrue();
         });
 
-        it('handles case-insensitive token type validation', function () {
+        it('handles case-insensitive token type validation', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
@@ -272,7 +272,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken2->getType())->toBe('API');
         });
 
-        it('preserves original case of token type', function () {
+        it('preserves original case of token type', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = new \DateTimeImmutable('+1 hour');
             $type = 'BEARER';
@@ -284,8 +284,8 @@ describe('AuthToken Value Object', function () {
         });
     });
 
-    describe('Boundary Value Testing', function () {
-        it('validates token with exactly 15 characters fails', function () {
+    describe('Boundary Value Testing', function (): void {
+        it('validates token with exactly 15 characters fails', function (): void {
             $token = '123456789012345'; // 15 characters
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
@@ -293,7 +293,7 @@ describe('AuthToken Value Object', function () {
                 ->toThrow(InvalidArgumentException::class);
         });
 
-        it('validates token with exactly 16 characters passes', function () {
+        it('validates token with exactly 16 characters passes', function (): void {
             $token = '1234567890123456'; // 16 characters
             $expiresAt = new \DateTimeImmutable('+1 hour');
 
@@ -301,7 +301,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->getToken())->toBe($token);
         });
 
-        it('validates expiry exactly 1 year in future passes', function () {
+        it('validates expiry exactly 1 year in future passes', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = (new \DateTimeImmutable)->modify('+1 year');
 
@@ -309,7 +309,7 @@ describe('AuthToken Value Object', function () {
             expect($authToken->getToken())->toBe($token);
         });
 
-        it('validates expiry exactly 1 second past expiry deadline fails', function () {
+        it('validates expiry exactly 1 second past expiry deadline fails', function (): void {
             $token = 'abcdef123456789012345678';
             $expiresAt = (new \DateTimeImmutable)->modify('+1 year +1 second');
 

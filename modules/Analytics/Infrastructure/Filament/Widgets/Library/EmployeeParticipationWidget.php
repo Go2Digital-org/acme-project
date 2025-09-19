@@ -15,6 +15,8 @@ class EmployeeParticipationWidget extends ChartWidget
 
     protected ?string $pollingInterval = '5m';
 
+    /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 6;
@@ -39,6 +41,9 @@ class EmployeeParticipationWidget extends ChartWidget
         return true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getData(): array
     {
         $stats = ApplicationCache::getStats('employee_participation');

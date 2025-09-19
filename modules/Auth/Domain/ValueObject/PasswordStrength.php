@@ -15,14 +15,10 @@ class PasswordStrength
 {
     private readonly int $score;
 
-    /**
-     * @var array<string, mixed>
-     */
+    /** @var array<string, mixed> */
     private readonly array $requirements;
 
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     private readonly array $violations;
 
     public function __construct(private readonly string $password)

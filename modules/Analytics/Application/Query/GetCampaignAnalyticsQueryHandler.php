@@ -88,7 +88,8 @@ class GetCampaignAnalyticsQueryHandler
         };
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     private function collectAnalyticsData(GetCampaignAnalyticsQuery $query, TimeRange $timeRange, array $filters): array
@@ -180,7 +181,7 @@ class GetCampaignAnalyticsQueryHandler
             ->whereBetween('created_at', [$timeRange->start, $timeRange->end])
             ->where('status', 'completed')
             ->when($query->campaignId, fn ($q) => $q->where('campaign_id', $query->campaignId))
-            ->when($query->organizationId, fn ($q) => $q->whereIn('user_id', function ($sub) use ($query) {
+            ->when($query->organizationId, fn ($q) => $q->whereIn('user_id', function ($sub) use ($query): void {
                 $sub->select('id')->from('users')->where('organization_id', $query->organizationId);
             }));
 
@@ -239,7 +240,8 @@ class GetCampaignAnalyticsQueryHandler
         return $breakdowns;
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     private function collectComparisons(TimeRange $timeRange, array $filters): array

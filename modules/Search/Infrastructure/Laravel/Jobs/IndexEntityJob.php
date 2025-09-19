@@ -19,12 +19,10 @@ class IndexEntityJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
     public function __construct(
         public string $entityType,
         public string $entityId,
+        /** @var array<string, mixed> */
         public array $data,
     ) {}
 
@@ -46,7 +44,7 @@ class IndexEntityJob implements ShouldQueue
     /**
      * Get the tags that should be assigned to the job.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public function tags(): array
     {

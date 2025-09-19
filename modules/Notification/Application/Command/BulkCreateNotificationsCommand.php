@@ -28,9 +28,11 @@ final readonly class BulkCreateNotificationsCommand implements CommandInterface
      * @param  array<string, mixed>  $globalMetadata
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public array $notifications,
         public ?int $batchId = null,
         public ?string $source = null,
+        /** @var array<string, mixed> */
         public array $globalMetadata = [],
     ) {}
 }

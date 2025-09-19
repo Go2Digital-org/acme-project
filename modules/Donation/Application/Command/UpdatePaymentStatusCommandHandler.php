@@ -41,7 +41,7 @@ final readonly class UpdatePaymentStatusCommandHandler
             );
         }
 
-        DB::transaction(function () use ($donation, $command) {
+        DB::transaction(function () use ($donation, $command): void {
             $updateData = [
                 'status' => $command->status,
                 'updated_at' => now(),

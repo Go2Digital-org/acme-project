@@ -90,7 +90,7 @@ abstract class OptimizedCollectionProvider implements ProviderInterface
      * Build the base query for the collection.
      *
      * @param  array<string, mixed>  $filters
-     * @param  array<string, mixed>  $sorts
+     * @param  array<string, string>  $sorts
      * @return Builder<TModel>
      */
     abstract protected function buildBaseQuery(string $locale, array $filters, array $sorts): Builder;
@@ -209,8 +209,7 @@ abstract class OptimizedCollectionProvider implements ProviderInterface
 
     /**
      * Sanitize filters to prevent injection attacks.
-     */
-    /**
+     *
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -223,8 +222,7 @@ abstract class OptimizedCollectionProvider implements ProviderInterface
 
     /**
      * Sanitize sort parameters.
-     */
-    /**
+     *
      * @param  array<string, mixed>  $sorts
      * @return array<string, string>
      */
@@ -247,16 +245,14 @@ abstract class OptimizedCollectionProvider implements ProviderInterface
 
     /**
      * Get allowed filter fields.
-     */
-    /**
+     *
      * @return array<int, string>
      */
     abstract protected function getAllowedFilters(): array;
 
     /**
      * Get allowed sort fields.
-     */
-    /**
+     *
      * @return array<int, string>
      */
     abstract protected function getAllowedSorts(): array;

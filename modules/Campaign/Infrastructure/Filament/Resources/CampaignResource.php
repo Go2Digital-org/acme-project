@@ -23,7 +23,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -519,7 +518,7 @@ class CampaignResource extends Resource
     }
 
     /**
-     * @return array<string, class-string>
+     * @return array<string, mixed>
      */
     public static function getRelations(): array
     {
@@ -529,7 +528,7 @@ class CampaignResource extends Resource
     }
 
     /**
-     * @return array<string, PageRegistration>
+     * @return array<string, mixed>
      */
     public static function getPages(): array
     {

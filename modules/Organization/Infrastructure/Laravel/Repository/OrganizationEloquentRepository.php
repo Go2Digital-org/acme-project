@@ -50,7 +50,7 @@ class OrganizationEloquentRepository implements OrganizationRepositoryInterface
     }
 
     /**
-     * @return array<int, Organization>
+     * @return array<int, mixed>
      */
     public function findActiveOrganizations(): array
     {
@@ -70,7 +70,7 @@ class OrganizationEloquentRepository implements OrganizationRepositoryInterface
     }
 
     /**
-     * @return array<int, Organization>
+     * @return array<int, mixed>
      */
     public function findVerifiedOrganizations(): array
     {
@@ -90,7 +90,7 @@ class OrganizationEloquentRepository implements OrganizationRepositoryInterface
     }
 
     /**
-     * @return array<int, Organization>
+     * @return array<int, mixed>
      */
     public function findPendingVerificationOrganizations(): array
     {
@@ -112,6 +112,7 @@ class OrganizationEloquentRepository implements OrganizationRepositoryInterface
 
     /**
      * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, Organization>
      */
     public function paginate(
         int $page = 1,
@@ -223,8 +224,9 @@ class OrganizationEloquentRepository implements OrganizationRepositoryInterface
 
     /**
      * Get all organizations.
-     *
-     * @return array<int, Organization>
+     */
+    /**
+     * @return array<int, mixed>
      */
     public function findAll(): array
     {

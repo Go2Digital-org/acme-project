@@ -23,14 +23,14 @@ use Symfony\Component\Console\Input\InputDefinition;
  * @method bool hasArgument(string $name) [Not available - use getDefinition()->hasArgument()]
  * @method bool hasOption(string $name) [Not available - use getDefinition()->hasOption()]
  * @method mixed argument(string $key = null)
- * @method string choice(string $question, array<int, string> $choices, mixed $default = null, mixed $attempts = null, bool $multiple = false)
+ * @method string choice(string $question, array<string> $choices, mixed $default = null, mixed $attempts = null, bool $multiple = false)
  * @method string ask(string $question, string|null $default = null)
  * @method bool confirm(string $question, bool $default = false)
  * @method mixed option(string $key = null)
- * @method void info(string|array<int, string> $string, int|string|null $verbosity = null)
- * @method void error(string|array<int, string> $string, int|string|null $verbosity = null)
- * @method void warn(string|array<int, string> $string, int|string|null $verbosity = null)
- * @method void line(string|array<int, string> $string, string|null $style = null, int|string|null $verbosity = null)
+ * @method void info(string|array<string> $string, int|string|null $verbosity = null)
+ * @method void error(string|array<string> $string, int|string|null $verbosity = null)
+ * @method void warn(string|array<string> $string, int|string|null $verbosity = null)
+ * @method void line(string|array<string> $string, string|null $style = null, int|string|null $verbosity = null)
  * @method int call(string $command, array<string, mixed> $arguments = [])
  * @method Application getApplication()
  */
@@ -115,7 +115,8 @@ trait HexGeneratorTrait
 
     /**
      * Generate file with confirmation.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $additionalVariables
      */
     protected function generateFile(
@@ -368,7 +369,8 @@ trait HexGeneratorTrait
 
     /**
      * Get related files for a type.
-     *
+     */
+    /**
      * @return array<string, string>
      */
     protected function getRelatedFiles(string $type): array

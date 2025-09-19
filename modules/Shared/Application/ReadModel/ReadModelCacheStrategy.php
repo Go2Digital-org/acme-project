@@ -29,7 +29,8 @@ final readonly class ReadModelCacheStrategy
     /**
      * Get read model from cache or build if not cached.
      *
-     * @param  array<string>  $tags
+     * @param  callable(): ReadModelInterface  $builder
+     * @param  array<int, string>  $tags
      */
     public function remember(string $cacheKey, callable $builder, ?int $ttl = null, array $tags = []): ReadModelInterface
     {
@@ -87,7 +88,7 @@ final readonly class ReadModelCacheStrategy
     /**
      * Put read model in cache.
      *
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     public function put(string $cacheKey, ReadModelInterface $readModel, ?int $ttl = null, array $tags = []): void
     {
@@ -136,7 +137,7 @@ final readonly class ReadModelCacheStrategy
     /**
      * Invalidate cache by tags.
      *
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     public function forgetByTags(array $tags): void
     {
@@ -163,7 +164,8 @@ final readonly class ReadModelCacheStrategy
     /**
      * Warm cache with read model.
      *
-     * @param  array<string>  $tags
+     * @param  callable(): ReadModelInterface  $builder
+     * @param  array<int, string>  $tags
      */
     public function warm(string $cacheKey, callable $builder, ?int $ttl = null, array $tags = []): void
     {
@@ -194,7 +196,8 @@ final readonly class ReadModelCacheStrategy
     /**
      * Refresh stale cache in background.
      *
-     * @param  array<string>  $tags
+     * @param  callable(): ReadModelInterface  $builder
+     * @param  array<int, string>  $tags
      */
     public function refresh(string $cacheKey, callable $builder, ?int $ttl = null, array $tags = []): void
     {
@@ -222,7 +225,8 @@ final readonly class ReadModelCacheStrategy
     /**
      * Build and cache read model.
      *
-     * @param  array<string>  $tags
+     * @param  callable(): ReadModelInterface  $builder
+     * @param  array<int, string>  $tags
      */
     private function buildAndCache(string $cacheKey, callable $builder, ?int $ttl = null, array $tags = []): ReadModelInterface
     {
@@ -235,7 +239,8 @@ final readonly class ReadModelCacheStrategy
     /**
      * Schedule refresh if cache is stale.
      *
-     * @param  array<string>  $tags
+     * @param  callable(): ReadModelInterface  $builder
+     * @param  array<int, string>  $tags
      */
     private function scheduleRefreshIfStale(string $cacheKey, ReadModelInterface $readModel, callable $builder, ?int $ttl = null, array $tags = []): void
     {

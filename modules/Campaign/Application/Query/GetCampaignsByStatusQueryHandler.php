@@ -26,7 +26,7 @@ final readonly class GetCampaignsByStatusQueryHandler
         ];
 
         // Remove null filters
-        $filters = array_filter($filters, fn ($value) => $value !== null);
+        $filters = array_filter($filters, fn (array|int|string|null $value): bool => $value !== null);
 
         $paginatedResults = $this->campaignRepository->paginate(
             page: $query->page,
@@ -76,8 +76,8 @@ final readonly class GetCampaignsByStatusQueryHandler
 
         $statistics = [
             'total_campaigns' => $paginatedResults->total(),
-            'active_campaigns' => count(array_filter($campaigns, fn ($c) => $c['status'] === CampaignStatus::ACTIVE)),
-            'completed_campaigns' => count(array_filter($campaigns, fn ($c) => $c['status'] === CampaignStatus::COMPLETED)),
+            'active_campaigns' => count(array_filter($campaigns, fn (array $c): bool => $c['status'] === CampaignStatus::ACTIVE)),
+            'completed_campaigns' => count(array_filter($campaigns, fn (array $c): bool => $c['status'] === CampaignStatus::COMPLETED)),
             'total_amount_raised' => $totalAmountRaised,
             'average_progress_percentage' => $averageProgress,
         ];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Infrastructure\Filament\Resources\SocialMediaResource\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Shared\Infrastructure\Filament\Resources\SocialMediaResource;
@@ -17,6 +18,9 @@ class ListSocialMedia extends ListRecords
         return 'Social Media Links';
     }
 
+    /**
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -24,6 +28,9 @@ class ListSocialMedia extends ListRecords
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderWidgets(): array
     {
         return [];

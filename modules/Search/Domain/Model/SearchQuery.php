@@ -9,11 +9,9 @@ use Modules\Search\Domain\ValueObject\SearchSort;
 
 class SearchQuery
 {
-    /**
-     * @param  array<string>  $indexes
-     */
     public function __construct(
         public readonly string $query,
+        /** @var array<int, string> */
         public readonly array $indexes,
         public readonly SearchFilters $filters,
         public readonly SearchSort $sort,
@@ -27,7 +25,8 @@ class SearchQuery
 
     /**
      * Convert to array for search engine.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toArray(): array
@@ -70,7 +69,7 @@ class SearchQuery
     /**
      * Create a query for multiple indexes.
      *
-     * @param  array<string>  $indexes
+     * @param  array<int, string>  $indexes
      */
     public static function forIndexes(
         array $indexes,

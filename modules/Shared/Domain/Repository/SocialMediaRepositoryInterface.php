@@ -43,7 +43,7 @@ interface SocialMediaRepositoryInterface
     public function updateOrder(int $id, int $order): bool;
 
     /**
-     * @param  array<int, array<string, mixed>>  $items
+     * @param  array<string, mixed>  $items
      */
     public function reorder(array $items): bool;
 

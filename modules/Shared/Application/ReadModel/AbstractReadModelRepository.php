@@ -130,10 +130,12 @@ abstract class AbstractReadModelRepository implements ReadModelRepositoryInterfa
         if ($this->isCachingEnabled()) {
             $cached = $this->getTaggedCache()->get($cacheKey);
             if ($cached) {
-                /** @var array<int, ReadModelInterface> $deserialized */
-                $deserialized = array_filter(array_map([$this, 'deserializeReadModel'], $cached), fn (?ReadModelInterface $item): bool => $item instanceof ReadModelInterface);
+                /** @var array<int, ReadModelInterface|null> $mapped */
+                $mapped = array_map([$this, 'deserializeReadModel'], $cached);
+                /** @var array<int, ReadModelInterface> $filtered */
+                $filtered = array_filter($mapped, fn (?ReadModelInterface $item): bool => $item instanceof ReadModelInterface);
 
-                return array_values($deserialized);
+                return array_values($filtered);
             }
         }
 
@@ -255,7 +257,7 @@ abstract class AbstractReadModelRepository implements ReadModelRepositoryInterfa
      *
      * @param  array<int, string|int>  $ids
      * @param  array<string, mixed>|null  $filters
-     * @return array<int, ReadModelInterface>
+     * @return array<string|int, ReadModelInterface>
      */
     abstract protected function buildReadModels(array $ids, ?array $filters = null): array;
 

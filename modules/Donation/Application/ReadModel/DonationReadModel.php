@@ -24,7 +24,7 @@ final class DonationReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, string>
+     * @return array<string>
      */
     public function getCacheTags(): array
     {
@@ -518,7 +518,8 @@ final class DonationReadModel extends AbstractReadModel
 
     /**
      * Get summary data optimized for lists and cards
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toSummary(): array
@@ -546,7 +547,8 @@ final class DonationReadModel extends AbstractReadModel
 
     /**
      * Get data optimized for public display (respecting anonymity)
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toPublicArray(): array

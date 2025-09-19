@@ -15,7 +15,7 @@ final readonly class ScheduleNotificationCommand implements CommandInterface
     /**
      * @param  array<string, mixed>  $data
      * @param  array<string, mixed>  $metadata
-     * @param  ?array<string, mixed>  $recurringConfig
+     * @param  array<string, mixed>|null  $recurringConfig
      */
     public function __construct(
         public int $recipientId,
@@ -26,7 +26,9 @@ final readonly class ScheduleNotificationCommand implements CommandInterface
         public string $channel,
         public string $priority,
         public CarbonInterface $scheduledFor,
+        /** @var array<string, mixed> */
         public array $data = [],
+        /** @var array<string, mixed> */
         public array $metadata = [],
         public ?string $scheduleId = null,
         public bool $recurring = false,

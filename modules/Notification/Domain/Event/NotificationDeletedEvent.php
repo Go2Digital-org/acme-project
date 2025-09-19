@@ -14,6 +14,9 @@ use Modules\Shared\Domain\Event\DomainEventInterface;
  */
 final readonly class NotificationDeletedEvent implements DomainEventInterface
 {
+    /**
+     * @param  array<string, mixed>  $context
+     */
     public function __construct(
         public int $notificationId,
         public int $userId,
@@ -22,7 +25,6 @@ final readonly class NotificationDeletedEvent implements DomainEventInterface
         public ?string $reason,
         public Notification $originalNotification,
         public string $source,
-        /** @var array<string, mixed> */
         /** @var array<string, mixed> */
         public array $context = [],
     ) {}
@@ -37,7 +39,9 @@ final readonly class NotificationDeletedEvent implements DomainEventInterface
         return new DateTimeImmutable($this->deletedAt->toDateTimeString());
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return [

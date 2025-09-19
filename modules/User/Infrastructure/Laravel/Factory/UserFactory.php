@@ -6,7 +6,6 @@ namespace Modules\User\Infrastructure\Laravel\Factory;
 
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Modules\Shared\Infrastructure\Laravel\Traits\SafeDateGeneration;
 use Modules\User\Infrastructure\Laravel\Models\User;
@@ -36,7 +35,8 @@ class UserFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -51,7 +51,7 @@ class UserFactory extends Factory
             'last_name' => $lastName,
             'email' => $email,
             'email_verified_at' => fake()->optional(0.95)->dateTimeBetween('-2 years', '-2 days') ? $this->safeDateTimeBetween('-2 years', '-2 days')->format('Y-m-d H:i:s') : null,
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= '$2y$04$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // bcrypt of 'password'
             'remember_token' => Str::random(10),
             'organization_id' => 1, // Default to ACME Corp
             'status' => 'active',
@@ -120,6 +120,14 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'name' => fake()->name() . ' (Employee)',
+        ]);
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'role' => 'admin',
+            'name' => fake()->name() . ' (Admin)',
         ]);
     }
 

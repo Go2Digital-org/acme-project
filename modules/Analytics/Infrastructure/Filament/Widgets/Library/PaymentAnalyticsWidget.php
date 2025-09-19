@@ -14,6 +14,8 @@ class PaymentAnalyticsWidget extends BaseWidget
 
     protected ?string $pollingInterval = '30m';
 
+    /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 14;
@@ -23,6 +25,9 @@ class PaymentAnalyticsWidget extends BaseWidget
         return true;
     }
 
+    /**
+     * @return array<int, Stat>
+     */
     protected function getStats(): array
     {
         $stats = ApplicationCache::getStats('payment_analytics');
@@ -38,7 +43,7 @@ class PaymentAnalyticsWidget extends BaseWidget
      * Format statistics for display
      *
      * @param  array<string, mixed>  $data
-     * @return array<Stat>
+     * @return array<int, Stat>
      */
     protected function formatStats(array $data): array
     {
@@ -80,7 +85,7 @@ class PaymentAnalyticsWidget extends BaseWidget
     /**
      * Get empty statistics when no data available
      *
-     * @return array<Stat>
+     * @return array<int, Stat>
      */
     protected function getEmptyStats(): array
     {

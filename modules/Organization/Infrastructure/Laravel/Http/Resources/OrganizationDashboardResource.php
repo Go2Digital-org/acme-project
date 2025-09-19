@@ -16,7 +16,7 @@ class OrganizationDashboardResource extends BaseApiResource
      * @param  Request  $request
      * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         /** @var OrganizationDashboardReadModel $dashboard */
         $dashboard = $this->resource;
@@ -145,8 +145,11 @@ class OrganizationDashboardResource extends BaseApiResource
 
     /**
      * Add additional metadata for dashboard response.
+     *
+     * @param  Request  $request
+     * @return array<string, mixed>
      */
-    public function with($request)
+    public function with($request): array
     {
         return array_merge(parent::with($request), [
             'meta' => [

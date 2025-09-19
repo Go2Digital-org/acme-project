@@ -121,7 +121,7 @@ class HomepageStatsService
     /**
      * Get featured campaigns for homepage display
      *
-     * @return array<int, array<string, mixed>>
+     * @return list<array<string, mixed>>
      */
     public function getFeaturedCampaigns(): array
     {

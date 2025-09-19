@@ -51,7 +51,7 @@ final readonly class TranslationService
     }
 
     /**
-     * @param  array<string, mixed>|null  $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function addTranslation(
         string $key,
@@ -92,7 +92,7 @@ final readonly class TranslationService
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getSupportedLocales(): array
     {

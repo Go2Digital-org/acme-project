@@ -17,7 +17,7 @@ final readonly class DeleteExportController
     use AuthenticatedUserTrait;
 
     public function __construct(
-        private readonly DeleteExportCommandHandler $deleteExportHandler,
+        private DeleteExportCommandHandler $deleteExportHandler,
     ) {}
 
     /**

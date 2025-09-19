@@ -10,7 +10,7 @@ final class CampaignActivatedEvent extends AbstractDomainEvent
 {
     public function __construct(
         public readonly int $campaignId,
-        public readonly int $employeeId,
+        public readonly int $userId,
         public readonly int $organizationId,
     ) {
         parent::__construct();

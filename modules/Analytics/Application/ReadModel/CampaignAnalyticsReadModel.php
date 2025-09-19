@@ -207,7 +207,7 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
 
     // Top Donor Information
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopDonorsList(): array
     {
@@ -223,7 +223,7 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
 
     // Trend Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTrendData(): array
     {
@@ -247,7 +247,9 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
     }
 
     // Performance Comparisons
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getCurrentPeriodPerformance(): array
     {
         $comparisons = $this->getComparisons();
@@ -255,7 +257,9 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
         return $comparisons['current_period'] ?? [];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getPreviousPeriodPerformance(): array
     {
         $comparisons = $this->getComparisons();
@@ -272,7 +276,7 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
 
     // Breakdown Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getDonationAmountBreakdown(): array
     {
@@ -282,7 +286,7 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getPaymentMethodBreakdown(): array
     {
@@ -294,7 +298,8 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
     // Summary Methods
     /**
      * Get a comprehensive summary of campaign analytics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getSummary(): array
@@ -330,7 +335,8 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
 
     /**
      * Get key performance indicators.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getKPIs(): array

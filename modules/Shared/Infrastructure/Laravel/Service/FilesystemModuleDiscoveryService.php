@@ -24,9 +24,9 @@ final readonly class FilesystemModuleDiscoveryService implements ModuleDiscovery
         $apiHandlers = $this->discoverApiHandlers();
 
         return new ModuleManifest(
-            $serviceProviders,
-            $apiHandlers['processors'],
-            $apiHandlers['providers'],
+            array_values($serviceProviders),
+            array_values($apiHandlers['processors']),
+            array_values($apiHandlers['providers']),
         );
     }
 
@@ -41,7 +41,7 @@ final readonly class FilesystemModuleDiscoveryService implements ModuleDiscovery
     }
 
     /**
-     * @return array<string>
+     * @return array<int, class-string<ServiceProvider>>
      */
     private function discoverServiceProviders(): array
     {
@@ -83,7 +83,7 @@ final readonly class FilesystemModuleDiscoveryService implements ModuleDiscovery
     }
 
     /**
-     * @return array{processors: array<string>, providers: array<string>}
+     * @return array{processors: array<int, class-string>, providers: array<int, class-string>}
      */
     private function discoverApiHandlers(): array
     {

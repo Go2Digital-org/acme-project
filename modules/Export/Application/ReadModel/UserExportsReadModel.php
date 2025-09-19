@@ -12,7 +12,7 @@ final class UserExportsReadModel extends AbstractReadModel
     protected int $cacheTtl = 300; // 5 minutes for user exports list
 
     /**
-     * @return array<ExportListDTO>
+     * @return array<int, ExportListDTO>
      */
     public function getExports(): array
     {
@@ -72,7 +72,7 @@ final class UserExportsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<ExportListDTO>
+     * @return array<int, ExportListDTO>
      */
     public function getRecentExports(int $limit = 5): array
     {
@@ -86,13 +86,13 @@ final class UserExportsReadModel extends AbstractReadModel
     {
         return [
             'user_id' => $this->getId(),
-            'exports' => array_map(fn (ExportListDTO $export) => $export->toArray(), $this->getExports()),
+            'exports' => array_map(fn (ExportListDTO $export): array => $export->toArray(), $this->getExports()),
             'total_exports' => $this->getTotalExports(),
             'has_active_exports' => $this->hasActiveExports(),
             'active_exports_count' => $this->getActiveExportsCount(),
             'completed_exports_count' => $this->getCompletedExportsCount(),
             'failed_exports_count' => $this->getFailedExportsCount(),
-            'recent_exports' => array_map(fn (ExportListDTO $export) => $export->toArray(), $this->getRecentExports()),
+            'recent_exports' => array_map(fn (ExportListDTO $export): array => $export->toArray(), $this->getRecentExports()),
             'version' => $this->getVersion(),
         ];
     }

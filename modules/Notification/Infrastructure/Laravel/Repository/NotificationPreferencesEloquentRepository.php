@@ -27,6 +27,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         return $this->model->where('user_id', $userId)->first();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function upsert(string $userId, array $data): NotificationPreferences
     {
         return $this->model->updateOrCreate(
@@ -35,6 +38,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getChannelPreferences(string $userId, string $notificationType): array
     {
         $preferences = $this->findByUserId($userId);
@@ -44,6 +50,11 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         }
 
         $channelPreferences = $preferences->channel_preferences[$notificationType] ?? [];
+
+        // Ensure $channelPreferences is always an array for array_merge
+        if (! is_array($channelPreferences)) {
+            $channelPreferences = [];
+        }
 
         return array_merge($this->getDefaultChannelPreferences(), $channelPreferences);
     }
@@ -105,6 +116,10 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         return $preferences->save();
     }
 
+    /**
+     * @param  array<string>  $userIds
+     * @return array<int, string>
+     */
     public function filterUsersForNotificationType(array $userIds, string $notificationType): array
     {
         if ($userIds === []) {
@@ -138,6 +153,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         return $preferences->pluck('user')->filter(); // @phpstan-ignore-line
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getDefaultPreferences(): array
     {
         return [
@@ -153,6 +171,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $userPreferences
+     */
     public function bulkUpdate(array $userPreferences): int
     {
         $updated = 0;
@@ -173,6 +194,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         return $updated;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getPreferencesStatistics(): array
     {
         return [
@@ -188,6 +212,10 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         ];
     }
 
+    /**
+     * @param  array<string>  $userIds
+     * @return array<int, string>
+     */
     public function filterUsersByChannel(array $userIds, string $channel, string $notificationType): array
     {
         if ($userIds === []) {
@@ -223,7 +251,7 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
             $enabledUsers = array_merge($enabledUsers, $usersWithoutPreferences);
         }
 
-        return array_unique($enabledUsers);
+        return array_values(array_unique($enabledUsers));
     }
 
     public function updateQuietHours(
@@ -252,6 +280,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
         return $preferences?->isInQuietHours() ?? false;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getUsersForBatching(): array
     {
         $batches = [
@@ -290,8 +321,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
 
     /**
      * Get default channel preferences.
-     *
-     * @return array<string, bool>
+     */
+    /**
+     * @return array<string, mixed>
      */
     private function getDefaultChannelPreferences(): array
     {
@@ -315,8 +347,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
 
     /**
      * Get frequency distribution for statistics.
-     *
-     * @return array<string, int>
+     */
+    /**
+     * @return array<string, mixed>
      */
     private function getFrequencyDistribution(): array
     {
@@ -331,8 +364,9 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
 
     /**
      * Get most disabled notification types.
-     *
-     * @return array<string, int>
+     */
+    /**
+     * @return array<string, mixed>
      */
     private function getMostDisabledTypes(): array
     {

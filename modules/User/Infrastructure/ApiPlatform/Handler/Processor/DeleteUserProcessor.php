@@ -15,6 +15,10 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
  */
 final readonly class DeleteUserProcessor implements ProcessorInterface
 {
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
         if (! isset($uriVariables['id']) || ! is_numeric($uriVariables['id'])) {
@@ -23,7 +27,7 @@ final readonly class DeleteUserProcessor implements ProcessorInterface
 
         $id = (int) $uriVariables['id'];
         $currentUser = null;
-        if (isset($context['request']) && method_exists($context['request'], 'user')) {
+        if (isset($context['request']) && is_object($context['request']) && method_exists($context['request'], 'user')) {
             $currentUser = $context['request']->user();
         }
 

@@ -30,9 +30,10 @@ class IndexCampaignChunkJob implements ShouldQueue
     /**
      * Create a new job instance
      *
-     * @param  array<int, int>  $campaignIds
+     * @param  array<int>  $campaignIds
      */
     public function __construct(
+        /** @var array<string, mixed> */
         private readonly array $campaignIds
     ) {}
 

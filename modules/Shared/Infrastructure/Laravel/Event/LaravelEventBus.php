@@ -21,7 +21,7 @@ use Throwable;
  */
 class LaravelEventBus implements EventBusInterface
 {
-    /** @var array<string, array<callable|string>> */
+    /** @var array<string, mixed> */
     private array $handlers = [];
 
     public function __construct(
@@ -61,6 +61,9 @@ class LaravelEventBus implements EventBusInterface
 
     /**
      * Publish multiple domain events in a batch
+     */
+    /**
+     * @param  array<string, mixed>  $events
      */
     public function publishMany(array $events): void
     {
@@ -135,6 +138,9 @@ class LaravelEventBus implements EventBusInterface
 
     /**
      * Get all registered handlers for debugging purposes
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getHandlers(): array
     {

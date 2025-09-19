@@ -14,6 +14,9 @@ use Modules\Shared\Domain\Event\DomainEventInterface;
  */
 final readonly class NotificationCancelledEvent implements DomainEventInterface
 {
+    /**
+     * @param  array<string, mixed>  $context
+     */
     public function __construct(
         public Notification $notification,
         public int $cancelledBy,
@@ -21,7 +24,6 @@ final readonly class NotificationCancelledEvent implements DomainEventInterface
         public ?string $reason,
         public bool $recurringCancellation,
         public string $source,
-        /** @var array<string, mixed> */
         /** @var array<string, mixed> */
         public array $context = [],
     ) {}
@@ -36,7 +38,9 @@ final readonly class NotificationCancelledEvent implements DomainEventInterface
         return new DateTimeImmutable($this->cancelledAt->toDateTimeString());
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return [

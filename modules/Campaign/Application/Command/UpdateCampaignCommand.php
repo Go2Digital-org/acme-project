@@ -14,13 +14,15 @@ final readonly class UpdateCampaignCommand implements CommandInterface
      */
     public function __construct(
         public int $campaignId,
+        /** @var array<string, mixed> */
         public array $title,
+        /** @var array<string, mixed> */
         public array $description,
         public float $goalAmount,
         public string $startDate,
         public string $endDate,
         public int $organizationId,
-        public int $employeeId,
+        public int $userId,
         public ?string $locale = 'en',
     ) {}
 }

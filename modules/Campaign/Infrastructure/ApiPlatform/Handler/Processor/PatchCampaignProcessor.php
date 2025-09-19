@@ -32,6 +32,10 @@ final readonly class PatchCampaignProcessor implements ProcessorInterface
         private Request $request,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,
@@ -75,7 +79,7 @@ final readonly class PatchCampaignProcessor implements ProcessorInterface
             startDate: property_exists($data, 'start_date') ? (string) $data->start_date : $existingCampaign->start_date->toDateTimeString(),
             endDate: property_exists($data, 'end_date') ? (string) $data->end_date : $existingCampaign->end_date->toDateTimeString(),
             organizationId: property_exists($data, 'organization_id') ? (int) $data->organization_id : $existingCampaign->organization_id,
-            employeeId: $user->id,
+            userId: $user->id,
             locale: $this->request->get('locale', 'en'),
         );
 

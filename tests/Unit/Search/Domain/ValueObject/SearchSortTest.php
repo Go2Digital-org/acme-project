@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 use Modules\Search\Domain\ValueObject\SearchSort;
 
-describe('SearchSort Value Object', function () {
-    it('creates default sort with relevance and descending order', function () {
+describe('SearchSort Value Object', function (): void {
+    it('creates default sort with relevance and descending order', function (): void {
         $sort = new SearchSort;
 
         expect($sort->field)->toBe(SearchSort::FIELD_RELEVANCE)
             ->and($sort->direction)->toBe(SearchSort::DIRECTION_DESC);
     });
 
-    it('creates sort with custom field and direction', function () {
+    it('creates sort with custom field and direction', function (): void {
         $sort = new SearchSort(SearchSort::FIELD_CREATED_AT, SearchSort::DIRECTION_ASC);
 
         expect($sort->field)->toBe(SearchSort::FIELD_CREATED_AT)
             ->and($sort->direction)->toBe(SearchSort::DIRECTION_ASC);
     });
 
-    it('validates sort direction on construction', function () {
+    it('validates sort direction on construction', function (): void {
         expect(fn () => new SearchSort(SearchSort::FIELD_NAME, 'invalid'))
             ->toThrow(InvalidArgumentException::class, 'Invalid sort direction: invalid');
     });
 
-    it('converts to array correctly', function () {
+    it('converts to array correctly', function (): void {
         $sort = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_ASC);
         $array = $sort->toArray();
 
@@ -34,56 +34,56 @@ describe('SearchSort Value Object', function () {
         ]);
     });
 
-    it('converts to meilisearch sort format for non-relevance fields', function () {
+    it('converts to meilisearch sort format for non-relevance fields', function (): void {
         $sort = new SearchSort(SearchSort::FIELD_CREATED_AT, SearchSort::DIRECTION_DESC);
         $meilisearchSort = $sort->toMeilisearchSort();
 
         expect($meilisearchSort)->toBe(['created_at:desc']);
     });
 
-    it('returns empty array for relevance sort in meilisearch format', function () {
+    it('returns empty array for relevance sort in meilisearch format', function (): void {
         $sort = new SearchSort(SearchSort::FIELD_RELEVANCE, SearchSort::DIRECTION_DESC);
         $meilisearchSort = $sort->toMeilisearchSort();
 
         expect($meilisearchSort)->toBe([]);
     });
 
-    it('creates from string format with field and direction', function () {
+    it('creates from string format with field and direction', function (): void {
         $sort = SearchSort::fromString('created_at:asc');
 
         expect($sort->field)->toBe('created_at')
             ->and($sort->direction)->toBe(SearchSort::DIRECTION_ASC);
     });
 
-    it('creates from string format with field only', function () {
+    it('creates from string format with field only', function (): void {
         $sort = SearchSort::fromString('amount');
 
         expect($sort->field)->toBe('amount')
             ->and($sort->direction)->toBe(SearchSort::DIRECTION_DESC);
     });
 
-    it('handles complex string format with multiple colons', function () {
+    it('handles complex string format with multiple colons', function (): void {
         $sort = SearchSort::fromString('nested:field:asc');
 
         expect($sort->field)->toBe('nested:field')
             ->and($sort->direction)->toBe(SearchSort::DIRECTION_ASC);
     });
 
-    it('converts to string format correctly', function () {
+    it('converts to string format correctly', function (): void {
         $sort = new SearchSort(SearchSort::FIELD_UPDATED_AT, SearchSort::DIRECTION_ASC);
         $string = $sort->toString();
 
         expect($string)->toBe('updated_at:asc');
     });
 
-    it('returns empty string for relevance sort', function () {
+    it('returns empty string for relevance sort', function (): void {
         $sort = new SearchSort(SearchSort::FIELD_RELEVANCE, SearchSort::DIRECTION_DESC);
         $string = $sort->toString();
 
         expect($string)->toBe('');
     });
 
-    it('identifies relevance sort correctly', function () {
+    it('identifies relevance sort correctly', function (): void {
         $relevanceSort = new SearchSort(SearchSort::FIELD_RELEVANCE);
         $fieldSort = new SearchSort(SearchSort::FIELD_NAME);
 
@@ -91,7 +91,7 @@ describe('SearchSort Value Object', function () {
             ->and($fieldSort->isRelevanceSort())->toBeFalse();
     });
 
-    it('identifies ascending sort correctly', function () {
+    it('identifies ascending sort correctly', function (): void {
         $ascSort = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_ASC);
         $descSort = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_DESC);
 
@@ -99,7 +99,7 @@ describe('SearchSort Value Object', function () {
             ->and($descSort->isAscending())->toBeFalse();
     });
 
-    it('identifies descending sort correctly', function () {
+    it('identifies descending sort correctly', function (): void {
         $descSort = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_DESC);
         $ascSort = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_ASC);
 
@@ -107,7 +107,7 @@ describe('SearchSort Value Object', function () {
             ->and($ascSort->isDescending())->toBeFalse();
     });
 
-    it('reverses sort direction correctly', function () {
+    it('reverses sort direction correctly', function (): void {
         $ascSort = new SearchSort(SearchSort::FIELD_DATE, SearchSort::DIRECTION_ASC);
         $reversed = $ascSort->reverse();
 
@@ -116,21 +116,21 @@ describe('SearchSort Value Object', function () {
             ->and($ascSort->direction)->toBe(SearchSort::DIRECTION_ASC); // Original unchanged
     });
 
-    it('reverses descending to ascending', function () {
+    it('reverses descending to ascending', function (): void {
         $descSort = new SearchSort(SearchSort::FIELD_CREATED_AT, SearchSort::DIRECTION_DESC);
         $reversed = $descSort->reverse();
 
         expect($reversed->direction)->toBe(SearchSort::DIRECTION_ASC);
     });
 
-    it('preserves field when reversing', function () {
+    it('preserves field when reversing', function (): void {
         $sort = new SearchSort(SearchSort::FIELD_UPDATED_AT, SearchSort::DIRECTION_ASC);
         $reversed = $sort->reverse();
 
         expect($reversed->field)->toBe(SearchSort::FIELD_UPDATED_AT);
     });
 
-    it('has correct field constants', function () {
+    it('has correct field constants', function (): void {
         expect(SearchSort::FIELD_RELEVANCE)->toBe('_relevance')
             ->and(SearchSort::FIELD_CREATED_AT)->toBe('created_at')
             ->and(SearchSort::FIELD_UPDATED_AT)->toBe('updated_at')
@@ -139,12 +139,12 @@ describe('SearchSort Value Object', function () {
             ->and(SearchSort::FIELD_DATE)->toBe('date');
     });
 
-    it('has correct direction constants', function () {
+    it('has correct direction constants', function (): void {
         expect(SearchSort::DIRECTION_ASC)->toBe('asc')
             ->and(SearchSort::DIRECTION_DESC)->toBe('desc');
     });
 
-    it('validates valid directions pass through', function () {
+    it('validates valid directions pass through', function (): void {
         $ascSort = new SearchSort(SearchSort::FIELD_NAME, SearchSort::DIRECTION_ASC);
         $descSort = new SearchSort(SearchSort::FIELD_NAME, SearchSort::DIRECTION_DESC);
 
@@ -152,21 +152,21 @@ describe('SearchSort Value Object', function () {
             ->and($descSort->direction)->toBe(SearchSort::DIRECTION_DESC);
     });
 
-    it('supports custom field names', function () {
+    it('supports custom field names', function (): void {
         $sort = new SearchSort('custom_field', SearchSort::DIRECTION_ASC);
 
         expect($sort->field)->toBe('custom_field')
             ->and($sort->direction)->toBe(SearchSort::DIRECTION_ASC);
     });
 
-    it('converts custom field to meilisearch format', function () {
+    it('converts custom field to meilisearch format', function (): void {
         $sort = new SearchSort('priority', SearchSort::DIRECTION_DESC);
         $meilisearchSort = $sort->toMeilisearchSort();
 
         expect($meilisearchSort)->toBe(['priority:desc']);
     });
 
-    it('creates immutable instances', function () {
+    it('creates immutable instances', function (): void {
         $original = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_ASC);
         $reversed = $original->reverse();
 
@@ -175,14 +175,14 @@ describe('SearchSort Value Object', function () {
             ->and($original)->not->toBe($reversed);
     });
 
-    it('handles empty field name gracefully', function () {
+    it('handles empty field name gracefully', function (): void {
         $sort = new SearchSort('', SearchSort::DIRECTION_ASC);
 
         expect($sort->field)->toBe('')
             ->and($sort->direction)->toBe(SearchSort::DIRECTION_ASC);
     });
 
-    it('handles case sensitivity in validation', function () {
+    it('handles case sensitivity in validation', function (): void {
         expect(fn () => new SearchSort(SearchSort::FIELD_NAME, 'ASC'))
             ->toThrow(InvalidArgumentException::class, 'Invalid sort direction: ASC');
 
@@ -190,7 +190,7 @@ describe('SearchSort Value Object', function () {
             ->toThrow(InvalidArgumentException::class, 'Invalid sort direction: DESC');
     });
 
-    it('creates consistent string representation', function () {
+    it('creates consistent string representation', function (): void {
         $sort1 = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_ASC);
         $sort2 = SearchSort::fromString($sort1->toString());
 
@@ -198,21 +198,21 @@ describe('SearchSort Value Object', function () {
             ->and($sort2->direction)->toBe($sort1->direction);
     });
 
-    it('handles special characters in field names', function () {
+    it('handles special characters in field names', function (): void {
         $sort = new SearchSort('field_with_underscore', SearchSort::DIRECTION_ASC);
 
         expect($sort->field)->toBe('field_with_underscore')
             ->and($sort->toString())->toBe('field_with_underscore:asc');
     });
 
-    it('supports dotted field names for nested fields', function () {
+    it('supports dotted field names for nested fields', function (): void {
         $sort = new SearchSort('user.name', SearchSort::DIRECTION_DESC);
 
         expect($sort->field)->toBe('user.name')
             ->and($sort->toMeilisearchSort())->toBe(['user.name:desc']);
     });
 
-    it('round trip conversion preserves data', function () {
+    it('round trip conversion preserves data', function (): void {
         $original = new SearchSort(SearchSort::FIELD_DATE, SearchSort::DIRECTION_ASC);
         $fromString = SearchSort::fromString($original->toString());
 
@@ -220,7 +220,7 @@ describe('SearchSort Value Object', function () {
             ->and($fromString->direction)->toBe($original->direction);
     });
 
-    it('supports all predefined field constants in meilisearch format', function () {
+    it('supports all predefined field constants in meilisearch format', function (): void {
         $fields = [
             SearchSort::FIELD_CREATED_AT,
             SearchSort::FIELD_UPDATED_AT,
@@ -237,7 +237,7 @@ describe('SearchSort Value Object', function () {
         }
     });
 
-    it('creates new instance for each operation', function () {
+    it('creates new instance for each operation', function (): void {
         $sort1 = new SearchSort(SearchSort::FIELD_AMOUNT, SearchSort::DIRECTION_ASC);
         $sort2 = $sort1->reverse();
         $sort3 = $sort1->reverse();

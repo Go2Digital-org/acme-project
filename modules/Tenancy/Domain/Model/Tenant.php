@@ -57,7 +57,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     /**
      * Get custom columns for the tenant table.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function getCustomColumns(): array
@@ -107,7 +108,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     /**
      * Get the config data.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getConfig(): array
@@ -268,8 +270,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     /**
      * Get admin user data from tenant data.
-     *
-     * @return array<string, mixed>|null
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getAdminData(): ?array
     {
@@ -278,7 +281,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     /**
      * Store admin user data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $adminData
      */
     public function setAdminData(array $adminData): void
@@ -292,8 +296,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     /**
      * Get feature flags for this tenant.
-     *
-     * @return array<string, bool>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getFeatures(): array
     {

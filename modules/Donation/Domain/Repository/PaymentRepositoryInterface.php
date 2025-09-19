@@ -101,8 +101,9 @@ interface PaymentRepositoryInterface
 
     /**
      * Get payment statistics for dashboard.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array;
 
     /**
@@ -123,14 +124,14 @@ interface PaymentRepositoryInterface
     /**
      * Get payment volume by gateway.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getVolumeByGateway(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array;
 
     /**
      * Get failure reasons breakdown.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getFailureReasons(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array;
 
@@ -144,7 +145,7 @@ interface PaymentRepositoryInterface
     /**
      * Bulk update payment statuses.
      *
-     * @param  int[]  $paymentIds
+     * @param  array<int, int>  $paymentIds
      */
     public function bulkUpdateStatus(array $paymentIds, PaymentStatus $status): int;
 

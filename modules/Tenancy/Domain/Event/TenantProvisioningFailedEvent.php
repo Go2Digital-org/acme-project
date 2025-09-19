@@ -45,7 +45,8 @@ final readonly class TenantProvisioningFailedEvent
 
     /**
      * Get event payload for serialization.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getPayload(): array

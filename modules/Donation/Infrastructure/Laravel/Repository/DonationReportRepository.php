@@ -27,7 +27,7 @@ class DonationReportRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
+     * @param  array<string, mixed>  $filters
      */
     protected function buildReadModel(string|int $id, ?array $filters = null): ?ReadModelInterface
     {
@@ -47,20 +47,24 @@ class DonationReportRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string>  $ids
-     * @param  array<string, mixed>|null  $filters
-     * @return array<DonationReportReadModel>
+     * @param  array<string, mixed>  $ids
+     * @param  array<string, mixed>  $filters
+     */
+
+    /**
+     * @return array<string, mixed>
      */
     protected function buildReadModels(array $ids, ?array $filters = null): array
     {
         $results = [];
 
         foreach ($ids as $reportId) {
-            $data = $this->buildDonationReportData($reportId, $filters);
+            $reportIdString = (string) $reportId;
+            $data = $this->buildDonationReportData($reportIdString, $filters);
 
             if ($data !== []) {
-                $results[(string) $reportId] = new DonationReportReadModel(
-                    $reportId,
+                $results[$reportIdString] = new DonationReportReadModel(
+                    $reportIdString,
                     $data,
                     (string) time()
                 );
@@ -72,7 +76,7 @@ class DonationReportRepository extends AbstractReadModelRepository
 
     /**
      * @param  array<string, mixed>|null  $filters
-     * @return array<int, mixed>
+     * @return array<int, ReadModelInterface>
      */
     protected function buildAllReadModels(?array $filters = null, ?int $limit = null, ?int $offset = null): array
     {
@@ -82,7 +86,7 @@ class DonationReportRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
+     * @param  array<string, mixed>  $filters
      */
     protected function buildCount(?array $filters = null): int
     {
@@ -374,7 +378,8 @@ class DonationReportRepository extends AbstractReadModelRepository
 
     /**
      * Parse report ID to extract type and parameters.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function parseReportId(string $reportId): array
@@ -480,8 +485,9 @@ class DonationReportRepository extends AbstractReadModelRepository
 
     /**
      * Calculate median from array of values.
-     *
-     * @param  array<int, float>  $values
+     */
+    /**
+     * @param  array<string, mixed>  $values
      */
     private function calculateMedian(array $values): float
     {
@@ -504,7 +510,7 @@ class DonationReportRepository extends AbstractReadModelRepository
      * Generate report for organization.
      */
     /**
-     * @param  array<string, string>|null  $dateRange
+     * @param  array<string, mixed>  $dateRange
      */
     public function generateOrganizationReport(int $organizationId, ?array $dateRange = null): ?ReadModelInterface
     {
@@ -522,7 +528,7 @@ class DonationReportRepository extends AbstractReadModelRepository
      * Generate report for campaign.
      */
     /**
-     * @param  array<string, string>|null  $dateRange
+     * @param  array<string, mixed>  $dateRange
      */
     public function generateCampaignReport(int $campaignId, ?array $dateRange = null): ?ReadModelInterface
     {
@@ -540,7 +546,7 @@ class DonationReportRepository extends AbstractReadModelRepository
      * Generate gateway performance report.
      */
     /**
-     * @param  array<string, string>|null  $dateRange
+     * @param  array<string, mixed>  $dateRange
      */
     public function generateGatewayReport(?array $dateRange = null): ?ReadModelInterface
     {

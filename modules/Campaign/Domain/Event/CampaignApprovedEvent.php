@@ -27,6 +27,9 @@ class CampaignApprovedEvent extends AbstractDomainEvent
         return 'campaign.approved';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return array_merge(parent::getEventData(), [

@@ -108,8 +108,8 @@ The platform supports multiple domain configurations:
 - **Tenant Domains**: `*.localhost` (e.g., `tenant1.localhost`)
 
 #### Production
-- **Central Domain**: `acme-corp.com`
-- **Tenant Domains**: `*.acme-corp.com` (e.g., `tenant1.acme-corp.com`)
+- **Central Domain**: `yourdomain.com`
+- **Tenant Domains**: `*.yourdomain.com` (e.g., `tenant1.yourdomain.com`)
 
 ### DNS Configuration
 
@@ -117,10 +117,10 @@ For production multi-tenancy, configure DNS:
 
 ```dns
 # A Records
-acme-corp.com.     3600  IN  A  YOUR_SERVER_IP
+yourdomain.com.     3600  IN  A  YOUR_SERVER_IP
 
 # Wildcard for tenant subdomains
-*.acme-corp.com.   3600  IN  A  YOUR_SERVER_IP
+*.yourdomain.com.   3600  IN  A  YOUR_SERVER_IP
 ```
 
 ## Management Commands
@@ -222,9 +222,9 @@ FrankenPHP automatically handles SSL with Let's Encrypt:
 
 ```yaml
 # Production domain configuration
-SERVER_NAME: "acme-corp.com, *.acme-corp.com:443"
+SERVER_NAME: "yourdomain.com, *.yourdomain.com:443"
 OCTANE_HTTPS: true
-LETS_ENCRYPT_EMAIL: admin@acme-corp.com
+LETS_ENCRYPT_EMAIL: admin@yourdomain.com
 ```
 
 ## Performance Optimization

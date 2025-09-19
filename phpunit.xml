@@ -57,49 +57,24 @@
         </report>
     </coverage>
     <php>
-        <ini name="memory_limit" value="2G"/>
+        <ini name="memory_limit" value="512M"/>
         <ini name="max_execution_time" value="300"/>
         <ini name="error_reporting" value="E_ALL"/>
-        <!-- Parallel execution optimization -->
-        <!-- Let Pest decide when to use parallel based on command line flags -->
         <env name="APP_ENV" value="testing"/>
         <env name="APP_KEY" value="base64:test123456789012345678901234567890123456789="/>
-        <env name="APP_URL" value="http://localhost:8000"/>
-        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <env name="APP_DEBUG" value="false"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_STORE" value="array"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <!-- Force test database configuration -->
         <env name="DB_CONNECTION" value="mysql"/>
         <env name="DB_HOST" value="127.0.0.1"/>
         <env name="DB_PORT" value="3306"/>
         <env name="DB_DATABASE" value="acme_corp_csr_test"/>
         <env name="DB_USERNAME" value="root"/>
         <env name="DB_PASSWORD" value="root"/>
-        <!-- Database optimization for parallel testing -->
-        <env name="DB_POOL_MIN" value="2"/>
-        <env name="DB_POOL_MAX" value="10"/>
-        <env name="DB_LOCK_TIMEOUT" value="5"/>
-        <env name="DB_DEADLOCK_RETRIES" value="3"/>
+        <env name="CACHE_DRIVER" value="array"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <env name="REDIS_CLIENT" value="array"/>
-        <env name="APP_DEBUG" value="false"/>
-        <env name="DEBUGBAR_ENABLED" value="false"/>
-        <env name="DB_FOREIGN_KEYS" value="false"/>
-        <env name="DB_STRICT_MODE" value="false"/>
         <env name="SCOUT_DRIVER" value="null"/>
-        <env name="SOCIALITE_PROVIDERS_DISABLED" value="true"/>
-        <env name="NOTIFICATIONS_ENABLED" value="false"/>
-        <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
-        <env name="NIGHTWATCH_ENABLED" value="false"/>
-        <env name="STRIPE_MODE" value="test"/>
-        <env name="STRIPE_SECRET" value="sk_test_dummy"/>
-        <env name="STRIPE_PUBLIC" value="pk_test_dummy"/>
-        <env name="PAYPAL_MODE" value="sandbox"/>
-        <env name="MOLLIE_KEY" value="test_dummy"/>
-        <env name="SANCTUM_STATEFUL_DOMAINS" value="localhost:8000,127.0.0.1:8000"/>
     </php>
 </phpunit>

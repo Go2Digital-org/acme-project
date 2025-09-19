@@ -21,7 +21,7 @@ class PerformanceMonitor
     // Timing metrics
     private float $startTime;
 
-    /** @var array<float> */
+    /** @var list<float> */
     private array $batchTimes = [];
 
     // Throughput metrics
@@ -29,7 +29,7 @@ class PerformanceMonitor
 
     private int $totalBatches = 0;
 
-    /** @var array<float> */
+    /** @var list<float> */
     private array $throughputHistory = [];
 
     // Memory metrics
@@ -38,10 +38,10 @@ class PerformanceMonitor
     private int $peakMemory = 0;
 
     // Performance tracking
-    /** @var array<int> */
+    /** @var list<int> */
     private array $batchSizes = [];
 
-    /** @var array<float> */
+    /** @var list<float> */
     private array $batchDurations = [];
 
     private float $slowestBatch = 0;
@@ -49,7 +49,7 @@ class PerformanceMonitor
     private float $fastestBatch = PHP_FLOAT_MAX;
 
     // Resource utilization
-    /** @var array<int, array<string, mixed>> */
+    /** @var list<array<string, mixed>> */
     private array $systemMetrics = [];
 
     public function __construct(private readonly Command $command) {}
@@ -119,7 +119,9 @@ class PerformanceMonitor
     /**
      * Get current real-time metrics
      */
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getCurrentMetrics(): array
     {
         $currentTime = microtime(true);
@@ -150,7 +152,9 @@ class PerformanceMonitor
     /**
      * Get final comprehensive metrics
      */
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getFinalMetrics(): array
     {
         $totalTime = microtime(true) - $this->startTime;
@@ -309,11 +313,9 @@ class PerformanceMonitor
     /**
      * Generate performance insights and recommendations
      */
-    /** @param array<string, mixed> $metrics */
-    /** @return array<string> */
     /**
      * @param  array<string, mixed>  $metrics
-     * @return array<int, string>
+     * @return list<string>
      */
     private function generatePerformanceAnalysis(array $metrics): array
     {
@@ -377,7 +379,8 @@ class PerformanceMonitor
 
     /**
      * Get system resource utilization summary
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getSystemMetrics(): array

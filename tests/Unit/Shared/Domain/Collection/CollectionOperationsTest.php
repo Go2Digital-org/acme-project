@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
  * @group domain
  * @group shared
  */
-beforeEach(function () {
+beforeEach(function (): void {
     // Create test data for complex collection operations
     $this->users = collect([
         (object) ['id' => 1, 'name' => 'Alice Johnson', 'email' => 'alice@example.com', 'age' => 25, 'department' => 'Engineering', 'salary' => 75000, 'active' => true],
@@ -52,8 +52,8 @@ beforeEach(function () {
     ]);
 });
 
-describe('Complex Filtering Operations', function () {
-    it('filters with complex predicates using multiple conditions', function () {
+describe('Complex Filtering Operations', function (): void {
+    it('filters with complex predicates using multiple conditions', function (): void {
         $result = $this->users->filter(function ($user) {
             return $user->age >= 30 &&
                    $user->department === 'Engineering' &&
@@ -67,7 +67,7 @@ describe('Complex Filtering Operations', function () {
         expect($result->first()->salary)->toBe(95000);
     });
 
-    it('filters using nested conditions with logical operators', function () {
+    it('filters using nested conditions with logical operators', function (): void {
         $result = $this->campaigns->filter(function ($campaign) {
             return ($campaign->category === 'Environment' || $campaign->category === 'Education') &&
                    $campaign->current_amount > 20000 &&
@@ -78,7 +78,7 @@ describe('Complex Filtering Operations', function () {
         expect($result->pluck('title')->toArray())->toEqual(['Save the Forests', 'Education for All', 'Tech Skills Training']);
     });
 
-    it('filters with custom callback predicates', function () {
+    it('filters with custom callback predicates', function (): void {
         $isHighPerformer = function ($user) {
             return $user->salary > 70000 && $user->active;
         };
@@ -95,7 +95,7 @@ describe('Complex Filtering Operations', function () {
         expect($longNames->pluck('name')->toArray())->toEqual(['Alice Johnson', 'Carol Davis', 'David Wilson', 'Frank Miller']);
     });
 
-    it('filters using reject method with complex conditions', function () {
+    it('filters using reject method with complex conditions', function (): void {
         $activeHighEarners = $this->users->reject(function ($user) {
             return ! $user->active || $user->salary < 70000;
         });
@@ -105,7 +105,7 @@ describe('Complex Filtering Operations', function () {
             ->toEqual(['Alice Johnson', 'David Wilson', 'Eve Brown']);
     });
 
-    it('combines multiple filter operations in sequence', function () {
+    it('combines multiple filter operations in sequence', function (): void {
         $result = $this->users
             ->filter(fn ($user) => $user->active)
             ->filter(fn ($user) => $user->age > 25)
@@ -117,8 +117,8 @@ describe('Complex Filtering Operations', function () {
     });
 });
 
-describe('Map and Reduce Operations', function () {
-    it('maps complex transformations with nested operations', function () {
+describe('Map and Reduce Operations', function (): void {
+    it('maps complex transformations with nested operations', function (): void {
         $transformed = $this->users->map(function ($user) {
             return (object) [
                 'id' => $user->id,
@@ -137,7 +137,7 @@ describe('Map and Reduce Operations', function () {
         expect($transformed->first()->salary_tier)->toBe('mid');
     });
 
-    it('performs reduce operations for complex calculations', function () {
+    it('performs reduce operations for complex calculations', function (): void {
         $totalSalaryByDepartment = $this->users->reduce(function ($carry, $user) {
             $dept = $user->department;
             if (! isset($carry[$dept])) {
@@ -157,7 +157,7 @@ describe('Map and Reduce Operations', function () {
         expect($totalSalaryByDepartment['Marketing']['avg'])->toBe(67500);
     });
 
-    it('chains map operations for data pipeline processing', function () {
+    it('chains map operations for data pipeline processing', function (): void {
         $result = $this->campaigns
             ->map(fn ($c) => (object) array_merge((array) $c, ['progress' => $c->current_amount / $c->goal_amount]))
             ->map(fn ($c) => (object) array_merge((array) $c, ['priority' => $c->progress < 0.3 ? 'high' : ($c->progress < 0.7 ? 'medium' : 'low')]))
@@ -168,7 +168,7 @@ describe('Map and Reduce Operations', function () {
         expect($result->first()->urgency_score)->toBe(100.0);
     });
 
-    it('uses flatMap for nested collection operations', function () {
+    it('uses flatMap for nested collection operations', function (): void {
         $allItems = $this->nestedData->flatMap(function ($group) {
             return collect($group['items'])->map(function ($item) use ($group) {
                 return (object) ['category' => $group['category'], 'value' => $item];
@@ -180,7 +180,7 @@ describe('Map and Reduce Operations', function () {
         expect($allItems->where('value', '>', 8))->toHaveCount(4);
     });
 
-    it('performs mapWithKeys for associative transformations', function () {
+    it('performs mapWithKeys for associative transformations', function (): void {
         $userLookup = $this->users->mapWithKeys(function ($user) {
             return [$user->email => [
                 'name' => $user->name,
@@ -195,8 +195,8 @@ describe('Map and Reduce Operations', function () {
     });
 });
 
-describe('Sorting with Custom Comparators', function () {
-    it('sorts by multiple criteria with custom comparators', function () {
+describe('Sorting with Custom Comparators', function (): void {
+    it('sorts by multiple criteria with custom comparators', function (): void {
         $sorted = $this->users->sort(function ($a, $b) {
             // Sort by department first, then by salary descending, then by age ascending
             $deptComparison = strcmp($a->department, $b->department);
@@ -218,7 +218,7 @@ describe('Sorting with Custom Comparators', function () {
         expect($sorted->get(1)->name)->toBe('Carol Davis');
     });
 
-    it('sorts using sortBy with complex key extraction', function () {
+    it('sorts using sortBy with complex key extraction', function (): void {
         $sortedCampaigns = $this->campaigns->sortBy([
             ['status', 'asc'],
             ['current_amount', 'desc'],
@@ -230,7 +230,7 @@ describe('Sorting with Custom Comparators', function () {
         expect($sortedCampaigns->first()->current_amount)->toBeGreaterThan($sortedCampaigns->get(1)->current_amount);
     });
 
-    it('implements stable sorting for equal elements', function () {
+    it('implements stable sorting for equal elements', function (): void {
         $data = collect([
             (object) ['name' => 'A', 'value' => 1, 'order' => 1],
             (object) ['name' => 'B', 'value' => 1, 'order' => 2],
@@ -244,7 +244,7 @@ describe('Sorting with Custom Comparators', function () {
         expect($equalValues)->toBe([1, 2, 4]); // Maintains original order for equal elements
     });
 
-    it('sorts with custom numeric comparator', function () {
+    it('sorts with custom numeric comparator', function (): void {
         $sorted = $this->donations->sort(function ($a, $b) {
             // Sort by amount descending, but prioritize completed donations
             if ($a->status === 'completed' && $b->status !== 'completed') {
@@ -262,7 +262,7 @@ describe('Sorting with Custom Comparators', function () {
         expect($sorted->first()->amount)->toBe(1000.00);
     });
 
-    it('sorts using sortByDesc with callback', function () {
+    it('sorts using sortByDesc with callback', function (): void {
         $sorted = $this->users->sortByDesc(function ($user) {
             return $user->salary / $user->age; // Salary per year of age
         });
@@ -272,8 +272,8 @@ describe('Sorting with Custom Comparators', function () {
     });
 });
 
-describe('Pagination Logic', function () {
-    it('implements manual pagination with correct offsets', function () {
+describe('Pagination Logic', function (): void {
+    it('implements manual pagination with correct offsets', function (): void {
         $page = 2;
         $perPage = 2;
         $offset = ($page - 1) * $perPage;
@@ -288,7 +288,7 @@ describe('Pagination Logic', function () {
         expect($page <= $totalPages)->toBeTrue();
     });
 
-    it('handles edge cases in pagination', function () {
+    it('handles edge cases in pagination', function (): void {
         $perPage = 10;
         $totalItems = $this->users->count();
 
@@ -304,7 +304,7 @@ describe('Pagination Logic', function () {
         expect($beyondLastPage)->toHaveCount(0);
     });
 
-    it('creates pagination metadata', function () {
+    it('creates pagination metadata', function (): void {
         $page = 2;
         $perPage = 3;
         $total = $this->users->count();
@@ -325,7 +325,7 @@ describe('Pagination Logic', function () {
         expect($pagination['has_more_pages'])->toBeFalse(); // Page 2 is the last page with 6 total items and 3 per page
     });
 
-    it('implements cursor-based pagination', function () {
+    it('implements cursor-based pagination', function (): void {
         $cursor = 3; // Last seen ID
         $limit = 2;
 
@@ -338,8 +338,8 @@ describe('Pagination Logic', function () {
     });
 });
 
-describe('Grouping and Aggregation', function () {
-    it('groups by single criteria with aggregations', function () {
+describe('Grouping and Aggregation', function (): void {
+    it('groups by single criteria with aggregations', function (): void {
         $grouped = $this->users->groupBy('department')->map(function ($users) {
             return [
                 'count' => $users->count(),
@@ -356,7 +356,7 @@ describe('Grouping and Aggregation', function () {
         expect($grouped['Marketing']['active_count'])->toBe(1);
     });
 
-    it('groups by multiple criteria', function () {
+    it('groups by multiple criteria', function (): void {
         $multiGrouped = $this->users->groupBy(['department', 'active'])->map(function ($deptGroup) {
             return $deptGroup->map(function ($statusGroup) {
                 return [
@@ -370,7 +370,7 @@ describe('Grouping and Aggregation', function () {
         expect($multiGrouped['Engineering'][0]['count'])->toBe(1); // Inactive engineering users
     });
 
-    it('performs complex aggregations with conditional logic', function () {
+    it('performs complex aggregations with conditional logic', function (): void {
         $stats = $this->campaigns->reduce(function ($carry, $campaign) {
             $status = $campaign->status;
             $category = $campaign->category;
@@ -403,7 +403,7 @@ describe('Grouping and Aggregation', function () {
         expect($stats['Education']['total_raised'])->toBe(77000);
     });
 
-    it('groups with custom key generators', function () {
+    it('groups with custom key generators', function (): void {
         $ageGroups = $this->users->groupBy(function ($user) {
             if ($user->age < 30) {
                 return 'young';
@@ -420,7 +420,7 @@ describe('Grouping and Aggregation', function () {
         expect($ageGroups['senior'])->toHaveCount(1);
     });
 
-    it('implements pivot table functionality', function () {
+    it('implements pivot table functionality', function (): void {
         $pivot = [];
 
         foreach ($this->users as $user) {
@@ -440,8 +440,8 @@ describe('Grouping and Aggregation', function () {
     });
 });
 
-describe('Set Operations', function () {
-    it('performs union operations on collections', function () {
+describe('Set Operations', function (): void {
+    it('performs union operations on collections', function (): void {
         $set1 = collect(['a', 'b', 'c', 'd']);
         $set2 = collect(['c', 'd', 'e', 'f']);
 
@@ -451,7 +451,7 @@ describe('Set Operations', function () {
         expect($union->toArray())->toBe(['a', 'b', 'c', 'd', 'e', 'f']);
     });
 
-    it('performs intersection operations', function () {
+    it('performs intersection operations', function (): void {
         $engineeringUsers = $this->users->where('department', 'Engineering')->pluck('id');
         $activeUsers = $this->users->where('active', true)->pluck('id');
 
@@ -461,7 +461,7 @@ describe('Set Operations', function () {
         expect($activeEngineers->values()->toArray())->toBe([1, 5]);
     });
 
-    it('performs difference operations', function () {
+    it('performs difference operations', function (): void {
         $allUserIds = $this->users->pluck('id');
         $activeUserIds = $this->users->where('active', true)->pluck('id');
 
@@ -471,7 +471,7 @@ describe('Set Operations', function () {
         expect($inactiveUserIds->sort()->values()->toArray())->toBe([3, 6]);
     });
 
-    it('performs symmetric difference operations', function () {
+    it('performs symmetric difference operations', function (): void {
         $set1 = collect([1, 2, 3, 4]);
         $set2 = collect([3, 4, 5, 6]);
 
@@ -480,7 +480,7 @@ describe('Set Operations', function () {
         expect($symDiff->sort()->values()->toArray())->toBe([1, 2, 5, 6]);
     });
 
-    it('checks subset and superset relationships', function () {
+    it('checks subset and superset relationships', function (): void {
         $engineeringIds = $this->users->where('department', 'Engineering')->pluck('id');
         $activeEngineeringIds = $this->users->where('department', 'Engineering')->where('active', true)->pluck('id');
         $allIds = $this->users->pluck('id');
@@ -493,8 +493,8 @@ describe('Set Operations', function () {
     });
 });
 
-describe('Collection Immutability', function () {
-    it('ensures original collection remains unchanged after transformations', function () {
+describe('Collection Immutability', function (): void {
+    it('ensures original collection remains unchanged after transformations', function (): void {
         $original = $this->users;
         $originalCount = $original->count();
         $originalFirst = $original->first()->name;
@@ -510,7 +510,7 @@ describe('Collection Immutability', function () {
         expect($transformed->first()->name)->toBeString();
     });
 
-    it('demonstrates immutability with chained operations', function () {
+    it('demonstrates immutability with chained operations', function (): void {
         $numbers = collect([1, 2, 3, 4, 5]);
         $doubled = $numbers->map(fn ($n) => $n * 2);
         $filtered = $doubled->filter(fn ($n) => $n > 5);
@@ -520,7 +520,7 @@ describe('Collection Immutability', function () {
         expect($filtered->values()->toArray())->toBe([6, 8, 10]);
     });
 
-    it('shows mutations only affect copies', function () {
+    it('shows mutations only affect copies', function (): void {
         $originalUsers = $this->users;
         $clonedUsers = $this->users->map(fn ($u) => clone $u);
 
@@ -531,7 +531,7 @@ describe('Collection Immutability', function () {
         expect($clonedUsers->first()->name)->toBe('Modified Name');
     });
 
-    it('preserves structure in nested transformations', function () {
+    it('preserves structure in nested transformations', function (): void {
         $originalNested = $this->nestedData;
 
         $transformed = $originalNested->map(function ($group) {
@@ -548,8 +548,8 @@ describe('Collection Immutability', function () {
     });
 });
 
-describe('Lazy Evaluation', function () {
-    it('demonstrates lazy evaluation with large datasets', function () {
+describe('Lazy Evaluation', function (): void {
+    it('demonstrates lazy evaluation with large datasets', function (): void {
         $lazyNumbers = $this->largeNumbers->lazy()
             ->filter(fn ($n) => $n % 2 === 0)
             ->map(fn ($n) => $n * $n)
@@ -563,7 +563,7 @@ describe('Lazy Evaluation', function () {
         expect($result)->toBeArray();
     });
 
-    it('uses lazy collections for memory efficiency', function () {
+    it('uses lazy collections for memory efficiency', function (): void {
         $lazyFiltered = $this->largeNumbers->lazy()
             ->filter(function ($number) {
                 // Simulate expensive operation
@@ -579,7 +579,7 @@ describe('Lazy Evaluation', function () {
         expect($firstFive)->toBeArray();
     });
 
-    it('combines lazy with eager evaluation strategically', function () {
+    it('combines lazy with eager evaluation strategically', function (): void {
         // Use lazy for filtering large dataset
         $lazyFiltered = $this->largeNumbers->lazy()
             ->filter(fn ($n) => $n % 10 === 0)
@@ -600,12 +600,12 @@ describe('Lazy Evaluation', function () {
     });
 });
 
-describe('Memory-Efficient Operations', function () {
-    it('processes large datasets in chunks', function () {
+describe('Memory-Efficient Operations', function (): void {
+    it('processes large datasets in chunks', function (): void {
         $processedCount = 0;
         $chunkSize = 100;
 
-        $this->largeNumbers->chunk($chunkSize)->each(function ($chunk) use (&$processedCount) {
+        $this->largeNumbers->chunk($chunkSize)->each(function ($chunk) use (&$processedCount): void {
             $processedCount += $chunk->count();
 
             // Simulate processing each chunk
@@ -616,7 +616,7 @@ describe('Memory-Efficient Operations', function () {
         expect($processedCount)->toBe(1000);
     });
 
-    it('uses generators for memory-efficient iteration', function () {
+    it('uses generators for memory-efficient iteration', function (): void {
         $generator = function () {
             foreach ($this->largeNumbers as $number) {
                 if ($number % 50 === 0) {
@@ -637,7 +637,7 @@ describe('Memory-Efficient Operations', function () {
         expect($results[0])->toBe(2500); // 50^2
     });
 
-    it('implements streaming operations for large data', function () {
+    it('implements streaming operations for large data', function (): void {
         $lastDigitFactorial = function (int $n): int {
             $factorial = 1;
             for ($i = 1; $i <= $n; $i++) {
@@ -660,8 +660,8 @@ describe('Memory-Efficient Operations', function () {
     });
 });
 
-describe('Collection Validation', function () {
-    it('validates collection structure and types', function () {
+describe('Collection Validation', function (): void {
+    it('validates collection structure and types', function (): void {
         $validator = function ($collection, $expectedStructure) {
             return $collection->every(function ($item) use ($expectedStructure) {
                 foreach ($expectedStructure as $key => $type) {
@@ -690,7 +690,7 @@ describe('Collection Validation', function () {
         expect($isValid)->toBeTrue();
     });
 
-    it('validates business rules across collection', function () {
+    it('validates business rules across collection', function (): void {
         $validateUsers = function ($users) {
             $errors = [];
 
@@ -722,7 +722,7 @@ describe('Collection Validation', function () {
         expect($errors)->toBeEmpty();
     });
 
-    it('validates data integrity constraints', function () {
+    it('validates data integrity constraints', function (): void {
         $validateDonations = function ($donations, $campaigns) {
             $errors = [];
 
@@ -748,7 +748,7 @@ describe('Collection Validation', function () {
         expect($errors)->toBeEmpty();
     });
 
-    it('validates collection consistency', function () {
+    it('validates collection consistency', function (): void {
         $consistencyCheck = function ($campaigns, $donations) {
             $issues = [];
 
@@ -773,8 +773,8 @@ describe('Collection Validation', function () {
     });
 });
 
-describe('Performance and Benchmarking', function () {
-    it('measures operation performance on large datasets', function () {
+describe('Performance and Benchmarking', function (): void {
+    it('measures operation performance on large datasets', function (): void {
         $startTime = microtime(true);
 
         $result = $this->largeNumbers
@@ -789,7 +789,7 @@ describe('Performance and Benchmarking', function () {
         expect($executionTime)->toBeLessThan(0.1); // Should complete in under 100ms
     });
 
-    it('compares eager vs lazy evaluation performance', function () {
+    it('compares eager vs lazy evaluation performance', function (): void {
         // Eager evaluation
         $eagerStart = microtime(true);
         $eagerResult = $this->largeNumbers
@@ -815,7 +815,7 @@ describe('Performance and Benchmarking', function () {
         expect($eagerTime)->toBeLessThan(1.0);
     });
 
-    it('benchmarks different grouping strategies', function () {
+    it('benchmarks different grouping strategies', function (): void {
         // Strategy 1: Simple groupBy
         $start1 = microtime(true);
         $groups1 = $this->largeNumbers->groupBy(fn ($n) => $n % 10);

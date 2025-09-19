@@ -283,6 +283,9 @@ class CurrencyResource extends Resource
             ->defaultSort('sort_order');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelations(): array
     {
         return [
@@ -290,6 +293,9 @@ class CurrencyResource extends Resource
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

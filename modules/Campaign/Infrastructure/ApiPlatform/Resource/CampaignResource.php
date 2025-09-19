@@ -107,7 +107,7 @@ class CampaignResource implements JsonSerializable
         public ?int $organizationId = null,
         public ?int $organization_id = null, // Add snake_case property for API compatibility
         public ?string $organizationName = null,
-        public ?int $employeeId = null,
+        public ?int $userId = null,
         public ?string $employeeName = null,
         public ?float $progressPercentage = null,
         public ?int $daysRemaining = null,
@@ -163,7 +163,7 @@ class CampaignResource implements JsonSerializable
             organizationId: $organizationId,
             organization_id: $organizationId, // Set snake_case property
             organizationName: $campaign->organization ? $campaign->organization->getName() : null,
-            employeeId: $campaign->user_id,
+            userId: $campaign->user_id,
             employeeName: $campaign->employee->name ?? null,
             progressPercentage: $campaign->getProgressPercentage(),
             daysRemaining: $campaign->getDaysRemaining(),
@@ -180,7 +180,8 @@ class CampaignResource implements JsonSerializable
     /**
      * Custom JSON serialization to provide both camelCase and snake_case properties
      * for API compatibility
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function jsonSerialize(): array
@@ -200,7 +201,7 @@ class CampaignResource implements JsonSerializable
             'organizationId' => $this->organizationId,
             'organization_id' => $this->organization_id, // snake_case alias
             'organizationName' => $this->organizationName,
-            'employeeId' => $this->employeeId,
+            'userId' => $this->userId,
             'employeeName' => $this->employeeName,
             'progressPercentage' => $this->progressPercentage,
             'daysRemaining' => $this->daysRemaining,

@@ -22,6 +22,9 @@ final class OrganizationVerifiedEvent extends AbstractDomainEvent
         return 'organization.verified';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return array_merge(parent::getEventData(), [

@@ -22,7 +22,7 @@ interface EventBusInterface
     /**
      * Publish multiple domain events in a batch
      *
-     * @param  array<DomainEventInterface>  $events  Array of domain events to publish
+     * @param  array<string, mixed>  $events  Array of domain events to publish
      */
     public function publishMany(array $events): void;
 
@@ -51,7 +51,7 @@ interface EventBusInterface
     /**
      * Get all registered handlers for debugging purposes
      *
-     * @return array<string, array<callable|string>> Map of event names to their handlers
+     * @return array<string, mixed> Map of event names to their handlers
      */
     public function getHandlers(): array;
 }

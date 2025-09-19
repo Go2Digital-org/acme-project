@@ -21,6 +21,9 @@ final readonly class OpenApiDocumentationDecorator implements OpenApiFactoryInte
         private OpenApiFactoryInterface $decorated,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $context
+     */
     public function __invoke(array $context = []): OpenApi
     {
         $openApi = $this->decorated->__invoke($context);

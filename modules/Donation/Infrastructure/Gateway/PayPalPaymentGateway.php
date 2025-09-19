@@ -90,7 +90,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
                 ],
             );
 
-            /** @var array{id: string, status: string, links: array<int, array{rel: string, href: string, method: string}>}|null $orderResponse */
+            /** @var array{id: string, status: string, links: array<int, array<string, mixed>>}|null $orderResponse */
             $orderResponse = json_decode($response->getBody()->getContents(), true);
 
             if ($orderResponse === null) {
@@ -104,7 +104,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
                 'currency' => $intent->getCurrency(),
             ]);
 
-            /** @var array<int, array{rel: string, href: string, method: string}> $links */
+            /** @var array<int, array<string, mixed>> $links */
             $links = $orderResponse['links'];
             $approvalLink = null;
 
@@ -131,7 +131,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
             ]);
         } catch (RequestException $e) {
             $errorBody = $e->getResponse()?->getBody()?->getContents() ?? '';
-            /** @var array{message?: string, name?: string, details?: array<mixed>} $errorData */
+            /** @var array{message?: string, name?: string, details?: array<int, array<string, mixed>>} $errorData */
             $errorData = json_decode($errorBody, true) ?? [];
 
             $this->logger->error('PayPal order creation failed', [
@@ -175,7 +175,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
                 ],
             );
 
-            /** @var array{id: string, status: string, purchase_units: array<int, array{amount: array{value: string, currency_code: string}, payments?: array{captures: array<int, array{id: string, amount: array{value: string, currency_code: string}}>}}>}|null $order */
+            /** @var array{id: string, status: string, purchase_units: array<int, array<string, mixed>>}|null $order */
             $order = json_decode($orderResponse->getBody()->getContents(), true);
 
             if ($order === null) {
@@ -212,7 +212,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
                 ],
             );
 
-            /** @var array{id: string, status: string, purchase_units: array<int, array{payments: array{captures: array<int, array{id: string, amount: array{value: string, currency_code: string}}>}}>}|null $captureResult */
+            /** @var array{id: string, status: string, purchase_units: array<int, array<string, mixed>>}|null $captureResult */
             $captureResult = json_decode($captureResponse->getBody()->getContents(), true);
 
             if ($captureResult === null) {
@@ -384,7 +384,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
                         ],
                     );
 
-                    /** @var array{id: string, status: string, purchase_units: array<int, array{amount: array{value: string, currency_code: string}}>}|null $order */
+                    /** @var array{id: string, status: string, purchase_units: array<int, array<string, mixed>>}|null $order */
                     $order = json_decode($response->getBody()->getContents(), true);
 
                     if ($order === null) {
@@ -420,7 +420,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
     /**
      * Handle PayPal webhook events.
      *
-     * @param  array<array-key, mixed>  $payload
+     * @param  array<string, mixed>  $payload
      */
     public function handleWebhook(array $payload, string $signature): void
     {
@@ -524,7 +524,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
     /**
      * Handle order approved webhook event.
      *
-     * @param  array<array-key, mixed>  $payload
+     * @param  array<string, mixed>  $payload
      */
     private function handleOrderApproved(array $payload): void
     {
@@ -541,7 +541,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
     /**
      * Handle capture completed webhook event.
      *
-     * @param  array<array-key, mixed>  $payload
+     * @param  array<string, mixed>  $payload
      */
     private function handleCaptureCompleted(array $payload): void
     {
@@ -558,7 +558,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
     /**
      * Handle capture denied webhook event.
      *
-     * @param  array<array-key, mixed>  $payload
+     * @param  array<string, mixed>  $payload
      */
     private function handleCaptureDenied(array $payload): void
     {
@@ -575,7 +575,7 @@ final readonly class PayPalPaymentGateway implements PaymentGatewayInterface
     /**
      * Handle dispute created webhook event.
      *
-     * @param  array<array-key, mixed>  $payload
+     * @param  array<string, mixed>  $payload
      */
     private function handleDispute(array $payload): void
     {

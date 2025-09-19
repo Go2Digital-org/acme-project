@@ -15,7 +15,7 @@ final class ApiLocaleMiddleware
     /**
      * Supported locales for the API.
      *
-     * @var array<string>
+     * @var array<int, string>
      */
     private const SUPPORTED_LOCALES = ['en', 'nl', 'fr'];
 
@@ -28,6 +28,8 @@ final class ApiLocaleMiddleware
 
     /**
      * Handle API locale detection and setting based on Accept-Language header.
+     *
+     * @param  Closure(Request): Response  $next
      */
     public function handle(Request $request, Closure $next): Response
     {

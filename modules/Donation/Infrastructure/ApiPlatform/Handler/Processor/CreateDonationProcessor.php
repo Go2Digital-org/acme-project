@@ -23,6 +23,10 @@ final readonly class CreateDonationProcessor implements ProcessorInterface
         private CommandBusInterface $commandBus,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,
@@ -44,7 +48,7 @@ final readonly class CreateDonationProcessor implements ProcessorInterface
 
         $command = new CreateDonationCommand(
             campaignId: (int) ($requestData->campaign_id ?? 0),
-            employeeId: $user->id,
+            userId: $user->id,
             amount: (float) ($requestData->amount ?? 0.0),
             currency: (string) ($requestData->currency ?? 'USD'),
             paymentMethod: (string) ($requestData->payment_method ?? 'stripe'),

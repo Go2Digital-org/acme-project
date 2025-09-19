@@ -35,6 +35,13 @@ class ScoutBatchIndexJob implements ShouldQueue
     public int $timeout = 300;
 
     /**
+     * The number of seconds to wait before retrying the job.
+     *
+     * @var array<int, int>
+     */
+    public array $backoff = [60, 180, 600];
+
+    /**
      * Create a new job instance.
      *
      * @param  class-string  $modelClass  The model class to index
@@ -75,7 +82,7 @@ class ScoutBatchIndexJob implements ShouldQueue
             // Process in chunks using cursor to minimize memory usage
             $this->modelClass::query()
                 ->whereBetween('id', [$this->startId, $this->endId])
-                ->chunkById($this->chunkSize, function ($models) use (&$indexed, &$errors) {
+                ->chunkById($this->chunkSize, function ($models) use (&$indexed, &$errors): void {
                     try {
                         // Filter models that should be searchable
                         $searchableModels = $models->filter(function ($model) {
@@ -175,7 +182,8 @@ class ScoutBatchIndexJob implements ShouldQueue
 
     /**
      * Get the tags that should be assigned to the job.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public function tags(): array

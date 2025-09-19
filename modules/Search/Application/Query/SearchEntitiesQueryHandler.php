@@ -75,8 +75,8 @@ final readonly class SearchEntitiesQueryHandler implements QueryHandlerInterface
     /**
      * Map entity types to index names.
      *
-     * @param  array<string>  $entityTypes
-     * @return array<string>
+     * @param  array<int, string>  $entityTypes
+     * @return array<int, string>
      */
     private function mapEntityTypesToIndexes(array $entityTypes): array
     {
@@ -101,7 +101,7 @@ final readonly class SearchEntitiesQueryHandler implements QueryHandlerInterface
     /**
      * Get cached facets for the given entity types and filters.
      *
-     * @param  array<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -113,7 +113,7 @@ final readonly class SearchEntitiesQueryHandler implements QueryHandlerInterface
     /**
      * Load search facets data for caching.
      *
-     * @param  array<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -144,7 +144,8 @@ final readonly class SearchEntitiesQueryHandler implements QueryHandlerInterface
 
     /**
      * Enhance search result with cached facets.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $cachedFacets
      */
     private function enhanceResultWithCachedFacets(SearchResult $result, array $cachedFacets): SearchResult
@@ -211,7 +212,7 @@ final readonly class SearchEntitiesQueryHandler implements QueryHandlerInterface
     /**
      * Get common search filter combinations for cache warming.
      *
-     * @return array<array<string, mixed>>
+     * @return array<int, array<string, bool|int|string>>
      */
     private function getCommonSearchFilters(): array
     {
@@ -233,7 +234,7 @@ final readonly class SearchEntitiesQueryHandler implements QueryHandlerInterface
     /**
      * Get search cache statistics.
      *
-     * @param  array<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -253,7 +254,7 @@ final readonly class SearchEntitiesQueryHandler implements QueryHandlerInterface
     /**
      * Build cache key for search facets.
      *
-     * @param  array<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      */
     private function buildSearchFacetsCacheKey(array $entityTypes, array $filters): string

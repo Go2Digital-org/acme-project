@@ -17,10 +17,10 @@ use Modules\Export\Domain\ValueObject\ExportId;
  * Handles deletion of export jobs and their files through the domain layer.
  * Validates export ownership and status before deletion.
  */
-final class DeleteExportCommandHandler
+final readonly class DeleteExportCommandHandler
 {
     public function __construct(
-        private readonly ExportJobRepositoryInterface $exportRepository,
+        private ExportJobRepositoryInterface $exportRepository,
     ) {}
 
     /**
@@ -33,7 +33,7 @@ final class DeleteExportCommandHandler
         $exportId = ExportId::fromString($command->exportId);
         $export = $this->exportRepository->findById($exportId);
 
-        if (! $export) {
+        if (! $export instanceof ExportJob) {
             throw ExportException::exportNotFound($exportId);
         }
 

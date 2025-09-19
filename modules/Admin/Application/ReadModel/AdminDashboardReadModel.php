@@ -9,14 +9,17 @@ use DateTimeImmutable;
 final readonly class AdminDashboardReadModel
 {
     /**
-     * @param  array<mixed>  $recentActivity
-     * @param  array<mixed>  $quickActions
-     * @param  array<mixed>  $systemAlerts
+     * @param  array<string, mixed>  $recentActivity
+     * @param  array<int, array<string, string>>  $quickActions
+     * @param  array<int, array<string, string>>  $systemAlerts
      */
     public function __construct(
         public SystemStatsReadModel $systemStats,
+        /** @var array<string, mixed> */
         public array $recentActivity,
+        /** @var array<int, array<string, string>> */
         public array $quickActions,
+        /** @var array<int, array<string, string>> */
         public array $systemAlerts,
         public string $dateRange,
         public DateTimeImmutable $lastUpdated
@@ -49,6 +52,7 @@ final readonly class SystemStatsReadModel
         public int $totalDonations,
         public float $totalDonationAmount,
         public int $pendingApprovals,
+        /** @var array<string, mixed> */
         public array $performanceMetrics
     ) {}
 

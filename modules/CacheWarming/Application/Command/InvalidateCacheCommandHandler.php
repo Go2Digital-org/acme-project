@@ -30,9 +30,7 @@ final readonly class InvalidateCacheCommandHandler
         $this->invalidateAllCache($command->forceInvalidation);
     }
 
-    /**
-     * @param  array<string>  $keys
-     */
+    /** @param array<string> $keys */
     private function invalidateSpecificKeys(array $keys, bool $force): void
     {
         foreach ($keys as $keyString) {

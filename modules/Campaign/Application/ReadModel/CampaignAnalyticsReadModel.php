@@ -23,7 +23,9 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
         $this->setCacheTtl(1800); // 30 minutes for analytics data
     }
 
-    /** @return array<int, string> */
+    /**
+     * @return array<string>
+     */
     public function getCacheTags(): array
     {
         return array_merge(parent::getCacheTags(), [
@@ -215,32 +217,42 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
     }
 
     // Payment Gateway Statistics
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getPaymentGatewayStats(): array
     {
         return $this->get('payment_gateway_stats', []);
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getPaymentMethodStats(): array
     {
         return $this->get('payment_method_stats', []);
     }
 
     // Time-based Analytics
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getDonationsByDay(): array
     {
         return $this->get('donations_by_day', []);
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getDonationsByWeek(): array
     {
         return $this->get('donations_by_week', []);
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getDonationsByMonth(): array
     {
         return $this->get('donations_by_month', []);
@@ -312,7 +324,9 @@ class CampaignAnalyticsReadModel extends AbstractReadModel
     }
 
     // Formatted Output
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toAnalyticsArray(): array
     {
         return [

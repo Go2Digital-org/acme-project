@@ -12,6 +12,9 @@ class ViewCategory extends ViewRecord
 {
     protected static string $resource = CategoryResource::class;
 
+    /**
+     * @return array<int, EditAction>
+     */
     protected function getHeaderActions(): array
     {
         return [

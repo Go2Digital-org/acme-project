@@ -10,6 +10,6 @@ final readonly class SubmitForApprovalCommand implements CommandInterface
 {
     public function __construct(
         public int $campaignId,
-        public int $employeeId,
+        public int $userId,
     ) {}
 }

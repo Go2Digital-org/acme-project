@@ -16,7 +16,7 @@ use Modules\Shared\Application\Service\BreadcrumbManager;
  */
 final class Breadcrumbs extends Component
 {
-    /** @var array<int, array<string, mixed>> */
+    /** @var array<string, mixed> */
     public array $breadcrumbs;
 
     /** @var array<string, mixed> */
@@ -97,7 +97,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Check if a breadcrumb item is active.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      */
     public function isActive(array $breadcrumb): bool
@@ -110,7 +111,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Check if a breadcrumb item is the home page.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      */
     public function isHome(array $breadcrumb): bool
@@ -123,7 +125,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Get the URL for a breadcrumb item.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      */
     public function getBreadcrumbUrl(array $breadcrumb): ?string
@@ -136,7 +139,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Get the title for a breadcrumb item.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      */
     public function getBreadcrumbTitle(array $breadcrumb): string
@@ -149,7 +153,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Get CSS classes for a breadcrumb item.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      */
     public function getBreadcrumbItemClasses(array $breadcrumb): string
@@ -166,7 +171,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Get accessibility attributes for a breadcrumb item.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      * @return array<string, mixed>
      */
@@ -190,7 +196,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Get accessibility attributes as a string for a breadcrumb item.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      */
     public function getBreadcrumbAriaAttributesString(array $breadcrumb, int $position, int $total): string
@@ -210,8 +217,9 @@ final class Breadcrumbs extends Component
      */
     /**
      * Create a breadcrumb component instance with custom styling.
-     *
-     * @param  array<string, string>  $classes
+     */
+    /**
+     * @param  array<string, mixed>  $classes
      */
     public static function withCustomStyling(
         BreadcrumbManager $breadcrumbManager,
@@ -234,7 +242,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Create a breadcrumb component instance for specific route.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $routeParams
      */
     public static function forRoute(
@@ -252,7 +261,9 @@ final class Breadcrumbs extends Component
     /**
      * Get the data that should be available to the component template.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function data(): array
     {
         // Process breadcrumbs to include computed properties for the view
@@ -260,8 +271,8 @@ final class Breadcrumbs extends Component
             'title' => $breadcrumb['title'] ?? $breadcrumb['name'] ?? '',
             'url' => $breadcrumb['url'] ?? null,
             'is_active' => $breadcrumb['active'] ?? $breadcrumb['is_active'] ?? false,
-            'is_first' => $index === 0,
-            'aria_attributes' => $this->computeAriaAttributes($breadcrumb, $index),
+            'is_first' => (int) $index === 0,
+            'aria_attributes' => $this->computeAriaAttributes($breadcrumb, (int) $index),
         ], $this->breadcrumbs, array_keys($this->breadcrumbs));
 
         return [
@@ -285,7 +296,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Generate breadcrumbs data for rendering.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $routeParams
      */
     private function generateBreadcrumbs(?string $routeName, array $routeParams): void
@@ -325,7 +337,8 @@ final class Breadcrumbs extends Component
      */
     /**
      * Compute ARIA attributes for a breadcrumb item.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $breadcrumb
      */
     private function computeAriaAttributes(array $breadcrumb, int $index): string

@@ -81,28 +81,29 @@ interface PaymentAttemptRepositoryInterface
 
     /**
      * Get audit statistics.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getAuditStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array;
 
     /**
      * Get gateway success rates.
      *
-     * @return array<string, float>
+     * @return array<string, mixed>
      */
     public function getGatewaySuccessRates(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array;
 
     /**
      * Get average response times by gateway.
      *
-     * @return array<string, float>
+     * @return array<string, mixed>
      */
     public function getAverageResponseTimes(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array;
 
     /**
      * Get most common failure reasons.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getMostCommonFailures(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array;
 

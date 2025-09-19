@@ -6,7 +6,7 @@ namespace Modules\Currency\Application\Service;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 
-final class CurrencyService
+class CurrencyService
 {
     public function changeCurrency(string $currency, ?Authenticatable $user): void
     {

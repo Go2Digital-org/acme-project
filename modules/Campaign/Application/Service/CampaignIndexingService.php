@@ -27,7 +27,10 @@ class CampaignIndexingService
     /**
      * Get index statistics and configuration
      *
-     * @return array{index_name: string, document_count: int, is_indexing: bool, filterable_count: int, sortable_count: int, searchable_count: int, filterable_attributes: array<int, string>, sortable_attributes: array<int, string>, searchable_attributes: array<int, string>}
+     * @return array{index_name: string, document_count: int, is_indexing: bool, filterable_count: int, sortable_count: int, searchable_count: int, filterable_attributes: array<string>, sortable_attributes: array<string>, searchable_attributes: array<string>}
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getIndexStatistics(): array
     {
@@ -65,7 +68,7 @@ class CampaignIndexingService
 
         Campaign::query()
             ->select('id')
-            ->chunk($chunkSize, function ($campaignIds) use (&$queued) {
+            ->chunk($chunkSize, function ($campaignIds) use (&$queued): void {
                 $ids = $campaignIds->pluck('id')->toArray();
 
                 // Dispatch job for this chunk
@@ -84,13 +87,15 @@ class CampaignIndexingService
 
     /**
      * Reindex campaigns synchronously with progress callback
+     *
+     * @param  callable(int): void|null  $progressCallback
      */
     public function reindexSync(int $chunkSize = 500, ?callable $progressCallback = null): int
     {
         $indexed = 0;
 
         Campaign::with(['organization', 'creator', 'categoryModel'])
-            ->chunk($chunkSize, function ($campaigns) use (&$indexed, $progressCallback) {
+            ->chunk($chunkSize, function ($campaigns) use (&$indexed, $progressCallback): void {
                 foreach ($campaigns as $campaign) {
                     if ($campaign->shouldBeSearchable()) {
                         $campaign->searchable();
@@ -210,8 +215,9 @@ class CampaignIndexingService
 
     /**
      * Batch index multiple campaigns
-     *
-     * @param  array<int, int>  $campaignIds
+     */
+    /**
+     * @param  array<int>  $campaignIds
      */
     public function indexCampaigns(array $campaignIds): int
     {
@@ -233,8 +239,9 @@ class CampaignIndexingService
 
     /**
      * Get campaigns that should be indexed but aren't
-     *
-     * @return array<int, int>
+     */
+    /**
+     * @return array<int>
      */
     public function getMissingCampaigns(int $limit = 100): array
     {
@@ -267,7 +274,10 @@ class CampaignIndexingService
     /**
      * Validate index health
      *
-     * @return array{healthy: bool, issues: array<int, string>, stats: array{index_name: string, document_count: int, is_indexing: bool, filterable_count: int, sortable_count: int, searchable_count: int, filterable_attributes: array<int, string>, sortable_attributes: array<int, string>, searchable_attributes: array<int, string>}}
+     * @return array{healthy: bool, issues: array<string>, stats: array{index_name: string, document_count: int, is_indexing: bool, filterable_count: int, sortable_count: int, searchable_count: int, filterable_attributes: array<string>, sortable_attributes: array<string>, searchable_attributes: array<string>}}
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function validateIndexHealth(): array
     {

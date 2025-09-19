@@ -14,7 +14,7 @@
                 
                 <x-validation-errors class="mb-4" />
 
-                <form class="space-y-6" method="POST" action="{{ route('password.confirm') }}">
+                <form class="space-y-6" method="POST" action="{{ route('password.confirm.store') }}">
                     @csrf
                     
                     <div>

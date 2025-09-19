@@ -17,7 +17,7 @@ final readonly class ListCampaignsByOrganizationQueryHandler implements QueryHan
     ) {}
 
     /**
-     * @return array<Campaign>
+     * @return array<string, mixed>
      */
     public function handle(QueryInterface $query): array
     {
@@ -26,6 +26,12 @@ final readonly class ListCampaignsByOrganizationQueryHandler implements QueryHan
         }
 
         // For all campaigns by organization, we'll need to extend the repository interface
-        return $this->repository->findActiveByOrganization($query->organizationId);
+        $campaigns = $this->repository->findActiveByOrganization($query->organizationId);
+
+        return [
+            'campaigns' => array_map(fn (Campaign $campaign) => $campaign->toArray(), $campaigns),
+            'total' => count($campaigns),
+            'organization_id' => $query->organizationId,
+        ];
     }
 }

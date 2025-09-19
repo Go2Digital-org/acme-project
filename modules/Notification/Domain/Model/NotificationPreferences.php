@@ -17,9 +17,9 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  *
  * @property string $id
  * @property string $user_id
- * @property array<string, mixed> $channel_preferences
- * @property array<string, mixed> $frequency_preferences
- * @property array<string, mixed> $type_preferences
+ * @property array<string, bool> $channel_preferences
+ * @property array<string, string> $frequency_preferences
+ * @property array<string, bool> $type_preferences
  * @property array<string, mixed> $preferences
  * @property array<string, mixed> $quiet_hours
  * @property string $timezone
@@ -32,7 +32,7 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  * @property DateTime $updated_at
  * @property User $user
  */
-final class NotificationPreferences extends Model
+class NotificationPreferences extends Model
 {
     protected $table = 'notification_preferences';
 
@@ -148,6 +148,9 @@ final class NotificationPreferences extends Model
     public function setChannelPreference(string $notificationType, string $channel, bool $enabled): void
     {
         $preferences = $this->channel_preferences;
+        if (! isset($preferences[$notificationType]) || ! is_array($preferences[$notificationType])) {
+            $preferences[$notificationType] = [];
+        }
         $preferences[$notificationType][$channel] = $enabled;
         $this->channel_preferences = $preferences;
     }
@@ -168,6 +171,9 @@ final class NotificationPreferences extends Model
     public function optOutOfType(string $notificationType): void
     {
         $preferences = $this->type_preferences;
+        if (! isset($preferences[$notificationType]) || ! is_array($preferences[$notificationType])) {
+            $preferences[$notificationType] = [];
+        }
         $preferences[$notificationType]['enabled'] = false;
         $preferences[$notificationType]['opted_out_at'] = now()->toIso8601String();
         $this->type_preferences = $preferences;
@@ -179,6 +185,9 @@ final class NotificationPreferences extends Model
     public function optInToType(string $notificationType): void
     {
         $preferences = $this->type_preferences;
+        if (! isset($preferences[$notificationType]) || ! is_array($preferences[$notificationType])) {
+            $preferences[$notificationType] = [];
+        }
         $preferences[$notificationType]['enabled'] = true;
         unset($preferences[$notificationType]['opted_out_at']);
         $this->type_preferences = $preferences;
@@ -212,7 +221,8 @@ final class NotificationPreferences extends Model
 
     /**
      * Get all enabled channels for a notification type.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public function getEnabledChannelsForType(string $notificationType): array
@@ -231,7 +241,8 @@ final class NotificationPreferences extends Model
 
     /**
      * Get delivery preference summary for a notification type.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getDeliveryPreferenceForType(string $notificationType): array
@@ -246,7 +257,8 @@ final class NotificationPreferences extends Model
 
     /**
      * Update metadata with new information.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $newMetadata
      */
     public function updateMetadata(array $newMetadata): void
@@ -281,6 +293,9 @@ final class NotificationPreferences extends Model
         };
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

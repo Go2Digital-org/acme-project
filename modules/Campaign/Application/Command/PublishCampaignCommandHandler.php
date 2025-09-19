@@ -47,7 +47,7 @@ final readonly class PublishCampaignCommandHandler
             );
         }
 
-        DB::transaction(function () use ($campaign, $command) {
+        DB::transaction(function () use ($campaign, $command): void {
             // Update campaign status to active
             $this->campaignRepository->updateById($campaign->id, [
                 'status' => 'active',

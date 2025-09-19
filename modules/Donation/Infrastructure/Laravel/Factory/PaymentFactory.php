@@ -17,6 +17,9 @@ class PaymentFactory extends Factory
 {
     protected $model = Payment::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $amount = fake()->randomFloat(2, 5, 1000);

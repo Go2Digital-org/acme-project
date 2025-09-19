@@ -73,6 +73,9 @@ class ExportProgressEloquent extends Model
         return $query->where('export_id', $exportId);
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

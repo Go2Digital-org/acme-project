@@ -28,7 +28,9 @@ enum UserRole: string
         };
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, string>
+     */
     public function getPermissions(): array
     {
         return match ($this) {
@@ -139,7 +141,9 @@ enum UserRole: string
         return $this->getPriority() < $other->getPriority();
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, string>
+     */
     public static function getSelectOptions(): array
     {
         return collect(self::cases())

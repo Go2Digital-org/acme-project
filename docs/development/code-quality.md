@@ -35,6 +35,12 @@ PHP code quality tool for automated refactoring and upgrades.
 # Apply safe refactoring
 ./vendor/bin/rector process --config=rector/rector-safe.php
 
+# PHPStan type fixes (dry-run) - NEW: Array type hints and PHPStan fixes
+composer rector:phpstan-fix
+
+# Apply PHPStan type fixes - NEW: Aggressive array type improvements
+composer rector:phpstan-fix:apply
+
 # Check what changes would be made
 ./vendor/bin/rector process --dry-run
 
@@ -42,11 +48,15 @@ PHP code quality tool for automated refactoring and upgrades.
 ./vendor/bin/rector process
 ```
 
-**Configuration**: `rector.php` and `rector/rector-safe.php`
-- Type declarations
-- Dead code removal
-- Code quality improvements
-- PHP 8.4 features adoption
+**Configuration Files**:
+- `rector.php` - Main configuration
+- `rector/rector-safe.php` - Conservative safe refactoring
+- `rector/rector-phpstan-fix.php` - **NEW**: PHPStan array type fixes and improvements
+
+**Rector Profiles**:
+- **Safe**: Type declarations, dead code removal, basic code quality
+- **PHPStan Fix**: Array type hints, closure return types, strict typed properties
+- **Aggressive**: PHP 8.4 features adoption, advanced transformations
 
 ### 3. PHPStan (Static Analysis)
 Finds bugs without running code through static analysis.

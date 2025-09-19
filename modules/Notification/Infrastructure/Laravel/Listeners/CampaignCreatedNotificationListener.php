@@ -64,7 +64,7 @@ final class CampaignCreatedNotificationListener implements ShouldQueue
 
             $this->logger->info('Campaign creation notifications processed', [
                 'campaign_id' => $event->campaignId,
-                'creator_id' => $event->employeeId,
+                'creator_id' => $event->userId,
                 'organization_id' => $event->organizationId,
             ]);
         } catch (Throwable $e) {
@@ -85,7 +85,7 @@ final class CampaignCreatedNotificationListener implements ShouldQueue
     {
         $this->logger->error('Failed to process campaign creation notifications', [
             'campaign_id' => $event->campaignId ?? 'unknown',
-            'creator_id' => $event->employeeId ?? 'unknown',
+            'creator_id' => $event->userId ?? 'unknown',
             'exception' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),
         ]);
@@ -97,7 +97,7 @@ final class CampaignCreatedNotificationListener implements ShouldQueue
     private function notifyCreator(CampaignCreatedEvent $event): void
     {
         $command = new CreateNotificationCommand(
-            recipientId: (string) $event->employeeId,
+            recipientId: (string) $event->userId,
             title: 'Campaign Created Successfully',
             message: "Your campaign '{$event->title}' has been created successfully and is pending review.",
             type: NotificationType::CAMPAIGN_CREATED->value,
@@ -194,7 +194,7 @@ final class CampaignCreatedNotificationListener implements ShouldQueue
                 metadata: [
                     'campaign_id' => $event->campaignId,
                     'campaign_title' => $event->title,
-                    'creator_id' => $event->employeeId,
+                    'creator_id' => $event->userId,
                     'organization_id' => $event->organizationId,
                     'goal_amount' => $event->goalAmount,
                     'campaign_status' => $campaign->status->value,
@@ -271,7 +271,7 @@ final class CampaignCreatedNotificationListener implements ShouldQueue
                 metadata: [
                     'campaign_id' => $event->campaignId,
                     'campaign_title' => $event->title,
-                    'creator_id' => $event->employeeId,
+                    'creator_id' => $event->userId,
                     'organization_id' => $event->organizationId,
                     'goal_amount' => $event->goalAmount,
                     'campaign_status' => $campaign->status->value,

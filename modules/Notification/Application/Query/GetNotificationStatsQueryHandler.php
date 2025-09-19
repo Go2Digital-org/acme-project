@@ -102,8 +102,7 @@ final readonly class GetNotificationStatsQueryHandler implements QueryHandlerInt
 
     /**
      * Build filters array from query parameters.
-     */
-    /**
+     *
      * @return array<string, mixed>
      */
     private function buildFilters(GetNotificationStatsQuery $query): array

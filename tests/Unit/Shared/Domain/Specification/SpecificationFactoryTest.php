@@ -7,9 +7,9 @@ namespace Tests\Unit\Shared\Domain\Specification;
 use Modules\Shared\Domain\Specification\CompositeSpecification;
 use Modules\Shared\Domain\Specification\SpecificationFactory;
 use Modules\Shared\Domain\Specification\SpecificationInterface;
-use PHPUnit\Framework\TestCase;
+use Tests\UnitTestCase;
 
-class SpecificationFactoryTest extends TestCase
+class SpecificationFactoryTest extends UnitTestCase
 {
     private SpecificationFactory $factory;
 

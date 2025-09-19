@@ -11,7 +11,7 @@ final class CampaignUpdatedEvent extends AbstractDomainEvent implements Campaign
 {
     public function __construct(
         public readonly int $campaignId,
-        public readonly int $employeeId,
+        public readonly int $userId,
         public readonly int $organizationId,
     ) {
         parent::__construct();
@@ -42,7 +42,7 @@ final class CampaignUpdatedEvent extends AbstractDomainEvent implements Campaign
     {
         return [
             'campaignId' => $this->campaignId,
-            'employeeId' => $this->employeeId,
+            'userId' => $this->userId,
             'organizationId' => $this->organizationId,
         ];
     }

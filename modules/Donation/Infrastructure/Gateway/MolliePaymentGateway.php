@@ -205,7 +205,9 @@ final readonly class MolliePaymentGateway implements PaymentGatewayInterface
         }
     }
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function handleWebhook(array $payload, string $signature): void
     {
         try {
@@ -265,6 +267,9 @@ final readonly class MolliePaymentGateway implements PaymentGatewayInterface
         ], true);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getSupportedCurrencies(): array
     {
         return [

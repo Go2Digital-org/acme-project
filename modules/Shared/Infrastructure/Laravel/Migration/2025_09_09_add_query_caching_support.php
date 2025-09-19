@@ -33,28 +33,30 @@ return new class extends Migration
         }
 
         // Add indexes to support the EloquentDashboardRepository queries
-        Schema::table('donations', function (Blueprint $table): void {
-            // Composite index for dashboard summary queries
-            if (! $this->indexExists('donations', 'idx_donations_dashboard_summary')) {
-                $table->index(
-                    ['user_id', 'status', 'deleted_at', 'donated_at', 'amount'],
-                    'idx_donations_dashboard_summary'
-                );
-            }
+        if (Schema::hasTable('donations')) {
+            Schema::table('donations', function (Blueprint $table): void {
+                // Composite index for dashboard summary queries
+                if (! $this->indexExists('donations', 'idx_donations_dashboard_summary')) {
+                    $table->index(
+                        ['user_id', 'status', 'deleted_at', 'donated_at', 'amount'],
+                        'idx_donations_dashboard_summary'
+                    );
+                }
 
-            // Index for campaign-based aggregations
-            if (! $this->indexExists('donations', 'idx_donations_campaign_aggregation')) {
-                $table->index(
-                    ['campaign_id', 'status', 'deleted_at', 'amount'],
-                    'idx_donations_campaign_aggregation'
-                );
-            }
-        });
+                // Index for campaign-based aggregations
+                if (! $this->indexExists('donations', 'idx_donations_campaign_aggregation')) {
+                    $table->index(
+                        ['campaign_id', 'status', 'deleted_at', 'amount'],
+                        'idx_donations_campaign_aggregation'
+                    );
+                }
+            });
+        }
 
         // Add views for dashboard metrics - database specific
         $isMySql = Schema::getConnection()->getDriverName() === 'mysql';
 
-        if ($isMySql) {
+        if ($isMySql && Schema::hasTable('donations') && Schema::hasTable('users')) {
             // MySQL version with advanced date functions
             DB::statement("
                 CREATE OR REPLACE VIEW v_user_donation_metrics AS
@@ -92,7 +94,7 @@ return new class extends Migration
             DB::statement('ANALYZE TABLE donations');
             DB::statement('ANALYZE TABLE users');
             DB::statement('ANALYZE TABLE campaigns');
-        } else {
+        } elseif (Schema::hasTable('donations') && Schema::hasTable('users')) {
             // SQLite version - drop first, then create, with compatible date functions
             try {
                 DB::statement('DROP VIEW IF EXISTS v_user_donation_metrics');
@@ -171,12 +173,21 @@ return new class extends Migration
      */
     private function indexExists(string $table, string $index): bool
     {
+        // First check if the table exists
+        if (! Schema::hasTable($table)) {
+            return false;
+        }
+
         $isMySql = Schema::getConnection()->getDriverName() === 'mysql';
 
         if ($isMySql) {
-            $indexes = DB::select("SHOW INDEX FROM {$table} WHERE Key_name = ?", [$index]);
+            try {
+                $indexes = DB::select("SHOW INDEX FROM {$table} WHERE Key_name = ?", [$index]);
 
-            return count($indexes) > 0;
+                return count($indexes) > 0;
+            } catch (Exception) {
+                return false;
+            }
         }
         // SQLite: try to drop and catch exception to check if index exists
         // This is a workaround since SQLite doesn't have SHOW INDEX

@@ -17,6 +17,7 @@ final readonly class RequestDonationExportCommand implements CommandInterface
         public int $userId,
         public int $organizationId,
         public ExportFormat $format,
+        /** @var array<string, mixed> */
         public array $filters = [],
         public ?string $dateRangeFrom = null,
         public ?string $dateRangeTo = null,

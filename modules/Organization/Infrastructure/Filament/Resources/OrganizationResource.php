@@ -604,6 +604,9 @@ class OrganizationResource extends Resource
             ->striped();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelations(): array
     {
         return [
@@ -611,6 +614,9 @@ class OrganizationResource extends Resource
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

@@ -11,6 +11,7 @@ use Modules\Campaign\Domain\Service\UserCampaignManagementService;
 use Modules\Campaign\Domain\ValueObject\CampaignStatus;
 use Modules\Campaign\Infrastructure\Laravel\Requests\Api\UpdateCampaignStatusRequest;
 use Modules\Shared\Infrastructure\Laravel\Controllers\Traits\AuthenticatedUserTrait;
+use Modules\User\Domain\Model\User;
 use Modules\User\Domain\Repository\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,7 +30,7 @@ final readonly class UpdateCampaignStatusController
         $userId = $this->getAuthenticatedUserId($request);
         $user = $this->userRepository->findById($userId);
 
-        if (! $user) {
+        if (! $user instanceof User) {
             return response()->json([
                 'message' => 'User not found.',
             ], Response::HTTP_UNAUTHORIZED);

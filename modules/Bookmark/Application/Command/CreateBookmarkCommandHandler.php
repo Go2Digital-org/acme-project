@@ -19,7 +19,7 @@ final readonly class CreateBookmarkCommandHandler
 
     public function handle(CreateBookmarkCommand $command): Bookmark
     {
-        return DB::transaction(function () use ($command) {
+        return DB::transaction(function () use ($command): Bookmark {
             // Check if bookmark already exists
             $existingBookmark = $this->repository->findByUserAndCampaign(
                 $command->userId,

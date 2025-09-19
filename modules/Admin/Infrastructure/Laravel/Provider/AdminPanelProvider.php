@@ -48,7 +48,7 @@ class AdminPanelProvider extends PanelProvider
 
         // Register navigation service and adapter
         $this->app->singleton(AdminNavigationService::class);
-        $this->app->singleton(FilamentNavigationAdapter::class, fn ($app) => new FilamentNavigationAdapter(
+        $this->app->singleton(FilamentNavigationAdapter::class, fn ($app): FilamentNavigationAdapter => new FilamentNavigationAdapter(
             $app->make(AdminNavigationService::class)
         ));
 

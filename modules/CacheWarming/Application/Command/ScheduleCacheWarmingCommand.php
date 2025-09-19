@@ -9,7 +9,7 @@ use Modules\Shared\Application\Command\CommandInterface;
 final readonly class ScheduleCacheWarmingCommand implements CommandInterface
 {
     /**
-     * @param  array<string>|null  $specificKeys
+     * @param  array<int, string>|null  $specificKeys
      */
     public function __construct(
         public ?string $cacheType = null,

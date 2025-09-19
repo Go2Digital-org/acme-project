@@ -20,7 +20,9 @@ class ExportAnalyticsCommandHandler
         private readonly LoggerInterface $logger,
     ) {}
 
-    /** @return array<string, mixed>|null */
+    /**
+     * @return array<string, mixed>|null
+     */
     public function handle(ExportAnalyticsCommand $command): ?array
     {
         try {
@@ -102,7 +104,9 @@ class ExportAnalyticsCommandHandler
         };
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function collectExportData(ExportAnalyticsCommand $command, TimeRange $timeRange): array
     {
         $data = [];
@@ -124,7 +128,8 @@ class ExportAnalyticsCommandHandler
         return $data;
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<int, mixed>
      */
     private function exportDonationData(TimeRange $timeRange, array $filters): array
@@ -152,7 +157,8 @@ class ExportAnalyticsCommandHandler
         return $query->get()->toArray();
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<int, mixed>
      */
     private function exportCampaignData(TimeRange $timeRange, array $filters): array
@@ -180,7 +186,8 @@ class ExportAnalyticsCommandHandler
         return $query->get()->toArray();
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<int, mixed>
      */
     private function exportUserData(TimeRange $timeRange, array $filters): array
@@ -202,7 +209,8 @@ class ExportAnalyticsCommandHandler
         return $query->get()->toArray();
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<int, mixed>
      */
     private function exportEventData(TimeRange $timeRange, array $filters): array
@@ -226,7 +234,8 @@ class ExportAnalyticsCommandHandler
         return $query->get()->toArray();
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<int, mixed>
      */
     private function exportOrganizationData(TimeRange $timeRange, array $filters): array
@@ -234,7 +243,9 @@ class ExportAnalyticsCommandHandler
         return $this->aggregationService->aggregateOrganizationStats($timeRange, $filters)['organizations'];
     }
 
-    /** @param array<string, mixed> $data */
+    /**
+     * @param  array<string, mixed>  $data
+     */
     private function exportToCsv(array $data, string $filename, bool $includeHeaders): string
     {
         $path = "exports/{$filename}.csv";
@@ -274,7 +285,9 @@ class ExportAnalyticsCommandHandler
         return $path;
     }
 
-    /** @param array<string, mixed> $data */
+    /**
+     * @param  array<string, mixed>  $data
+     */
     private function exportToJson(array $data, string $filename): string
     {
         $path = "exports/{$filename}.json";
@@ -289,7 +302,9 @@ class ExportAnalyticsCommandHandler
         return $path;
     }
 
-    /** @param array<string, mixed> $data */
+    /**
+     * @param  array<string, mixed>  $data
+     */
     private function exportToExcel(array $data, string $filename, bool $includeHeaders): string
     {
         // This would require a package like PhpSpreadsheet
@@ -297,7 +312,9 @@ class ExportAnalyticsCommandHandler
         return $this->exportToCsv($data, $filename, $includeHeaders);
     }
 
-    /** @param array<string, mixed> $data */
+    /**
+     * @param  array<string, mixed>  $data
+     */
     private function exportToPdf(array $data, string $filename): string
     {
         // This would require a PDF generation library
@@ -323,7 +340,9 @@ class ExportAnalyticsCommandHandler
         return $filePath;
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function handleDelivery(ExportAnalyticsCommand $command, string $exportPath): array
     {
         return match ($command->deliveryMethod) {
@@ -334,7 +353,9 @@ class ExportAnalyticsCommandHandler
         };
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function deliverByEmail(ExportAnalyticsCommand $command, string $exportPath): array
     {
         // This would integrate with email service
@@ -354,7 +375,9 @@ class ExportAnalyticsCommandHandler
         return "analytics_export_{$command->exportType}_{$dataTypes}_{$timestamp}";
     }
 
-    /** @param array<string, mixed> $data */
+    /**
+     * @param  array<string, mixed>  $data
+     */
     private function countRecords(array $data): int
     {
         $total = 0;

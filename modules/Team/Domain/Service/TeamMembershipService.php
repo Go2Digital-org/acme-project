@@ -139,7 +139,8 @@ class TeamMembershipService
 
     /**
      * Get member statistics for team
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getMemberStatistics(Team $team): array

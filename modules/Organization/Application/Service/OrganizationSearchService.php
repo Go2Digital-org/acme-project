@@ -27,6 +27,9 @@ class OrganizationSearchService extends SearchService
         return 'org_search';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDefaultFilters(): array
     {
         return [
@@ -34,6 +37,9 @@ class OrganizationSearchService extends SearchService
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getSearchableAttributesWeights(): array
     {
         return [
@@ -120,34 +126,30 @@ class OrganizationSearchService extends SearchService
 
         $cacheKey = $this->getCachePrefix() . ':name_suggestions:' . md5($query . $limit);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query, $limit) {
-            return Organization::search($query)
-                ->where('is_active', true)
-                ->take($limit)
-                ->get()
-                ->map(function (Organization $org) {
-                    return [
-                        'id' => $org->id,
-                        'name' => $org->getName(),
-                        'category' => $org->category,
-                        'location' => trim($org->city . ', ' . $org->country, ', '),
-                        'is_verified' => $org->is_verified,
-                        'campaigns_count' => $org->campaigns_count ?? 0,
-                    ];
-                });
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Organization::search($query)
+            ->where('is_active', true)
+            ->take($limit)
+            ->get()
+            ->map(fn (Organization $org): array => [
+                'id' => $org->id,
+                'name' => $org->getName(),
+                'category' => $org->category,
+                'location' => trim($org->city . ', ' . $org->country, ', '),
+                'is_verified' => $org->is_verified,
+                'campaigns_count' => $org->campaigns_count ?? 0,
+            ]));
     }
 
     /**
      * Get category facets.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getCategoryFacets(string $query = ''): array
     {
         $cacheKey = $this->getCachePrefix() . ':category_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             // This would use Meilisearch's faceting in production
             $builder = Organization::search($query)->where('is_active', true);
 
@@ -177,7 +179,7 @@ class OrganizationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':location_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Organization::search($query)->where('is_active', true);
             $orgs = $builder->take(1000)->get();
 
@@ -212,13 +214,11 @@ class OrganizationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':recently_verified:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Organization::search('')
-                ->where('is_verified', true)
-                ->orderBy('verification_date', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Organization::search('')
+            ->where('is_verified', true)
+            ->orderBy('verification_date', 'desc')
+            ->take($limit)
+            ->get());
     }
 
     /**
@@ -230,13 +230,11 @@ class OrganizationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':most_active:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($limit) {
-            return Organization::search('')
-                ->where('is_active', true)
-                ->where('is_verified', true)
-                ->orderBy('campaigns_count', 'desc')
-                ->take($limit)
-                ->get();
-        });
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Organization::search('')
+            ->where('is_active', true)
+            ->where('is_verified', true)
+            ->orderBy('campaigns_count', 'desc')
+            ->take($limit)
+            ->get());
     }
 }

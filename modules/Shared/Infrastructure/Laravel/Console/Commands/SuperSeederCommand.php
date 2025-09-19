@@ -28,10 +28,10 @@ final class SuperSeederCommand extends Command
 
     protected $description = 'Go2Digital BV Super Seeder - Enterprise-scale data seeding with performance optimization for 20K+ employees';
 
-    /** @var array<string> */
+    /** @var list<string> */
     private array $availableModels = ['User', 'Campaign', 'Donation', 'All'];
 
-    /** @var array<string, int> */
+    /** @var array<string, mixed> */
     private array $countPresets = [
         '1K' => 1000,
         '10K' => 10000,
@@ -40,7 +40,7 @@ final class SuperSeederCommand extends Command
         'Custom' => 0,
     ];
 
-    /** @var array<string, int> */
+    /** @var array<string, mixed> */
     private array $batchSizeOptions = [
         '1K' => 1000,
         '5K' => 5000,
@@ -91,7 +91,9 @@ final class SuperSeederCommand extends Command
         $this->newLine();
     }
 
-    /** @return array<string, mixed>|null */
+    /**
+     * @return array<string, mixed>
+     */
     private function runInteractiveMode(): ?array
     {
         $availableModels = array_diff($this->availableModels, ['All']);
@@ -172,7 +174,9 @@ final class SuperSeederCommand extends Command
         ];
     }
 
-    /** @return array<string> */
+    /**
+     * @return list<string>
+     */
     private function selectOrganization(): array
     {
         $organizations = Organization::select('id', 'name')->get();
@@ -201,10 +205,12 @@ final class SuperSeederCommand extends Command
             hint: 'Use space to select multiple targets and Enter to confirm.'
         );
 
-        return array_map('strval', $selectedOptions);
+        return array_values(array_map('strval', $selectedOptions));
     }
 
-    /** @return array<string, mixed>|null */
+    /**
+     * @return array<string, mixed>
+     */
     private function parseCommandLineOptions(): ?array
     {
         $model = $this->option('model');
@@ -250,7 +256,9 @@ final class SuperSeederCommand extends Command
         ];
     }
 
-    /** @param array<string, mixed> $parameters */
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     private function executeSeedCommand(array $parameters): int
     {
         $this->displayExecutionPlan($parameters);
@@ -308,7 +316,9 @@ final class SuperSeederCommand extends Command
         return Command::SUCCESS;
     }
 
-    /** @param array<string, mixed> $parameters */
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     private function displayExecutionPlan(array $parameters): void
     {
         $selectedOrganizations = $parameters['selectedOrganizations'] ?? ['central'];
@@ -351,7 +361,7 @@ final class SuperSeederCommand extends Command
         );
     }
 
-    /** @param array<int, array<string, mixed>> $allResults */
+    /** @param list<array<string, mixed>> $allResults */
     private function displayMultiResults(array $allResults): void
     {
         $this->newLine();

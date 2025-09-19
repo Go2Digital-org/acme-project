@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Infrastructure\Laravel\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
+use InvalidArgumentException;
 use Modules\Category\Application\Service\CategorySearchService;
 use Modules\Donation\Application\Service\DonationSearchService;
 use Modules\Organization\Application\Service\OrganizationSearchService;
@@ -99,7 +101,7 @@ final class ReindexSearchCommand extends Command
             $this->info("Search reindexing completed successfully in {$duration} seconds!");
 
             return 0;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Reindexing failed: ' . $e->getMessage());
 
             return 1;
@@ -108,13 +110,14 @@ final class ReindexSearchCommand extends Command
 
     /**
      * Reindex a specific model.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $services
      */
     private function reindexModel(string $model, array $services): void
     {
         if (! isset($services[$model])) {
-            throw new \InvalidArgumentException("Service for model '{$model}' not found");
+            throw new InvalidArgumentException("Service for model '{$model}' not found");
         }
 
         $this->info("Reindexing {$model}...");

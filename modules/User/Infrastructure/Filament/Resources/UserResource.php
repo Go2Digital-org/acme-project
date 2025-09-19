@@ -11,6 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -81,10 +82,10 @@ class UserResource extends Resource implements HasShieldPermissions
                             ->options(function () {
                                 $currencies = Currency::getAvailableCurrenciesData();
 
-                                return collect($currencies)->mapWithKeys(function ($currency): array {
-                                    $code = is_array($currency) && isset($currency['code']) ? (string) $currency['code'] : 'USD';
-                                    $flag = is_array($currency) && isset($currency['flag']) ? (string) $currency['flag'] : '💰';
-                                    $name = is_array($currency) && isset($currency['name']) ? (string) $currency['name'] : 'Unknown';
+                                return collect($currencies)->mapWithKeys(function (array $currency): array {
+                                    $code = isset($currency['code']) ? (string) $currency['code'] : 'USD';
+                                    $flag = isset($currency['flag']) ? (string) $currency['flag'] : '💰';
+                                    $name = isset($currency['name']) ? (string) $currency['name'] : 'Unknown';
 
                                     return [$code => $flag . ' ' . $code . ' - ' . $name];
                                 })->toArray();
@@ -214,6 +215,9 @@ class UserResource extends Resource implements HasShieldPermissions
             ->defaultSort('created_at', 'desc');
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getRelations(): array
     {
         return [
@@ -221,6 +225,9 @@ class UserResource extends Resource implements HasShieldPermissions
         ];
     }
 
+    /**
+     * @return array<string, PageRegistration>
+     */
     public static function getPages(): array
     {
         return [
@@ -247,7 +254,8 @@ class UserResource extends Resource implements HasShieldPermissions
 
     /**
      * Get the permissions required to access this resource.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function getPermissionPrefixes(): array

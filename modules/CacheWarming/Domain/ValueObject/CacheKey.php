@@ -115,7 +115,7 @@ final readonly class CacheKey
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public static function getAllValidKeys(): array
     {
@@ -123,7 +123,7 @@ final readonly class CacheKey
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public static function getWidgetKeys(): array
     {
@@ -131,7 +131,7 @@ final readonly class CacheKey
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public static function getSystemKeys(): array
     {
@@ -139,7 +139,7 @@ final readonly class CacheKey
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public static function getUserKeyPatterns(): array
     {

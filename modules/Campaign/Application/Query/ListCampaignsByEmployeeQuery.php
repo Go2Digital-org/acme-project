@@ -9,7 +9,7 @@ use Modules\Shared\Application\Query\QueryInterface;
 final readonly class ListCampaignsByEmployeeQuery implements QueryInterface
 {
     public function __construct(
-        public int $employeeId,
+        public int $userId,
         public bool $activeOnly = false,
     ) {}
 }

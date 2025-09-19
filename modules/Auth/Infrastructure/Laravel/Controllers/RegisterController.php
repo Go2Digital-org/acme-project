@@ -11,10 +11,10 @@ use Modules\User\Application\Command\CreateUserCommand;
 use Modules\User\Application\Command\CreateUserCommandHandler;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
-final class RegisterController
+final readonly class RegisterController
 {
     public function __construct(
-        private readonly CreateUserCommandHandler $createUserHandler,
+        private CreateUserCommandHandler $createUserHandler,
     ) {}
 
     /**

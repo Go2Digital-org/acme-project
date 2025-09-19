@@ -212,8 +212,8 @@ class OrganizationManagementService
     /**
      * Bulk process organization status changes with event publishing
      *
-     * @param  array<int>  $organizationIds
-     * @return array<Organization>
+     * @param  array<int, int>  $organizationIds
+     * @return list<Organization>
      */
     public function bulkUpdateStatus(array $organizationIds, string $status, ?string $reason = null): array
     {

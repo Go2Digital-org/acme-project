@@ -2,25 +2,22 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Modules\Organization\Domain\Exception\OrganizationException;
 use Modules\Organization\Domain\Model\Organization;
 
-uses(RefreshDatabase::class);
-
-describe('Organization', function () {
-    beforeEach(function () {
+describe('Organization', function (): void {
+    beforeEach(function (): void {
         Carbon::setTestNow('2025-01-15 12:00:00');
     });
 
-    afterEach(function () {
+    afterEach(function (): void {
         Carbon::setTestNow();
     });
 
-    describe('basic properties and getters', function () {
-        it('provides access to basic organization properties', function () {
-            $org = new Organization;
+    describe('basic properties and getters', function (): void {
+        it('provides access to basic organization properties', function (): void {
+            $org = Organization::factory()->make();
             $org->id = 1;
             $org->name = ['en' => 'ACME Corp', 'fr' => 'ACME Société'];
             $org->email = 'contact@acme.com';
@@ -52,8 +49,8 @@ describe('Organization', function () {
                 ->and($org->getFoundedDate())->toBeInstanceOf(Carbon::class);
         });
 
-        it('handles null values correctly', function () {
-            $org = new Organization;
+        it('handles null values correctly', function (): void {
+            $org = Organization::factory()->withNullValues()->make();
 
             expect($org->getEmail())->toBeNull()
                 ->and($org->getWebsite())->toBeNull()
@@ -68,8 +65,8 @@ describe('Organization', function () {
                 ->and($org->getLogoUrl())->toBeNull();
         });
 
-        it('handles boolean properties correctly', function () {
-            $org = new Organization;
+        it('handles boolean properties correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->is_active = false;
             $org->is_verified = false;
 
@@ -89,7 +86,7 @@ describe('Organization', function () {
                 ->and($org->getIsVerified())->toBeFalse();
         });
 
-        it('provides default name for unnamed organization', function () {
+        it('provides default name for unnamed organization', function (): void {
             // Test with empty array instead of null to respect NOT NULL constraint
             $org = Organization::factory()->create(['name' => []]);
             expect($org->getName())->toBe('Unnamed Organization');
@@ -107,8 +104,8 @@ describe('Organization', function () {
             expect($org->fresh()->getName())->toBe('Unnamed Organization');
         });
 
-        it('handles translatable fields correctly', function () {
-            $org = new Organization;
+        it('handles translatable fields correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->name = ['en' => 'English Name', 'fr' => 'Nom Français'];
             $org->description = ['en' => 'English Description', 'fr' => 'Description Française'];
             $org->mission = ['en' => 'English Mission', 'fr' => 'Mission Française'];
@@ -118,9 +115,9 @@ describe('Organization', function () {
         });
     });
 
-    describe('business logic methods', function () {
-        it('determines if organization can create campaigns', function () {
-            $org = new Organization;
+    describe('business logic methods', function (): void {
+        it('determines if organization can create campaigns', function (): void {
+            $org = Organization::factory()->make();
 
             // Inactive and unverified
             $org->is_active = false;
@@ -143,8 +140,8 @@ describe('Organization', function () {
             expect($org->canCreateCampaigns())->toBeTrue();
         });
 
-        it('checks if organization is active', function () {
-            $org = new Organization;
+        it('checks if organization is active', function (): void {
+            $org = Organization::factory()->make();
 
             $org->is_active = true;
             expect($org->isActive())->toBeTrue();
@@ -162,8 +159,8 @@ describe('Organization', function () {
             expect($org->isActive())->toBeFalse();
         });
 
-        it('checks if provisioning has failed', function () {
-            $org = new Organization;
+        it('checks if provisioning has failed', function (): void {
+            $org = Organization::factory()->make();
 
             $org->provisioning_status = 'failed';
             expect($org->hasFailed())->toBeTrue();
@@ -178,7 +175,7 @@ describe('Organization', function () {
             expect($org->hasFailed())->toBeFalse();
         });
 
-        it('manages admin data in tenant data', function () {
+        it('manages admin data in tenant data', function (): void {
             $org = Organization::factory()->create();
 
             // Initially no admin data
@@ -206,7 +203,7 @@ describe('Organization', function () {
             expect($org->getAdminData())->toBe($newAdminData);
         });
 
-        it('preserves other tenant data when setting admin data', function () {
+        it('preserves other tenant data when setting admin data', function (): void {
             $org = Organization::factory()->create([
                 'tenant_data' => [
                     'settings' => ['theme' => 'dark'],
@@ -223,9 +220,9 @@ describe('Organization', function () {
         });
     });
 
-    describe('organization status management', function () {
-        it('activates organization correctly', function () {
-            $org = new Organization;
+    describe('organization status management', function (): void {
+        it('activates organization correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->is_active = false;
 
             $org->activate();
@@ -233,8 +230,8 @@ describe('Organization', function () {
             expect($org->is_active)->toBeTrue();
         });
 
-        it('throws exception when activating already active organization', function () {
-            $org = new Organization;
+        it('throws exception when activating already active organization', function (): void {
+            $org = Organization::factory()->make();
             $org->id = 1;
             $org->is_active = true;
 
@@ -242,8 +239,8 @@ describe('Organization', function () {
                 ->toThrow(OrganizationException::class);
         });
 
-        it('deactivates organization correctly', function () {
-            $org = new Organization;
+        it('deactivates organization correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->is_active = true;
 
             $org->deactivate();
@@ -251,8 +248,8 @@ describe('Organization', function () {
             expect($org->is_active)->toBeFalse();
         });
 
-        it('throws exception when deactivating already inactive organization', function () {
-            $org = new Organization;
+        it('throws exception when deactivating already inactive organization', function (): void {
+            $org = Organization::factory()->make();
             $org->id = 1;
             $org->is_active = false;
 
@@ -260,8 +257,8 @@ describe('Organization', function () {
                 ->toThrow(OrganizationException::class);
         });
 
-        it('gets correct status based on is_active and is_verified', function () {
-            $org = new Organization;
+        it('gets correct status based on is_active and is_verified', function (): void {
+            $org = Organization::factory()->make();
 
             // Inactive
             $org->is_active = false;
@@ -283,8 +280,8 @@ describe('Organization', function () {
             expect($org->getStatus())->toBe('active');
         });
 
-        it('provides correct status colors', function () {
-            $org = new Organization;
+        it('provides correct status colors', function (): void {
+            $org = Organization::factory()->make();
 
             $org->is_active = true;
             $org->is_verified = true;
@@ -298,8 +295,8 @@ describe('Organization', function () {
             expect($org->getStatusColor())->toBe('danger');
         });
 
-        it('provides correct status labels', function () {
-            $org = new Organization;
+        it('provides correct status labels', function (): void {
+            $org = Organization::factory()->make();
 
             $org->is_active = true;
             $org->is_verified = true;
@@ -314,9 +311,9 @@ describe('Organization', function () {
         });
     });
 
-    describe('verification management', function () {
-        it('verifies organization correctly', function () {
-            $org = new Organization;
+    describe('verification management', function (): void {
+        it('verifies organization correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->is_verified = false;
 
             $org->verify();
@@ -326,19 +323,21 @@ describe('Organization', function () {
                 ->and($org->verification_date->toDateString())->toBe('2025-01-15');
         });
 
-        it('throws exception when verifying already verified organization', function () {
-            $org = new Organization;
-            $org->id = 1;
-            $org->is_verified = true;
+        it('throws exception when verifying already verified organization', function (): void {
+            $org = Organization::factory()->verified()->make([
+                'id' => 1,
+                'is_verified' => true,
+            ]);
 
             expect(fn () => $org->verify())
                 ->toThrow(OrganizationException::class);
         });
 
-        it('unverifies organization correctly', function () {
-            $org = new Organization;
-            $org->is_verified = true;
-            $org->verification_date = Carbon::now();
+        it('unverifies organization correctly', function (): void {
+            $org = Organization::factory()->verified()->make([
+                'is_verified' => true,
+                'verification_date' => Carbon::now(),
+            ]);
 
             $org->unverify();
 
@@ -346,17 +345,18 @@ describe('Organization', function () {
                 ->and($org->verification_date)->toBeNull();
         });
 
-        it('throws exception when unverifying not verified organization', function () {
-            $org = new Organization;
-            $org->id = 1;
-            $org->is_verified = false;
+        it('throws exception when unverifying not verified organization', function (): void {
+            $org = Organization::factory()->unverified()->make([
+                'id' => 1,
+                'is_verified' => false,
+            ]);
 
             expect(fn () => $org->unverify())
                 ->toThrow(OrganizationException::class);
         });
 
-        it('checks eligibility for verification correctly', function () {
-            $org = new Organization;
+        it('checks eligibility for verification correctly', function (): void {
+            $org = Organization::factory()->make();
 
             // Not eligible - inactive
             $org->is_active = false;
@@ -417,8 +417,8 @@ describe('Organization', function () {
         });
     });
 
-    describe('provisioning management', function () {
-        it('starts provisioning correctly', function () {
+    describe('provisioning management', function (): void {
+        it('starts provisioning correctly', function (): void {
             $org = Organization::factory()->create([
                 'provisioning_error' => 'Previous error',
             ]);
@@ -429,7 +429,7 @@ describe('Organization', function () {
                 ->and($org->fresh()->provisioning_error)->toBeNull();
         });
 
-        it('marks as provisioned correctly', function () {
+        it('marks as provisioned correctly', function (): void {
             $org = Organization::factory()->create([
                 'provisioning_status' => 'provisioning',
                 'provisioned_at' => null,
@@ -442,7 +442,7 @@ describe('Organization', function () {
                 ->and($org->fresh()->provisioning_error)->toBeNull();
         });
 
-        it('marks as failed correctly', function () {
+        it('marks as failed correctly', function (): void {
             $org = Organization::factory()->create([
                 'provisioning_status' => 'provisioning',
             ]);
@@ -455,17 +455,17 @@ describe('Organization', function () {
         });
     });
 
-    describe('tenant-related functionality', function () {
-        it('provides tenant key correctly', function () {
-            $org = new Organization;
+    describe('tenant-related functionality', function (): void {
+        it('provides tenant key correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->id = 123;
 
             expect($org->getTenantKey())->toBe('123')
                 ->and($org->getTenantKeyName())->toBe('id');
         });
 
-        it('gets and sets internal tenant data', function () {
-            $org = new Organization;
+        it('gets and sets internal tenant data', function (): void {
+            $org = Organization::factory()->make();
 
             // Initially null
             expect($org->getInternal('config'))->toBeNull();
@@ -484,8 +484,8 @@ describe('Organization', function () {
             expect($result)->toBe($org);
         });
 
-        it('generates database name correctly', function () {
-            $org = new Organization;
+        it('generates database name correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->subdomain = 'acme-corp';
 
             $expected = 'tenant_acme_corp';
@@ -502,8 +502,8 @@ describe('Organization', function () {
             expect($org->getDatabaseName())->toBe('tenant_456');
         });
 
-        it('provides internal prefix correctly', function () {
-            $org = new Organization;
+        it('provides internal prefix correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->subdomain = 'acme-corp';
 
             expect($org->internalPrefix())->toBe('tenant_acme_corp_');
@@ -513,8 +513,8 @@ describe('Organization', function () {
             expect($org->internalPrefix())->toBe('tenant_789_');
         });
 
-        it('handles subdomain key conversion correctly', function () {
-            $org = new Organization;
+        it('handles subdomain key conversion correctly', function (): void {
+            $org = Organization::factory()->make();
 
             // Converts hyphens to underscores
             $org->subdomain = 'acme-corp-test';
@@ -527,9 +527,9 @@ describe('Organization', function () {
         });
     });
 
-    describe('searchable functionality', function () {
-        it('determines if should be searchable', function () {
-            $org = new Organization;
+    describe('searchable functionality', function (): void {
+        it('determines if should be searchable', function (): void {
+            $org = Organization::factory()->make();
 
             $org->is_active = false;
             expect($org->shouldBeSearchable())->toBeFalse();
@@ -544,8 +544,8 @@ describe('Organization', function () {
             expect($org->shouldBeSearchable())->toBeFalse();
         });
 
-        it('generates searchable array correctly', function () {
-            $org = new Organization;
+        it('generates searchable array correctly', function (): void {
+            $org = Organization::factory()->make();
             $org->id = 1;
             $org->name = ['en' => 'ACME Corp', 'fr' => 'ACME Société'];
             $org->description = ['en' => 'Technology company'];
@@ -587,8 +587,8 @@ describe('Organization', function () {
         });
     });
 
-    describe('cast and attribute handling', function () {
-        it('casts attributes correctly', function () {
+    describe('cast and attribute handling', function (): void {
+        it('casts attributes correctly', function (): void {
             $org = Organization::factory()->create([
                 'is_active' => true,
                 'is_verified' => false,
@@ -601,8 +601,8 @@ describe('Organization', function () {
                 ->and($org->updated_at)->toBeInstanceOf(\Carbon\Carbon::class);
         });
 
-        it('handles fillable attributes correctly', function () {
-            $org = new Organization;
+        it('handles fillable attributes correctly', function (): void {
+            $org = Organization::factory()->make();
             $fillable = $org->getFillable();
 
             expect($fillable)->toContain('name')
@@ -617,8 +617,8 @@ describe('Organization', function () {
                 ->and($fillable)->toContain('tenant_data');
         });
 
-        it('handles translatable attributes correctly', function () {
-            $org = new Organization;
+        it('handles translatable attributes correctly', function (): void {
+            $org = Organization::factory()->make();
 
             // Access protected property through reflection
             $reflection = new ReflectionClass($org);
@@ -632,8 +632,8 @@ describe('Organization', function () {
         });
     });
 
-    describe('date and time handling', function () {
-        it('handles created_at and updated_at correctly', function () {
+    describe('date and time handling', function (): void {
+        it('handles created_at and updated_at correctly', function (): void {
             $org = Organization::factory()->create();
 
             expect($org->getCreatedAt())->toBeInstanceOf(Carbon::class)
@@ -642,8 +642,8 @@ describe('Organization', function () {
                 ->and($org->getUpdatedAt())->not->toBeNull();
         });
 
-        it('handles null dates correctly', function () {
-            $org = new Organization;
+        it('handles null dates correctly', function (): void {
+            $org = Organization::factory()->withNullDates()->make();
 
             expect($org->getCreatedAt())->toBeNull()
                 ->and($org->getUpdatedAt())->toBeNull()
@@ -651,8 +651,8 @@ describe('Organization', function () {
                 ->and($org->getFoundedDate())->toBeNull();
         });
 
-        it('formats dates correctly for searchable array', function () {
-            $org = new Organization;
+        it('formats dates correctly for searchable array', function (): void {
+            $org = Organization::factory()->make();
             $org->verification_date = Carbon::parse('2025-01-10 15:30:00');
             $org->created_at = Carbon::parse('2024-01-01 10:00:00');
             $org->updated_at = Carbon::parse('2025-01-01 12:00:00');
@@ -668,9 +668,9 @@ describe('Organization', function () {
         });
     });
 
-    describe('edge cases and validation', function () {
-        it('handles empty translations correctly', function () {
-            $org = new Organization;
+    describe('edge cases and validation', function (): void {
+        it('handles empty translations correctly', function (): void {
+            $org = Organization::factory()->make();
 
             $org->name = [];
             expect($org->getName())->toBe('Unnamed Organization');
@@ -682,8 +682,8 @@ describe('Organization', function () {
             expect($org->getMission())->toBeNull();
         });
 
-        it('handles whitespace in verification eligibility', function () {
-            $org = new Organization;
+        it('handles whitespace in verification eligibility', function (): void {
+            $org = Organization::factory()->make();
             $org->is_active = true;
             $org->name = ['en' => '   '];
             $org->registration_number = '   ';
@@ -702,7 +702,7 @@ describe('Organization', function () {
             expect($org->isEligibleForVerification())->toBeTrue();
         });
 
-        it('handles various status scenarios', function () {
+        it('handles various status scenarios', function (): void {
             $org = Organization::factory()->create();
 
             // Test with null values
@@ -717,7 +717,7 @@ describe('Organization', function () {
             expect($org->fresh()->getStatus())->toBe('active');
         });
 
-        it('handles complex tenant data scenarios', function () {
+        it('handles complex tenant data scenarios', function (): void {
             $org = Organization::factory()->create([
                 'name' => ['en' => 'Test Organization'],
             ]);
@@ -750,30 +750,30 @@ describe('Organization', function () {
         });
     });
 
-    describe('model relationships and factory', function () {
-        it('defines campaigns relationship correctly', function () {
-            $org = new Organization;
+    describe('model relationships and factory', function (): void {
+        it('defines campaigns relationship correctly', function (): void {
+            $org = Organization::factory()->make();
             $campaignsRelation = $org->campaigns();
 
             expect($campaignsRelation)->toBeInstanceOf(Illuminate\Database\Eloquent\Relations\HasMany::class);
         });
 
-        it('defines employees relationship correctly', function () {
-            $org = new Organization;
+        it('defines employees relationship correctly', function (): void {
+            $org = Organization::factory()->make();
             $employeesRelation = $org->employees();
 
             expect($employeesRelation)->toBeInstanceOf(Illuminate\Database\Eloquent\Relations\HasMany::class);
         });
 
-        it('defines domains relationship correctly', function () {
-            $org = new Organization;
+        it('defines domains relationship correctly', function (): void {
+            $org = Organization::factory()->make();
             $domainsRelation = $org->domains();
 
             expect($domainsRelation)->toBeInstanceOf(Illuminate\Database\Eloquent\Relations\HasMany::class);
         });
 
-        it('has correct model configuration', function () {
-            $org = new Organization;
+        it('has correct model configuration', function (): void {
+            $org = Organization::factory()->make();
 
             expect($org->getIncrementing())->toBeTrue()
                 ->and($org->getKeyType())->toBe('int')

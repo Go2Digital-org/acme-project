@@ -80,7 +80,7 @@ final readonly class GetNotificationPreferencesQueryHandler implements QueryHand
     /**
      * Get default notification preferences for all types and channels.
      *
-     * @return array<string, array<string, bool>>
+     * @return array<string, mixed>
      */
     private function getDefaultPreferences(): array
     {

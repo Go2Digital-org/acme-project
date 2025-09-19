@@ -15,7 +15,7 @@ use Modules\Export\Application\Handler\RequestDonationExportCommandHandler;
 use Modules\Export\Domain\ValueObject\ExportFormat;
 
 /**
- * @implements ProcessorInterface<array<string, mixed>, JsonResponse>
+ * @implements ProcessorInterface<array, JsonResponse>
  */
 final readonly class CreateExportProcessor implements ProcessorInterface
 {
@@ -26,6 +26,8 @@ final readonly class CreateExportProcessor implements ProcessorInterface
 
     /**
      * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
      */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): JsonResponse
     {
@@ -73,10 +75,9 @@ final readonly class CreateExportProcessor implements ProcessorInterface
     }
 
     /**
-     * @param  object  $user
      * @param  array<string, mixed>  $filters
      */
-    private function handleDonationExport($user, ExportFormat $format, array $filters): mixed
+    private function handleDonationExport(mixed $user, ExportFormat $format, array $filters): mixed
     {
         /** @var int $userId */
         $userId = $user->id ?? 0;

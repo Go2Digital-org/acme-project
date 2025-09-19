@@ -6,7 +6,7 @@ namespace Modules\Auth\Infrastructure\Laravel\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Modules\Auth\Application\Service\SessionManagementService;
+use Modules\Auth\Application\Services\SessionManagementService;
 use Modules\Shared\Infrastructure\Laravel\Controllers\Traits\AuthenticatedUserTrait;
 
 final readonly class ShowSessionsController

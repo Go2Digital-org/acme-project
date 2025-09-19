@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Campaign\Domain\Model\Campaign;
 use Modules\Campaign\Domain\ValueObject\CampaignStatus;
 use Modules\Organization\Domain\Model\Organization;
 use Modules\User\Infrastructure\Laravel\Models\User;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->organization = Organization::factory()->create();

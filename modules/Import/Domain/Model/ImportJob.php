@@ -11,15 +11,17 @@ use Modules\Import\Domain\ValueObject\ImportType;
 final class ImportJob
 {
     /**
-     * @param  array<string, string>  $mapping
+     * @param  array<string, mixed>  $mapping
      * @param  array<string, mixed>  $options
-     * @param  array<string>  $errors
+     * @param  array<int, string>  $errors
      */
     public function __construct(
         private readonly ?int $id,
         private readonly ImportType $type,
         private readonly string $filePath,
+        /** @var array<string, mixed> */
         private readonly array $mapping,
+        /** @var array<string, mixed> */
         private readonly array $options,
         private readonly int $organizationId,
         private ImportStatus $status,
@@ -30,6 +32,7 @@ final class ImportJob
         private readonly int $processedRecords = 0,
         private readonly int $successfulRecords = 0,
         private readonly int $failedRecords = 0,
+        /** @var array<int, string> */
         private readonly array $errors = [],
         private ?DateTime $startedAt = null,
         private ?DateTime $completedAt = null,
@@ -53,7 +56,7 @@ final class ImportJob
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function getMapping(): array
     {
@@ -151,7 +154,7 @@ final class ImportJob
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getErrors(): array
     {

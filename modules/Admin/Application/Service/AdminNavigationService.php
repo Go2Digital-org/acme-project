@@ -10,10 +10,12 @@ use Modules\Admin\Domain\Port\AdminNavigationPort;
  * Application service for managing admin navigation items.
  * Handles business logic for navigation registration and permissions.
  */
-final class AdminNavigationService implements AdminNavigationPort
+class AdminNavigationService implements AdminNavigationPort
 {
     /**
      * Register system monitoring navigation items for super admins.
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getSystemMonitoringItems(): array
     {

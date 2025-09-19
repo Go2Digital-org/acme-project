@@ -84,7 +84,7 @@ interface UserRepositoryInterface
     /**
      * Get user statistics.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getUserStats(): array;
 

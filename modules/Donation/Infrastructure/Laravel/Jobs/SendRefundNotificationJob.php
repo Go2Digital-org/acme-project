@@ -29,13 +29,11 @@ final class SendRefundNotificationJob implements ShouldQueue
     /** @var array<int, int> */
     public array $backoff = [30, 60, 120];
 
-    /**
-     * @param  array<string, mixed>  $refundDetails
-     */
     public function __construct(
         private readonly int $donationId,
         private readonly float $refundAmount,
         private readonly string $refundReason,
+        /** @var array<string, mixed> */
         private readonly array $refundDetails = [],
     ) {
         $this->onQueue('notifications');
@@ -187,7 +185,9 @@ final class SendRefundNotificationJob implements ShouldQueue
         }
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function prepareRefundData(Donation $donation): array
     {
         $processingTime = $this->calculateRefundProcessingTime();
@@ -216,7 +216,9 @@ final class SendRefundNotificationJob implements ShouldQueue
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function calculateRefundProcessingTime(): array
     {
         // Processing time varies by payment method
@@ -232,7 +234,9 @@ final class SendRefundNotificationJob implements ShouldQueue
         return $processingTimes[$paymentMethod] ?? $processingTimes['default'];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getRefundPaymentMethodInfo(Donation $donation): array
     {
         $paymentMethod = $donation->payment_method->value ?? 'unknown';
@@ -262,7 +266,9 @@ final class SendRefundNotificationJob implements ShouldQueue
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getCustomerSupportInfo(): array
     {
         return [
@@ -273,7 +279,9 @@ final class SendRefundNotificationJob implements ShouldQueue
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getRefundNextSteps(Donation $donation): array
     {
         return [

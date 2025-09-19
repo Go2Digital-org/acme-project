@@ -103,9 +103,6 @@ class EloquentAuditRepository implements AuditRepositoryInterface
             ->get();
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function getActivityStats(int $days = 30): array
     {
         $startDate = now()->subDays($days);
@@ -174,7 +171,7 @@ class EloquentAuditRepository implements AuditRepositoryInterface
     {
         $startDate = now()->subDays($days);
 
-        $activities = Audit::byUser($userId)
+        $activities = Audit::query()->byUser($userId)
             ->where('created_at', '>=', $startDate)
             ->select(
                 DB::raw('DATE(created_at) as date'),
@@ -195,6 +192,9 @@ class EloquentAuditRepository implements AuditRepositoryInterface
         return $heatmap;
     }
 
+    /**
+     * @return Collection<int, Audit>
+     */
     /**
      * @param  array<string, mixed>  $filters
      * @return Collection<int, Audit>

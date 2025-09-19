@@ -30,7 +30,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
+     * @param  array<string, mixed>  $filters
      */
     protected function buildReadModel(string|int $id, ?array $filters = null): ?ReadModelInterface
     {
@@ -50,9 +50,9 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<int|string>  $ids
-     * @param  array<string, mixed>|null  $filters
-     * @return array<int|string, CampaignAnalyticsReadModel>
+     * @param  array<int, string|int>  $ids
+     * @param  array<string, mixed>  $filters
+     * @return array<string|int, ReadModelInterface>
      */
     public function buildReadModels(array $ids, ?array $filters = null): array
     {
@@ -91,8 +91,8 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
-     * @return array<CampaignAnalyticsReadModel>
+     * @param  array<string, mixed>  $filters
+     * @return array<int, ReadModelInterface>
      */
     public function buildAllReadModels(?array $filters = null, ?int $limit = null, ?int $offset = null): array
     {
@@ -132,7 +132,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
+     * @param  array<string, mixed>  $filters
      */
     protected function buildCount(?array $filters = null): int
     {
@@ -148,7 +148,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     protected function getDefaultCacheTags(): array
     {
@@ -338,14 +338,14 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     }
 
     /**
-     * @param  array<string, mixed>|null  $filters
-     * @return array<CampaignAnalyticsReadModel>
+     * @param  array<string, mixed>  $filters
+     * @return array<int, CampaignAnalyticsReadModel>
      */
     public function findAll(?array $filters = null, ?int $limit = null, ?int $offset = null): array
     {
         $results = parent::findAll($filters, $limit, $offset);
 
-        /** @var array<CampaignAnalyticsReadModel> $typedResults */
+        /** @var array<int, CampaignAnalyticsReadModel> $typedResults */
         $typedResults = array_filter($results, fn (ReadModelInterface $item): bool => $item instanceof CampaignAnalyticsReadModel);
 
         return array_values($typedResults);
@@ -354,22 +354,28 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     /**
      * Find analytics for campaigns by organization.
      *
-     * @param  array<string, mixed>|null  $filters
-     * @return array<CampaignAnalyticsReadModel>
+     * @param  array<string, mixed>  $filters
+     * @return array<string, mixed>
      */
     public function findByOrganization(int $organizationId, ?array $filters = null): array
     {
         $filters ??= [];
         $filters['organization_id'] = $organizationId;
 
-        return $this->findAll($filters);
+        $readModels = $this->findAll($filters);
+
+        return [
+            'analytics' => array_map(fn (ReadModelInterface $model): array => $model->toArray(), $readModels),
+            'total' => count($readModels),
+            'organization_id' => $organizationId,
+        ];
     }
 
     /**
      * Find analytics for top performing campaigns.
      *
-     * @param  array<string, mixed>|null  $filters
-     * @return array<CampaignAnalyticsReadModel>
+     * @param  array<string, mixed>  $filters
+     * @return array<string, mixed>
      */
     public function findTopPerforming(int $limit = 10, ?array $filters = null): array
     {
@@ -385,15 +391,20 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
         foreach ($campaigns as $campaign) {
             $data = $this->buildCampaignAnalyticsData($campaign->id);
             if ($data !== []) {
-                $results[] = new CampaignAnalyticsReadModel(
+                $readModel = new CampaignAnalyticsReadModel(
                     $campaign->id,
                     $data,
                     (string) time()
                 );
+                $results[] = $readModel->toArray();
             }
         }
 
-        return $results;
+        return [
+            'top_performing' => $results,
+            'total' => count($results),
+            'limit' => $limit,
+        ];
     }
 
     /**
@@ -411,7 +422,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     /**
      * Bulk load donation statistics for multiple campaigns to prevent N+1 queries.
      *
-     * @param  array<int>  $campaignIds
+     * @param  array<int, int>  $campaignIds
      * @return array<int, object>
      */
     private function getBulkDonationStats(array $campaignIds): array
@@ -522,7 +533,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     /**
      * Warm cache for multiple campaigns to prevent N+1 cache misses.
      *
-     * @param  array<int>  $campaignIds
+     * @param  array<int, int>  $campaignIds
      */
     public function warmCacheForCampaigns(array $campaignIds): void
     {
@@ -590,7 +601,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     /**
      * Bulk invalidate cache for multiple campaigns.
      *
-     * @param  array<int>  $campaignIds
+     * @param  array<int, int>  $campaignIds
      */
     public function bulkInvalidateCampaignCache(array $campaignIds): void
     {
@@ -601,7 +612,8 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
 
     /**
      * Get cache statistics for campaign analytics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getCacheStatistics(int $campaignId): array
@@ -657,7 +669,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     /**
      * Enhanced bulk analytics loading with optimized queries.
      *
-     * @param  array<int>  $campaignIds
+     * @param  array<int, int>  $campaignIds
      * @return array<int, array<string, mixed>>
      */
     public function getBulkAnalytics(array $campaignIds): array
@@ -701,7 +713,7 @@ class CampaignAnalyticsRepository extends AbstractReadModelRepository
     /**
      * Load analytics data for multiple campaigns using optimized queries.
      *
-     * @param  array<int>  $campaignIds
+     * @param  array<int, int>  $campaignIds
      * @return array<int, array<string, mixed>>
      */
     private function loadBulkAnalyticsData(array $campaignIds): array

@@ -13,9 +13,9 @@ use Modules\DevTools\Domain\Service\DomainAnalysisService;
  *     exists: bool,
  *     completeness: int,
  *     components: array<string, bool>,
- *     models: array<int, string>,
- *     missing: array<int, string>,
- *     recommendations: array<int, string>
+ *     models: array<string>,
+ *     missing: array<string>,
+ *     recommendations: array<string>
  * }
  */
 class RetrofitDomainCommand extends Command
@@ -223,14 +223,16 @@ class RetrofitDomainCommand extends Command
             }
         }
 
-        if ($selectedKey) {
+        if ($selectedKey !== null && is_string($selectedKey)) {
             return $this->addSpecificComponent($domain, $selectedKey, $analysis, $isDryRun, $force);
         }
 
         return self::FAILURE;
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getComponentMap(): array
     {
         return [

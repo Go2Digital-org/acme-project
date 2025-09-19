@@ -45,7 +45,9 @@ final readonly class FooterViewComposer
         ]);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getFooterPages(): array
     {
         try {
@@ -87,7 +89,7 @@ final readonly class FooterViewComposer
     }
 
     /**
-     * @return array<string, array<mixed>>
+     * @return array<string, mixed>
      */
     private function getEmptyFooterPages(): array
     {
@@ -98,7 +100,9 @@ final readonly class FooterViewComposer
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getCompanyInfo(): array
     {
         return [

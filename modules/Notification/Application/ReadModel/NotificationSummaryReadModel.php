@@ -27,11 +27,11 @@ final class NotificationSummaryReadModel extends AbstractReadModel
      */
     public function getCacheTags(): array
     {
-        return array_merge(parent::getCacheTags(), [
+        return array_values(array_merge(parent::getCacheTags(), [
             'notification_summary',
             'user:' . $this->getUserId(),
             'notifications',
-        ]);
+        ]));
     }
 
     // User Information
@@ -68,7 +68,7 @@ final class NotificationSummaryReadModel extends AbstractReadModel
 
     // Notifications Data
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getNotifications(): array
     {
@@ -248,7 +248,7 @@ final class NotificationSummaryReadModel extends AbstractReadModel
 
     // Recent Activity
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getRecentNotifications(int $limit = 5): array
     {
@@ -258,35 +258,35 @@ final class NotificationSummaryReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getUnreadNotifications(): array
     {
-        return array_filter($this->getNotifications(), fn ($notification) => ! ($notification['is_read'] ?? false));
+        return array_filter($this->getNotifications(), fn (array $notification): bool => ! ($notification['is_read'] ?? false));
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getCriticalNotifications(): array
     {
-        return array_filter($this->getNotifications(), fn ($notification) => ($notification['priority'] ?? 'normal') === 'critical');
+        return array_filter($this->getNotifications(), fn (array $notification): bool => ($notification['priority'] ?? 'normal') === 'critical');
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getHighPriorityNotifications(): array
     {
-        return array_filter($this->getNotifications(), fn ($notification) => ($notification['priority'] ?? 'normal') === 'high');
+        return array_filter($this->getNotifications(), fn (array $notification): bool => ($notification['priority'] ?? 'normal') === 'high');
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getActionableNotifications(): array
     {
-        return array_filter($this->getNotifications(), fn ($notification) => $notification['has_action'] ?? false);
+        return array_filter($this->getNotifications(), fn (array $notification) => $notification['has_action'] ?? false);
     }
 
     // Delivery Status
@@ -585,7 +585,7 @@ final class NotificationSummaryReadModel extends AbstractReadModel
             'has_urgent' => $this->hasUrgentNotifications(),
             'badge_count' => $this->getBadgeCount(),
             'badge_text' => $this->getBadgeText(),
-            'recent_notifications' => array_map(fn ($notification) => [
+            'recent_notifications' => array_map(fn (array $notification): array => [
                 'id' => $notification['id'],
                 'title' => $notification['title'],
                 'short_message' => $notification['short_message'] ?? '',

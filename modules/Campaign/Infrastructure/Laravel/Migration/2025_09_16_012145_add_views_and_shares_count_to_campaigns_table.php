@@ -13,7 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('campaigns', function (Blueprint $table) {
+        // Only proceed if campaigns table exists
+        if (! Schema::hasTable('campaigns')) {
+            return;
+        }
+
+        Schema::table('campaigns', function (Blueprint $table): void {
             $table->unsignedInteger('views_count')->default(0)->after('donations_count');
             $table->unsignedInteger('shares_count')->default(0)->after('views_count');
 
@@ -30,7 +35,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('campaigns', function (Blueprint $table) {
+        // Only proceed if campaigns table exists
+        if (! Schema::hasTable('campaigns')) {
+            return;
+        }
+
+        Schema::table('campaigns', function (Blueprint $table): void {
             $table->dropIndex('campaigns_views_count_index');
             $table->dropIndex('campaigns_shares_count_index');
             $table->dropIndex('campaigns_status_views_index');

@@ -27,11 +27,13 @@ use Modules\CacheWarming\Infrastructure\ApiPlatform\Handler\Provider\CacheStatus
 )]
 class CacheStatusResource
 {
+    /**
+     * @param  array<string, mixed>|null  $progress
+     * @param  array<string, mixed>|null  $stats
+     */
     public function __construct(
-        /** @var array<string, mixed>|null */
         public readonly ?array $progress = null,
         public readonly ?string $status = null,
-        /** @var array<string, mixed>|null */
         public readonly ?array $stats = null,
     ) {}
 

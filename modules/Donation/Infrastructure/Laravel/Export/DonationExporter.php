@@ -5,22 +5,20 @@ declare(strict_types=1);
 namespace Modules\Donation\Infrastructure\Laravel\Export;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Modules\Donation\Domain\Model\Donation;
 use Modules\Shared\Domain\Export\DonationExportRepositoryInterface;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 final readonly class DonationExporter implements WithMultipleSheets
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         private array $filters = [],
         private ?DonationExportRepositoryInterface $repository = null,
     ) {}
@@ -35,7 +33,9 @@ final readonly class DonationExporter implements WithMultipleSheets
         return new self($filters, $repository);
     }
 
-    /** @return array<string, DonationSheet|DonationSummarySheet|DonationsByCampaignSheet|DonationsByEmployeeSheet> */
+    /**
+     * @return array<string, WithTitle>
+     */
     public function sheets(): array
     {
         $repository = $this->repository ?? app(DonationExportRepositoryInterface::class);
@@ -54,16 +54,14 @@ final readonly class DonationExporter implements WithMultipleSheets
  */
 class DonationSheet implements FromQuery, WithHeadings, WithMapping, WithStyles, WithTitle
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         private readonly array $filters = [],
         private readonly ?DonationExportRepositoryInterface $repository = null,
     ) {}
 
     /**
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {
@@ -109,7 +107,7 @@ class DonationSheet implements FromQuery, WithHeadings, WithMapping, WithStyles,
     }
 
     /**
-     * @param  mixed  $donation
+     * @param  Donation  $donation
      * @return array<int, mixed>
      */
     public function map($donation): array
@@ -120,20 +118,20 @@ class DonationSheet implements FromQuery, WithHeadings, WithMapping, WithStyles,
         return [
             $donation->id,
             $donation->transaction_id ?? 'Pending',
-            $donation->donated_at?->format('Y-m-d H:i:s'),
+            $donation->donated_at->format('Y-m-d H:i:s'),
             $donation->is_anonymous ? 'Anonymous' : ($donation->user->name ?? 'Unknown'),
             $donation->is_anonymous ? null : ($donation->user->email ?? 'Unknown'),
             $donation->user->id ?? 'Unknown',
             $donation->campaign->title ?? 'Unknown Campaign',
-            $donation->campaign->organization ? $donation->campaign->organization->getName() : 'Unknown Organization',
+            $donation->campaign?->organization?->getName() ?? 'Unknown Organization',
             $donation->amount,
             $donation->currency ?? 'USD',
             $donation->payment_method?->getLabel() ?? 'Unknown',
-            $donation->status?->getLabel() ?? 'Unknown',
+            $donation->status->getLabel() ?? 'Unknown',
             $donation->is_anonymous ? 'Yes' : 'No',
-            $donation->is_recurring ? 'Yes' : 'No',
+            $donation->recurring ? 'Yes' : 'No',
             $donation->recurring_frequency ?? '',
-            $donation->tax_deductible ? 'Yes' : 'No',
+            $donation->isEligibleForTaxReceipt() ? 'Yes' : 'No',
             $donation->processing_fee ?? 0,
             $netAmount,
             $donation->matching_multiplier ?? 1,
@@ -144,12 +142,12 @@ class DonationSheet implements FromQuery, WithHeadings, WithMapping, WithStyles,
             $donation->refunded_at?->format('Y-m-d H:i:s') ?? '',
             $donation->failure_reason ?? '',
             $donation->refund_reason ?? '',
-            $donation->created_at->format('Y-m-d H:i:s'),
+            $donation->created_at?->format('Y-m-d H:i:s') ?? '',
         ];
     }
 
     /**
-     * @return array<int|string, array<string, mixed>>
+     * @return array<int|string, mixed>
      */
     public function styles(Worksheet $sheet): array
     {
@@ -170,16 +168,14 @@ class DonationSheet implements FromQuery, WithHeadings, WithMapping, WithStyles,
  */
 class DonationSummarySheet implements FromQuery, WithHeadings, WithMapping, WithStyles, WithTitle
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         private readonly array $filters = [],
         private readonly ?DonationExportRepositoryInterface $repository = null,
     ) {}
 
     /**
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {
@@ -205,24 +201,24 @@ class DonationSummarySheet implements FromQuery, WithHeadings, WithMapping, With
     }
 
     /**
-     * @param  mixed  $row
+     * @param  object{status: mixed, donation_count: mixed, total_amount: mixed, average_amount: mixed, min_amount: mixed, max_amount: mixed, total_fees: mixed}  $row
      * @return array<int, mixed>
      */
     public function map($row): array
     {
         return [
             $row->status?->getLabel() ?? 'Unknown',
-            $row->donation_count,
-            '$' . number_format($row->total_amount, 2),
-            '$' . number_format($row->average_amount, 2),
-            '$' . number_format($row->min_amount, 2),
-            '$' . number_format($row->max_amount, 2),
-            '$' . number_format($row->total_fees, 2),
+            (int) $row->donation_count,
+            '$' . number_format((float) $row->total_amount, 2),
+            '$' . number_format((float) $row->average_amount, 2),
+            '$' . number_format((float) $row->min_amount, 2),
+            '$' . number_format((float) $row->max_amount, 2),
+            '$' . number_format((float) $row->total_fees, 2),
         ];
     }
 
     /**
-     * @return array<int|string, array<string, mixed>>
+     * @return array<int|string, mixed>
      */
     public function styles(Worksheet $sheet): array
     {
@@ -243,16 +239,14 @@ class DonationSummarySheet implements FromQuery, WithHeadings, WithMapping, With
  */
 class DonationsByCampaignSheet implements FromQuery, WithHeadings, WithMapping, WithStyles, WithTitle
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         private readonly array $filters = [],
         private readonly ?DonationExportRepositoryInterface $repository = null,
     ) {}
 
     /**
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {
@@ -279,25 +273,25 @@ class DonationsByCampaignSheet implements FromQuery, WithHeadings, WithMapping, 
     }
 
     /**
-     * @param  mixed  $row
+     * @param  object{campaign_title: mixed, organization_name: mixed, donation_count: mixed, total_raised: mixed, average_donation: mixed, goal_amount: mixed, progress_percentage: mixed, unique_donors: mixed}  $row
      * @return array<int, mixed>
      */
     public function map($row): array
     {
         return [
-            $row->campaign_title,
-            $row->organization_name,
-            $row->donation_count,
-            '$' . number_format($row->total_raised, 2),
-            '$' . number_format($row->average_donation, 2),
-            '$' . number_format($row->goal_amount, 2),
-            number_format($row->progress_percentage, 1) . '%',
-            $row->unique_donors,
+            (string) $row->campaign_title,
+            (string) $row->organization_name,
+            (int) $row->donation_count,
+            '$' . number_format((float) $row->total_raised, 2),
+            '$' . number_format((float) $row->average_donation, 2),
+            '$' . number_format((float) $row->goal_amount, 2),
+            number_format((float) $row->progress_percentage, 1) . '%',
+            (int) $row->unique_donors,
         ];
     }
 
     /**
-     * @return array<int|string, array<string, mixed>>
+     * @return array<int|string, mixed>
      */
     public function styles(Worksheet $sheet): array
     {
@@ -318,16 +312,14 @@ class DonationsByCampaignSheet implements FromQuery, WithHeadings, WithMapping, 
  */
 class DonationsByEmployeeSheet implements FromQuery, WithHeadings, WithMapping, WithStyles, WithTitle
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
+        /** @var array<string, mixed> */
         private readonly array $filters = [],
         private readonly ?DonationExportRepositoryInterface $repository = null,
     ) {}
 
     /**
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {
@@ -372,7 +364,7 @@ class DonationsByEmployeeSheet implements FromQuery, WithHeadings, WithMapping, 
     }
 
     /**
-     * @return array<int|string, array<string, mixed>>
+     * @return array<int|string, mixed>
      */
     public function styles(Worksheet $sheet): array
     {

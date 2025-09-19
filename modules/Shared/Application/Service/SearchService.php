@@ -201,14 +201,14 @@ abstract class SearchService
     /**
      * Get facet counts for filters.
      *
-     * @param  array<string>  $facetFields
-     * @return array<string, array<string, int>>
+     * @param  array<string, mixed>  $facetFields
+     * @return array<string, mixed>
      */
     public function getFacets(string $query = '', array $facetFields = []): array
     {
         $cacheKey = $this->getCachePrefix() . ':facets:' . md5($query . serialize($facetFields));
 
-        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($query, $facetFields) {
+        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($query, $facetFields): array {
             // This is a simplified implementation
             // In a real-world scenario, you'd use Meilisearch's faceting capabilities
             $facets = [];
