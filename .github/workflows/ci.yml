@@ -179,7 +179,7 @@ jobs:
         ports:
           - 3307:3306  # Use different port to avoid conflicts with host MySQL
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
@@ -273,7 +273,9 @@ jobs:
           if [ -f "database/schema/mysql-testing-schema.sql" ]; then
             echo "Loading database schema from dump (fast path)..."
             start_time=$(date +%s)
-            mysql -h 127.0.0.1 -P 3307 -u acme_user -psecret acme_corp_csr_test < database/schema/mysql-testing-schema.sql
+            # Remove DEFINER clauses that require SUPER privileges
+            sed -e 's/DEFINER=[^ ]* //g' database/schema/mysql-testing-schema.sql | \
+              mysql -h 127.0.0.1 -P 3307 -u acme_user -psecret acme_corp_csr_test
             end_time=$(date +%s)
             echo "Schema loaded successfully in $((end_time - start_time)) seconds"
 
