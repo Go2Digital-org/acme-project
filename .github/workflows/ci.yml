@@ -283,15 +283,9 @@ jobs:
       - name: Run Tests with Quality Gates
         run: |
           echo "::group::Unit Tests (Parallel)"
-          # Unit tests with strict pass rate requirement
-          UNIT_RESULT=$(vendor/bin/pest --testsuite=Unit --no-coverage --parallel --processes=10 --compact --json | jq -r '.summary.passed / .summary.total * 100')
+          # Unit tests - run without json flag when using parallel
           vendor/bin/pest --testsuite=Unit --no-coverage --parallel --processes=10 --compact
-          echo "Unit test pass rate: ${UNIT_RESULT}%"
-          if (( $(echo "${UNIT_RESULT} < ${TEST_PASS_THRESHOLD}" | bc -l) )); then
-            echo "::error::Unit test pass rate ${UNIT_RESULT}% is below required ${TEST_PASS_THRESHOLD}%"
-            exit 1
-          fi
-          echo "✅ Unit tests passed quality gate"
+          echo "✅ Unit tests passed"
           echo "::endgroup::"
 
           echo "::group::Feature & Integration Tests"
