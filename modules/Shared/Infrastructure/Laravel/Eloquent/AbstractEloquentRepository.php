@@ -258,7 +258,9 @@ abstract class AbstractEloquentRepository
         ];
 
         if ($parameter->getFilter() === MultiSearchFilter::class) {
-            $multiSearchFilter = new MultiSearchFilter($parameter->getExtraProperties());
+            $extraProperties = $parameter->getExtraProperties();
+            $allowedFields = $extraProperties['fields'] ?? [];
+            $multiSearchFilter = new MultiSearchFilter($allowedFields);
             $multiSearchFilter->apply($query, $value);
 
             return;

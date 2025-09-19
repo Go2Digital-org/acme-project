@@ -16,6 +16,7 @@ class ConversionFunnelWidget extends ChartWidget
     protected ?string $pollingInterval = '15m';
 
     /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 12;

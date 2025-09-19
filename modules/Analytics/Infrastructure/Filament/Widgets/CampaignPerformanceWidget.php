@@ -15,7 +15,8 @@ class CampaignPerformanceWidget extends ChartWidget
 
     protected ?string $pollingInterval = '30s';
 
-    /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 2;

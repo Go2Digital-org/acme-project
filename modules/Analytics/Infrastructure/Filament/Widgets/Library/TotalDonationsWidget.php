@@ -13,6 +13,7 @@ class TotalDonationsWidget extends BaseWidget
     protected ?string $pollingInterval = '60s';
 
     /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     public static function canView(): bool

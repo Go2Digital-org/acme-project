@@ -18,7 +18,8 @@ class PendingCampaignApprovalsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
-    /** @var int|string|array<string, mixed> */
+    /** @var int|string|array<string, int|null> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?string $heading = 'Campaigns Pending Approval';

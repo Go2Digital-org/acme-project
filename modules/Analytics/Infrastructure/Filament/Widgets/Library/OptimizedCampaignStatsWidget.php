@@ -13,6 +13,7 @@ class OptimizedCampaignStatsWidget extends BaseWidget
     protected static ?int $sort = 1;
 
     /** @var int|string|array<string, mixed> */
+    /** @var array<string, int|null>|int|string */
     protected int|string|array $columnSpan = 'full';
 
     /**
