@@ -18,7 +18,6 @@ parameters:
         - storage
         - bootstrap/cache
         - vendor
-        - .phpstorm.meta.php
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
