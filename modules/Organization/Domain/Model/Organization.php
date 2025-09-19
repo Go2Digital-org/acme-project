@@ -698,6 +698,7 @@ class Organization extends Model implements Auditable, OrganizationInterface, Te
         if (Schema::hasTable('campaigns')) {
             return $query->with(['campaigns']);
         }
+
         return $query;
     }
 

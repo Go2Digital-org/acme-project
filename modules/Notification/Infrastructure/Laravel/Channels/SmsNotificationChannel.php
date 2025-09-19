@@ -27,8 +27,6 @@ final readonly class SmsNotificationChannel
 
     /**
      * Send the given notification
-     *
-     * @param object $notifiable
      */
     public function send(object $notifiable, Notification $notification): void
     {
@@ -72,8 +70,6 @@ final readonly class SmsNotificationChannel
 
     /**
      * Send SMS message
-     *
-     * @param object $notifiable
      */
     private function sendSms(string $phoneNumber, string $message, object $notifiable): void
     {
@@ -165,8 +161,6 @@ final readonly class SmsNotificationChannel
 
     /**
      * Get phone number from notifiable
-     *
-     * @param object $notifiable
      */
     private function getPhoneNumber(object $notifiable): ?string
     {

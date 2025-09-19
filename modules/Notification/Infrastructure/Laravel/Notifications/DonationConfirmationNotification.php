@@ -34,6 +34,7 @@ final class DonationConfirmationNotification extends Notification
 
     /**
      * Determine notification channels based on user preferences
+     *
      * @param  mixed  $notifiable
      * @return array<int, string>
      */
@@ -68,7 +69,7 @@ final class DonationConfirmationNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         $impactStatement = $this->generateImpactStatement();
-        $progressPercentage = $this->calculateProgressPercentage();
+        $this->calculateProgressPercentage();
 
         return (new MailMessage)
             ->subject("Thank you for your donation to {$this->campaign['title']}")

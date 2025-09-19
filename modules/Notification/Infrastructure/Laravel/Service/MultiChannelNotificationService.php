@@ -126,7 +126,6 @@ final readonly class MultiChannelNotificationService
                 public function __construct(private readonly string $message) {}
 
                 /**
-                 * @param object $notifiable
                  * @return array<int, string>
                  */
                 public function via(object $notifiable): array
@@ -134,9 +133,6 @@ final readonly class MultiChannelNotificationService
                     return ['sms'];
                 }
 
-                /**
-                 * @param object $notifiable
-                 */
                 public function toSms(object $notifiable): string
                 {
                     return $this->message;

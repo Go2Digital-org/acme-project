@@ -31,6 +31,7 @@ class ProcessDomainEventJob implements ShouldQueue
 
     /**
      * The number of seconds to wait before retrying the job.
+     *
      * @var array<int, int>
      */
     public array $backoff = [5, 15, 30];
@@ -100,6 +101,7 @@ class ProcessDomainEventJob implements ShouldQueue
 
     /**
      * Get tags for job monitoring
+     *
      * @return array<string, mixed>
      */
     public function tags(): array

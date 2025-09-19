@@ -117,7 +117,7 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
     }
 
     /**
-     * @param array<string> $userIds
+     * @param  array<string>  $userIds
      * @return array<int, string>
      */
     public function filterUsersForNotificationType(array $userIds, string $notificationType): array
@@ -213,7 +213,7 @@ final readonly class NotificationPreferencesEloquentRepository implements Notifi
     }
 
     /**
-     * @param array<string> $userIds
+     * @param  array<string>  $userIds
      * @return array<int, string>
      */
     public function filterUsersByChannel(array $userIds, string $channel, string $notificationType): array

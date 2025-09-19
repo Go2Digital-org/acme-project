@@ -301,6 +301,7 @@ class PrivacyPolicyService
         if (app()->environment('testing')) {
             return 1;
         }
+
         return 1000;
     }
 

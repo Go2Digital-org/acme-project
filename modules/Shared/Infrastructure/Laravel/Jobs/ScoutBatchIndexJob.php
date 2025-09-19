@@ -36,6 +36,7 @@ class ScoutBatchIndexJob implements ShouldQueue
 
     /**
      * The number of seconds to wait before retrying the job.
+     *
      * @var array<int, int>
      */
     public array $backoff = [60, 180, 600];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Campaign\Infrastructure\Filament\Resources\CampaignResource\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
@@ -20,7 +21,7 @@ class EditCampaign extends EditRecord
     }
 
     /**
-     * @return array<int, \Filament\Actions\Action>
+     * @return array<int, Action>
      */
     protected function getHeaderActions(): array
     {

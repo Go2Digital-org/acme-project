@@ -13,7 +13,7 @@ class ListCategories extends ListRecords
     protected static string $resource = CategoryResource::class;
 
     /**
-     * @return array<int, \Filament\Actions\CreateAction>
+     * @return array<int, CreateAction>
      */
     protected function getHeaderActions(): array
     {

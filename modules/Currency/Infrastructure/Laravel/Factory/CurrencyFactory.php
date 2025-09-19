@@ -197,7 +197,7 @@ class CurrencyFactory extends Factory
     /**
      * Create or update a currency by code to avoid duplicates.
      *
-     * @param array<string, mixed> $attributes
+     * @param  array<string, mixed>  $attributes
      */
     public function createOrUpdate(array $attributes = []): Currency
     {
@@ -205,6 +205,7 @@ class CurrencyFactory extends Factory
 
         if ($currency) {
             $currency->update($attributes);
+
             return $currency;
         }
 

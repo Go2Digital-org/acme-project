@@ -9,7 +9,7 @@ use Modules\Shared\Application\Query\QueryInterface;
 final readonly class GetDonationsByUserQuery implements QueryInterface
 {
     /**
-     * @param array<string>|null $statuses
+     * @param  array<string>|null  $statuses
      */
     public function __construct(
         public int $userId,

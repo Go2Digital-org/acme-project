@@ -165,10 +165,6 @@ interface NotificationRepositoryInterface
      * Search notifications with filters.
      *
      * @param  array<string, mixed>  $filters
-     * @param  string  $sortBy
-     * @param  string  $sortOrder
-     * @param  int  $page
-     * @param  int  $perPage
      * @return LengthAwarePaginator<int, Notification>
      */
     public function search(
@@ -262,9 +258,6 @@ interface NotificationRepositoryInterface
     /**
      * Get notifications with cursor-based pagination for better performance.
      *
-     * @param  string  $recipientId
-     * @param  string|null  $cursor
-     * @param  int  $limit
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -297,10 +290,7 @@ interface NotificationRepositoryInterface
     /**
      * Find duplicate notifications to prevent spam.
      *
-     * @param  string  $recipientId
-     * @param  string  $type
      * @param  array<string, mixed>  $data
-     * @param  int  $withinMinutes
      * @return Collection<int, Notification>
      */
     public function findDuplicateNotifications(
@@ -338,10 +328,7 @@ interface NotificationRepositoryInterface
     /**
      * Search notifications using full-text search capabilities.
      *
-     * @param  string  $query
-     * @param  string|null  $recipientId
      * @param  array<string, mixed>  $filters
-     * @param  int  $limit
      * @return Collection<int, Notification>
      */
     public function fullTextSearch(
@@ -389,7 +376,6 @@ interface NotificationRepositoryInterface
     /**
      * Get counts by a specific field.
      *
-     * @param  string  $field
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -407,7 +393,6 @@ interface NotificationRepositoryInterface
      * Find notifications by filters.
      *
      * @param  array<string, mixed>  $filters
-     * @param  int  $limit
      * @return Collection<int, Notification>
      */
     public function findByFilters(array $filters, int $limit = 100): Collection;

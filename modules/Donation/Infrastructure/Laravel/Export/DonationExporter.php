@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Modules\Donation\Infrastructure\Laravel\Export;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Modules\Donation\Domain\Model\Donation;
 use Modules\Shared\Domain\Export\DonationExportRepositoryInterface;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -34,7 +34,7 @@ final readonly class DonationExporter implements WithMultipleSheets
     }
 
     /**
-     * @return array<string, \Maatwebsite\Excel\Concerns\WithTitle>
+     * @return array<string, WithTitle>
      */
     public function sheets(): array
     {
@@ -61,7 +61,7 @@ class DonationSheet implements FromQuery, WithHeadings, WithMapping, WithStyles,
     ) {}
 
     /**
-     * @return Builder<\Modules\Donation\Domain\Model\Donation>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {
@@ -107,7 +107,7 @@ class DonationSheet implements FromQuery, WithHeadings, WithMapping, WithStyles,
     }
 
     /**
-     * @param  \Modules\Donation\Domain\Model\Donation  $donation
+     * @param  Donation  $donation
      * @return array<int, mixed>
      */
     public function map($donation): array
@@ -175,7 +175,7 @@ class DonationSummarySheet implements FromQuery, WithHeadings, WithMapping, With
     ) {}
 
     /**
-     * @return Builder<\Modules\Donation\Domain\Model\Donation>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {
@@ -246,7 +246,7 @@ class DonationsByCampaignSheet implements FromQuery, WithHeadings, WithMapping, 
     ) {}
 
     /**
-     * @return Builder<\Modules\Donation\Domain\Model\Donation>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {
@@ -319,7 +319,7 @@ class DonationsByEmployeeSheet implements FromQuery, WithHeadings, WithMapping, 
     ) {}
 
     /**
-     * @return Builder<\Modules\Donation\Domain\Model\Donation>
+     * @return Builder<Donation>
      */
     public function query(): Builder
     {

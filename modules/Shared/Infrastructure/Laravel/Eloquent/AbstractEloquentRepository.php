@@ -32,7 +32,7 @@ use Modules\Shared\Infrastructure\Laravel\Exception\ResourceNotFoundException;
 abstract class AbstractEloquentRepository
 {
     /**
-     * @param TModel $model
+     * @param  TModel  $model
      */
     public function __construct(protected Model $model) {}
 
@@ -80,15 +80,17 @@ abstract class AbstractEloquentRepository
     }
 
     /**
+     * @return TModel
+     *
      * @throws ResourceNotFoundException
      * @throws FatalErrorFoundException
-     * @return TModel
      */
     public function find(int $id): Model
     {
         try {
             /** @var TModel $result */
             $result = $this->model::findOrFail($id);
+
             return $result;
         } catch (ModelNotFoundException) {
             throw new ResourceNotFoundException(
@@ -176,9 +178,10 @@ abstract class AbstractEloquentRepository
     }
 
     /**
+     * @return TModel
+     *
      * @throws ResourceNotFoundException
      * @throws FatalErrorFoundException
-     * @return TModel
      */
     public function remove(int $id): Model
     {

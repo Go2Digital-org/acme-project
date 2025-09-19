@@ -471,8 +471,10 @@ final readonly class NotificationDigestService
         if (isset($lastDigest[0])) {
             /** @var Notification $lastDigestNotification */
             $lastDigestNotification = $lastDigest[0];
+
             return $lastDigestNotification->created_at->toISOString();
         }
+
         return null;
     }
 }

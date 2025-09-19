@@ -45,6 +45,7 @@ class DashboardResource
     #[Groups(['dashboard:read'])]
     /**
      * @var array<string, mixed>|null
+     *
      * @phpstan-ignore-next-line missingType.iterableValue
      */
     public ?array $statistics = null;
@@ -52,6 +53,7 @@ class DashboardResource
     #[Groups(['dashboard:read'])]
     /**
      * @var array<int, mixed>|null
+     *
      * @phpstan-ignore-next-line missingType.iterableValue
      */
     public ?array $activityFeed = null;
@@ -59,6 +61,7 @@ class DashboardResource
     #[Groups(['dashboard:read'])]
     /**
      * @var array<string, mixed>|null
+     *
      * @phpstan-ignore-next-line missingType.iterableValue
      */
     public ?array $impactMetrics = null;
@@ -69,6 +72,7 @@ class DashboardResource
     #[Groups(['dashboard:read'])]
     /**
      * @var array<int, mixed>|null
+     *
      * @phpstan-ignore-next-line missingType.iterableValue
      */
     public ?array $leaderboard = null;

@@ -14,7 +14,7 @@ class EditCurrency extends EditRecord
     protected static string $resource = CurrencyResource::class;
 
     /**
-     * @return array<int, \Filament\Actions\DeleteAction>
+     * @return array<int, DeleteAction>
      */
     protected function getHeaderActions(): array
     {

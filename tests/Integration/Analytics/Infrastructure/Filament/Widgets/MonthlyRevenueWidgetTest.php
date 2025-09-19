@@ -14,7 +14,7 @@ describe('MonthlyRevenueWidget Integration Tests', function (): void {
         $this->ensureApplicationCacheTableExists();
 
         // Ensure stats_data column exists (temporary fix for tests)
-        if (!\Illuminate\Support\Facades\Schema::hasColumn('application_cache', 'stats_data')) {
+        if (! \Illuminate\Support\Facades\Schema::hasColumn('application_cache', 'stats_data')) {
             \Illuminate\Support\Facades\DB::statement('ALTER TABLE application_cache ADD COLUMN stats_data JSON NULL AFTER cache_key');
         }
 

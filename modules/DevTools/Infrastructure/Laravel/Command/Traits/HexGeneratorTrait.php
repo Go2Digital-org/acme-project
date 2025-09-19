@@ -371,7 +371,6 @@ trait HexGeneratorTrait
      * Get related files for a type.
      */
     /**
-     * @param string $type
      * @return array<string, string>
      */
     protected function getRelatedFiles(string $type): array

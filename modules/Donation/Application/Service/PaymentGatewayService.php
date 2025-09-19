@@ -208,7 +208,7 @@ final readonly class PaymentGatewayService
      * Get all active and configured payment gateways.
      */
     /**
-     * @return array<int, \Modules\Donation\Domain\Model\PaymentGateway>
+     * @return array<int, PaymentGateway>
      */
     public function getActiveGateways(): array
     {

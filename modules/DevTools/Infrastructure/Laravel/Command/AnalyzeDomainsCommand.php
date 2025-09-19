@@ -338,7 +338,7 @@ class AnalyzeDomainsCommand extends Command
     }
 
     /**
-     * @param array<string, mixed> $analysis
+     * @param  array<string, mixed>  $analysis
      */
     private function displayRecommendations(string $domain, array $analysis): void
     {

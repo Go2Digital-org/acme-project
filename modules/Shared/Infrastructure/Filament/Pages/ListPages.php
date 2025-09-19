@@ -26,7 +26,7 @@ class ListPages extends ListRecords
     }
 
     /**
-     * @return array<int, \Filament\Actions\Action>
+     * @return array<int, Action>
      */
     protected function getHeaderActions(): array
     {

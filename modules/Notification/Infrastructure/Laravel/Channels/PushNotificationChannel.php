@@ -23,8 +23,6 @@ final readonly class PushNotificationChannel
 
     /**
      * Send the given notification
-     *
-     * @param object $notifiable
      */
     public function send(object $notifiable, Notification $notification): void
     {
@@ -217,7 +215,6 @@ final readonly class PushNotificationChannel
     /**
      * Get device tokens for a user
      *
-     * @param object $notifiable
      * @return array<int, array<string, string>>
      */
     private function getDeviceTokens(object $notifiable): array

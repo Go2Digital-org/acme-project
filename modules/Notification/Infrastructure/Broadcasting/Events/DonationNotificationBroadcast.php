@@ -30,6 +30,7 @@ class DonationNotificationBroadcast implements ShouldBroadcast
 
     /**
      * Get the channels the event should broadcast on.
+     *
      * @return array<int, Channel|PrivateChannel>
      */
     public function broadcastOn(): array

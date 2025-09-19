@@ -314,8 +314,8 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     }
 
     /**
-     * @param array<string> $ids
-     * @param array<string, mixed> $data
+     * @param  array<string>  $ids
+     * @param  array<string, mixed>  $data
      */
     public function bulkUpdate(array $ids, array $data): int
     {
@@ -393,7 +393,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     }
 
     /**
-     * @param array<array<string, mixed>> $notifications
+     * @param  array<array<string, mixed>>  $notifications
      */
     public function bulkCreate(array $notifications): int
     {
@@ -425,7 +425,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
      */
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     public function cursorPaginate(
@@ -524,7 +524,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     }
 
     /**
-     * @param array<string> $notificationIds
+     * @param  array<string>  $notificationIds
      */
     public function batchMarkAsRead(array $notificationIds, string $recipientId): int
     {
@@ -603,7 +603,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
      */
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     public function getCountsByField(string $field, array $filters = []): array
@@ -629,7 +629,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return Collection<int, Notification>
      */
     public function findByFilters(array $filters, int $limit = 100): Collection
@@ -662,7 +662,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return Collection<int, Notification>
      */
     public function findDuplicateNotifications(
@@ -756,7 +756,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     }
 
     /**
-     * @param array<string, mixed> $filters
+     * @param  array<string, mixed>  $filters
      * @return Collection<int, Notification>
      */
     public function fullTextSearch(
@@ -875,8 +875,8 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     /**
      * Apply filters to a query builder instance.
      *
-     * @param Builder<Notification> $query
-     * @param array<string, mixed> $filters
+     * @param  Builder<Notification>  $query
+     * @param  array<string, mixed>  $filters
      */
     private function applyFilters(Builder $query, array $filters): void
     {
@@ -920,7 +920,7 @@ final readonly class NotificationEloquentRepository implements NotificationRepos
     }
 
     /**
-     * @param array<string> $ids
+     * @param  array<string>  $ids
      * @return Collection<int, Notification>
      */
     public function findByIds(array $ids): Collection

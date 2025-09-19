@@ -148,7 +148,7 @@ class NotificationPreferences extends Model
     public function setChannelPreference(string $notificationType, string $channel, bool $enabled): void
     {
         $preferences = $this->channel_preferences;
-        if (!isset($preferences[$notificationType]) || !is_array($preferences[$notificationType])) {
+        if (! isset($preferences[$notificationType]) || ! is_array($preferences[$notificationType])) {
             $preferences[$notificationType] = [];
         }
         $preferences[$notificationType][$channel] = $enabled;
@@ -171,7 +171,7 @@ class NotificationPreferences extends Model
     public function optOutOfType(string $notificationType): void
     {
         $preferences = $this->type_preferences;
-        if (!isset($preferences[$notificationType]) || !is_array($preferences[$notificationType])) {
+        if (! isset($preferences[$notificationType]) || ! is_array($preferences[$notificationType])) {
             $preferences[$notificationType] = [];
         }
         $preferences[$notificationType]['enabled'] = false;
@@ -185,7 +185,7 @@ class NotificationPreferences extends Model
     public function optInToType(string $notificationType): void
     {
         $preferences = $this->type_preferences;
-        if (!isset($preferences[$notificationType]) || !is_array($preferences[$notificationType])) {
+        if (! isset($preferences[$notificationType]) || ! is_array($preferences[$notificationType])) {
             $preferences[$notificationType] = [];
         }
         $preferences[$notificationType]['enabled'] = true;

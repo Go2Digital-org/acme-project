@@ -197,7 +197,7 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
         $pattern = $this->weightedRandomSelection($this->donationPatterns);
 
         // Ensure we have a valid pattern array with min/max values
-        if (!is_array($pattern) || !isset($pattern['min']) || !isset($pattern['max'])) {
+        if (! is_array($pattern) || ! isset($pattern['min']) || ! isset($pattern['max'])) {
             // Fallback to default pattern if selection failed
             $pattern = ['min' => 10, 'max' => 100];
         }
@@ -465,8 +465,11 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
             $randomNumber = random_int(1, $totalWeight);
 
             $currentWeight = 0;
-            foreach ($weights as $key => $data) {
-                if (!is_array($data) || !isset($data['weight'])) {
+            foreach ($weights as $data) {
+                if (! is_array($data)) {
+                    continue;
+                }
+                if (! isset($data['weight'])) {
                     continue;
                 }
                 $currentWeight += $data['weight'];
@@ -483,7 +486,7 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
 
             $currentWeight = 0;
             foreach ($weights as $item => $weight) {
-                if (!is_numeric($weight)) {
+                if (! is_numeric($weight)) {
                     continue;
                 }
                 $currentWeight += $weight;

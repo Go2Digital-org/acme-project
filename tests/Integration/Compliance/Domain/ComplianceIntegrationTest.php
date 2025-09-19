@@ -241,17 +241,17 @@ test('privacy policy workflow integration', function () {
         [
             'personal_data' => 'Name, email address, phone number',
             'technical_data' => 'IP address, browser information',
-            'usage_data' => 'Platform interactions and preferences'
+            'usage_data' => 'Platform interactions and preferences',
         ],
         [
             'service_provision' => 'Providing our donation platform services',
             'user_authentication' => 'User account management',
-            'communication' => 'Service communications'
+            'communication' => 'Service communications',
         ],
         [
             'consent' => 'User explicit consent for processing',
             'contract' => 'Performance of service contract',
-            'legal_obligation' => 'Compliance with legal requirements'
+            'legal_obligation' => 'Compliance with legal requirements',
         ]
     );
 
