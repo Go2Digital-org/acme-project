@@ -154,7 +154,7 @@ final readonly class GetNotificationDetailsQueryHandler implements QueryHandlerI
      * Get events history for a notification (simulated - in real implementation,
      * this would query an event log table or audit trail).
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<int, array<string, string>>
      */
     private function getNotificationEvents(): array
     {
@@ -162,7 +162,7 @@ final readonly class GetNotificationDetailsQueryHandler implements QueryHandlerI
         return [
             [
                 'event' => 'created',
-                'timestamp' => Carbon::now()->subMinutes(10)->toISOString(),
+                'timestamp' => Carbon::now()->subMinutes(10)->toISOString() ?? '',
                 'source' => 'command_handler',
             ],
             // Additional events would be retrieved from event log

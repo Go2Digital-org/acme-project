@@ -15,8 +15,9 @@ final readonly class DomainAnalysisService
 
     /**
      * Analyze all domains and return completeness status.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function analyzeAllDomains(): array
     {
         $domains = $this->getAvailableDomains();
@@ -74,8 +75,9 @@ final readonly class DomainAnalysisService
 
     /**
      * Get domains that are partially complete (have some but not all components).
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getPartialDomains(): array
     {
         $allDomains = $this->analyzeAllDomains();
@@ -99,8 +101,9 @@ final readonly class DomainAnalysisService
 
     /**
      * Get domains missing specific component type.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getDomainsWithoutComponent(string $componentType): array
     {
         $allDomains = $this->analyzeAllDomains();
@@ -125,8 +128,9 @@ final readonly class DomainAnalysisService
 
     /**
      * Check which hexagonal architecture components exist for a domain.
+     *
+     * @return array<string, bool>
      */
-    /** @return array<array-key, mixed> */
     private function checkDomainComponents(string $domain): array
     {
         $domainPath = "{$this->modulesPath}/{$domain}";
@@ -150,8 +154,9 @@ final readonly class DomainAnalysisService
 
     /**
      * Get all models in a domain.
+     *
+     * @return array<int, string>
      */
-    /** @return array<array-key, mixed> */
     private function getDomainModels(string $domain): array
     {
         $modelsPath = "{$this->modulesPath}/{$domain}/Domain/Model";
@@ -272,8 +277,9 @@ final readonly class DomainAnalysisService
 
     /**
      * Get available domains (excluding special directories).
+     *
+     * @return array<int, string>
      */
-    /** @return array<array-key, mixed> */
     private function getAvailableDomains(): array
     {
         if (! is_dir($this->modulesPath)) {
@@ -439,7 +445,7 @@ final readonly class DomainAnalysisService
     /**
      * Detect architectural violations.
      *
-     * @return array<string, mixed>
+     * @return array<int, string>
      */
     private function detectViolations(): array
     {

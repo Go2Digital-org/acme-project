@@ -59,7 +59,7 @@ final readonly class ListDonationsWebController
         $donationsPaginated->setCollection($donationsWithMetrics);
 
         // Get user statistics in a single optimized query
-        $userStats = $this->donationRepository->getEmployeeStats($user->getId());
+        $userStats = $this->donationRepository->getUserStats($user->getId());
 
         // Get available filters (years and campaigns) in optimized queries
         $availableFilters = $this->donationRepository->getAvailableFilters($user->getId());

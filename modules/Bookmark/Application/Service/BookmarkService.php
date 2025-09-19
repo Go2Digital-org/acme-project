@@ -130,7 +130,7 @@ final readonly class BookmarkService
     /**
      * Organize user bookmarks (bulk operations).
      *
-     * @param  array<int, int>  $campaignIds
+     * @param  array<int>  $campaignIds
      * @return array{affected_count: int, action: string}
      */
     public function organizeBookmarks(int $userId, array $campaignIds, string $action): array

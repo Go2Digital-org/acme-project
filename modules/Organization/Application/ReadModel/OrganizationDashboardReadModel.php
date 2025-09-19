@@ -112,7 +112,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getEmployeesByDepartment(): array
     {
@@ -156,7 +156,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getCampaignsByCategory(): array
     {
@@ -282,7 +282,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getTopPerformingCampaigns(): array
     {
@@ -290,7 +290,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getMostProductiveEmployees(): array
     {
@@ -299,7 +299,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
 
     // Time-based Analytics
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getMonthlyFundraisingTrend(): array
     {
@@ -307,7 +307,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getMonthlyCampaignCreationTrend(): array
     {
@@ -315,7 +315,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getMonthlyDonationTrend(): array
     {
@@ -323,7 +323,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getQuarterlyPerformance(): array
     {
@@ -331,7 +331,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getYearOverYearGrowth(): array
     {
@@ -366,7 +366,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
 
     // Recent Activity
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getRecentCampaigns(): array
     {
@@ -374,7 +374,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getRecentDonations(): array
     {
@@ -382,7 +382,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getUpcomingDeadlines(): array
     {
@@ -406,7 +406,7 @@ class OrganizationDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getApiUsage(): array
     {

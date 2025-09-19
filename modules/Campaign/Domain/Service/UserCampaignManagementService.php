@@ -80,7 +80,7 @@ class UserCampaignManagementService
     /**
      * Get campaigns that need attention from the user.
      *
-     * @return array<array{campaign: Campaign, reasons: array<string>}>
+     * @return array<int, array<string, mixed>>
      */
     public function getCampaignsNeedingAttention(int $userId): array
     {

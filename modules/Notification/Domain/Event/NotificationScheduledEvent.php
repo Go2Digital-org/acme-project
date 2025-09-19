@@ -36,7 +36,9 @@ final readonly class NotificationScheduledEvent implements DomainEventInterface
         return new DateTimeImmutable;
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return [
@@ -54,7 +56,9 @@ final readonly class NotificationScheduledEvent implements DomainEventInterface
         ];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getPayload(): array
     {
         return $this->getEventData();

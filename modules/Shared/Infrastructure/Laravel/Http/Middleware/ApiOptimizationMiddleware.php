@@ -15,6 +15,8 @@ class ApiOptimizationMiddleware
 {
     /**
      * Handle an incoming request with API optimizations.
+     *
+     * @param  Closure(Request): SymfonyResponse  $next
      */
     public function handle(Request $request, Closure $next): SymfonyResponse
     {

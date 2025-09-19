@@ -9,7 +9,7 @@ use Modules\Shared\Application\Query\QueryInterface;
 final readonly class SearchDonationsQuery implements QueryInterface
 {
     /**
-     * @param  array<string, mixed>  $filters
+     * @param array<string, mixed> $filters
      */
     public function __construct(
         public string $searchTerm = '',

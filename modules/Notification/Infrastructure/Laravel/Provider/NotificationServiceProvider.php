@@ -117,7 +117,6 @@ final class NotificationServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
-     *
      * @return array<int, string>
      */
     public function provides(): array
@@ -219,11 +218,6 @@ final class NotificationServiceProvider extends ServiceProvider
             OrganizationVerifiedNotificationListener::class,
         );
 
-        // Listen to authentication events (if User Registration events exist)
-        // $this->app['events']->listen(
-        //     \Modules\Auth\Domain\Event\UserRegisteredEvent::class,
-        //     \Modules\Notification\Infrastructure\Laravel\Listeners\UserRegisteredNotificationListener::class
-        // );
     }
 
     /**

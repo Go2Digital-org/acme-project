@@ -25,7 +25,7 @@ final readonly class PageStatsCalculator
     /**
      * Calculate statistics for all system page/cache types
      *
-     * @return array<string, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function calculateAllPageStats(): array
     {

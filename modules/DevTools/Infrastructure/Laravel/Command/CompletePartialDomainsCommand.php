@@ -54,8 +54,11 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @param  array<int, string>  $excludeDomains
-     * @param  array<int, string>  $includeDomains
+     * @param string $component
+     * @param array<string> $excludeDomains
+     * @param array<string> $includeDomains
+     * @param bool $isDryRun
+     * @param bool $isBatch
      */
     private function completeSpecificComponent(string $component, array $excludeDomains, array $includeDomains, bool $isDryRun, bool $isBatch): int
     {
@@ -87,8 +90,12 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @param  array<int, string>  $excludeDomains
-     * @param  array<int, string>  $includeDomains
+     * @param int $minCompleteness
+     * @param int $maxCompleteness
+     * @param array<string> $excludeDomains
+     * @param array<string> $includeDomains
+     * @param bool $isDryRun
+     * @param bool $isBatch
      */
     private function completePartialDomains(int $minCompleteness, int $maxCompleteness, array $excludeDomains, array $includeDomains, bool $isDryRun, bool $isBatch): int
     {
@@ -133,9 +140,9 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $domains
-     * @param  array<int, string>  $excludeDomains
-     * @param  array<int, string>  $includeDomains
+     * @param array<string, mixed> $domains
+     * @param array<string> $excludeDomains
+     * @param array<string> $includeDomains
      * @return array<string, mixed>
      */
     private function filterDomains(array $domains, array $excludeDomains, array $includeDomains): array
@@ -308,8 +315,8 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $analysis
-     * @return array<int, string>
+     * @param array<string, mixed> $analysis
+     * @return array<string>
      */
     private function getPriorityActions(array $analysis): array
     {
@@ -346,7 +353,8 @@ class CompletePartialDomainsCommand extends Command
     }
 
     /**
-     * @return array<int, string>
+     * @param string|null $list
+     * @return array<string>
      */
     private function parseList(?string $list): array
     {

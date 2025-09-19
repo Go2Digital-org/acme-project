@@ -18,8 +18,9 @@ final class BreadcrumbServiceProvider extends ServiceProvider
 {
     /**
      * All of the container bindings that should be registered.
+     *
+     * @var array<class-string, class-string>
      */
-    /** @var array<class-string, class-string> */
     public array $bindings = [
         // Bind the port interface to the infrastructure adapter
         BreadcrumbManagerInterface::class => BreadcrumbAdapter::class,
@@ -57,8 +58,9 @@ final class BreadcrumbServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
+     *
+     * @return array<int, string>
      */
-    /** @return array<array-key, mixed> */
     public function provides(): array
     {
         return [

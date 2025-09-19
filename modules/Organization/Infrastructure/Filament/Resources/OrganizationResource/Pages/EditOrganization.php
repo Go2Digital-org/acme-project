@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Organization\Infrastructure\Filament\Resources\OrganizationResource\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
@@ -19,6 +20,9 @@ class EditOrganization extends EditRecord
         return 'Edit Organization';
     }
 
+    /**
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -29,6 +33,10 @@ class EditOrganization extends EditRecord
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Ensure record is an Organization instance before accessing properties

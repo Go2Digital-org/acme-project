@@ -172,6 +172,37 @@ final readonly class CampaignProgress
     }
 
     /**
+     * Convert the progress object to an array representation.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'campaign_id' => $this->campaignId,
+            'goal_amount' => $this->goalAmount,
+            'current_amount' => $this->currentAmount,
+            'progress_percentage' => $this->progressPercentage,
+            'progress_percentage_rounded' => $this->getPercentageRounded(),
+            'remaining_amount' => $this->remainingAmount,
+            'total_days' => $this->totalDays,
+            'days_elapsed' => $this->daysElapsed,
+            'days_remaining' => $this->daysRemaining,
+            'expected_progress' => $this->expectedProgress,
+            'velocity' => $this->velocity,
+            'projected_final_amount' => $this->projectedFinalAmount,
+            'is_on_track' => $this->isOnTrack,
+            'is_likely_to_succeed' => $this->isLikelyToSucceed,
+            'has_reached_goal' => $this->hasReachedGoal,
+            'is_behind_schedule' => $this->isBehindSchedule(),
+            'is_completed' => $this->isCompleted(),
+            'donations_count' => $this->donationsCount,
+            'progress_ratio' => $this->getProgressRatio(),
+            'performance_status' => $this->getPerformanceStatus(),
+        ];
+    }
+
+    /**
      * Factory method for testing purposes.
      * Creates a CampaignProgress with sensible defaults for all required parameters.
      */

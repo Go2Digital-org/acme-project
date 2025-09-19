@@ -25,6 +25,8 @@ final readonly class ToggleBookmarkProcessor implements ProcessorInterface
 
     /**
      * @param  BookmarkResource  $data
+     */
+    /**
      * @param  array<string, mixed>  $uriVariables
      * @param  array<string, mixed>  $context
      */

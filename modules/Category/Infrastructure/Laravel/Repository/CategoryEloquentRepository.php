@@ -79,8 +79,10 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * @param  array<int>  $ids
      * @return Collection<int, Category>
+     */
+    /**
+     * @param  array<string, mixed>  $ids
      */
     public function getByIds(array $ids): Collection
     {
@@ -95,8 +97,10 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * @param  array<string, mixed>  $filters
      * @return Collection<int, Category>
+     */
+    /**
+     * @param  array<string, mixed>  $filters
      */
     public function findByFilters(array $filters = []): Collection
     {
@@ -108,7 +112,7 @@ class CategoryEloquentRepository implements CategoryRepositoryInterface
 
         if (isset($filters['search'])) {
             $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search): void {
                 $q->where('name->en', 'like', "%{$search}%")
                     ->orWhere('slug', 'like', "%{$search}%");
             });

@@ -90,7 +90,7 @@ final class WarmDashboardCacheCommand extends Command
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     private function getSpecificKeys(): array
     {

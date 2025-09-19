@@ -16,7 +16,7 @@ class CampaignListResource extends BaseApiResource
      * @param  Request  $request
      * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         /** @var Campaign $campaign */
         $campaign = $this->resource;
@@ -53,7 +53,7 @@ class CampaignListResource extends BaseApiResource
 
         // Add creator info (lazy loaded)
         if ($this->shouldIncludeField($request, 'creator')) {
-            $data['creator'] = $this->whenLoadedRelation('creator', fn ($creator) => [
+            $data['creator'] = $this->whenLoadedRelation('creator', fn ($creator): array => [
                 'id' => $creator->getId(),
                 'name' => $creator->getName(),
             ]);
@@ -61,7 +61,7 @@ class CampaignListResource extends BaseApiResource
 
         // Add organization info (lazy loaded)
         if ($this->shouldIncludeField($request, 'organization')) {
-            $data['organization'] = $this->whenLoadedRelation('organization', fn ($organization) => [
+            $data['organization'] = $this->whenLoadedRelation('organization', fn ($organization): array => [
                 'id' => $organization->id,
                 'name' => $organization->getName(),
             ]);

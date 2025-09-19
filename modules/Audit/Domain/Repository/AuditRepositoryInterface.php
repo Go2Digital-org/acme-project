@@ -65,9 +65,6 @@ interface AuditRepositoryInterface
     public function getUserActivityHeatmap(int $userId, int $days = 30): array;
 
     /**
-     * @return Collection<int, Audit>
-     */
-    /**
      * @param  array<string, mixed>  $filters
      * @return Collection<int, Audit>
      */

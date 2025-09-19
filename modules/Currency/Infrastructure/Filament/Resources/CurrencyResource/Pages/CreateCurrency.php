@@ -17,6 +17,10 @@ class CreateCurrency extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // If this is set as default, unset other defaults

@@ -61,7 +61,7 @@ class ChunkedCsvExporter
     /**
      * Write CSV headers to the file
      *
-     * @param  array<string>|null  $headers  Optional headers to write. If not provided, uses default donation headers
+     * @param  array<int, string>|null  $headers  Optional headers to write. If not provided, uses default donation headers
      */
     public function writeHeaders(?array $headers = null): void
     {
@@ -103,7 +103,7 @@ class ChunkedCsvExporter
     /**
      * Write multiple rows to the CSV file
      *
-     * @param  array<array<mixed>>  $rows
+     * @param  list<array<string, mixed>>  $rows
      */
     public function writeRows(array $rows): void
     {
@@ -115,7 +115,7 @@ class ChunkedCsvExporter
     /**
      * Write a single row to the CSV file
      *
-     * @param  array<mixed>  $row
+     * @param  array<int, string>|array<string, mixed>  $row
      */
     public function writeRow(array $row): void
     {
@@ -227,11 +227,15 @@ class ChunkedCsvExporter
     /**
      * Validate that all rows have the same number of columns
      *
-     * @param  array<array<mixed>>  $rows
+     * @param  list<array<string, mixed>>  $rows
      */
     public function validateRowStructure(array $rows): bool
     {
         if ($rows === []) {
+            return true;
+        }
+
+        if (! isset($rows[0])) {
             return true;
         }
 

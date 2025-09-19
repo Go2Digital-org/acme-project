@@ -17,7 +17,8 @@ final readonly class CampaignViewDataService
 
     /**
      * Transform a single campaign into view-ready data.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getSingleCampaignViewData(Campaign $campaign, ?string $locale = null): array

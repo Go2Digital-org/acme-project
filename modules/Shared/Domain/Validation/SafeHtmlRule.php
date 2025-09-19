@@ -13,14 +13,14 @@ use Illuminate\Translation\PotentiallyTranslatedString;
  */
 final readonly class SafeHtmlRule implements ValidationRule
 {
-    /** @var array<string> */
+    /** @var list<string> */
     private array $allowedTags;
 
-    /** @var array<string> */
+    /** @var list<string> */
     private array $dangerousPatterns;
 
     /**
-     * @param  array<string>|null  $allowedTags
+     * @param  list<string>|null  $allowedTags
      */
     public function __construct(?array $allowedTags = null)
     {

@@ -7,8 +7,8 @@ use Carbon\Exceptions\InvalidFormatException;
 use Modules\Analytics\Domain\ValueObject\TimeRange;
 use Modules\Campaign\Domain\ValueObject\TimeRemaining;
 
-describe('Date Range Validation', function () {
-    it('creates valid date range', function () {
+describe('Date Range Validation', function (): void {
+    it('creates valid date range', function (): void {
         $start = Carbon::parse('2025-01-01');
         $end = Carbon::parse('2025-01-31');
 
@@ -19,7 +19,7 @@ describe('Date Range Validation', function () {
             ->and($range->label)->toBe('Custom Range');
     });
 
-    it('throws exception when start date is after end date', function () {
+    it('throws exception when start date is after end date', function (): void {
         $start = Carbon::parse('2025-01-31');
         $end = Carbon::parse('2025-01-01');
 
@@ -27,7 +27,7 @@ describe('Date Range Validation', function () {
             ->toThrow(\InvalidArgumentException::class, 'Start date cannot be after end date');
     });
 
-    it('allows same start and end date', function () {
+    it('allows same start and end date', function (): void {
         $date = Carbon::parse('2025-01-15');
 
         $range = TimeRange::custom($date, $date);
@@ -36,14 +36,14 @@ describe('Date Range Validation', function () {
             ->and($range->end)->toEqual($date);
     });
 
-    it('calculates duration correctly for single day', function () {
+    it('calculates duration correctly for single day', function (): void {
         $date = Carbon::parse('2025-01-15');
         $range = TimeRange::custom($date, $date);
 
         expect($range->getDurationInDays())->toBe(1);
     });
 
-    it('calculates duration correctly for multiple days', function () {
+    it('calculates duration correctly for multiple days', function (): void {
         $start = Carbon::parse('2025-01-01');
         $end = Carbon::parse('2025-01-31');
         $range = TimeRange::custom($start, $end);
@@ -51,7 +51,7 @@ describe('Date Range Validation', function () {
         expect($range->getDurationInDays())->toBe(31);
     });
 
-    it('validates date range contains specific date', function () {
+    it('validates date range contains specific date', function (): void {
         $start = Carbon::parse('2025-01-01');
         $end = Carbon::parse('2025-01-31');
         $range = TimeRange::custom($start, $end);
@@ -64,8 +64,8 @@ describe('Date Range Validation', function () {
     });
 });
 
-describe('Business Hours Calculations', function () {
-    it('identifies business hours correctly', function () {
+describe('Business Hours Calculations', function (): void {
+    it('identifies business hours correctly', function (): void {
         $businessStart = 9; // 9 AM
         $businessEnd = 17;  // 5 PM
 
@@ -84,7 +84,7 @@ describe('Business Hours Calculations', function () {
         expect($results)->toBe([false, true, true, false, false]);
     });
 
-    it('calculates business hours between two dates', function () {
+    it('calculates business hours between two dates', function (): void {
         $start = Carbon::parse('2025-01-15 08:00:00'); // Wednesday
         $end = Carbon::parse('2025-01-15 18:00:00');
 
@@ -105,7 +105,7 @@ describe('Business Hours Calculations', function () {
         expect($businessHours)->toBe(8); // 9 AM to 5 PM = 8 hours
     });
 
-    it('excludes weekends from business hours', function () {
+    it('excludes weekends from business hours', function (): void {
         $saturday = Carbon::parse('2025-01-18 10:00:00'); // Saturday
         $sunday = Carbon::parse('2025-01-19 14:00:00');   // Sunday
         $monday = Carbon::parse('2025-01-20 10:00:00');   // Monday
@@ -116,8 +116,8 @@ describe('Business Hours Calculations', function () {
     });
 });
 
-describe('Timezone Conversions', function () {
-    it('converts between timezones correctly', function () {
+describe('Timezone Conversions', function (): void {
+    it('converts between timezones correctly', function (): void {
         $utc = Carbon::parse('2025-01-15 12:00:00', 'UTC');
         $est = $utc->copy()->setTimezone('America/New_York');
         $pst = $utc->copy()->setTimezone('America/Los_Angeles');
@@ -126,14 +126,14 @@ describe('Timezone Conversions', function () {
             ->and($pst->format('H:i'))->toBe('04:00'); // UTC-8 in winter
     });
 
-    it('handles timezone aware date comparisons', function () {
+    it('handles timezone aware date comparisons', function (): void {
         $utc = Carbon::parse('2025-01-15 12:00:00', 'UTC');
         $est = Carbon::parse('2025-01-15 07:00:00', 'America/New_York');
 
         expect($utc->equalTo($est))->toBeTrue();
     });
 
-    it('creates timezone aware date ranges', function () {
+    it('creates timezone aware date ranges', function (): void {
         $utcStart = Carbon::parse('2025-01-15 00:00:00', 'UTC');
         $utcEnd = Carbon::parse('2025-01-15 23:59:59', 'UTC');
 
@@ -148,8 +148,8 @@ describe('Timezone Conversions', function () {
     });
 });
 
-describe('DST Handling Edge Cases', function () {
-    it('handles spring forward DST transition', function () {
+describe('DST Handling Edge Cases', function (): void {
+    it('handles spring forward DST transition', function (): void {
         // Spring forward: 2 AM becomes 3 AM
         $beforeDst = Carbon::parse('2025-03-09 01:30:00', 'America/New_York');
         $afterDst = Carbon::parse('2025-03-09 03:30:00', 'America/New_York');
@@ -159,7 +159,7 @@ describe('DST Handling Edge Cases', function () {
         expect($diff)->toBe(1.0); // Only 1 hour difference due to DST
     });
 
-    it('handles fall back DST transition', function () {
+    it('handles fall back DST transition', function (): void {
         // Fall back: 2 AM becomes 1 AM
         $beforeDst = Carbon::parse('2025-11-02 01:30:00', 'America/New_York');
         $afterDst = Carbon::parse('2025-11-02 02:30:00', 'America/New_York');
@@ -169,7 +169,7 @@ describe('DST Handling Edge Cases', function () {
         expect($diff)->toBeGreaterThanOrEqual(1); // At least 1 hour
     });
 
-    it('identifies DST transition dates', function () {
+    it('identifies DST transition dates', function (): void {
         $march = Carbon::parse('2025-03-09', 'America/New_York');
         $november = Carbon::parse('2025-11-02', 'America/New_York');
 
@@ -182,15 +182,15 @@ describe('DST Handling Edge Cases', function () {
     });
 });
 
-describe('Leap Year Calculations', function () {
-    it('identifies leap years correctly', function () {
+describe('Leap Year Calculations', function (): void {
+    it('identifies leap years correctly', function (): void {
         expect(Carbon::parse('2024-01-01')->isLeapYear())->toBeTrue() // 2024 is leap year
             ->and(Carbon::parse('2025-01-01')->isLeapYear())->toBeFalse() // 2025 is not
             ->and(Carbon::parse('2000-01-01')->isLeapYear())->toBeTrue() // Century leap year
             ->and(Carbon::parse('1900-01-01')->isLeapYear())->toBeFalse(); // Century non-leap year
     });
 
-    it('handles February 29th in leap years', function () {
+    it('handles February 29th in leap years', function (): void {
         $leapYear = Carbon::parse('2024-02-29');
         $nonLeapYear = Carbon::parse('2025-02-28');
 
@@ -200,7 +200,7 @@ describe('Leap Year Calculations', function () {
             ->and($nonLeapYear->month)->toBe(2);
     });
 
-    it('calculates correct days in February for different years', function () {
+    it('calculates correct days in February for different years', function (): void {
         $feb2024 = Carbon::parse('2024-02-01');
         $feb2025 = Carbon::parse('2025-02-01');
 
@@ -208,7 +208,7 @@ describe('Leap Year Calculations', function () {
             ->and($feb2025->daysInMonth)->toBe(28); // Non-leap year
     });
 
-    it('handles leap year edge cases in date ranges', function () {
+    it('handles leap year edge cases in date ranges', function (): void {
         $start = Carbon::parse('2024-02-28');
         $end = Carbon::parse('2024-03-01');
         $range = TimeRange::custom($start, $end);
@@ -217,8 +217,8 @@ describe('Leap Year Calculations', function () {
     });
 });
 
-describe('Date Formatting for Different Locales', function () {
-    it('formats dates in US format', function () {
+describe('Date Formatting for Different Locales', function (): void {
+    it('formats dates in US format', function (): void {
         $date = Carbon::parse('2025-01-15');
 
         expect($date->format('m/d/Y'))->toBe('01/15/2025')
@@ -226,7 +226,7 @@ describe('Date Formatting for Different Locales', function () {
             ->and($date->format('M j, Y'))->toBe('Jan 15, 2025');
     });
 
-    it('formats dates in European format', function () {
+    it('formats dates in European format', function (): void {
         $date = Carbon::parse('2025-01-15');
 
         expect($date->format('d/m/Y'))->toBe('15/01/2025')
@@ -234,7 +234,7 @@ describe('Date Formatting for Different Locales', function () {
             ->and($date->format('d-m-Y'))->toBe('15-01-2025');
     });
 
-    it('formats dates in ISO format', function () {
+    it('formats dates in ISO format', function (): void {
         $date = Carbon::parse('2025-01-15 14:30:00');
 
         expect($date->toISOString())->toMatch('/2025-01-15T14:30:00/')
@@ -242,7 +242,7 @@ describe('Date Formatting for Different Locales', function () {
             ->and($date->format('Y-m-d H:i:s'))->toBe('2025-01-15 14:30:00');
     });
 
-    it('formats time in different formats', function () {
+    it('formats time in different formats', function (): void {
         $time = Carbon::parse('2025-01-15 14:30:45');
 
         expect($time->format('H:i:s'))->toBe('14:30:45') // 24-hour
@@ -251,8 +251,8 @@ describe('Date Formatting for Different Locales', function () {
     });
 });
 
-describe('Relative Time Calculations', function () {
-    it('calculates yesterday correctly', function () {
+describe('Relative Time Calculations', function (): void {
+    it('calculates yesterday correctly', function (): void {
         $yesterday = TimeRange::yesterday();
         $expectedStart = Carbon::yesterday()->startOfDay();
         $expectedEnd = Carbon::yesterday()->endOfDay();
@@ -262,7 +262,7 @@ describe('Relative Time Calculations', function () {
             ->and($yesterday->label)->toBe('Yesterday');
     });
 
-    it('calculates next week correctly', function () {
+    it('calculates next week correctly', function (): void {
         $now = Carbon::now();
         $nextWeekStart = $now->copy()->addWeek()->startOfWeek();
         $nextWeekEnd = $now->copy()->addWeek()->endOfWeek();
@@ -273,7 +273,7 @@ describe('Relative Time Calculations', function () {
             ->and($customNextWeek->label)->toBe('Next Week');
     });
 
-    it('calculates this week correctly', function () {
+    it('calculates this week correctly', function (): void {
         $thisWeek = TimeRange::thisWeek();
         $now = Carbon::now();
 
@@ -282,7 +282,7 @@ describe('Relative Time Calculations', function () {
             ->and($thisWeek->getDurationInDays())->toBe(7);
     });
 
-    it('calculates time remaining correctly', function () {
+    it('calculates time remaining correctly', function (): void {
         $now = Carbon::parse('2025-01-15 12:00:00');
         $endDate = Carbon::parse('2025-01-17 12:00:00');
 
@@ -294,8 +294,8 @@ describe('Relative Time Calculations', function () {
     });
 });
 
-describe('Working Days Calculations', function () {
-    it('identifies working days correctly', function () {
+describe('Working Days Calculations', function (): void {
+    it('identifies working days correctly', function (): void {
         $monday = Carbon::parse('2025-01-20'); // Monday
         $tuesday = Carbon::parse('2025-01-21'); // Tuesday
         $saturday = Carbon::parse('2025-01-18'); // Saturday
@@ -307,7 +307,7 @@ describe('Working Days Calculations', function () {
             ->and($sunday->isWeekend())->toBeTrue();
     });
 
-    it('calculates working days between dates', function () {
+    it('calculates working days between dates', function (): void {
         $start = Carbon::parse('2025-01-13'); // Monday
         $end = Carbon::parse('2025-01-17');   // Friday
 
@@ -324,7 +324,7 @@ describe('Working Days Calculations', function () {
         expect($workingDays)->toBe(5); // Monday through Friday
     });
 
-    it('excludes weekends from working days calculation', function () {
+    it('excludes weekends from working days calculation', function (): void {
         $start = Carbon::parse('2025-01-17'); // Friday
         $end = Carbon::parse('2025-01-21');   // Tuesday (includes weekend)
 
@@ -341,7 +341,7 @@ describe('Working Days Calculations', function () {
         expect($workingDays)->toBe(3); // Friday, Monday, Tuesday
     });
 
-    it('calculates next working day', function () {
+    it('calculates next working day', function (): void {
         $friday = Carbon::parse('2025-01-17'); // Friday
         $nextWorkingDay = $friday->copy()->addDay();
 
@@ -354,8 +354,8 @@ describe('Working Days Calculations', function () {
     });
 });
 
-describe('Holiday Detection Logic', function () {
-    it('identifies common holidays', function () {
+describe('Holiday Detection Logic', function (): void {
+    it('identifies common holidays', function (): void {
         $newYears = Carbon::parse('2025-01-01');
         $christmas = Carbon::parse('2025-12-25');
         $independenceDay = Carbon::parse('2025-07-04');
@@ -376,7 +376,7 @@ describe('Holiday Detection Logic', function () {
             ->and($holidays[$newYearsKey])->toBe('New Year\'s Day');
     });
 
-    it('handles floating holidays correctly', function () {
+    it('handles floating holidays correctly', function (): void {
         // Memorial Day - Last Monday in May
         $may2025 = Carbon::parse('2025-05-01');
         $lastMondayInMay = $may2025->copy()->endOfMonth();
@@ -389,7 +389,7 @@ describe('Holiday Detection Logic', function () {
             ->and($lastMondayInMay->dayOfWeek)->toBe(Carbon::MONDAY);
     });
 
-    it('excludes holidays from working days', function () {
+    it('excludes holidays from working days', function (): void {
         $holidays = ['2025-01-01', '2025-12-25']; // New Year's and Christmas
 
         $testDates = [
@@ -407,8 +407,8 @@ describe('Holiday Detection Logic', function () {
     });
 });
 
-describe('Date Parsing from Various Formats', function () {
-    it('parses common date formats', function () {
+describe('Date Parsing from Various Formats', function (): void {
+    it('parses common date formats', function (): void {
         $formats = [
             '2025-01-15',
             '01/15/2025',
@@ -425,21 +425,21 @@ describe('Date Parsing from Various Formats', function () {
         }
     });
 
-    it('parses European date format with createFromFormat', function () {
+    it('parses European date format with createFromFormat', function (): void {
         $parsed = Carbon::createFromFormat('d/m/Y', '15/01/2025');
         $expected = Carbon::parse('2025-01-15');
 
         expect($parsed->format('Y-m-d'))->toBe($expected->format('Y-m-d'));
     });
 
-    it('parses dot separated date format with createFromFormat', function () {
+    it('parses dot separated date format with createFromFormat', function (): void {
         $parsed = Carbon::createFromFormat('d.m.Y', '15.01.2025');
         $expected = Carbon::parse('2025-01-15');
 
         expect($parsed->format('Y-m-d'))->toBe($expected->format('Y-m-d'));
     });
 
-    it('parses datetime formats with time zones', function () {
+    it('parses datetime formats with time zones', function (): void {
         $formats = [
             '2025-01-15T14:30:00Z',
             '2025-01-15 14:30:00 UTC',
@@ -455,7 +455,7 @@ describe('Date Parsing from Various Formats', function () {
         }
     });
 
-    it('handles invalid date formats gracefully', function () {
+    it('handles invalid date formats gracefully', function (): void {
         $invalidFormats = [
             'definitely-not-a-date',
             '32/13/2025',
@@ -468,7 +468,7 @@ describe('Date Parsing from Various Formats', function () {
         }
     });
 
-    it('validates date boundaries correctly', function () {
+    it('validates date boundaries correctly', function (): void {
         // Test that Carbon handles boundary dates correctly by normalizing them
         $invalidMonth = Carbon::createFromFormat('Y-m-d', '2025-13-01');
         $invalidDay = Carbon::createFromFormat('Y-m-d', '2025-02-30');
@@ -482,7 +482,7 @@ describe('Date Parsing from Various Formats', function () {
             ->and($invalidDay->format('Y-m-d'))->not->toBe('2025-02-30');
     });
 
-    it('parses relative date strings', function () {
+    it('parses relative date strings', function (): void {
         $now = Carbon::now();
 
         $tomorrow = Carbon::parse('tomorrow');
@@ -495,8 +495,8 @@ describe('Date Parsing from Various Formats', function () {
     });
 });
 
-describe('Time Remaining Edge Cases', function () {
-    it('handles expired campaigns correctly', function () {
+describe('Time Remaining Edge Cases', function (): void {
+    it('handles expired campaigns correctly', function (): void {
         $now = Carbon::parse('2025-01-15 12:00:00');
         $pastDate = Carbon::parse('2025-01-10 12:00:00');
 
@@ -508,7 +508,7 @@ describe('Time Remaining Edge Cases', function () {
             ->and($timeRemaining->getUrgencyLevel())->toBe('expired');
     });
 
-    it('handles campaigns expiring in minutes', function () {
+    it('handles campaigns expiring in minutes', function (): void {
         $now = Carbon::parse('2025-01-15 12:00:00');
         $soonDate = Carbon::parse('2025-01-15 12:30:00');
 
@@ -520,7 +520,7 @@ describe('Time Remaining Edge Cases', function () {
             ->and($timeRemaining->getTimeRemainingText())->toBe('30 minutes remaining');
     });
 
-    it('handles urgency levels correctly', function () {
+    it('handles urgency levels correctly', function (): void {
         $now = Carbon::parse('2025-01-15 12:00:00');
 
         $critical = new TimeRemaining(Carbon::parse('2025-01-16 06:00:00'), $now); // 18 hours
@@ -534,7 +534,7 @@ describe('Time Remaining Edge Cases', function () {
             ->and($normal->getUrgencyLevel())->toBe('normal');
     });
 
-    it('assigns correct urgency colors', function () {
+    it('assigns correct urgency colors', function (): void {
         $now = Carbon::parse('2025-01-15 12:00:00');
 
         $expired = new TimeRemaining(Carbon::parse('2025-01-10 12:00:00'), $now);
@@ -551,8 +551,8 @@ describe('Time Remaining Edge Cases', function () {
     });
 });
 
-describe('Complex Date Scenarios', function () {
-    it('handles month boundary calculations', function () {
+describe('Complex Date Scenarios', function (): void {
+    it('handles month boundary calculations', function (): void {
         $endOfMonth = Carbon::parse('2025-01-31');
         $startOfNextMonth = Carbon::parse('2025-02-01');
 
@@ -563,7 +563,7 @@ describe('Complex Date Scenarios', function () {
             ->and($range->contains(Carbon::parse('2025-02-01')))->toBeTrue();
     });
 
-    it('handles year boundary calculations', function () {
+    it('handles year boundary calculations', function (): void {
         $endOfYear = Carbon::parse('2024-12-31');
         $startOfNextYear = Carbon::parse('2025-01-01');
 
@@ -574,7 +574,7 @@ describe('Complex Date Scenarios', function () {
             ->and($startOfNextYear->year)->toBe(2025);
     });
 
-    it('calculates cache keys consistently', function () {
+    it('calculates cache keys consistently', function (): void {
         $start = Carbon::parse('2025-01-15');
         $end = Carbon::parse('2025-01-20');
 
@@ -585,7 +585,7 @@ describe('Complex Date Scenarios', function () {
             ->and($range1->getCacheKey())->toBe('range_2025-01-15_2025-01-20');
     });
 
-    it('handles string representation correctly', function () {
+    it('handles string representation correctly', function (): void {
         $start = Carbon::parse('2025-01-15');
         $end = Carbon::parse('2025-01-20');
         $range = TimeRange::custom($start, $end, 'Test Range');
@@ -596,7 +596,7 @@ describe('Complex Date Scenarios', function () {
             ->and($range->__toString())->toBe($expected);
     });
 
-    it('creates campaign time remaining from object', function () {
+    it('creates campaign time remaining from object', function (): void {
         $campaign = (object) [
             'end_date' => Carbon::parse('2025-01-20 12:00:00'),
         ];
@@ -608,7 +608,7 @@ describe('Complex Date Scenarios', function () {
             ->and($timeRemaining->isExpired())->toBeFalse();
     });
 
-    it('handles campaign with null end date', function () {
+    it('handles campaign with null end date', function (): void {
         $campaign = (object) [
             'end_date' => null,
         ];

@@ -17,6 +17,9 @@ class EditSocialMedia extends EditRecord
         return 'Edit Social Media Link';
     }
 
+    /**
+     * @return array<int, \Filament\Actions\Action>
+     */
     protected function getHeaderActions(): array
     {
         return [

@@ -37,7 +37,7 @@ class CacheService
      * @template T
      *
      * @param  callable(): T  $callback
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      * @return T
      */
     public function remember(string $key, callable $callback, string $type = 'medium', array $tags = [])
@@ -53,7 +53,7 @@ class CacheService
      * @template T
      *
      * @param  callable(): T  $callback
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      * @return T
      */
     public function rememberWithTtl(string $key, callable $callback, int $ttl, array $tags = [])
@@ -93,7 +93,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            fn () => $this->loadCampaigns(),
+            fn (): Collection => $this->loadCampaigns(),
             'medium',
             $tags
         );
@@ -111,7 +111,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            fn () => $this->loadOrganizationMetrics(),
+            fn (): array => $this->loadOrganizationMetrics(),
             'medium',
             $tags
         );
@@ -129,7 +129,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            fn () => $this->loadCampaignAnalytics(),
+            fn (): array => $this->loadCampaignAnalytics(),
             'short',
             $tags
         );
@@ -139,7 +139,7 @@ class CacheService
      * Remember donation metrics with comprehensive filters.
      *
      * @param  array<string, mixed>  $filters
-     * @param  array<string>  $metrics
+     * @param  array<int, string>  $metrics
      * @return array<string, mixed>
      */
     public function rememberDonationMetrics(array $filters, string $timeRange, array $metrics = []): array
@@ -149,7 +149,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            fn () => $this->loadDonationMetrics(),
+            fn (): array => $this->loadDonationMetrics(),
             'short',
             $tags
         );
@@ -158,7 +158,7 @@ class CacheService
     /**
      * Remember search facets for improved search performance.
      *
-     * @param  list<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -169,7 +169,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            fn () => $this->loadSearchFacets(),
+            fn (): array => $this->loadSearchFacets(),
             'long',
             $tags
         );
@@ -187,7 +187,7 @@ class CacheService
 
         return $this->remember(
             $key,
-            fn () => $this->loadUserPermissions(),
+            fn (): array => $this->loadUserPermissions(),
             'long',
             $tags
         );
@@ -303,7 +303,7 @@ class CacheService
     /**
      * Check if a key exists in cache with tags.
      *
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     public function hasWithTags(string $key, array $tags): bool
     {
@@ -317,7 +317,7 @@ class CacheService
     /**
      * Flush cache by tags.
      *
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     public function flushByTags(array $tags): void
     {
@@ -369,7 +369,7 @@ class CacheService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @param  array<string>  $metrics
+     * @param  array<int, string>  $metrics
      */
     private function buildDonationMetricsCacheKey(array $filters, string $timeRange, array $metrics): string
     {
@@ -381,7 +381,7 @@ class CacheService
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return array<string>
+     * @return array<int, string>
      */
     private function buildDonationMetricsTags(array $filters): array
     {
@@ -399,7 +399,7 @@ class CacheService
     }
 
     /**
-     * @param  array<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      * @param  array<string, mixed>  $filters
      */
     private function buildSearchFacetsCacheKey(array $entityTypes, array $filters): string
@@ -411,7 +411,7 @@ class CacheService
     }
 
     /**
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     private function invalidateByTags(array $tags): void
     {
@@ -430,7 +430,7 @@ class CacheService
     }
 
     /**
-     * @param  array<string>  $tags
+     * @param  array<int, string>  $tags
      */
     private function wasHit(string $key, array $tags = []): bool
     {

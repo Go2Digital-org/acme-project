@@ -6,7 +6,7 @@ namespace Modules\Localization\Application\Service;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 
-final class LocalizationService
+class LocalizationService
 {
     public function switchLocale(string $locale, ?Authenticatable $user): void
     {

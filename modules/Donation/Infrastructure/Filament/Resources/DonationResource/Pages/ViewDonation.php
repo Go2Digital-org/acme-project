@@ -18,6 +18,9 @@ class ViewDonation extends ViewRecord
         return 'View Donation';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderActions(): array
     {
         return [

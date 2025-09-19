@@ -13,9 +13,7 @@ use Modules\Shared\Domain\Repository\PageRepositoryInterface;
 
 class PageEloquentRepository implements PageRepositoryInterface
 {
-    public function __construct(
-        private readonly Page $model,
-    ) {}
+    // No constructor needed - we'll use Page::query() instead
 
     /**
      * @param  array<string, mixed>  $data
@@ -23,27 +21,27 @@ class PageEloquentRepository implements PageRepositoryInterface
     public function create(array $data): Page
     {
         /** @var Page $page */
-        $page = $this->model->newModelQuery()->create($data);
+        $page = Page::query()->create($data);
 
         return $page;
     }
 
     public function findById(int $id): ?Page
     {
-        return $this->model->find($id);
+        return Page::query()->find($id);
     }
 
     public function findBySlug(string $slug): ?Page
     {
         /** @var Page|null $page */
-        $page = $this->model->newQuery()->where('slug', $slug)->first();
+        $page = Page::query()->where('slug', $slug)->first();
 
         return $page;
     }
 
     /**
-     * @param  array<string>  $slugs
-     * @return Collection<string, Page>
+     * @param  list<string>  $slugs
+     * @return Collection<int, Page>
      */
     public function findBySlugs(array $slugs): Collection
     {
@@ -51,11 +49,10 @@ class PageEloquentRepository implements PageRepositoryInterface
             return new Collection;
         }
 
-        /** @var Collection<string, Page> $pages */
-        $pages = $this->model->newQuery()
+        /** @var Collection<int, Page> $pages */
+        $pages = Page::query()
             ->whereIn('slug', $slugs)
-            ->get()
-            ->keyBy('slug'); // Key by slug for easy access
+            ->get();
 
         return $pages;
     }
@@ -65,12 +62,12 @@ class PageEloquentRepository implements PageRepositoryInterface
      */
     public function updateById(int $id, array $data): bool
     {
-        return $this->model->newQuery()->where('id', $id)->update($data) > 0;
+        return Page::query()->where('id', $id)->update($data) > 0;
     }
 
     public function deleteById(int $id): bool
     {
-        return $this->model->newQuery()->where('id', $id)->delete() > 0;
+        return Page::query()->where('id', $id)->delete() > 0;
     }
 
     /**
@@ -79,7 +76,7 @@ class PageEloquentRepository implements PageRepositoryInterface
     public function getPublishedPages(): Collection
     {
         /** @var Collection<int, Page> $pages */
-        $pages = $this->model->newQuery()->published()->ordered()->get();
+        $pages = Page::query()->published()->ordered()->get();
 
         return $pages;
     }
@@ -90,7 +87,7 @@ class PageEloquentRepository implements PageRepositoryInterface
     public function getDraftPages(): Collection
     {
         /** @var Collection<int, Page> $pages */
-        $pages = $this->model->newQuery()->draft()->ordered()->get();
+        $pages = Page::query()->draft()->ordered()->get();
 
         return $pages;
     }
@@ -105,7 +102,7 @@ class PageEloquentRepository implements PageRepositoryInterface
         string $sortBy = 'order',
         string $sortOrder = 'asc',
     ): LengthAwarePaginator {
-        $query = $this->model->newQuery();
+        $query = Page::query();
 
         // Apply filters
         if (isset($filters['status'])) {
@@ -134,7 +131,7 @@ class PageEloquentRepository implements PageRepositoryInterface
      */
     public function search(string $query, string $locale = 'en', ?string $status = null): Collection
     {
-        $builder = $this->model->newQuery();
+        $builder = Page::query();
 
         if ($status) {
             $builder->where('status', $status);
@@ -163,7 +160,7 @@ class PageEloquentRepository implements PageRepositoryInterface
         // Note: Since template column doesn't exist in current migration,
         // returning empty collection for now. This method exists to satisfy interface.
         /** @var Collection<int, Page> $pages */
-        $pages = $this->model->newQuery()->whereRaw('1 = 0')->get(); // Always empty
+        $pages = Page::query()->whereRaw('1 = 0')->get(); // Always empty
 
         return $pages;
     }
@@ -186,11 +183,14 @@ class PageEloquentRepository implements PageRepositoryInterface
         return ($maxOrder ?? 0) + 1;
     }
 
+    /**
+     * @param  list<int>  $pageIds
+     */
     public function reorder(array $pageIds): bool
     {
         return DB::transaction(function () use ($pageIds): bool {
             foreach ($pageIds as $index => $pageId) {
-                $this->model->newQuery()->where('id', $pageId)->update(['order' => $index + 1]);
+                Page::query()->where('id', $pageId)->update(['order' => ((int) $index) + 1]);
             }
 
             return true;

@@ -5,24 +5,24 @@ declare(strict_types=1);
 use Carbon\Carbon;
 use Modules\Donation\Domain\ValueObject\Amount;
 
-describe('Donation Calculator Service', function () {
-    beforeEach(function () {
+describe('Donation Calculator Service', function (): void {
+    beforeEach(function (): void {
         Carbon::setTestNow('2024-01-15 10:00:00');
     });
 
-    afterEach(function () {
+    afterEach(function (): void {
         Carbon::setTestNow();
     });
 
-    describe('Basic Amount Calculations', function () {
-        it('calculates donation total with single amount', function () {
+    describe('Basic Amount Calculations', function (): void {
+        it('calculates donation total with single amount', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $total = $amount->value;
 
             expect($total)->toBe(100.00);
         });
 
-        it('calculates donation total with multiple amounts', function () {
+        it('calculates donation total with multiple amounts', function (): void {
             $amounts = [
                 new Amount(50.00, 'EUR'),
                 new Amount(75.00, 'EUR'),
@@ -37,14 +37,14 @@ describe('Donation Calculator Service', function () {
             expect($total)->toBe(150.00);
         });
 
-        it('calculates average donation amount', function () {
+        it('calculates average donation amount', function (): void {
             $amounts = [100.00, 200.00, 50.00, 150.00];
             $average = array_sum($amounts) / count($amounts);
 
             expect($average)->toBe(125.00);
         });
 
-        it('calculates median donation amount', function () {
+        it('calculates median donation amount', function (): void {
             $amounts = [100.00, 200.00, 50.00, 150.00, 75.00];
             sort($amounts);
             $median = $amounts[floor(count($amounts) / 2)];
@@ -52,21 +52,21 @@ describe('Donation Calculator Service', function () {
             expect($median)->toBe(100.00);
         });
 
-        it('calculates minimum donation amount', function () {
+        it('calculates minimum donation amount', function (): void {
             $amounts = [100.00, 200.00, 50.00, 150.00];
             $minimum = min($amounts);
 
             expect($minimum)->toBe(50.00);
         });
 
-        it('calculates maximum donation amount', function () {
+        it('calculates maximum donation amount', function (): void {
             $amounts = [100.00, 200.00, 50.00, 150.00];
             $maximum = max($amounts);
 
             expect($maximum)->toBe(200.00);
         });
 
-        it('calculates donation range', function () {
+        it('calculates donation range', function (): void {
             $amounts = [100.00, 200.00, 50.00, 150.00];
             $range = max($amounts) - min($amounts);
 
@@ -74,8 +74,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Fee Calculations', function () {
-        it('calculates processing fee for credit card', function () {
+    describe('Fee Calculations', function (): void {
+        it('calculates processing fee for credit card', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $feePercentage = 2.9; // 2.9%
             $fixedFee = 0.30;
@@ -85,7 +85,7 @@ describe('Donation Calculator Service', function () {
             expect(round($processingFee, 2))->toBe(3.20);
         });
 
-        it('calculates processing fee for PayPal', function () {
+        it('calculates processing fee for PayPal', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $feePercentage = 3.4; // 3.4%
             $fixedFee = 0.35;
@@ -95,7 +95,7 @@ describe('Donation Calculator Service', function () {
             expect($processingFee)->toBe(3.75);
         });
 
-        it('calculates net amount after fees', function () {
+        it('calculates net amount after fees', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $processingFee = 3.20;
 
@@ -104,7 +104,7 @@ describe('Donation Calculator Service', function () {
             expect($netAmount)->toBe(96.80);
         });
 
-        it('calculates gross amount from net amount', function () {
+        it('calculates gross amount from net amount', function (): void {
             $netAmount = 96.80;
             $feePercentage = 2.9;
             $fixedFee = 0.30;
@@ -115,7 +115,7 @@ describe('Donation Calculator Service', function () {
             expect(round($grossAmount, 2))->toBe(100.00);
         });
 
-        it('calculates platform fee', function () {
+        it('calculates platform fee', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $platformFeePercentage = 5.0; // 5%
 
@@ -124,7 +124,7 @@ describe('Donation Calculator Service', function () {
             expect($platformFee)->toBe(5.00);
         });
 
-        it('calculates total fees with multiple fee types', function () {
+        it('calculates total fees with multiple fee types', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $processingFee = 3.20;
             $platformFee = 5.00;
@@ -135,8 +135,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Tax Calculations', function () {
-        it('calculates tax deductible amount for eligible donation', function () {
+    describe('Tax Calculations', function (): void {
+        it('calculates tax deductible amount for eligible donation', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $taxDeductiblePercentage = 100; // 100% deductible
 
@@ -145,7 +145,7 @@ describe('Donation Calculator Service', function () {
             expect($deductibleAmount)->toBe(100.00);
         });
 
-        it('calculates partial tax deductible amount', function () {
+        it('calculates partial tax deductible amount', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $taxDeductiblePercentage = 60; // 60% deductible
 
@@ -154,7 +154,7 @@ describe('Donation Calculator Service', function () {
             expect($deductibleAmount)->toBe(60.00);
         });
 
-        it('calculates tax savings for donor', function () {
+        it('calculates tax savings for donor', function (): void {
             $deductibleAmount = 100.00;
             $donorTaxRate = 25; // 25% tax rate
 
@@ -163,7 +163,7 @@ describe('Donation Calculator Service', function () {
             expect($taxSavings)->toBe(25.00);
         });
 
-        it('determines tax receipt eligibility', function () {
+        it('determines tax receipt eligibility', function (): void {
             $amount = new Amount(25.00, 'EUR');
             $minimumThreshold = 20.00;
 
@@ -172,7 +172,7 @@ describe('Donation Calculator Service', function () {
             expect($isEligible)->toBeTrue();
         });
 
-        it('determines tax receipt ineligibility for small amounts', function () {
+        it('determines tax receipt ineligibility for small amounts', function (): void {
             $amount = new Amount(15.00, 'EUR');
             $minimumThreshold = 20.00;
 
@@ -182,8 +182,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Corporate Matching Calculations', function () {
-        it('calculates 1:1 corporate match', function () {
+    describe('Corporate Matching Calculations', function (): void {
+        it('calculates 1:1 corporate match', function (): void {
             $donationAmount = new Amount(100.00, 'EUR');
             $matchRatio = 1.0;
 
@@ -192,7 +192,7 @@ describe('Donation Calculator Service', function () {
             expect($matchAmount)->toBe(100.00);
         });
 
-        it('calculates 2:1 corporate match', function () {
+        it('calculates 2:1 corporate match', function (): void {
             $donationAmount = new Amount(100.00, 'EUR');
             $matchRatio = 2.0;
 
@@ -201,7 +201,7 @@ describe('Donation Calculator Service', function () {
             expect($matchAmount)->toBe(200.00);
         });
 
-        it('calculates 0.5:1 corporate match', function () {
+        it('calculates 0.5:1 corporate match', function (): void {
             $donationAmount = new Amount(100.00, 'EUR');
             $matchRatio = 0.5;
 
@@ -210,7 +210,7 @@ describe('Donation Calculator Service', function () {
             expect($matchAmount)->toBe(50.00);
         });
 
-        it('calculates total with corporate match', function () {
+        it('calculates total with corporate match', function (): void {
             $donationAmount = new Amount(100.00, 'EUR');
             $matchAmount = 100.00;
 
@@ -219,7 +219,7 @@ describe('Donation Calculator Service', function () {
             expect($totalAmount)->toBe(200.00);
         });
 
-        it('calculates corporate match within annual limit', function () {
+        it('calculates corporate match within annual limit', function (): void {
             $donationAmount = new Amount(1000.00, 'EUR');
             $matchRatio = 1.0;
             $annualLimit = 500.00;
@@ -232,7 +232,7 @@ describe('Donation Calculator Service', function () {
             expect($actualMatch)->toBe(300.00);
         });
 
-        it('handles corporate match exceeding annual limit', function () {
+        it('handles corporate match exceeding annual limit', function (): void {
             $donationAmount = new Amount(1000.00, 'EUR');
             $matchRatio = 1.0;
             $annualLimit = 500.00;
@@ -246,8 +246,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Currency Conversion Calculations', function () {
-        it('converts USD to EUR', function () {
+    describe('Currency Conversion Calculations', function (): void {
+        it('converts USD to EUR', function (): void {
             $usdAmount = new Amount(100.00, 'USD');
             $exchangeRate = 0.85; // USD to EUR
 
@@ -256,7 +256,7 @@ describe('Donation Calculator Service', function () {
             expect($eurAmount)->toBe(85.00);
         });
 
-        it('converts EUR to USD', function () {
+        it('converts EUR to USD', function (): void {
             $eurAmount = new Amount(100.00, 'EUR');
             $exchangeRate = 1.18; // EUR to USD
 
@@ -265,7 +265,7 @@ describe('Donation Calculator Service', function () {
             expect($usdAmount)->toBe(118.00);
         });
 
-        it('handles conversion fees', function () {
+        it('handles conversion fees', function (): void {
             $amount = new Amount(100.00, 'USD');
             $exchangeRate = 0.85;
             $conversionFeePercentage = 2.5;
@@ -277,7 +277,7 @@ describe('Donation Calculator Service', function () {
             expect(round($finalAmount, 2))->toBe(82.88);
         });
 
-        it('calculates mid-market rate impact', function () {
+        it('calculates mid-market rate impact', function (): void {
             $amount = new Amount(100.00, 'USD');
             $midMarketRate = 0.85;
             $appliedRate = 0.83;
@@ -290,8 +290,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Recurring Donation Calculations', function () {
-        it('calculates monthly recurring total for year', function () {
+    describe('Recurring Donation Calculations', function (): void {
+        it('calculates monthly recurring total for year', function (): void {
             $monthlyAmount = new Amount(50.00, 'EUR');
             $months = 12;
 
@@ -300,7 +300,7 @@ describe('Donation Calculator Service', function () {
             expect($yearlyTotal)->toBe(600.00);
         });
 
-        it('calculates weekly recurring total for year', function () {
+        it('calculates weekly recurring total for year', function (): void {
             $weeklyAmount = new Amount(25.00, 'EUR');
             $weeks = 52;
 
@@ -309,7 +309,7 @@ describe('Donation Calculator Service', function () {
             expect($yearlyTotal)->toBe(1300.00);
         });
 
-        it('calculates prorated amount for partial month', function () {
+        it('calculates prorated amount for partial month', function (): void {
             $monthlyAmount = new Amount(100.00, 'EUR');
             $daysInMonth = 30;
             $daysRemaining = 15;
@@ -319,14 +319,14 @@ describe('Donation Calculator Service', function () {
             expect($proratedAmount)->toBe(50.00);
         });
 
-        it('calculates next payment date for monthly recurring', function () {
+        it('calculates next payment date for monthly recurring', function (): void {
             $lastPayment = Carbon::parse('2024-01-15');
             $nextPayment = $lastPayment->copy()->addMonth();
 
             expect($nextPayment->format('Y-m-d'))->toBe('2024-02-15');
         });
 
-        it('calculates missed payments for failed recurring', function () {
+        it('calculates missed payments for failed recurring', function (): void {
             $expectedDate = Carbon::parse('2024-01-15');
             $currentDate = Carbon::parse('2024-03-15');
             $frequency = 'monthly';
@@ -336,7 +336,7 @@ describe('Donation Calculator Service', function () {
             expect($missedPayments)->toBe(2.0);
         });
 
-        it('calculates total value of recurring donation plan', function () {
+        it('calculates total value of recurring donation plan', function (): void {
             $monthlyAmount = new Amount(100.00, 'EUR');
             $durationMonths = 24;
 
@@ -346,8 +346,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Campaign Progress Calculations', function () {
-        it('calculates campaign progress percentage', function () {
+    describe('Campaign Progress Calculations', function (): void {
+        it('calculates campaign progress percentage', function (): void {
             $currentAmount = 7500.00;
             $targetAmount = 10000.00;
 
@@ -356,7 +356,7 @@ describe('Donation Calculator Service', function () {
             expect($progressPercentage)->toBe(75.0);
         });
 
-        it('calculates remaining amount to target', function () {
+        it('calculates remaining amount to target', function (): void {
             $currentAmount = 7500.00;
             $targetAmount = 10000.00;
 
@@ -365,7 +365,7 @@ describe('Donation Calculator Service', function () {
             expect($remainingAmount)->toBe(2500.00);
         });
 
-        it('calculates amount over target', function () {
+        it('calculates amount over target', function (): void {
             $currentAmount = 12000.00;
             $targetAmount = 10000.00;
 
@@ -374,7 +374,7 @@ describe('Donation Calculator Service', function () {
             expect($overAmount)->toBe(2000.00);
         });
 
-        it('calculates average donation per donor', function () {
+        it('calculates average donation per donor', function (): void {
             $totalAmount = 10000.00;
             $donorCount = 50;
 
@@ -383,7 +383,7 @@ describe('Donation Calculator Service', function () {
             expect($averagePerDonor)->toBe(200.00);
         });
 
-        it('calculates required donations to reach target', function () {
+        it('calculates required donations to reach target', function (): void {
             $currentAmount = 5000.00;
             $targetAmount = 10000.00;
             $averageDonation = 100.00;
@@ -394,7 +394,7 @@ describe('Donation Calculator Service', function () {
             expect($requiredDonations)->toBe(50.0);
         });
 
-        it('calculates daily required amount to reach target', function () {
+        it('calculates daily required amount to reach target', function (): void {
             $currentAmount = 5000.00;
             $targetAmount = 10000.00;
             $daysRemaining = 30;
@@ -406,8 +406,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Impact Calculations', function () {
-        it('calculates impact per donation amount', function () {
+    describe('Impact Calculations', function (): void {
+        it('calculates impact per donation amount', function (): void {
             $donationAmount = new Amount(100.00, 'EUR');
             $impactRatio = 5; // 1 EUR helps 5 people
 
@@ -416,7 +416,7 @@ describe('Donation Calculator Service', function () {
             expect($impact)->toBe(500.0);
         });
 
-        it('calculates cost per beneficiary', function () {
+        it('calculates cost per beneficiary', function (): void {
             $totalRaised = 10000.00;
             $beneficiariesHelped = 500;
 
@@ -425,7 +425,7 @@ describe('Donation Calculator Service', function () {
             expect($costPerBeneficiary)->toBe(20.00);
         });
 
-        it('calculates efficiency ratio', function () {
+        it('calculates efficiency ratio', function (): void {
             $programExpenses = 8000.00;
             $totalExpenses = 10000.00;
 
@@ -434,7 +434,7 @@ describe('Donation Calculator Service', function () {
             expect($efficiencyRatio)->toBe(80.0);
         });
 
-        it('calculates leveraged impact with matching funds', function () {
+        it('calculates leveraged impact with matching funds', function (): void {
             $donation = new Amount(100.00, 'EUR');
             $governmentMatch = 200.00;
             $corporateMatch = 100.00;
@@ -445,8 +445,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Statistical Calculations', function () {
-        it('calculates donation standard deviation', function () {
+    describe('Statistical Calculations', function (): void {
+        it('calculates donation standard deviation', function (): void {
             $donations = [100.00, 150.00, 200.00, 50.00, 300.00];
             $mean = array_sum($donations) / count($donations);
 
@@ -459,7 +459,7 @@ describe('Donation Calculator Service', function () {
             expect(round($standardDeviation, 2))->toBe(86.02);
         });
 
-        it('calculates donation percentiles', function () {
+        it('calculates donation percentiles', function (): void {
             $donations = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
             sort($donations);
 
@@ -469,7 +469,7 @@ describe('Donation Calculator Service', function () {
             expect($percentile90)->toBe(90);
         });
 
-        it('calculates donor retention rate', function () {
+        it('calculates donor retention rate', function (): void {
             $previousYearDonors = 100;
             $repeatDonors = 75;
 
@@ -478,7 +478,7 @@ describe('Donation Calculator Service', function () {
             expect($retentionRate)->toBe(75.0);
         });
 
-        it('calculates acquisition cost per donor', function () {
+        it('calculates acquisition cost per donor', function (): void {
             $marketingExpense = 5000.00;
             $newDonors = 100;
 
@@ -487,7 +487,7 @@ describe('Donation Calculator Service', function () {
             expect($acquisitionCost)->toBe(50.00);
         });
 
-        it('calculates lifetime value of donor', function () {
+        it('calculates lifetime value of donor', function (): void {
             $averageAnnualDonation = 200.00;
             $averageLifespanYears = 5;
 
@@ -497,8 +497,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Time-based Calculations', function () {
-        it('calculates donation velocity per day', function () {
+    describe('Time-based Calculations', function (): void {
+        it('calculates donation velocity per day', function (): void {
             $totalAmount = 10000.00;
             $campaignDays = 30;
 
@@ -507,7 +507,7 @@ describe('Donation Calculator Service', function () {
             expect(round($dailyVelocity, 2))->toBe(333.33);
         });
 
-        it('calculates peak donation hour impact', function () {
+        it('calculates peak donation hour impact', function (): void {
             $hourlyDonations = [10, 15, 25, 30, 45, 60, 40, 35, 20, 15, 10, 5];
             $peakHour = max($hourlyDonations);
             $averageHour = array_sum($hourlyDonations) / count($hourlyDonations);
@@ -517,7 +517,7 @@ describe('Donation Calculator Service', function () {
             expect(round($peakImpact, 2))->toBe(232.26);
         });
 
-        it('calculates seasonal donation variance', function () {
+        it('calculates seasonal donation variance', function (): void {
             $quarterlyTotals = [2000, 1500, 1800, 4000]; // Q1, Q2, Q3, Q4
             $annualTotal = array_sum($quarterlyTotals);
             $q4Percentage = ($quarterlyTotals[3] / $annualTotal) * 100;
@@ -525,7 +525,7 @@ describe('Donation Calculator Service', function () {
             expect(round($q4Percentage, 2))->toBe(43.01);
         });
 
-        it('calculates end-of-year giving surge', function () {
+        it('calculates end-of-year giving surge', function (): void {
             $decemberDonations = 5000.00;
             $averageMonthlyDonations = 1500.00;
 
@@ -535,8 +535,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Risk and Fraud Calculations', function () {
-        it('calculates chargeback rate', function () {
+    describe('Risk and Fraud Calculations', function (): void {
+        it('calculates chargeback rate', function (): void {
             $totalTransactions = 1000;
             $chargebacks = 5;
 
@@ -545,7 +545,7 @@ describe('Donation Calculator Service', function () {
             expect($chargebackRate)->toBe(0.5);
         });
 
-        it('calculates fraud score based on donation patterns', function () {
+        it('calculates fraud score based on donation patterns', function (): void {
             $donationAmount = 10000.00;
             $averageDonation = 100.00;
             $firstTimeDonor = true;
@@ -557,7 +557,7 @@ describe('Donation Calculator Service', function () {
             expect($totalRiskScore)->toBe(75);
         });
 
-        it('calculates refund rate', function () {
+        it('calculates refund rate', function (): void {
             $totalDonations = 1000;
             $refunds = 20;
 
@@ -566,7 +566,7 @@ describe('Donation Calculator Service', function () {
             expect($refundRate)->toBe(2.0);
         });
 
-        it('calculates payment failure rate by method', function () {
+        it('calculates payment failure rate by method', function (): void {
             $cardAttempts = 100;
             $cardFailures = 5;
 
@@ -576,8 +576,8 @@ describe('Donation Calculator Service', function () {
         });
     });
 
-    describe('Edge Cases and Boundary Conditions', function () {
-        it('handles zero donation amounts', function () {
+    describe('Edge Cases and Boundary Conditions', function (): void {
+        it('handles zero donation amounts', function (): void {
             $amount = new Amount(0.00, 'EUR');
             $fee = 0.30; // Fixed fee
 
@@ -586,7 +586,7 @@ describe('Donation Calculator Service', function () {
             expect($netAmount)->toBe(0);
         });
 
-        it('handles very large donation amounts', function () {
+        it('handles very large donation amounts', function (): void {
             $amount = new Amount(999999.99, 'EUR');
             $feePercentage = 2.9;
 
@@ -595,7 +595,7 @@ describe('Donation Calculator Service', function () {
             expect(round($fee, 2))->toBe(29000.00);
         });
 
-        it('handles fractional cent calculations', function () {
+        it('handles fractional cent calculations', function (): void {
             $amount = new Amount(100.00, 'EUR');
             $feePercentage = 2.333; // Results in fractional cents
 
@@ -605,7 +605,7 @@ describe('Donation Calculator Service', function () {
             expect($roundedFee)->toBe(2.33);
         });
 
-        it('handles division by zero scenarios', function () {
+        it('handles division by zero scenarios', function (): void {
             $totalAmount = 1000.00;
             $donorCount = 0;
 
@@ -614,7 +614,7 @@ describe('Donation Calculator Service', function () {
             expect($averagePerDonor)->toBe(0);
         });
 
-        it('handles negative calculation results', function () {
+        it('handles negative calculation results', function (): void {
             $amount = new Amount(1.00, 'EUR');
             $highFee = 2.00;
 

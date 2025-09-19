@@ -31,7 +31,8 @@ class NotificationChannel
 
     /**
      * Get all notification channels.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function all(): array
@@ -59,7 +60,8 @@ class NotificationChannel
 
     /**
      * Get channels that support real-time delivery.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function realTimeChannels(): array
@@ -74,7 +76,8 @@ class NotificationChannel
 
     /**
      * Get channels that support persistent storage.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function persistentChannels(): array
@@ -88,7 +91,8 @@ class NotificationChannel
 
     /**
      * Get channels that require external services.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function externalChannels(): array

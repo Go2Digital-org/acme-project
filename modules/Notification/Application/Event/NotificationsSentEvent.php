@@ -10,18 +10,21 @@ namespace Modules\Notification\Application\Event;
 class NotificationsSentEvent
 {
     /**
-     * @param  array<string>  $notificationIds
+     * @param  array<int>  $notificationIds
      * @param  array<string>  $channels
      * @param  array<string, mixed>  $metadata
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public readonly array $notificationIds,
+        /** @var array<string, mixed> */
         public readonly array $channels,
+        /** @var array<string, mixed> */
         public readonly array $metadata = [],
     ) {}
 
     /**
-     * @return array<string>
+     * @return array<int>
      */
     public function getNotificationIds(): array
     {

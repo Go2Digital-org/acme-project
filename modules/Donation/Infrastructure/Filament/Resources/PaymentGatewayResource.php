@@ -77,7 +77,7 @@ class PaymentGatewayResource extends Resource
                             ->required()
                             ->live()
                             ->helperText('Payment service provider')
-                            ->afterStateUpdated(function ($state, callable $set): void {
+                            ->afterStateUpdated(function ($state, $set): void {
                                 // Reset settings when provider changes
                                 $set('settings', []);
 
@@ -125,7 +125,7 @@ class PaymentGatewayResource extends Resource
                                 default => 'Secret API key from your payment provider',
                             })
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function ($state, $get, callable $set): void {
+                            ->afterStateUpdated(function ($state, $get, $set): void {
                                 if ($state) {
                                     $provider = $get('provider');
                                     $testMode = PaymentGatewayConfigRegistry::detectTestMode($provider, $state);
@@ -422,6 +422,9 @@ class PaymentGatewayResource extends Resource
             ->striped();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelations(): array
     {
         return [
@@ -429,6 +432,9 @@ class PaymentGatewayResource extends Resource
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

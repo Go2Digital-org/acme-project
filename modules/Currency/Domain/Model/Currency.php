@@ -152,7 +152,8 @@ class Currency extends Model
 
     /**
      * Get all active currencies ordered by sort order.
-     *
+     */
+    /**
      * @return Collection<int, Currency>
      */
     public static function getActiveCurrencies(): Collection
@@ -229,7 +230,7 @@ class Currency extends Model
                 $data = json_decode((string) $cached->stats_data, true);
                 // Extract currencies from the nested structure
                 $currencies = $data['currencies'] ?? $data;
-                /** @var array<int, array<string, mixed>> $currenciesArray */
+                /** @var array<string, mixed> $currenciesArray */
                 $currenciesArray = is_array($currencies) ? $currencies : [];
                 $defaultData = collect($currenciesArray)->firstWhere('is_default', true);
 
@@ -297,6 +298,9 @@ class Currency extends Model
         return CurrencyFactory::new();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function casts(): array
     {
         return [

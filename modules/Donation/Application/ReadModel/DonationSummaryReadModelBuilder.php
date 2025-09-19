@@ -19,7 +19,8 @@ final readonly class DonationSummaryReadModelBuilder
 
     /**
      * Build a complete donation summary.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function build(array $filters = [], string $locale = 'en', string $baseCurrency = 'USD'): DonationSummaryReadModel
@@ -230,6 +231,9 @@ final readonly class DonationSummaryReadModelBuilder
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<int, array<string, mixed>>
      */
@@ -237,7 +241,7 @@ final readonly class DonationSummaryReadModelBuilder
     {
         $topDonors = $this->donationRepository->getTopDonors($limit, $filters);
 
-        return array_map(fn ($donor) => [
+        return array_map(fn (array $donor): array => [
             'id' => $donor['user_id'],
             'name' => 'Anonymous Donor', // We don't have donor names in the repository method
             'total_amount' => $donor['total_amount'],
@@ -246,6 +250,9 @@ final readonly class DonationSummaryReadModelBuilder
         ], $topDonors);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     /**
      * @param  array<string, mixed>  $filters
      * @return array<int, array<string, mixed>>
@@ -257,7 +264,7 @@ final readonly class DonationSummaryReadModelBuilder
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return array<string, mixed>
+     * @return array<string, array<string, mixed>>
      */
     private function getPaymentMethodBreakdown(array $filters): array
     {
@@ -265,8 +272,11 @@ final readonly class DonationSummaryReadModelBuilder
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    /**
      * @param  array<string, mixed>  $filters
-     * @return array<string, array<string, float|int>>
+     * @return array<string, array<string, mixed>>
      */
     private function getCurrencyBreakdown(array $filters): array
     {
@@ -316,7 +326,8 @@ final readonly class DonationSummaryReadModelBuilder
 
     /**
      * Generate version hash based on filters and current time.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function generateVersion(array $filters): string

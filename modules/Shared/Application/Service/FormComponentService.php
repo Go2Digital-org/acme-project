@@ -51,7 +51,7 @@ final readonly class FormComponentService
     /**
      * Generate select field data with options.
      *
-     * @param  array<mixed, mixed>  $options
+     * @param  array<string, string>  $options
      * @param  array<string, mixed>|null  $attributes
      * @return array<string, mixed>
      */
@@ -112,7 +112,7 @@ final readonly class FormComponentService
     /**
      * Generate radio button group data.
      *
-     * @param  array<mixed, mixed>  $options
+     * @param  array<string, string>  $options
      * @param  array<string, mixed>|null  $attributes
      * @return array<string, mixed>
      */
@@ -624,7 +624,7 @@ final readonly class FormComponentService
     /**
      * Process select options.
      *
-     * @param  array<mixed, mixed>  $options
+     * @param  array<string, string>  $options
      * @return array<int, array<string, mixed>>
      */
     private function processSelectOptions(array $options, mixed $selected, bool $multiple): array

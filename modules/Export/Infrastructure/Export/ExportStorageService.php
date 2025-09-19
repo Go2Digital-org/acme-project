@@ -206,8 +206,9 @@ class ExportStorageService
 
     /**
      * Clean up old final files
-     *
-     * @param  array<string>  $expiredExportPaths
+     */
+    /**
+     * @param  array<string, mixed>  $expiredExportPaths
      */
     public function cleanupExpiredFiles(array $expiredExportPaths): int
     {
@@ -225,7 +226,7 @@ class ExportStorageService
     /**
      * Get storage statistics
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getStorageStatistics(): array
     {

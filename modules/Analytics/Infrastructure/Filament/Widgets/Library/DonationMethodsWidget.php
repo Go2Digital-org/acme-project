@@ -15,6 +15,7 @@ class DonationMethodsWidget extends ChartWidget
 
     protected ?string $pollingInterval = '10m';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 8;
@@ -41,6 +42,9 @@ class DonationMethodsWidget extends ChartWidget
         return true; // Simplified - always visible
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getData(): array
     {
         $stats = ApplicationCache::getStats('payment_analytics');

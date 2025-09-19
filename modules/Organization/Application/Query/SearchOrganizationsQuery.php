@@ -13,6 +13,7 @@ final readonly class SearchOrganizationsQuery implements QueryInterface
      */
     public function __construct(
         public string $searchTerm = '',
+        /** @var array<string, mixed> */
         public array $filters = [],
         public int $page = 1,
         public int $perPage = 15,

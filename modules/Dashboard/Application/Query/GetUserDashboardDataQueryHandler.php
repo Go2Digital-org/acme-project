@@ -45,10 +45,10 @@ final readonly class GetUserDashboardDataQueryHandler implements QueryHandlerInt
             return new UserDashboardDataReadModel(
                 userId: $query->userId,
                 statistics: $statistics,
-                activityFeed: $activityFeed,
+                activityFeed: ['items' => $activityFeed, 'total' => count($activityFeed)],
                 impactMetrics: $impactMetrics,
                 ranking: $ranking,
-                leaderboard: $leaderboard,
+                leaderboard: ['entries' => $leaderboard, 'total' => count($leaderboard)],
                 generatedAt: now()->toISOString() ?? '',
                 fromCache: true
             );

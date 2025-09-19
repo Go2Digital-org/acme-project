@@ -13,12 +13,12 @@ interface TranslationRepositoryInterface
     public function findByKeyAndLocale(TranslationKey $key, Locale $locale): ?Translation;
 
     /**
-     * @return array<Translation>
+     * @return array<string, mixed>
      */
     public function findByLocale(Locale $locale): array;
 
     /**
-     * @return array<Translation>
+     * @return array<string, mixed>
      */
     public function findByGroup(string $group, Locale $locale): array;
 
@@ -27,12 +27,12 @@ interface TranslationRepositoryInterface
     public function delete(Translation $translation): void;
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function getAllTranslationsForLocale(Locale $locale): array;
 
     /**
-     * @return array<string>
+     * @return array<string, mixed>
      */
     public function getAvailableGroups(): array;
 

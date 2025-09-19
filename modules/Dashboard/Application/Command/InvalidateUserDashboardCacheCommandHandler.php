@@ -15,7 +15,7 @@ final readonly class InvalidateUserDashboardCacheCommandHandler implements Comma
     ) {}
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, string>
      */
     public function handle(CommandInterface $command): array
     {

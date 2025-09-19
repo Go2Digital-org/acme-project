@@ -19,7 +19,9 @@ class DonationConfirmedNotification extends Notification implements ShouldQueue
         private readonly string $campaignTitle,
     ) {}
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, string>
+     */
     public function via(object $notifiable): array
     {
         return ['database', 'mail'];
@@ -37,7 +39,9 @@ class DonationConfirmedNotification extends Notification implements ShouldQueue
             ->line(__('donations.thank_you_message'));
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(object $notifiable): array
     {
         return [

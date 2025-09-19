@@ -15,6 +15,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final readonly class UpdateUserProcessor implements ProcessorInterface
 {
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): UserResource
     {
         if (! isset($uriVariables['id']) || ! is_numeric($uriVariables['id'])) {
@@ -40,11 +44,11 @@ final readonly class UpdateUserProcessor implements ProcessorInterface
             $updateData['email'] = ($data->email ?? null);
         }
 
-        if (isset($data->department) && $data->department !== null) {
+        if (isset($data->department)) {
             $updateData['department'] = $data->department;
         }
 
-        if (isset($data->job_title) && $data->job_title !== null) {
+        if (isset($data->job_title)) {
             $updateData['job_title'] = $data->job_title;
         }
 
@@ -56,19 +60,19 @@ final readonly class UpdateUserProcessor implements ProcessorInterface
             $updateData['address'] = ($data->address ?? null);
         }
 
-        if (isset($data->preferred_language) && $data->preferred_language !== null) {
+        if (isset($data->preferred_language)) {
             $updateData['preferred_language'] = $data->preferred_language;
         }
 
-        if (isset($data->timezone) && $data->timezone !== null) {
+        if (isset($data->timezone)) {
             $updateData['timezone'] = $data->timezone;
         }
 
-        if (isset($data->manager_email) && $data->manager_email !== null) {
+        if (isset($data->manager_email)) {
             $updateData['manager_email'] = $data->manager_email;
         }
 
-        if (isset($data->hire_date) && $data->hire_date !== null) {
+        if (isset($data->hire_date)) {
             $updateData['hire_date'] = $data->hire_date;
         }
 

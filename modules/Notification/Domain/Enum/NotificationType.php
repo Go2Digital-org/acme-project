@@ -298,7 +298,7 @@ enum NotificationType: string
     /**
      * Get all campaign-related notification types.
      *
-     * @return array<NotificationType>
+     * @return array<int, NotificationType>
      */
     public static function campaignTypes(): array
     {
@@ -311,7 +311,7 @@ enum NotificationType: string
     /**
      * Get all donation-related notification types.
      *
-     * @return array<NotificationType>
+     * @return array<int, NotificationType>
      */
     public static function donationTypes(): array
     {
@@ -324,7 +324,7 @@ enum NotificationType: string
     /**
      * Get all system-related notification types.
      *
-     * @return array<NotificationType>
+     * @return array<int, NotificationType>
      */
     public static function systemTypes(): array
     {
@@ -337,7 +337,7 @@ enum NotificationType: string
     /**
      * Get all notification types that require real-time delivery.
      *
-     * @return array<NotificationType>
+     * @return array<int, NotificationType>
      */
     public static function realTimeTypes(): array
     {

@@ -25,6 +25,8 @@ final readonly class CampaignCollectionProvider implements ProviderInterface
     ) {}
 
     /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
      * @return Paginator<CampaignResource>
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): Paginator

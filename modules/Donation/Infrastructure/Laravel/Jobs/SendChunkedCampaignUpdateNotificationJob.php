@@ -161,14 +161,16 @@ class SendChunkedCampaignUpdateNotificationJob implements ShouldQueue
             return;
         }
 
-        $jobs = $chunks->map(fn (Collection $chunk, int $index) => new self(
-            $campaignId,
-            $updateType,
-            $notificationData,
-            $chunk->toArray(),
-            $index,
-            $totalChunks
-        ));
+        $jobs = $chunks->map(fn (Collection $chunk, int $index): \Modules\Donation\Infrastructure\Laravel\Jobs\SendChunkedCampaignUpdateNotificationJob =>
+            /** @var Collection<string, mixed> $chunk */
+            new self(
+                $campaignId,
+                $updateType,
+                $notificationData,
+                $chunk->toArray(),
+                $index,
+                $totalChunks
+            ));
 
         $batch = Bus::batch($jobs->toArray())
             ->name("campaign-notifications-{$campaignId}-{$updateType}")
@@ -267,6 +269,10 @@ class SendChunkedCampaignUpdateNotificationJob implements ShouldQueue
             'chunk_index' => $this->chunkIndex,
         ]);
     }
+
+    /**
+     * @param  array<string, mixed>  $recipient
+     */
 
     /**
      * @param  array<string, mixed>  $recipient

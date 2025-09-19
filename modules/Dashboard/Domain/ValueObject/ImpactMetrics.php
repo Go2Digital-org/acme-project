@@ -8,13 +8,11 @@ use Illuminate\Support\Carbon;
 
 final readonly class ImpactMetrics
 {
-    /**
-     * @param  array<string, float>  $categoryBreakdown
-     */
     public function __construct(
         public int $peopleHelped,
         public int $countriesReached,
         public int $organizationsSupported,
+        /** @var array<string, mixed> */
         public array $categoryBreakdown,
         public Carbon $calculatedAt,
     ) {}
@@ -42,7 +40,7 @@ final readonly class ImpactMetrics
             return null;
         }
 
-        return array_key_first(
+        $key = array_key_first(
             array: array_slice(
                 array: $this->categoryBreakdown,
                 offset: 0,
@@ -50,6 +48,8 @@ final readonly class ImpactMetrics
                 preserve_keys: true,
             ),
         );
+
+        return $key !== null ? (string) $key : null;
     }
 
     public function getCategoryPercentage(string $category): float

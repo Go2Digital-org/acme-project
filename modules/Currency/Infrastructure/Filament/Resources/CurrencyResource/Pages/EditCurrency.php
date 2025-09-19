@@ -13,6 +13,9 @@ class EditCurrency extends EditRecord
 {
     protected static string $resource = CurrencyResource::class;
 
+    /**
+     * @return array<int, \Filament\Actions\DeleteAction>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -21,6 +24,10 @@ class EditCurrency extends EditRecord
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // If this is set as default, unset other defaults

@@ -17,6 +17,9 @@ class ListSocialMedia extends ListRecords
         return 'Social Media Links';
     }
 
+    /**
+     * @return array<int, \Filament\Actions\Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -24,6 +27,9 @@ class ListSocialMedia extends ListRecords
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderWidgets(): array
     {
         return [];

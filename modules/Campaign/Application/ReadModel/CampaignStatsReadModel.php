@@ -11,10 +11,10 @@ use Modules\Shared\Application\ReadModel\AbstractReadModel;
  */
 final class CampaignStatsReadModel extends AbstractReadModel
 {
-    /**
-     * @param  array<string, mixed>  $data
-     */
     public function __construct(
+        /**
+         * @return array<string>
+         */
         array $data,
         ?string $version = null
     ) {
@@ -22,9 +22,6 @@ final class CampaignStatsReadModel extends AbstractReadModel
         $this->setCacheTtl(1800); // 30 minutes for stats
     }
 
-    /**
-     * @return array<int, string>
-     */
     public function getCacheTags(): array
     {
         return array_merge(parent::getCacheTags(), [
@@ -484,7 +481,8 @@ final class CampaignStatsReadModel extends AbstractReadModel
 
     /**
      * Get summary data for dashboard widgets
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toDashboardSummary(): array

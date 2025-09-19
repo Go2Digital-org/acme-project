@@ -8,19 +8,18 @@ use Modules\Shared\Application\Command\CommandInterface;
 
 final readonly class IndexEntityCommand implements CommandInterface
 {
-    /**
-     * @param  array<string, mixed>  $data
-     */
     public function __construct(
         public string $entityType,
         public string $entityId,
+        /** @var array<string, mixed> */
         public array $data,
         public bool $shouldQueue = true,
     ) {}
 
     /**
      * Create from entity model.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public static function fromEntity(string $type, string $id, array $data): self

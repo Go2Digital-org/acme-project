@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document details the complete setup and troubleshooting process for the ACME Corp CSR Platform staging server at `staging.acme-corp.go2digit.al`.
+This document details the complete setup and troubleshooting process for the ACME Corp CSR Platform staging server.
 
 ## Final Working Configuration
 
@@ -16,22 +16,22 @@ This document details the complete setup and troubleshooting process for the ACM
 
 ### Key Configuration Files
 
-#### 1. Nginx Configuration (`/etc/nginx/sites-available/staging.acme-corp.go2digit.al`)
+#### 1. Nginx Configuration (`/etc/nginx/sites-available/staging.yourdomain.com`)
 
 ```nginx
 server {
     listen 80;
-    server_name staging.acme-corp.go2digit.al;
+    server_name staging.yourdomain.com;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name staging.acme-corp.go2digit.al;
+    server_name staging.yourdomain.com;
 
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/staging.acme-corp.go2digit.al/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/staging.acme-corp.go2digit.al/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/staging.yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/staging.yourdomain.com/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
@@ -79,7 +79,7 @@ Key settings for staging environment:
 APP_NAME="ACME CSR Platform"
 APP_ENV=staging
 APP_DEBUG=false
-APP_URL=https://staging.acme-corp.go2digit.al
+APP_URL=https://staging.yourdomain.com
 
 # Database
 DB_CONNECTION=mysql
@@ -95,7 +95,7 @@ SESSION_DRIVER=file
 QUEUE_CONNECTION=sync
 
 # Multi-Tenancy
-CENTRAL_DOMAIN=staging.acme-corp.go2digit.al
+CENTRAL_DOMAIN=staging.yourdomain.com
 TENANT_IDENTIFICATION=subdomain
 ```
 
@@ -108,7 +108,7 @@ TENANT_IDENTIFICATION=subdomain
     '127.0.0.1',
     'localhost',
     'acme-corp-optimy.test',
-    'staging.acme-corp.go2digit.al',  // <- This line was missing!
+    'staging.yourdomain.com',  // <- This line was missing!
 ],
 ```
 
@@ -116,7 +116,7 @@ TENANT_IDENTIFICATION=subdomain
 
 ### 1. SSL Certificate Issues
 
-**Problem**: Initial SSL certificate only covered `acme-corp.go2digit.al`, not the staging subdomain.
+**Problem**: Initial SSL certificate only covered `yourdomain.com`, not the staging subdomain.
 
 **Error**: 
 ```
@@ -125,12 +125,12 @@ SSL handshake failed
 
 **Solution**:
 ```bash
-certbot certonly --nginx -d staging.acme-corp.go2digit.al
+certbot certonly --nginx -d staging.yourdomain.com
 ```
 
 ### 2. Tenant Not Found Error
 
-**Problem**: Application was treating `staging.acme-corp.go2digit.al` as a tenant subdomain instead of the central domain.
+**Problem**: Application was treating `staging.yourdomain.com` as a tenant subdomain instead of the central domain.
 
 **Error**:
 ```
@@ -141,14 +141,14 @@ Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 
 **Root Cause**: The staging domain was not included in the `central_domains` array in `config/tenancy.php`.
 
-**Solution**: Add `staging.acme-corp.go2digit.al` to the central domains list:
+**Solution**: Add `staging.yourdomain.com` to the central domains list:
 
 ```php
 'central_domains' => [
     '127.0.0.1',
     'localhost',
     'acme-corp-optimy.test',
-    'staging.acme-corp.go2digit.al',
+    'staging.yourdomain.com',
 ],
 ```
 
@@ -210,7 +210,7 @@ QUEUE_CONNECTION=sync
 
 ### 1. SSL Certificate Setup
 ```bash
-certbot certonly --nginx -d staging.acme-corp.go2digit.al
+certbot certonly --nginx -d staging.yourdomain.com
 ```
 
 ### 2. Database Setup
@@ -259,7 +259,7 @@ For production environments requiring higher performance, consider:
 ### Health Checks
 ```bash
 # Test site availability
-curl -I https://staging.acme-corp.go2digit.al/
+curl -I https://staging.yourdomain.com/
 
 # Check services
 systemctl status nginx
@@ -298,7 +298,7 @@ When encountering issues with the staging server:
 
 ---
 
-**Status**: Staging server fully operational at `https://staging.acme-corp.go2digit.al/`
+**Status**: Staging server fully operational at `https://staging.yourdomain.com/`
 
 **Last Updated**: September 16, 2025
 

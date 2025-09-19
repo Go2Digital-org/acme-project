@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use Modules\Shared\Domain\Validation\StrongPasswordRule;
 
-describe('StrongPasswordRule', function () {
-    describe('Default Configuration', function () {
-        it('validates strong password with all requirements', function () {
+describe('StrongPasswordRule', function (): void {
+    describe('Default Configuration', function (): void {
+        it('validates strong password with all requirements', function (): void {
             $rule = new StrongPasswordRule;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -17,10 +17,10 @@ describe('StrongPasswordRule', function () {
             expect($error ?? null)->toBeNull();
         });
 
-        it('fails for non-string values', function () {
+        it('fails for non-string values', function (): void {
             $rule = new StrongPasswordRule;
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -29,10 +29,10 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must be a string.');
         });
 
-        it('fails for null values', function () {
+        it('fails for null values', function (): void {
             $rule = new StrongPasswordRule;
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -41,10 +41,10 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must be a string.');
         });
 
-        it('fails for array values', function () {
+        it('fails for array values', function (): void {
             $rule = new StrongPasswordRule;
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -54,11 +54,11 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Length Requirements', function () {
-        it('fails for passwords shorter than minimum length', function () {
+    describe('Length Requirements', function (): void {
+        it('fails for passwords shorter than minimum length', function (): void {
             $rule = new StrongPasswordRule(minLength: 8);
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -67,7 +67,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must be at least 8 characters long.');
         });
 
-        it('passes for passwords exactly at minimum length', function () {
+        it('passes for passwords exactly at minimum length', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 8,
                 requireUppercase: false,
@@ -76,7 +76,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -85,10 +85,10 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('accepts custom minimum length', function () {
+        it('accepts custom minimum length', function (): void {
             $rule = new StrongPasswordRule(minLength: 12);
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -97,10 +97,10 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must be at least 12 characters long.');
         });
 
-        it('passes for very long passwords', function () {
+        it('passes for very long passwords', function (): void {
             $rule = new StrongPasswordRule;
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -111,11 +111,11 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Uppercase Letter Requirements', function () {
-        it('fails when no uppercase letters present', function () {
+    describe('Uppercase Letter Requirements', function (): void {
+        it('fails when no uppercase letters present', function (): void {
             $rule = new StrongPasswordRule(requireUppercase: true);
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -124,7 +124,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one uppercase letter.');
         });
 
-        it('passes when uppercase letters present', function () {
+        it('passes when uppercase letters present', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: true,
                 requireLowercase: false,
@@ -132,7 +132,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -141,7 +141,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('skips uppercase check when disabled', function () {
+        it('skips uppercase check when disabled', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -149,7 +149,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -158,7 +158,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('detects uppercase in middle of password', function () {
+        it('detects uppercase in middle of password', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: true,
                 requireLowercase: false,
@@ -166,7 +166,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -176,11 +176,11 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Lowercase Letter Requirements', function () {
-        it('fails when no lowercase letters present', function () {
+    describe('Lowercase Letter Requirements', function (): void {
+        it('fails when no lowercase letters present', function (): void {
             $rule = new StrongPasswordRule(requireLowercase: true);
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -189,7 +189,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one lowercase letter.');
         });
 
-        it('passes when lowercase letters present', function () {
+        it('passes when lowercase letters present', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: true,
@@ -197,7 +197,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -206,7 +206,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('skips lowercase check when disabled', function () {
+        it('skips lowercase check when disabled', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -214,7 +214,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -224,11 +224,11 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Number Requirements', function () {
-        it('fails when no numbers present', function () {
+    describe('Number Requirements', function (): void {
+        it('fails when no numbers present', function (): void {
             $rule = new StrongPasswordRule(requireNumbers: true);
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -237,7 +237,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one number.');
         });
 
-        it('passes when numbers present', function () {
+        it('passes when numbers present', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -245,7 +245,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -254,7 +254,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('detects single digit', function () {
+        it('detects single digit', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -262,7 +262,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -271,7 +271,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('detects multiple digits', function () {
+        it('detects multiple digits', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -279,7 +279,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -288,7 +288,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('skips number check when disabled', function () {
+        it('skips number check when disabled', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -296,7 +296,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -306,11 +306,11 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Special Character Requirements', function () {
-        it('fails when no special characters present', function () {
+    describe('Special Character Requirements', function (): void {
+        it('fails when no special characters present', function (): void {
             $rule = new StrongPasswordRule(requireSpecialChars: true);
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -319,7 +319,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one special character.');
         });
 
-        it('passes when special characters present', function () {
+        it('passes when special characters present', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -327,7 +327,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: true
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -336,7 +336,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('accepts various special characters', function () {
+        it('accepts various special characters', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -348,7 +348,7 @@ describe('StrongPasswordRule', function () {
 
             foreach ($specialChars as $char) {
                 $error = null;
-                $fail = function (string $message) use (&$error) {
+                $fail = function (string $message) use (&$error): void {
                     $error = $message;
                 };
 
@@ -357,7 +357,7 @@ describe('StrongPasswordRule', function () {
             }
         });
 
-        it('skips special character check when disabled', function () {
+        it('skips special character check when disabled', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -365,7 +365,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -375,8 +375,8 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Combined Requirements', function () {
-        it('validates password with all requirements met', function () {
+    describe('Combined Requirements', function (): void {
+        it('validates password with all requirements met', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 8,
                 requireUppercase: true,
@@ -385,7 +385,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: true
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -394,7 +394,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('fails when length requirement not met first', function () {
+        it('fails when length requirement not met first', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 10,
                 requireUppercase: true,
@@ -403,7 +403,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: true
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -412,7 +412,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must be at least 10 characters long.');
         });
 
-        it('fails when uppercase requirement not met', function () {
+        it('fails when uppercase requirement not met', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 8,
                 requireUppercase: true,
@@ -421,7 +421,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: true
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -430,7 +430,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one uppercase letter.');
         });
 
-        it('fails when lowercase requirement not met', function () {
+        it('fails when lowercase requirement not met', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 8,
                 requireUppercase: true,
@@ -439,7 +439,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: true
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -448,7 +448,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one lowercase letter.');
         });
 
-        it('fails when number requirement not met', function () {
+        it('fails when number requirement not met', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 8,
                 requireUppercase: true,
@@ -457,7 +457,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: true
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -466,7 +466,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one number.');
         });
 
-        it('fails when special character requirement not met', function () {
+        it('fails when special character requirement not met', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 8,
                 requireUppercase: true,
@@ -475,7 +475,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: true
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -485,11 +485,11 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Edge Cases', function () {
-        it('handles empty string', function () {
+    describe('Edge Cases', function (): void {
+        it('handles empty string', function (): void {
             $rule = new StrongPasswordRule;
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -498,10 +498,10 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must be at least 8 characters long.');
         });
 
-        it('handles whitespace only', function () {
+        it('handles whitespace only', function (): void {
             $rule = new StrongPasswordRule;
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -510,7 +510,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBe('The :attribute must contain at least one uppercase letter.');
         });
 
-        it('handles unicode characters', function () {
+        it('handles unicode characters', function (): void {
             $rule = new StrongPasswordRule(
                 requireUppercase: false,
                 requireLowercase: false,
@@ -518,7 +518,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -527,10 +527,10 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('handles extremely long passwords', function () {
+        it('handles extremely long passwords', function (): void {
             $rule = new StrongPasswordRule;
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -541,8 +541,8 @@ describe('StrongPasswordRule', function () {
         });
     });
 
-    describe('Minimal Configuration', function () {
-        it('allows very permissive configuration', function () {
+    describe('Minimal Configuration', function (): void {
+        it('allows very permissive configuration', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 1,
                 requireUppercase: false,
@@ -551,7 +551,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 
@@ -560,7 +560,7 @@ describe('StrongPasswordRule', function () {
             expect($error)->toBeNull();
         });
 
-        it('allows numbers only when other requirements disabled', function () {
+        it('allows numbers only when other requirements disabled', function (): void {
             $rule = new StrongPasswordRule(
                 minLength: 8,
                 requireUppercase: false,
@@ -569,7 +569,7 @@ describe('StrongPasswordRule', function () {
                 requireSpecialChars: false
             );
             $error = null;
-            $fail = function (string $message) use (&$error) {
+            $fail = function (string $message) use (&$error): void {
                 $error = $message;
             };
 

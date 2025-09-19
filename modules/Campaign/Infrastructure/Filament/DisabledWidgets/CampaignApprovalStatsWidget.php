@@ -18,6 +18,9 @@ class CampaignApprovalStatsWidget extends BaseWidget
         return auth()->user()?->hasRole('super_admin') ?? false;
     }
 
+    /**
+     * @return array<int, Stat>
+     */
     protected function getStats(): array
     {
         $pendingCount = Campaign::where('status', CampaignStatus::PENDING_APPROVAL->value)->count();

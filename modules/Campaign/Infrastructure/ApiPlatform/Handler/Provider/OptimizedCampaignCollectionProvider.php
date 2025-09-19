@@ -17,9 +17,11 @@ use Modules\Shared\Infrastructure\ApiPlatform\Provider\OptimizedCollectionProvid
 final class OptimizedCampaignCollectionProvider extends OptimizedCollectionProvider
 {
     /**
-     * @param  array<string, mixed>  $filters
-     * @param  array<string, string>  $sorts
      * @return Builder<Campaign>
+     */
+    /**
+     * @param  array<string, mixed>  $filters
+     * @param  array<string, mixed>  $sorts
      */
     protected function buildBaseQuery(string $locale, array $filters, array $sorts): Builder
     {
@@ -51,7 +53,9 @@ final class OptimizedCampaignCollectionProvider extends OptimizedCollectionProvi
         return CampaignResource::fromModel($model);
     }
 
-    /** @return array<int, string> */
+    /**
+     * @return array<int, string>
+     */
     protected function getAllowedFilters(): array
     {
         return [
@@ -69,7 +73,9 @@ final class OptimizedCampaignCollectionProvider extends OptimizedCollectionProvi
         ];
     }
 
-    /** @return array<int, string> */
+    /**
+     * @return array<int, string>
+     */
     protected function getAllowedSorts(): array
     {
         return [
@@ -87,8 +93,10 @@ final class OptimizedCampaignCollectionProvider extends OptimizedCollectionProvi
 
     /**
      * @param  Builder<Campaign>  $query
-     * @param  array<string, mixed>  $filters
      * @return Builder<Campaign>
+     */
+    /**
+     * @param  array<string, mixed>  $filters
      */
     protected function eagerLoadRelations(Builder $query, array $filters): Builder
     {
@@ -104,7 +112,6 @@ final class OptimizedCampaignCollectionProvider extends OptimizedCollectionProvi
 
     /**
      * @param  Builder<Campaign>  $query
-     * @param  array<string, mixed>  $filters
      * @return Builder<Campaign>
      */
     protected function addIndexHints(Builder $query, array $filters): Builder
@@ -131,7 +138,6 @@ final class OptimizedCampaignCollectionProvider extends OptimizedCollectionProvi
 
     /**
      * @param  Builder<Campaign>  $query
-     * @param  array<string, mixed>  $filters
      * @return Builder<Campaign>
      */
     protected function applyCaching(Builder $query, array $filters): Builder
@@ -151,7 +157,6 @@ final class OptimizedCampaignCollectionProvider extends OptimizedCollectionProvi
 
     /**
      * @param  Builder<Campaign>  $query
-     * @param  array<string, mixed>  $filters
      * @return Builder<Campaign>
      */
     protected function applyLocaleFiltering(Builder $query, string $locale, array $filters): Builder

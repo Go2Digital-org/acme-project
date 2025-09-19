@@ -334,8 +334,8 @@ final readonly class RedisCacheRepository implements CacheRepositoryInterface
     }
 
     /**
-     * @param  array<CacheKey>  $keys
-     * @return array<string>
+     * @param  array<int, CacheKey>  $keys
+     * @return array<int, string>
      */
     public function warmBatch(array $keys): array
     {

@@ -173,7 +173,7 @@ class ScoutIndexMonitor extends Command
 
             // Check if workers are running
             $workers = $this->getRunningWorkers();
-            $scoutWorkers = array_filter($workers, fn ($worker) => str_contains($worker, '--queue=scout') || str_contains($worker, 'scout-indexer'));
+            $scoutWorkers = array_filter($workers, fn ($worker): bool => str_contains((string) $worker, '--queue=scout') || str_contains((string) $worker, 'scout-indexer'));
 
             $this->line('Active scout workers: ' . count($scoutWorkers));
 
@@ -201,8 +201,9 @@ class ScoutIndexMonitor extends Command
 
     /**
      * Get list of running queue workers.
-     *
-     * @return array<int, string>
+     */
+    /**
+     * @return list<string>
      */
     private function getRunningWorkers(): array
     {

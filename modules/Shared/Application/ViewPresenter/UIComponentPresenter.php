@@ -16,7 +16,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
 
     private readonly string $size;
 
-    /** @var array<string, mixed> */
+    /**
+     * @var array<string, mixed>
+     */
     private array $options;
 
     /**
@@ -46,7 +48,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
     /**
      * Present UI component data.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function present(): array
     {
         return [
@@ -193,8 +197,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
 
     /**
      * Get component attributes.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getComponentAttributes(): array
     {
         $attributes = [];
@@ -224,8 +229,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
 
     /**
      * Get component styles.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getComponentStyles(): array
     {
         $styles = [];
@@ -245,8 +251,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
 
     /**
      * Get component states.
+     *
+     * @return array<string, bool|null>
      */
-    /** @return array<array-key, mixed> */
     public function getComponentStates(): array
     {
         return [
@@ -458,8 +465,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
 
     /**
      * Get component-specific attributes.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     private function getComponentSpecificAttributes(): array
     {
         return match ($this->component) {
@@ -471,8 +479,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
 
     /**
      * Get button-specific attributes.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     private function getButtonAttributes(): array
     {
         $attributes = [];
@@ -486,8 +495,9 @@ final class UIComponentPresenter extends AbstractViewPresenter
 
     /**
      * Get modal-specific attributes.
+     *
+     * @return array<string, string>
      */
-    /** @return array<array-key, mixed> */
     private function getModalAttributes(): array
     {
         return [

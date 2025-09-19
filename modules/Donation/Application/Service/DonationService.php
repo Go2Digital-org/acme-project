@@ -38,7 +38,7 @@ final readonly class DonationService
 
         $command = new CreateDonationCommand(
             campaignId: (int) $data['campaign_id'],
-            employeeId: $data['anonymous'] ?? false ? null : $user->getId(),
+            userId: $data['anonymous'] ?? false ? null : $user->getId(),
             amount: (float) $data['amount'],
             currency: $data['currency'] ?? 'EUR',
             paymentMethod: $data['payment_method'] ?? 'stripe',
@@ -77,7 +77,7 @@ final readonly class DonationService
 
         $command = new CancelDonationCommand(
             donationId: $donationId,
-            employeeId: $user->getId(),
+            userId: $user->getId(),
         );
 
         return $this->cancelHandler->handle($command);

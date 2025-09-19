@@ -12,7 +12,8 @@ interface PageRepositoryInterface
 {
     /**
      * Create a new page.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function create(array $data): Page;
@@ -30,14 +31,15 @@ interface PageRepositoryInterface
     /**
      * Find multiple pages by their slugs.
      *
-     * @param  array<string>  $slugs
-     * @return Collection<string, Page>
+     * @param  list<string>  $slugs
+     * @return Collection<int, Page>
      */
     public function findBySlugs(array $slugs): Collection;
 
     /**
      * Update a page by ID.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function updateById(int $id, array $data): bool;
@@ -102,7 +104,7 @@ interface PageRepositoryInterface
     /**
      * Reorder pages by updating their order values.
      *
-     * @param  array<int>  $pageIds
+     * @param  list<int>  $pageIds
      */
     public function reorder(array $pageIds): bool;
 }

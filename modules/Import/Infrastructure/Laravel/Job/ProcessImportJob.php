@@ -47,6 +47,9 @@ class ProcessImportJob implements ShouldQueue
 
     private const CHUNK_SIZE = 500; // Process 500 records at a time for optimal performance
 
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function __construct(
         private readonly int $importId,
         /** @var array<string, mixed> Additional processing options */

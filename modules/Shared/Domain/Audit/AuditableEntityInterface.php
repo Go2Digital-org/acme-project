@@ -14,6 +14,8 @@ interface AuditableEntityInterface
 
     public function getAuditableType(): string;
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getAuditableData(): array;
 }

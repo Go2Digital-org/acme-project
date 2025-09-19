@@ -7,18 +7,21 @@ namespace Modules\Shared\Domain\ValueObject;
 final readonly class ModuleManifest
 {
     /**
-     * @param  array<string>  $serviceProviders  List of service provider class names
-     * @param  array<string>  $apiProcessors  List of API processor class names
-     * @param  array<string>  $apiProviders  List of API provider class names
+     * @param  list<string>  $serviceProviders  List of service provider class names
+     * @param  list<string>  $apiProcessors  List of API processor class names
+     * @param  list<string>  $apiProviders  List of API provider class names
      */
     public function __construct(
+        /** @var list<string> */
         private array $serviceProviders,
+        /** @var list<string> */
         private array $apiProcessors,
+        /** @var list<string> */
         private array $apiProviders,
     ) {}
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getServiceProviders(): array
     {
@@ -26,7 +29,7 @@ final readonly class ModuleManifest
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getApiProcessors(): array
     {
@@ -34,7 +37,7 @@ final readonly class ModuleManifest
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getApiProviders(): array
     {
@@ -44,7 +47,7 @@ final readonly class ModuleManifest
     /**
      * Convert to array for caching.
      *
-     * @return array<string, array<string>>
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -58,7 +61,7 @@ final readonly class ModuleManifest
     /**
      * Create from cached array.
      *
-     * @param  array<string, array<string>>  $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
     {

@@ -18,7 +18,7 @@ final readonly class RemoveBookmarkCommandHandler
 
     public function handle(RemoveBookmarkCommand $command): bool
     {
-        return DB::transaction(fn () => $this->repository->deleteByUserAndCampaign(
+        return DB::transaction(fn (): bool => $this->repository->deleteByUserAndCampaign(
             $command->userId,
             $command->campaignId
         ));

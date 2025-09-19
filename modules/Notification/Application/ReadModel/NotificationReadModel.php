@@ -28,12 +28,12 @@ final class NotificationReadModel extends AbstractReadModel
      */
     public function getCacheTags(): array
     {
-        return array_merge(parent::getCacheTags(), [
+        return array_values(array_merge(parent::getCacheTags(), [
             'notification',
             'notification:' . $this->id,
             'user:' . $this->getUserId(),
             'type:' . $this->getType(),
-        ]);
+        ]));
     }
 
     // Basic Notification Information

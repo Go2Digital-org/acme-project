@@ -1,8 +1,8 @@
 # Hexagonal Architecture Implementation
 
-## Technical Leadership in Architectural Design
+## Overview
 
-The implementation of Hexagonal Architecture in the ACME Corp CSR platform represents a strategic technical leadership decision that prioritizes long-term maintainability, testability, and team productivity over short-term development convenience.
+The ACME Corp CSR platform implements hexagonal architecture (ports and adapters pattern) with strict separation of concerns across Domain, Application, and Infrastructure layers. This architecture ensures business logic independence from external frameworks and technologies.
 
 ## Architecture Decision Rationale
 
@@ -528,8 +528,7 @@ This hexagonal architecture implementation represents technical leadership throu
 
 ---
 
-**Developed and Maintained by Go2digit.al**
+---
 
-Specialized in enterprise-grade applications with focus on scalability, security, and maintainability.
-
-Copyright 2025 Go2digit.al - All Rights Reserved
+Developed and Maintained by Go2Digital
+Copyright 2025 Go2Digital - All Rights Reserved

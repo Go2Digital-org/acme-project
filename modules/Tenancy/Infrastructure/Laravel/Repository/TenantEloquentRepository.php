@@ -68,11 +68,11 @@ class TenantEloquentRepository implements TenantRepositoryInterface
     /**
      * Find all tenants.
      *
-     * @return array<Tenant>
+     * @return array<int, Tenant>
      */
     public function findAll(): array
     {
-        /** @var array<Tenant> $tenants */
+        /** @var array<int, Tenant> $tenants */
         $tenants = Tenant::orderBy('created_at', 'desc')->get()->all();
 
         return $tenants;
@@ -81,11 +81,11 @@ class TenantEloquentRepository implements TenantRepositoryInterface
     /**
      * Find active tenants.
      *
-     * @return array<Tenant>
+     * @return array<int, Tenant>
      */
     public function findActive(): array
     {
-        /** @var array<Tenant> $tenants */
+        /** @var array<int, Tenant> $tenants */
         $tenants = Tenant::where('provisioning_status', Tenant::STATUS_ACTIVE)
             ->orderBy('created_at', 'desc')
             ->get()

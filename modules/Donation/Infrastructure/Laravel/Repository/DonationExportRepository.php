@@ -21,25 +21,27 @@ class DonationExportRepository implements DonationExportRepositoryInterface
      */
     public function getExportQuery(array $filters = []): Builder
     {
+        /** @var Builder<Model> */
         return $this->getDonationsWithRelations($filters);
     }
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationsWithRelations(array $filters = []): Builder
     {
+        /** @var Builder<Donation> $query */
         $query = $this->model->query()
             ->with(['campaign', 'user', 'campaign.organization'])
             ->orderBy('donated_at', 'desc');
 
-        return $this->applyFilters($query, $filters); // @phpstan-ignore-line argument.type
+        return $this->applyFilters($query, $filters);
     }
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationSummaryQuery(array $filters = []): Builder
     {
@@ -56,12 +58,12 @@ class DonationExportRepository implements DonationExportRepositoryInterface
             ->groupBy('status')
             ->orderBy('total_amount', 'desc');
 
-        return $this->applyBasicFilters($query, $filters); // @phpstan-ignore-line argument.type
+        return $this->applyBasicFilters($query, $filters);
     }
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationsByCampaignQuery(array $filters = []): Builder
     {
@@ -94,12 +96,12 @@ class DonationExportRepository implements DonationExportRepositoryInterface
             $query->whereIn('campaigns.id', $filters['campaign_ids']);
         }
 
-        return $query; // @phpstan-ignore-line return.type
+        return $query;
     }
 
     /**
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationsByEmployeeQuery(array $filters = []): Builder
     {
@@ -134,13 +136,13 @@ class DonationExportRepository implements DonationExportRepositoryInterface
             $query->whereIn('users.id', $filters['user_ids']);
         }
 
-        return $query; // @phpstan-ignore-line return.type
+        return $query;
     }
 
     /**
-     * @param  Builder<Model>  $query
+     * @param  Builder<Donation>  $query
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     private function applyFilters(Builder $query, array $filters): Builder
     {
@@ -189,9 +191,9 @@ class DonationExportRepository implements DonationExportRepositoryInterface
     }
 
     /**
-     * @param  Builder<Model>  $query
+     * @param  Builder<Donation>  $query
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     private function applyBasicFilters(Builder $query, array $filters): Builder
     {

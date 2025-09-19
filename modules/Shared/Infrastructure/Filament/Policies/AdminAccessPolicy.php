@@ -17,7 +17,7 @@ final readonly class AdminAccessPolicy
     /**
      * Define role hierarchies for access control.
      *
-     * @var array<string, array<string>>
+     * @var array<string, mixed>
      */
     private const ROLE_PERMISSIONS = [
         'super_admin' => [

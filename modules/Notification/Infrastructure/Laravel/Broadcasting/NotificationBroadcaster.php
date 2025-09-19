@@ -185,7 +185,6 @@ final readonly class NotificationBroadcaster
 
     /**
      * Get appropriate broadcast channels for a notification.
-     *
      * @return array<int, string>
      */
     private function getChannelsForNotification(Notification $notification): array
@@ -217,7 +216,8 @@ final readonly class NotificationBroadcaster
 
     /**
      * Format notification data for broadcasting.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function formatNotificationPayload(Notification $notification, string $event): array

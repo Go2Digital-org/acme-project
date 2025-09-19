@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Search\Infrastructure\Laravel\Repository;
 
+use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Search\Domain\Model\SearchQuery;
 use Modules\Search\Domain\Model\SearchResult;
 use Modules\Search\Domain\Repository\SearchRepositoryInterface;
@@ -22,13 +24,26 @@ class SearchEloquentRepository implements SearchRepositoryInterface
     }
 
     /**
-     * @return array<int, array{text: string, id: mixed, type: string}>
+     * @return array<int, string>
      */
     public function getSuggestions(string $query, string $index, int $limit = 10): array
     {
-        return $this->searchEngine->suggest($index, $query, $limit);
+        try {
+            return $this->searchEngine->suggest($index, $query, $limit);
+        } catch (Exception $e) {
+            Log::warning('Failed to get search suggestions', [
+                'query' => $query,
+                'index' => $index,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getPopularSearches(int $limit = 10): array
     {
         $searches = DB::table('search_queries')
@@ -45,6 +60,9 @@ class SearchEloquentRepository implements SearchRepositoryInterface
         ])->toArray();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRecentSearches(?int $userId, int $limit = 10): array
     {
         if (! $userId) {
@@ -83,6 +101,9 @@ class SearchEloquentRepository implements SearchRepositoryInterface
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getSearchStats(): array
     {
         $total = DB::table('search_queries')->count();

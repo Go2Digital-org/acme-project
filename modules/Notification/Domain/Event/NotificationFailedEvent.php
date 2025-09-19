@@ -13,11 +13,13 @@ use Throwable;
  */
 class NotificationFailedEvent extends AbstractDomainEvent
 {
+    /**
+     * @param  array<string, mixed>  $failureContext
+     */
     public function __construct(
         public Notification $notification,
         public string $failureReason,
         public ?Throwable $exception = null,
-        /** @var array<string, mixed> */
         /** @var array<string, mixed> */
         public array $failureContext = [],
     ) {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Illuminate\Support\Collection;
 use Modules\Search\Domain\Model\SearchResult;
 
-describe('SearchResult Model', function () {
-    it('creates search result with required parameters', function () {
+describe('SearchResult Model', function (): void {
+    it('creates search result with required parameters', function (): void {
         $hits = [
             ['id' => 1, 'title' => 'Campaign 1', 'type' => 'campaign'],
             ['id' => 2, 'title' => 'Campaign 2', 'type' => 'campaign'],
@@ -30,7 +30,7 @@ describe('SearchResult Model', function () {
             ->and($result->engine)->toBeNull(); // Default
     });
 
-    it('creates search result with all parameters', function () {
+    it('creates search result with all parameters', function (): void {
         $hits = [
             ['id' => 1, 'title' => 'Environmental Campaign', 'score' => 0.95],
             ['id' => 2, 'title' => 'Climate Action', 'score' => 0.87],
@@ -66,7 +66,7 @@ describe('SearchResult Model', function () {
             ->and($result->engine)->toBe('meilisearch');
     });
 
-    it('gets hits as collection', function () {
+    it('gets hits as collection', function (): void {
         $hits = [
             ['id' => 1, 'title' => 'First'],
             ['id' => 2, 'title' => 'Second'],
@@ -82,7 +82,7 @@ describe('SearchResult Model', function () {
             ->and($collection->last())->toBe(['id' => 3, 'title' => 'Third']);
     });
 
-    it('detects if there are results', function () {
+    it('detects if there are results', function (): void {
         $resultWithHits = new SearchResult([['id' => 1]], 1, 5.0);
         $resultWithoutHits = new SearchResult([], 0, 2.0);
 
@@ -90,7 +90,7 @@ describe('SearchResult Model', function () {
             ->and($resultWithoutHits->hasResults())->toBeFalse();
     });
 
-    it('calculates current page correctly', function () {
+    it('calculates current page correctly', function (): void {
         $hits = [['id' => 1]];
 
         $page1Result = new SearchResult($hits, 50, 5.0, [], '', 20, 0);
@@ -104,13 +104,13 @@ describe('SearchResult Model', function () {
             ->and($page5Result->getCurrentPage())->toBe(5);
     });
 
-    it('handles zero limit when calculating current page', function () {
+    it('handles zero limit when calculating current page', function (): void {
         $result = new SearchResult([['id' => 1]], 50, 5.0, [], '', 0, 100);
 
         expect($result->getCurrentPage())->toBe(1);
     });
 
-    it('calculates total pages correctly', function () {
+    it('calculates total pages correctly', function (): void {
         $hits = [['id' => 1]];
 
         $result20Per20 = new SearchResult($hits, 100, 5.0, [], '', 20, 0); // 100/20 = 5 pages
@@ -124,13 +124,13 @@ describe('SearchResult Model', function () {
             ->and($resultZeroHits->getTotalPages())->toBe(0);
     });
 
-    it('handles zero limit when calculating total pages', function () {
+    it('handles zero limit when calculating total pages', function (): void {
         $result = new SearchResult([['id' => 1]], 100, 5.0, [], '', 0, 0);
 
         expect($result->getTotalPages())->toBe(1);
     });
 
-    it('detects if there are more pages', function () {
+    it('detects if there are more pages', function (): void {
         $hits = [['id' => 1]];
 
         $lastPageResult = new SearchResult($hits, 20, 5.0, [], '', 20, 0); // Page 1 of 1
@@ -144,7 +144,7 @@ describe('SearchResult Model', function () {
             ->and($finalPageResult->hasMorePages())->toBeFalse();
     });
 
-    it('gets facet distribution for specific attribute', function () {
+    it('gets facet distribution for specific attribute', function (): void {
         $facets = [
             'category' => ['environment' => 15, 'health' => 8, 'education' => 5],
             'status' => ['active' => 20, 'draft' => 3],
@@ -157,7 +157,7 @@ describe('SearchResult Model', function () {
             ->and($result->getFacetDistribution('nonexistent'))->toBe([]);
     });
 
-    it('detects if facets are available', function () {
+    it('detects if facets are available', function (): void {
         $resultWithFacets = new SearchResult([], 0, 5.0, ['category' => ['env' => 10]]);
         $resultWithoutFacets = new SearchResult([], 0, 5.0, []);
 
@@ -165,13 +165,13 @@ describe('SearchResult Model', function () {
             ->and($resultWithoutFacets->hasFacets())->toBeFalse();
     });
 
-    it('gets processing time in milliseconds', function () {
+    it('gets processing time in milliseconds', function (): void {
         $result = new SearchResult([], 0, 123.45);
 
         expect($result->getProcessingTimeMs())->toBe(123.45);
     });
 
-    it('formats processing time correctly', function () {
+    it('formats processing time correctly', function (): void {
         $subMillisecondResult = new SearchResult([], 0, 0.25);
         $millisecondsResult = new SearchResult([], 0, 125.0);
         $secondsResult = new SearchResult([], 0, 1500.0);
@@ -183,35 +183,35 @@ describe('SearchResult Model', function () {
             ->and($preciseSecondsResult->getFormattedProcessingTime())->toBe('2.35s');
     });
 
-    it('provides query getter alias', function () {
+    it('provides query getter alias', function (): void {
         $result = new SearchResult([], 0, 5.0, [], 'environment campaign');
 
         expect($result->getQuery())->toBe('environment campaign')
             ->and($result->getQuery())->toBe($result->query);
     });
 
-    it('provides search time getter alias', function () {
+    it('provides search time getter alias', function (): void {
         $result = new SearchResult([], 0, 42.5);
 
         expect($result->getSearchTime())->toBe(42.5)
             ->and($result->getSearchTime())->toBe($result->processingTime);
     });
 
-    it('provides total getter alias', function () {
+    it('provides total getter alias', function (): void {
         $result = new SearchResult([], 150, 5.0);
 
         expect($result->getTotal())->toBe(150)
             ->and($result->getTotal())->toBe($result->totalHits);
     });
 
-    it('provides engine getter alias', function () {
+    it('provides engine getter alias', function (): void {
         $result = new SearchResult([], 0, 5.0, [], '', 20, 0, null, [], 'elasticsearch');
 
         expect($result->getEngine())->toBe('elasticsearch')
             ->and($result->getEngine())->toBe($result->engine);
     });
 
-    it('provides results getter alias', function () {
+    it('provides results getter alias', function (): void {
         $hits = [['id' => 1, 'title' => 'Test']];
         $result = new SearchResult($hits, 1, 5.0);
 
@@ -219,7 +219,7 @@ describe('SearchResult Model', function () {
             ->and($result->getResults())->toBe($result->hits);
     });
 
-    it('provides facets getter alias', function () {
+    it('provides facets getter alias', function (): void {
         $facets = ['category' => ['env' => 5]];
         $result = new SearchResult([], 0, 5.0, $facets);
 
@@ -227,7 +227,7 @@ describe('SearchResult Model', function () {
             ->and($result->getFacets())->toBe($result->facets);
     });
 
-    it('provides suggestions getter alias', function () {
+    it('provides suggestions getter alias', function (): void {
         $suggestions = ['environment', 'environmental'];
         $result = new SearchResult([], 0, 5.0, [], '', 20, 0, null, $suggestions);
 
@@ -235,7 +235,7 @@ describe('SearchResult Model', function () {
             ->and($result->getSuggestions())->toBe($result->suggestions);
     });
 
-    it('converts to array for API response', function () {
+    it('converts to array for API response', function (): void {
         $hits = [['id' => 1, 'title' => 'Test Campaign']];
         $facets = ['status' => ['active' => 10]];
         $result = new SearchResult(
@@ -264,7 +264,7 @@ describe('SearchResult Model', function () {
         ]);
     });
 
-    it('handles complex pagination in array conversion', function () {
+    it('handles complex pagination in array conversion', function (): void {
         $result = new SearchResult(
             hits: [['id' => 1]],
             totalHits: 100,
@@ -282,7 +282,7 @@ describe('SearchResult Model', function () {
             ->and($array['hasMorePages'])->toBeTrue(); // Page 3 of 9
     });
 
-    it('handles empty results gracefully', function () {
+    it('handles empty results gracefully', function (): void {
         $result = new SearchResult([], 0, 1.5);
 
         expect($result->hasResults())->toBeFalse()
@@ -294,7 +294,7 @@ describe('SearchResult Model', function () {
             ->and($result->getFacetDistribution('any'))->toBe([]);
     });
 
-    it('preserves readonly properties immutability', function () {
+    it('preserves readonly properties immutability', function (): void {
         $hits = [['id' => 1, 'title' => 'Test']];
         $facets = ['category' => ['env' => 5]];
         $suggestions = ['test', 'testing'];
@@ -324,7 +324,7 @@ describe('SearchResult Model', function () {
             ->and($result->engine)->toBe('meilisearch');
     });
 
-    it('handles edge cases in pagination calculations', function () {
+    it('handles edge cases in pagination calculations', function (): void {
         $hits = [['id' => 1]];
 
         // Edge case: exactly on page boundary
@@ -346,7 +346,7 @@ describe('SearchResult Model', function () {
             ->and($largeLimit->hasMorePages())->toBeFalse();
     });
 
-    it('maintains consistent array serialization', function () {
+    it('maintains consistent array serialization', function (): void {
         $result = new SearchResult(
             hits: [['id' => 1, 'title' => 'Test']],
             totalHits: 25,
@@ -368,7 +368,7 @@ describe('SearchResult Model', function () {
             ->and($array1['hasMorePages'])->toBeTrue();
     });
 
-    it('handles special processing time values', function () {
+    it('handles special processing time values', function (): void {
         $zeroTime = new SearchResult([], 0, 0.0);
         $negativeTime = new SearchResult([], 0, -1.0);
         $veryLargeTime = new SearchResult([], 0, 999999.9);
@@ -378,7 +378,7 @@ describe('SearchResult Model', function () {
             ->and($veryLargeTime->getFormattedProcessingTime())->toBe('1000.00s');
     });
 
-    it('handles complex facet structures', function () {
+    it('handles complex facet structures', function (): void {
         $complexFacets = [
             'category' => [
                 'environment' => 150,
@@ -412,7 +412,7 @@ describe('SearchResult Model', function () {
             ->and($result->getFacetDistribution('nonexistent'))->toBe([]);
     });
 
-    it('validates immutability of arrays', function () {
+    it('validates immutability of arrays', function (): void {
         $hits = [['id' => 1, 'title' => 'Original']];
         $facets = ['category' => ['env' => 5]];
         $suggestions = ['original'];

@@ -47,7 +47,7 @@ class SearchSort
     /**
      * Convert to Meilisearch sort format.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public function toMeilisearchSort(): array
     {

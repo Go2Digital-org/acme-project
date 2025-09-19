@@ -87,7 +87,7 @@ final class CampaignCacheObserver
             [$cursor, $foundKeys] = $result;
 
             if (! empty($foundKeys) && is_array($foundKeys)) {
-                /** @var array<string> $foundKeys */
+                /** @var array<int, string> $foundKeys */
                 foreach ($foundKeys as $key) {
                     // Remove Redis prefix if present
                     $cacheKey = str_replace('laravel_database_', '', $key);

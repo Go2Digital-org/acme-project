@@ -10,7 +10,9 @@ use Modules\Shared\Domain\ValueObject\DonationStatus;
 
 class DonationStatusService
 {
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getStatusMetrics(Donation $donation): array
     {
         return [
@@ -59,7 +61,6 @@ class DonationStatusService
         return $donation->payment_method?->getProcessingTime() ?? 'Unknown';
     }
 
-    /** @return array<array-key, mixed> */
     /**
      * @return array<string, mixed>
      */
@@ -116,7 +117,7 @@ class DonationStatusService
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return list<array<string, bool|\Illuminate\Support\Carbon|string|null>>
      */
     public function getTimelineEvents(Donation $donation): array
     {
@@ -141,7 +142,6 @@ class DonationStatusService
         return $events;
     }
 
-    /** @return array<array-key, mixed> */
     /**
      * @return array<string, mixed>
      */
@@ -166,10 +166,6 @@ class DonationStatusService
         ];
     }
 
-    /**
-     * @param  iterable<Donation>  $donations
-     * @return array<array-key, mixed>
-     */
     /**
      * @param  iterable<Donation>  $donations
      * @return array<string, mixed>

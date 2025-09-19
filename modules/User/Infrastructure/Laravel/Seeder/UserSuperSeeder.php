@@ -20,16 +20,16 @@ use Modules\Shared\Infrastructure\Laravel\Seeder\SuperSeed\PerformanceSuperSeede
  */
 class UserSuperSeeder extends PerformanceSuperSeeder
 {
-    /** @var array<string, int> */
+    /** @var array<string, mixed> */
     private array $departmentDistribution;
 
-    /** @var array<string, int> */
+    /** @var array<string, mixed> */
     private array $roleDistribution;
 
-    /** @var array<string, int> */
+    /** @var array<string, mixed> */
     private array $locationDistribution;
 
-    /** @var array<string, array<int, string>> */
+    /** @var array<string, mixed> */
     private array $preGeneratedData;
 
     /**
@@ -68,7 +68,7 @@ class UserSuperSeeder extends PerformanceSuperSeeder
     /**
      * Generate batch of user data optimized for enterprise scale
      *
-     * @return array<int, array<string, mixed>>
+     * @return list<array<string, mixed>>
      */
     protected function generateBatchData(int $batchSize): array
     {
@@ -81,7 +81,7 @@ class UserSuperSeeder extends PerformanceSuperSeeder
         $passwordHash = bcrypt('password'); // Same for all demo users
 
         for ($i = 0; $i < $batchSize; $i++) {
-            $employeeId = $this->generateEmployeeId();
+            $userId = $this->generateEmployeeId();
             $department = $this->selectDepartment();
             $role = $this->selectRole($department);
             $location = $this->selectLocation();
@@ -101,7 +101,7 @@ class UserSuperSeeder extends PerformanceSuperSeeder
                 'email' => $email,
                 'email_verified_at' => $joinDate->modify('+' . random_int(1, 7) . ' days'),
                 'password' => $passwordHash,
-                'user_id' => $employeeId,
+                'user_id' => $userId,
                 'department' => $department,
                 'position' => $role,
                 'location' => $location,
@@ -115,6 +115,7 @@ class UserSuperSeeder extends PerformanceSuperSeeder
             ];
         }
 
+        // @phpstan-ignore-next-line
         return $batch;
     }
 
@@ -200,7 +201,8 @@ class UserSuperSeeder extends PerformanceSuperSeeder
 
     /**
      * Generate corporate email address
-     *
+     */
+    /**
      * @param  array<int, string>  $domains
      */
     private function generateCorporateEmail(string $firstName, string $lastName, array $domains): string

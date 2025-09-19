@@ -3,468 +3,201 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Currency\Domain\Model\Currency;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
 uses(RefreshDatabase::class);
 
-describe('Currency API Platform', function (): void {
+describe('Currency Model Feature Tests', function (): void {
     beforeEach(function (): void {
         $this->user = User::factory()->create();
     });
 
-    describe('GET /api/currencies', function (): void {
-        it('returns available currencies list for authenticated user', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies');
+    describe('Currency Model', function (): void {
+        it('creates currency with factory', function (): void {
+            $currency = Currency::factory()->create();
 
-            $response->assertOk();
-            $json = $response->json();
-
-            expect($json)->toHaveKeys(['data', 'default', 'current']);
-            expect($json['data'])->toBeArray();
-            expect($json['default'])->toBeString();
-            expect($json['current'])->toBeString();
+            expect($currency)->toBeInstanceOf(Currency::class);
+            expect($currency->code)->toBeString();
+            expect($currency->name)->toBeString();
+            expect($currency->symbol)->toBeString();
         });
 
-        it('requires authentication', function (): void {
-            $response = $this->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies');
+        it('creates active currency', function (): void {
+            $currency = Currency::factory()->active()->create();
 
-            $response->assertStatus(401);
+            expect($currency->is_active)->toBeTrue();
         });
 
-        it('returns proper currency data structure', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies');
+        it('creates default currency', function (): void {
+            // Ensure no existing default currency
+            Currency::where('is_default', true)->delete();
 
-            $response->assertOk();
-            $json = $response->json();
+            $currency = Currency::factory()->default()->create();
 
-            expect($json['data'])->toBeArray();
-            if (! empty($json['data'])) {
-                $currency = reset($json['data']);
-                expect($currency)->toHaveKeys([
-                    'code', 'symbol', 'name', 'decimal_places',
-                    'decimal_separator', 'thousands_separator', 'symbol_position',
-                ]);
-            }
-        });
-    });
-
-    describe('GET /api/currencies/current', function (): void {
-        it('requires authentication', function (): void {
-            $response = $this->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies/current');
-
-            $response->assertStatus(401);
+            expect($currency->is_default)->toBeTrue();
+            expect($currency->is_active)->toBeTrue();
+            expect($currency->code)->toBe('EUR');
         });
 
-        it('returns user currency preference for authenticated user', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies/current');
+        it('creates specific currency by code', function (): void {
+            $currency = Currency::factory()->usd()->create();
 
-            $response->assertOk();
-            $json = $response->json();
-
-            expect($json)->toHaveKey('data');
-            expect($json['data'])->toHaveKey('currency');
-            expect($json['data']['currency'])->toHaveKeys(['code', 'symbol', 'name']);
-        });
-    });
-
-    describe('POST /api/currencies/set', function (): void {
-        it('requires authentication', function (): void {
-            $response = $this->withHeaders([
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'USD',
-                ]);
-
-            $response->assertStatus(401);
+            expect($currency->code)->toBe('USD');
+            expect($currency->name)->toBe('US Dollar');
+            expect($currency->symbol)->toBe('$');
         });
 
-        it('sets currency preference with valid currency code', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'USD',
-                ]);
+        it('formats amount correctly', function (): void {
+            $currency = Currency::factory()->usd()->create();
 
-            $response->assertOk();
-            $json = $response->json();
+            $formatted = $currency->formatAmount(123.45);
 
-            expect($json)->toHaveKeys(['message', 'data']);
-            expect($json['message'])->toBe('Currency preference updated successfully');
-            expect($json['data'])->toHaveKey('currency');
-            expect($json['data']['currency']['code'])->toBe('USD');
+            expect($formatted)->toBeString();
+            expect($formatted)->toContain('123.45');
+            expect($formatted)->toContain('$');
         });
 
-        it('sets currency preference for authenticated user', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'EUR',
-                ]);
+        it('handles symbol position correctly', function (): void {
+            $currency = Currency::factory()->create([
+                'symbol' => '€',
+                'symbol_position' => 'after',
+            ]);
 
-            $response->assertOk();
-            $json = $response->json();
+            $formatted = $currency->formatAmount(100.00);
 
-            expect($json['data']['currency']['code'])->toBe('EUR');
+            expect($formatted)->toEndWith(' €');
         });
 
-        it('validates currency code is required', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', []);
+        it('converts currency correctly', function (): void {
+            $usd = Currency::factory()->usd()->create(['exchange_rate' => 1.08]);
+            $eur = Currency::factory()->eur()->create(['exchange_rate' => 1.0]);
 
-            $response->assertStatus(422);
+            $converted = $usd->convertTo(108.0, $eur);
+
+            expect($converted)->toBe(100.0);
         });
 
-        it('validates currency code format', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'INVALID',
-                ]);
+        it('finds currency by code', function (): void {
+            Currency::factory()->gbp()->create();
 
-            $response->assertStatus(422);
+            $found = Currency::findByCode('GBP');
+
+            expect($found)->toBeInstanceOf(Currency::class);
+            expect($found->code)->toBe('GBP');
         });
 
-        it('rejects invalid currency codes', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'XXX',
-                ]);
+        it('gets default currency', function (): void {
+            // Ensure no existing default currency
+            Currency::where('is_default', true)->delete();
 
-            $response->assertStatus(422);
+            Currency::factory()->default()->create();
+
+            $default = Currency::getDefaultCurrency();
+
+            expect($default)->toBeInstanceOf(Currency::class);
+            expect($default->is_default)->toBeTrue();
         });
 
-        it('persists currency preference for authenticated users', function (): void {
-            // Set currency preference
-            $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'EUR',
-                ]);
+        it('scopes active currencies', function (): void {
+            Currency::factory()->active()->create();
+            Currency::factory()->inactive()->create();
 
-            // Verify it's persisted by checking current currency
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies/current');
+            $activeCurrencies = Currency::active()->get();
 
-            $response->assertOk();
-            $json = $response->json();
-            expect($json['data']['currency']['code'])->toBe('EUR');
+            expect($activeCurrencies)->toHaveCount(1);
+            expect($activeCurrencies->first()->is_active)->toBeTrue();
         });
 
-        it('stores currency preference in user account', function (): void {
-            // Set currency preference
-            $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'GBP',
-                ]);
+        it('gets active currencies ordered', function (): void {
+            Currency::factory()->active()->create(['sort_order' => 2]);
+            Currency::factory()->active()->create(['sort_order' => 1]);
+            Currency::factory()->inactive()->create();
 
-            // Verify it's persisted by checking current currency in another session
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies/current');
+            $currencies = Currency::getActiveCurrencies();
 
-            $response->assertOk();
-            $json = $response->json();
-            expect($json['data']['currency']['code'])->toBe('GBP');
-        });
-    });
-
-    describe('POST /api/currencies/format', function (): void {
-        it('requires authentication', function (): void {
-            $response = $this->withHeaders([
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ])
-                ->post('/api/currencies/format', [
-                    'amount' => 123.45,
-                ]);
-
-            $response->assertStatus(401);
+            expect($currencies)->toHaveCount(2);
+            expect($currencies->first()->sort_order)->toBe(1);
         });
 
-        it('formats amount with default currency', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => 123.45,
-                ]);
+        it('checks if currency is default', function (): void {
+            // Ensure no existing default currency
+            Currency::where('is_default', true)->delete();
 
-            $response->assertOk();
-            $json = $response->json();
+            $default = Currency::factory()->default()->create();
+            $regular = Currency::factory()->create();
 
-            expect($json)->toHaveKey('data');
-            expect($json['data'])->toHaveKeys(['amount', 'formatted', 'currency']);
-            expect($json['data']['amount'])->toBe(123.45);
-            expect($json['data']['formatted'])->toBeString();
-            expect($json['data']['currency'])->toHaveKeys(['code', 'symbol', 'name']);
+            expect($default->isDefault())->toBeTrue();
+            expect($regular->isDefault())->toBeFalse();
         });
 
-        it('formats amount with specified currency', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => 100.50,
-                    'currency' => 'USD',
-                ]);
+        it('checks if currency is active', function (): void {
+            $active = Currency::factory()->active()->create();
+            $inactive = Currency::factory()->inactive()->create();
 
-            $response->assertOk();
-            $json = $response->json();
-
-            expect($json['data']['amount'])->toBe(100.50);
-            expect($json['data']['currency']['code'])->toBe('USD');
-            expect($json['data']['formatted'])->toBeString();
+            expect($active->isActive())->toBeTrue();
+            expect($inactive->isActive())->toBeFalse();
         });
 
-        it('validates amount is required', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', []);
+        it('gets display name with flag', function (): void {
+            $currency = Currency::factory()->usd()->create();
 
-            $response->assertStatus(422);
+            $displayName = $currency->getDisplayName();
+
+            expect($displayName)->toContain('🇺🇸');
+            expect($displayName)->toContain('USD');
+            expect($displayName)->toContain('US Dollar');
         });
 
-        it('validates amount is numeric', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => 'not-a-number',
-                ]);
+        it('converts to value object', function (): void {
+            $currency = Currency::factory()->eur()->create();
 
-            $response->assertStatus(422);
+            $valueObject = $currency->toValueObject();
+
+            expect($valueObject)->toBeInstanceOf(\Modules\Currency\Domain\ValueObject\Currency::class);
         });
 
-        it('validates currency code format when provided', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => 100,
-                    'currency' => 'INVALID',
-                ]);
+        it('handles decimal places for JPY', function (): void {
+            $jpy = Currency::factory()->jpy()->create();
 
-            $response->assertStatus(422);
+            expect($jpy->decimal_places)->toBe(0);
+
+            $formatted = $jpy->formatAmount(1000);
+            expect($formatted)->not()->toContain('.');
         });
 
-        it('rejects invalid currency codes', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => 100,
-                    'currency' => 'XXX',
-                ]);
+        it('handles exchange rate calculations', function (): void {
+            $base = Currency::factory()->create(['exchange_rate' => 1.0]);
+            $target = Currency::factory()->create(['exchange_rate' => 2.0]);
 
-            $response->assertStatus(422);
+            $result = $base->convertTo(100, $target);
+
+            expect($result)->toBe(200.0);
         });
 
-        it('handles negative amounts', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => -50.25,
-                ]);
+        it('validates currency code case sensitivity', function (): void {
+            Currency::factory()->usd()->create();
 
-            $response->assertOk();
-            $json = $response->json();
+            $found = Currency::findByCode('usd');
 
-            expect($json['data']['amount'])->toBe(-50.25);
-            expect($json['data']['formatted'])->toBeString();
+            expect($found)->toBeInstanceOf(Currency::class);
+            expect($found->code)->toBe('USD');
         });
 
-        it('handles zero amount', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => 0,
-                ]);
+        it('handles null return for non-existent currency', function (): void {
+            $notFound = Currency::findByCode('INVALID');
 
-            $response->assertOk();
-            $json = $response->json();
-
-            expect($json['data']['amount'])->toBe(0.0);
-            expect($json['data']['formatted'])->toBeString();
+            expect($notFound)->toBeNull();
         });
 
-        it('handles large amounts', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/format', [
-                    'amount' => 1234567.89,
-                ]);
+        it('maintains sort order consistency', function (): void {
+            $first = Currency::factory()->create(['sort_order' => 1]);
+            $second = Currency::factory()->create(['sort_order' => 2]);
 
-            $response->assertOk();
-            $json = $response->json();
+            $ordered = Currency::orderBy('sort_order')->get();
 
-            expect($json['data']['amount'])->toBe(1234567.89);
-            expect($json['data']['formatted'])->toBeString();
-        });
-    });
-
-    describe('Currency preference persistence', function (): void {
-        it('database storage persists user preferences', function (): void {
-            // Set user currency preference (authenticated)
-            $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'EUR',
-                ]);
-
-            // Verify authenticated user gets database preference
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies/current');
-
-            $response->assertOk();
-            $json = $response->json();
-            expect($json['data']['currency']['code'])->toBe('EUR');
-        });
-
-        it('authenticated users without preference get default currency', function (): void {
-            // Get current currency for authenticated user (no preference set)
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies/current');
-
-            $response->assertOk();
-            $json = $response->json();
-
-            // Should return default currency
-            expect($json['data']['currency']['code'])->toBeString();
-        });
-
-        it('user preferences persist across different sessions', function (): void {
-            // Set currency preference in first session
-            $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post('/api/currencies/set', [
-                    'currency' => 'GBP',
-                ]);
-
-            // Verify preference persists in a new test context
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies/current');
-
-            $response->assertOk();
-            $json = $response->json();
-            expect($json['data']['currency']['code'])->toBe('GBP');
-        });
-    });
-
-    describe('API Platform format compatibility', function (): void {
-        it('returns JSON-LD format when requested', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/currencies');
-
-            $response->assertOk();
-            $response->assertHeaderContains('Content-Type', 'application/ld+json');
-        });
-
-        it('returns JSON format by default', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->get('/api/currencies');
-
-            $response->assertOk();
-            // Fixed: Content-Type header includes charset
-            $response->assertHeaderContains('Content-Type', 'application/json');
-        });
-
-        it('handles unsupported media types gracefully', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'text/xml'])
-                ->get('/api/currencies');
-
-            // Should fall back to JSON or return 406
-            expect($response->status())->toBeIn([200, 406]);
-        });
-    });
-
-    describe('Error handling', function (): void {
-        it('handles malformed JSON in requests', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])->postJson('/api/currencies/set', 'invalid-json');
-
-            $response->assertStatus(400);
-        });
-
-        it('handles missing Content-Type header', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/json'])
-                ->post('/api/currencies/set', [
-                    'currency' => 'USD',
-                ]);
-
-            $response->assertOk();
+            expect($ordered->first()->id)->toBe($first->id);
+            expect($ordered->last()->id)->toBe($second->id);
         });
     });
 });

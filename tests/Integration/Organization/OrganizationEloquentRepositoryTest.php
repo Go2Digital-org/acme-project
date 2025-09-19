@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 use Modules\Organization\Domain\Model\Organization;
 use Modules\Organization\Infrastructure\Laravel\Repository\OrganizationEloquentRepository;
+use Tests\Traits\OptimizedTesting;
+
+uses(OptimizedTesting::class);
 
 beforeEach(function (): void {
     $this->repository = new OrganizationEloquentRepository(new Organization);
+    // Disable query logging for performance
+    $this->disableQueryLogging();
 });
 
 describe('OrganizationEloquentRepository - Basic CRUD Operations', function (): void {
@@ -75,9 +80,9 @@ describe('OrganizationEloquentRepository - Basic CRUD Operations', function (): 
 
 describe('OrganizationEloquentRepository - Status Queries', function (): void {
     it('finds active organizations', function (): void {
-        // In central context (not tenant context), this should work normally
-        Organization::factory()->count(2)->create(['is_active' => true, 'is_verified' => true]);
-        Organization::factory()->count(1)->create(['is_active' => false]);
+        // Use optimized batch creation
+        $this->createOrganizationsBatch(2, ['is_active' => true, 'is_verified' => true]);
+        $this->createOrganizationsBatch(1, ['is_active' => false]);
 
         $result = $this->repository->findActiveOrganizations();
 
@@ -91,9 +96,9 @@ describe('OrganizationEloquentRepository - Status Queries', function (): void {
     });
 
     it('finds verified organizations', function (): void {
-        // In central context (not tenant context), this should work normally
-        Organization::factory()->count(2)->create(['is_verified' => true]);
-        Organization::factory()->count(1)->create(['is_verified' => false]);
+        // Use optimized batch creation
+        $this->createOrganizationsBatch(2, ['is_verified' => true]);
+        $this->createOrganizationsBatch(1, ['is_verified' => false]);
 
         $result = $this->repository->findVerifiedOrganizations();
 

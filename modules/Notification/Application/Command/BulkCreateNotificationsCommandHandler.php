@@ -155,7 +155,7 @@ final readonly class BulkCreateNotificationsCommandHandler implements CommandHan
         }
 
         foreach ($command->notifications as $index => $notificationData) {
-            $this->validateNotificationData($notificationData, $index);
+            $this->validateNotificationData($notificationData, (int) $index);
         }
     }
 

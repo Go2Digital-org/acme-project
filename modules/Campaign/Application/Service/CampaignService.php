@@ -27,7 +27,8 @@ final readonly class CampaignService
 
     /**
      * Store a new campaign.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function storeCampaign(array $data): Campaign
@@ -66,7 +67,8 @@ final readonly class CampaignService
 
     /**
      * Update an existing campaign.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function updateCampaign(int $campaignId, array $data): Campaign

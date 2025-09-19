@@ -219,7 +219,7 @@ MAIL_PORT=587
 MAIL_USERNAME=your-username
 MAIL_PASSWORD=your-password
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@acme-corp.com
+MAIL_FROM_ADDRESS=noreply@yourdomain.com
 ```
 
 ## Troubleshooting

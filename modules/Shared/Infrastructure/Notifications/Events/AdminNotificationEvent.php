@@ -17,6 +17,9 @@ class AdminNotificationEvent implements ShouldBroadcast
     use InteractsWithSockets;
     use SerializesModels;
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function __construct(
         public readonly string $channelName,
         public readonly string $event,
@@ -48,7 +51,9 @@ class AdminNotificationEvent implements ShouldBroadcast
     /**
      * Get the data to broadcast.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function broadcastWith(): array
     {
         return array_merge($this->data, [

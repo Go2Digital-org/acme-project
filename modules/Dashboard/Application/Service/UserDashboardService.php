@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Modules\Dashboard\Application\Service;
 
 use Modules\Dashboard\Domain\Repository\DashboardRepositoryInterface;
-use Modules\Dashboard\Domain\ValueObject\ActivityFeedItem;
 use Modules\Dashboard\Domain\ValueObject\DashboardStatistics;
 use Modules\Dashboard\Domain\ValueObject\ImpactMetrics;
-use Modules\Dashboard\Domain\ValueObject\LeaderboardEntry;
 
 /**
  * Service that provides dashboard data with caching support.
@@ -40,7 +38,7 @@ final readonly class UserDashboardService
     }
 
     /**
-     * @return array<ActivityFeedItem>
+     * @return array<int, mixed>
      */
     public function getUserActivityFeed(int $userId, int $limit = 10, bool $useCache = true): array
     {
@@ -97,7 +95,7 @@ final readonly class UserDashboardService
     }
 
     /**
-     * @return array<LeaderboardEntry>
+     * @return array<int, mixed>
      */
     public function getOrganizationLeaderboard(int $organizationId, int $limit = 5, bool $useCache = true): array
     {

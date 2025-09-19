@@ -44,7 +44,7 @@ class CreateDonationCommandHandler implements CommandHandlerInterface
             // Create donation
             $donation = $this->donationRepository->create([
                 'campaign_id' => $command->campaignId,
-                'user_id' => $command->employeeId,
+                'user_id' => $command->userId,
                 'amount' => $command->amount,
                 'currency' => $command->currency,
                 'payment_method' => $command->paymentMethod,
@@ -61,7 +61,7 @@ class CreateDonationCommandHandler implements CommandHandlerInterface
             event(new DonationCreatedEvent(
                 donationId: $donation->id,
                 campaignId: $command->campaignId,
-                userId: $command->employeeId,
+                userId: $command->userId,
                 amount: $command->amount,
                 currency: $command->currency,
                 anonymous: $command->anonymous,

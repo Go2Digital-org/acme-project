@@ -167,7 +167,7 @@ class DonationResource extends Resource
                                 'quarterly' => 'Quarterly',
                                 'yearly' => 'Yearly',
                             ])
-                            ->visible(fn (callable $get): bool => (bool) $get('recurring'))
+                            ->visible(fn ($get): bool => (bool) $get('recurring'))
                             ->helperText('How often to repeat the donation'),
                         Translate::make()
                             ->schema([
@@ -445,6 +445,9 @@ class DonationResource extends Resource
             ->striped();
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function getRelations(): array
     {
         return [
@@ -452,6 +455,9 @@ class DonationResource extends Resource
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

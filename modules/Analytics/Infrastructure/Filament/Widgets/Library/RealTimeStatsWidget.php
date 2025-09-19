@@ -14,6 +14,7 @@ class RealTimeStatsWidget extends BaseWidget
 
     protected ?string $pollingInterval = '30s';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 1;
@@ -23,6 +24,9 @@ class RealTimeStatsWidget extends BaseWidget
         return true;
     }
 
+    /**
+     * @return array<int, Stat>
+     */
     protected function getStats(): array
     {
         $stats = ApplicationCache::getStats('realtime_stats');
@@ -55,7 +59,7 @@ class RealTimeStatsWidget extends BaseWidget
     }
 
     /**
-     * @return array<Stat>
+     * @return array<int, Stat>
      */
     protected function getEmptyStats(): array
     {

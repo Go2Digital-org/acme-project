@@ -26,7 +26,8 @@ final class NotificationFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -224,7 +225,8 @@ final class NotificationFactory extends Factory
 
     /**
      * Generate realistic notification data based on type.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function generateNotificationData(): array
@@ -253,7 +255,8 @@ final class NotificationFactory extends Factory
 
     /**
      * Generate notification metadata.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function generateMetadata(): array

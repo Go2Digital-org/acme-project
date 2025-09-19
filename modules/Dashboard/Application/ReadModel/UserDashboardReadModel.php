@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Application\ReadModel;
 
-use Modules\Dashboard\Domain\ValueObject\ActivityFeedItem;
 use Modules\Dashboard\Domain\ValueObject\DashboardStatistics;
 use Modules\Dashboard\Domain\ValueObject\ImpactMetrics;
 use Modules\Shared\Application\ReadModel\AbstractReadModel;
@@ -19,7 +18,7 @@ final class UserDashboardReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<ActivityFeedItem>
+     * @return array<string, mixed>
      */
     public function getActivityFeed(): array
     {

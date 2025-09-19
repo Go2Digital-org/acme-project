@@ -77,7 +77,7 @@ final readonly class GetBookmarkStatsQueryHandler
 
         return [
             'total_bookmarks' => $totalBookmarks,
-            'active_bookmarks' => $bookmarks->filter(fn ($bookmark) => $bookmark->campaign && $bookmark->campaign->status === 'active')->count(),
+            'active_bookmarks' => $bookmarks->filter(fn ($bookmark): bool => $bookmark->campaign && $bookmark->campaign->status === 'active')->count(),
             'unique_bookmarkers' => 1, // Single user
             'bookmarked_campaigns' => $totalBookmarks,
             'average_bookmarks_per_user' => $totalBookmarks,

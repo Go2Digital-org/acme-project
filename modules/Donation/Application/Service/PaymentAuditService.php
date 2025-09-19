@@ -26,8 +26,9 @@ final readonly class PaymentAuditService
 
     /**
      * Log payment attempt start.
-     *
-     * @param  array<array-key, mixed>  $requestData
+     */
+    /**
+     * @param  array<string, mixed>  $requestData
      */
     public function logAttemptStart(
         Payment $payment,
@@ -92,8 +93,9 @@ final readonly class PaymentAuditService
 
     /**
      * Get fraud risk indicators for payment.
-     *
-     * @return array<array-key, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getFraudRiskIndicators(Payment $payment): array
     {
@@ -173,8 +175,9 @@ final readonly class PaymentAuditService
 
     /**
      * Generate audit report for time period.
-     *
-     * @return array<array-key, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function generateAuditReport(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -183,8 +186,9 @@ final readonly class PaymentAuditService
 
     /**
      * Get gateway performance metrics.
-     *
-     * @return array<array-key, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getGatewayPerformanceMetrics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -205,8 +209,9 @@ final readonly class PaymentAuditService
 
     /**
      * Get compliance report.
-     *
-     * @return array<array-key, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getComplianceReport(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -229,8 +234,8 @@ final readonly class PaymentAuditService
     }
 
     /**
-     * @param  array<array-key, mixed>  $data
-     * @return array<array-key, mixed>
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
      */
     private function sanitizeRequestData(array $data): array
     {
@@ -249,8 +254,8 @@ final readonly class PaymentAuditService
     }
 
     /**
-     * @param  array<array-key, mixed>  $data
-     * @return array<array-key, mixed>
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
      */
     private function sanitizeResponseData(array $data): array
     {
@@ -266,9 +271,9 @@ final readonly class PaymentAuditService
     }
 
     /**
-     * @param  array<array-key, mixed>  $data
-     * @param  array<string>  $sensitiveKeys
-     * @return array<array-key, mixed>
+     * @param  array<string, mixed>  $data
+     * @param  array<int, string>  $sensitiveKeys
+     * @return array<string, mixed>
      */
     private function sanitizeArray(array $data, array $sensitiveKeys): array
     {

@@ -20,8 +20,9 @@ abstract class AbstractViewPresenter implements JsonSerializable
 
     /**
      * Transform data for presentation.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     abstract public function present(): array;
 
     /**
@@ -34,8 +35,9 @@ abstract class AbstractViewPresenter implements JsonSerializable
 
     /**
      * Convert presenter to array.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function toArray(): array
     {
         return $this->present();
@@ -43,8 +45,9 @@ abstract class AbstractViewPresenter implements JsonSerializable
 
     /**
      * JSON serialization.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function jsonSerialize(): array
     {
         return $this->present();
@@ -163,9 +166,8 @@ abstract class AbstractViewPresenter implements JsonSerializable
 
     /**
      * Generate CSS classes from array.
-     */
-    /**
-     * @param  array<int|string, string>  $classes
+     *
+     * @param  array<int, string>  $classes
      */
     protected function generateClasses(array $classes): string
     {
@@ -186,7 +188,8 @@ abstract class AbstractViewPresenter implements JsonSerializable
      * Transform collection data.
      *
      * @param  Collection<int|string, mixed>  $collection
-     * @return array<array-key, mixed>
+     * @param  callable(mixed): mixed  $transformer
+     * @return array<int, mixed>
      */
     protected function transformCollection(Collection $collection, callable $transformer): array
     {

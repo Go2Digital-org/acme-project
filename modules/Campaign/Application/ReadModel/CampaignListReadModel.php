@@ -30,7 +30,7 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
     }
 
     /**
-     * @return array<int, string>
+     * @return array<string>
      */
     public function getCacheTags(): array
     {
@@ -338,7 +338,7 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
      */
     public function getFeaturedCampaigns(): array
     {
-        return array_filter($this->getCampaigns(), fn ($campaign) => $campaign['is_featured'] ?? false);
+        return array_filter($this->getCampaigns(), fn (array $campaign): mixed => $campaign['is_featured'] ?? false);
     }
 
     public function hasFeaturedCampaigns(): bool
@@ -352,7 +352,7 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
      */
     public function getUrgentCampaigns(): array
     {
-        return array_filter($this->getCampaigns(), fn ($campaign) => ($campaign['priority'] ?? 0) >= 5);
+        return array_filter($this->getCampaigns(), fn (array $campaign): bool => ($campaign['priority'] ?? 0) >= 5);
     }
 
     public function hasUrgentCampaigns(): bool
@@ -366,7 +366,7 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
      */
     public function getCampaignsByStatus(string $status): array
     {
-        return array_filter($this->getCampaigns(), fn ($campaign) => ($campaign['status'] ?? '') === $status);
+        return array_filter($this->getCampaigns(), fn (array $campaign): bool => ($campaign['status'] ?? '') === $status);
     }
 
     /**
@@ -407,7 +407,7 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
      */
     public function getCampaignsNearingGoal(float $threshold = 80.0): array
     {
-        return array_filter($this->getCampaigns(), fn ($campaign) => ($campaign['progress_percentage'] ?? 0) >= $threshold);
+        return array_filter($this->getCampaigns(), fn (array $campaign): bool => ($campaign['progress_percentage'] ?? 0) >= $threshold);
     }
 
     /**
@@ -415,7 +415,7 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
      */
     public function getCampaignsNearingDeadline(int $daysThreshold = 7): array
     {
-        return array_filter($this->getCampaigns(), fn ($campaign) => ($campaign['remaining_days'] ?? 0) <= $daysThreshold && ($campaign['remaining_days'] ?? 0) > 0);
+        return array_filter($this->getCampaigns(), fn (array $campaign): bool => ($campaign['remaining_days'] ?? 0) <= $daysThreshold && ($campaign['remaining_days'] ?? 0) > 0);
     }
 
     // URL Generation
@@ -457,7 +457,8 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
 
     /**
      * Get translated title for current locale.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $campaign
      */
     private function getTranslatedTitle(array $campaign): string
@@ -469,7 +470,8 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
 
     /**
      * Get translated description for current locale.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $campaign
      */
     private function getTranslatedDescription(array $campaign): string
@@ -481,7 +483,8 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
 
     /**
      * Calculate progress percentage with precision.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $campaign
      */
     private function calculateProgressPercentage(array $campaign): float
@@ -498,7 +501,8 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
 
     /**
      * Calculate days remaining until deadline.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $campaign
      */
     private function calculateDaysRemaining(array $campaign): int
@@ -519,7 +523,8 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
 
     /**
      * Determine if campaign is urgent (less than 7 days remaining or high priority).
-     *
+     */
+    /**
      * @param  array<string, mixed>  $campaign
      */
     private function isUrgent(array $campaign): bool
@@ -540,7 +545,8 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
 
     /**
      * JsonSerializable implementation for optimized API responses.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function jsonSerialize(): array
@@ -590,7 +596,8 @@ final class CampaignListReadModel extends AbstractReadModel implements JsonSeria
 
     /**
      * Get data optimized for API responses with pre-calculated fields.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toApiResponse(): array

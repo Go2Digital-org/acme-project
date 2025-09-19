@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Auth\Infrastructure\Laravel\Controllers\UserProfileController;
 use Modules\Campaign\Infrastructure\Laravel\Controllers\ListCampaignsController;
 use Modules\Organization\Infrastructure\Laravel\Controllers\Api\OrganizationDashboardController;
-use Modules\Search\Infrastructure\Laravel\Controllers\SearchController;
+use Modules\Shared\Infrastructure\Laravel\Controllers\Api\SearchController;
 
 /**
  * Optimized API Routes with Performance Enhancements
@@ -18,10 +18,10 @@ use Modules\Search\Infrastructure\Laravel\Controllers\SearchController;
  * - Relationship lazy loading
  * - Pagination optimization
  */
-Route::middleware(['api', 'auth:sanctum', 'api.optimization'])->prefix('api/v1')->group(function () {
+Route::middleware(['api', 'auth:sanctum', 'api.optimization'])->prefix('api/v1')->group(function (): void {
 
     // Campaign endpoints with optimized queries
-    Route::middleware(['throttle:campaigns'])->group(function () {
+    Route::middleware(['throttle:campaigns'])->group(function (): void {
         /**
          * GET /api/v1/campaigns
          *
@@ -47,7 +47,7 @@ Route::middleware(['api', 'auth:sanctum', 'api.optimization'])->prefix('api/v1')
     });
 
     // Search endpoints with intelligent caching
-    Route::middleware(['throttle:search'])->group(function () {
+    Route::middleware(['throttle:search'])->group(function (): void {
         /**
          * GET /api/v1/search
          *
@@ -81,7 +81,7 @@ Route::middleware(['api', 'auth:sanctum', 'api.optimization'])->prefix('api/v1')
     });
 
     // User profile endpoint with field selection
-    Route::middleware(['throttle:profile'])->group(function () {
+    Route::middleware(['throttle:profile'])->group(function (): void {
         /**
          * GET /api/v1/profile
          *
@@ -99,7 +99,7 @@ Route::middleware(['api', 'auth:sanctum', 'api.optimization'])->prefix('api/v1')
     });
 
     // Organization dashboard with read model optimization
-    Route::middleware(['throttle:dashboard'])->group(function () {
+    Route::middleware(['throttle:dashboard'])->group(function (): void {
         /**
          * GET /api/v1/organizations/{id}/dashboard
          *
@@ -120,7 +120,7 @@ Route::middleware(['api', 'auth:sanctum', 'api.optimization'])->prefix('api/v1')
             ->where('id', '[0-9]+');
 
         // Admin endpoints for cache management
-        Route::middleware(['can:manage-cache'])->group(function () {
+        Route::middleware(['can:manage-cache'])->group(function (): void {
             Route::get('organizations/{id}/dashboard/cache-stats', [OrganizationDashboardController::class, 'cacheStats'])
                 ->name('api.organization.dashboard.cache-stats');
 

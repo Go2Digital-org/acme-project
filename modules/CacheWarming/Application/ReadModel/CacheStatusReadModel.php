@@ -26,7 +26,7 @@ final class CacheStatusReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string>
+     * @return array<string, mixed>
      */
     public function getWarmedKeys(): array
     {
@@ -34,7 +34,7 @@ final class CacheStatusReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string>
+     * @return array<string, mixed>
      */
     public function getColdKeys(): array
     {
@@ -47,7 +47,7 @@ final class CacheStatusReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, array<string, mixed>>|null
+     * @return array<string, mixed>|null
      */
     public function getRecommendations(): ?array
     {

@@ -110,7 +110,7 @@ class AuditLogReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, array{old: mixed, new: mixed, changed: bool}>
+     * @return array<string, array<string, mixed>>
      */
     public function getDiff(): array
     {
@@ -141,13 +141,13 @@ class AuditLogReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, array<string, mixed>>
      */
     public function getChangedFields(): array
     {
         $diff = $this->getDiff();
 
-        return array_filter($diff, fn ($item) => $item['changed']);
+        return array_filter($diff, fn (array $item): mixed => $item['changed']);
     }
 
     // Context Information
@@ -172,7 +172,7 @@ class AuditLogReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getTagsArray(): array
     {

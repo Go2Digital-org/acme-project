@@ -154,7 +154,8 @@ class BookmarkResource
 
     /**
      * Create a bookmark response from campaign data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $campaignData
      */
     public static function fromCampaignData(array $campaignData): self

@@ -13,6 +13,9 @@ final class Select extends Component
     /** @var array<string, mixed> */
     public array $componentData;
 
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function __construct(
         public string $name = '',
         public ?string $id = null,
@@ -23,7 +26,7 @@ final class Select extends Component
         public ?string $label = null,
         public ?string $hint = null,
         public ?string $placeholder = null,
-        /** @var array<string, string> */
+        /** @var array<string, mixed> */
         public array $options = [],
     ) {
         // Convert null value to empty string for consistency

@@ -49,7 +49,7 @@ class CurrencySelector extends Component
 
             // Transform to Collection of stdClass for view compatibility
             $currencyData = $readModel->getCurrenciesForDropdown();
-            /** @var array<int, array<string, mixed>> $typedData */
+            /** @var array<string, mixed> $typedData */
             $typedData = $currencyData;
             /** @var Collection<int, stdClass> $availableCurrencies */
             $availableCurrencies = collect($typedData)

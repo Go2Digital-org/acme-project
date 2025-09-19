@@ -48,6 +48,9 @@ class CreatePaymentGateway extends CreateRecord
             ->icon('heroicon-o-x-mark');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -65,6 +68,10 @@ class CreatePaymentGateway extends CreateRecord
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Validate and normalize form data before creating the record
@@ -100,6 +107,9 @@ class CreatePaymentGateway extends CreateRecord
             ->send();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     protected function handleRecordCreation(array $data): Model
     {
         try {

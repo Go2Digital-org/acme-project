@@ -22,7 +22,7 @@ use RuntimeException;
  */
 class BatchProcessor
 {
-    /** @var array<string, bool> */
+    /** @var array<string, mixed> */
     private array $columnCache = [];
 
     private int $maxChunkSize = 50000; // Max records per single INSERT
@@ -32,7 +32,7 @@ class BatchProcessor
     /**
      * Insert batch of records using raw SQL for maximum performance
      *
-     * @param  array<int, array<string, mixed>>  $records
+     * @param  list<array<string, mixed>>  $records
      */
     public function insertBatch(array $records): int
     {
@@ -65,11 +65,15 @@ class BatchProcessor
     /**
      * Insert a single chunk using prepared statement for speed
      *
-     * @param  array<int, array<string, mixed>>  $records
+     * @param  list<array<string, mixed>>  $records
      */
     private function insertChunk(array $records): int
     {
         if ($records === []) {
+            return 0;
+        }
+
+        if (! isset($records[0])) {
             return 0;
         }
 
@@ -90,8 +94,9 @@ class BatchProcessor
 
     /**
      * Build highly optimized INSERT SQL statement
-     *
-     * @param  array<string>  $columns
+     */
+    /**
+     * @param  list<string>  $columns
      */
     private function buildInsertSQL(array $columns, int $recordCount): string
     {
@@ -106,9 +111,9 @@ class BatchProcessor
     /**
      * Flatten 2D array of records into 1D array for prepared statement
      *
-     * @param  array<int, array<string, mixed>>  $records
-     * @param  array<string>  $columns
-     * @return array<mixed>
+     * @param  list<array<string, mixed>>  $records
+     * @param  list<string>  $columns
+     * @return list<mixed>
      */
     private function flattenValues(array $records, array $columns): array
     {
@@ -137,8 +142,9 @@ class BatchProcessor
 
     /**
      * Validate columns exist in target table (cached for performance)
-     *
-     * @param  array<string>  $columns
+     */
+    /**
+     * @param  list<string>  $columns
      */
     private function validateColumns(array $columns): void
     {
@@ -157,8 +163,9 @@ class BatchProcessor
 
     /**
      * Get table columns from database schema (cached)
-     *
-     * @return array<string, bool>
+     */
+    /**
+     * @return array<string, mixed>
      */
     private function getTableColumns(): array
     {
@@ -174,8 +181,8 @@ class BatchProcessor
     /**
      * Insert with upsert capability (INSERT ... ON DUPLICATE KEY UPDATE)
      *
-     * @param  array<int, array<string, mixed>>  $records
-     * @param  array<string>  $updateColumns
+     * @param  list<array<string, mixed>>  $records
+     * @param  list<string>  $updateColumns
      */
     public function upsertBatch(array $records, array $updateColumns = []): int
     {
@@ -206,12 +213,16 @@ class BatchProcessor
     /**
      * Upsert a single chunk
      *
-     * @param  array<int, array<string, mixed>>  $records
-     * @param  array<string>  $updateColumns
+     * @param  list<array<string, mixed>>  $records
+     * @param  list<string>  $updateColumns
      */
     private function upsertChunk(array $records, array $updateColumns): int
     {
         if ($records === []) {
+            return 0;
+        }
+
+        if (! isset($records[0])) {
             return 0;
         }
 
@@ -228,9 +239,10 @@ class BatchProcessor
 
     /**
      * Build UPSERT SQL with ON DUPLICATE KEY UPDATE
-     *
-     * @param  array<string>  $columns
-     * @param  array<string>  $updateColumns
+     */
+    /**
+     * @param  list<string>  $columns
+     * @param  list<string>  $updateColumns
      */
     private function buildUpsertSQL(array $columns, int $recordCount, array $updateColumns): string
     {
@@ -253,8 +265,9 @@ class BatchProcessor
 
     /**
      * Bulk delete records by IDs for cleanup operations
-     *
-     * @param  array<int, int|string>  $ids
+     */
+    /**
+     * @param  list<mixed>  $ids
      */
     public function bulkDelete(array $ids): int
     {
@@ -278,7 +291,8 @@ class BatchProcessor
 
     /**
      * Get table statistics for optimization
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getTableStats(): array

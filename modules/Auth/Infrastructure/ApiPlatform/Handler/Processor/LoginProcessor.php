@@ -17,6 +17,10 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  */
 final readonly class LoginProcessor implements ProcessorInterface
 {
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,

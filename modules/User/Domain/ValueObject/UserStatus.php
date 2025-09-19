@@ -85,7 +85,9 @@ enum UserStatus: string
         return in_array($this, [self::ACTIVE, self::BLOCKED], true);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, string>
+     */
     public static function getSelectOptions(): array
     {
         return collect(self::cases())
@@ -93,19 +95,25 @@ enum UserStatus: string
             ->toArray();
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, UserStatus>
+     */
     public static function getActiveStatuses(): array
     {
         return [self::ACTIVE];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, UserStatus>
+     */
     public static function getInactiveStatuses(): array
     {
         return [self::INACTIVE, self::SUSPENDED, self::BLOCKED];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, UserStatus>
+     */
     public static function getPendingStatuses(): array
     {
         return [self::PENDING_VERIFICATION];

@@ -87,7 +87,7 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
 
         return $this->model
             ->where('status', PaymentStatus::FAILED)
-            ->where(function ($query) use ($permanentFailureCodes) {
+            ->where(function ($query) use ($permanentFailureCodes): void {
                 $query->whereNull('error_code')
                     ->orWhereNotIn('error_code', $permanentFailureCodes);
             })
@@ -149,8 +149,9 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
 
     /**
      * Get audit statistics.
-     *
-     * @return array<array-key, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getAuditStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -215,8 +216,9 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
 
     /**
      * Get gateway success rates.
-     *
-     * @return array<string, float>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getGatewaySuccessRates(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -252,8 +254,9 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
 
     /**
      * Get average response times by gateway.
-     *
-     * @return array<string, float>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getAverageResponseTimes(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -286,8 +289,9 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
 
     /**
      * Get most common failure reasons.
-     *
-     * @return array<string, int>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getMostCommonFailures(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -327,7 +331,7 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
     public function findRequiringInvestigation(): Collection
     {
         return $this->model
-            ->where(function ($query) {
+            ->where(function ($query): void {
                 $query->where('status', PaymentStatus::FAILED)
                     ->whereIn('error_code', ['network_error', 'gateway_timeout', 'unexpected_error'])
                     ->orWhere('response_time_ms', '>', 30000); // > 30 seconds
@@ -365,7 +369,7 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
             $query->where('attempted_at', '<=', $to);
         }
 
-        return $query->where(function ($query) {
+        return $query->where(function ($query): void {
             $query->where('error_code', 'fraud_detected')
                 ->orWhere('error_code', 'suspicious_activity')
                 ->orWhere('error_message', 'like', '%fraud%')
@@ -377,7 +381,8 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
 
     /**
      * Find suspicious patterns.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function findSuspiciousPatterns(): array
@@ -396,7 +401,7 @@ class PaymentAttemptEloquentRepository implements PaymentAttemptRepositoryInterf
         // Rapid successive attempts on same payment
             ->select('pa1.payment_id')
             ->selectRaw('COUNT(*) as attempt_count')
-            ->join('payment_attempts as pa2', function ($join) {
+            ->join('payment_attempts as pa2', function ($join): void {
                 $join->on('pa1.payment_id', '=', 'pa2.payment_id')
                     ->whereRaw('pa2.attempted_at BETWEEN pa1.attempted_at AND DATE_ADD(pa1.attempted_at, INTERVAL 5 MINUTE)');
             })

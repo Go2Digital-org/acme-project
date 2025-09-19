@@ -22,7 +22,7 @@ final readonly class OrganizeBookmarksCommandHandler
      */
     public function handle(OrganizeBookmarksCommand $command): array
     {
-        return DB::transaction(function () use ($command) {
+        return DB::transaction(function () use ($command): array {
             $affectedCount = match ($command->action) {
                 'remove_all' => $this->repository->deleteByUserId($command->userId),
                 'remove_selected' => $this->removeSelectedBookmarks($command),
@@ -56,13 +56,35 @@ final readonly class OrganizeBookmarksCommandHandler
 
         $count = 0;
         foreach ($bookmarks as $bookmark) {
-            if (! $bookmark->campaign) {
+            // Ensure bookmark is an array with required keys
+            if (! is_array($bookmark)) {
                 continue;
             }
-            if (! in_array($bookmark->campaign->status, ['completed', 'cancelled', 'expired'])) {
+            if (! isset($bookmark['campaign'])) {
                 continue;
             }
-            if (! $this->repository->deleteById($bookmark->id)) {
+            if (! isset($bookmark['id'])) {
+                continue;
+            }
+            // Ensure campaign is an array with status
+            if (! is_array($bookmark['campaign'])) {
+                continue;
+            }
+            if (! isset($bookmark['campaign']['status'])) {
+                continue;
+            }
+            // Check if campaign status indicates it should be removed
+            $campaignStatus = (string) $bookmark['campaign']['status'];
+            if (! in_array($campaignStatus, ['completed', 'cancelled', 'expired'], true)) {
+                continue;
+            }
+
+            // Safely cast the ID to integer before deletion
+            $bookmarkId = is_numeric($bookmark['id']) ? (int) $bookmark['id'] : null;
+            if ($bookmarkId === null) {
+                continue;
+            }
+            if (! $this->repository->deleteById($bookmarkId)) {
                 continue;
             }
             $count++;

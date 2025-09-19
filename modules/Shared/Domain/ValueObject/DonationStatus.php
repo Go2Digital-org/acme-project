@@ -192,19 +192,25 @@ enum DonationStatus: string
         return $this->canTransitionTo($targetStatus);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return list<self>
+     */
     public static function getFailedStatuses(): array
     {
         return [self::FAILED, self::CANCELLED];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return list<self>
+     */
     public static function getSuccessfulStatuses(): array
     {
         return [self::COMPLETED];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return list<self>
+     */
     public static function getPendingStatuses(): array
     {
         return [self::PENDING, self::PROCESSING];
@@ -234,7 +240,9 @@ enum DonationStatus: string
     /**
      * Get valid transition statuses from current status.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return list<self>
+     */
     public function getValidTransitions(): array
     {
         return match ($this) {

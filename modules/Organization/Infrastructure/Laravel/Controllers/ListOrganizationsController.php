@@ -53,7 +53,7 @@ final class ListOrganizationsController
             ->paginate($perPage);
 
         // Transform to simple format for dropdowns
-        /** @var Collection<int, array{id: int, name: string, description: string|null, status: string, website: string|null, logo: string|null}> $organizationsData */
+        /** @var Collection<int, array<string, mixed>> $organizationsData */
         $organizationsData = $organizations->getCollection()->map(fn (Organization $org): array => [
             'id' => $org->id,
             'name' => $org->getName(),
@@ -64,7 +64,7 @@ final class ListOrganizationsController
         ]);
 
         // Create a new paginator with the transformed data
-        /** @var array<int, array{id: int, name: string, description: string|null, status: string, website: string|null, logo: string|null}> $transformedItems */
+        /** @var array<int, array<string, mixed>> $transformedItems */
         $transformedItems = $organizationsData->toArray();
 
         $transformedPaginator = new LengthAwarePaginator(

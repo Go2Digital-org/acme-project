@@ -15,6 +15,9 @@ class CategoryFactory extends Factory
 {
     protected $model = Category::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $categories = [
@@ -85,7 +88,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $category['name'],
             'description' => $category['description'],
-            'slug' => $category['slug'],
+            'slug' => $category['slug'] . '-' . uniqid(),
             'status' => CategoryStatus::ACTIVE,
             'color' => $category['color'],
             'icon' => $category['icon'],
@@ -106,7 +109,7 @@ class CategoryFactory extends Factory
                 'nl' => 'Ondersteuning van onderwijsinitiatieven en leermogelijkheden',
                 'fr' => 'Soutenir les initiatives éducatives et les opportunités d\'apprentissage',
             ],
-            'slug' => 'education',
+            'slug' => 'education-' . uniqid(),
             'color' => '#3b82f6',
             'icon' => 'academic-cap',
             'sort_order' => 10,
@@ -126,7 +129,7 @@ class CategoryFactory extends Factory
                 'nl' => 'Toegang tot gezondheidszorg en medische ondersteuningsprogramma\'s',
                 'fr' => 'Accès aux soins de santé et programmes de soutien médical',
             ],
-            'slug' => 'health',
+            'slug' => 'health-' . uniqid(),
             'color' => '#ef4444',
             'icon' => 'heart',
             'sort_order' => 20,
@@ -146,7 +149,7 @@ class CategoryFactory extends Factory
                 'nl' => 'Milieubescherming en duurzaamheidsprojecten',
                 'fr' => 'Protection de l\'environnement et projets de durabilité',
             ],
-            'slug' => 'environment',
+            'slug' => 'environment-' . uniqid(),
             'color' => '#22c55e',
             'icon' => 'globe-alt',
             'sort_order' => 30,
@@ -166,7 +169,7 @@ class CategoryFactory extends Factory
                 'nl' => 'Sterke gemeenschappen bouwen door lokale initiatieven',
                 'fr' => 'Construire des communautés plus fortes grâce à des initiatives locales',
             ],
-            'slug' => 'community',
+            'slug' => 'community-' . uniqid(),
             'color' => '#f59e0b',
             'icon' => 'home',
             'sort_order' => 40,

@@ -10,13 +10,15 @@ use Modules\Donation\Domain\Model\Donation;
 use Modules\Donation\Domain\Repository\DonationRepositoryInterface;
 use Modules\Shared\Domain\Service\CampaignDonationServiceInterface;
 
-final readonly class CampaignDonationService implements CampaignDonationServiceInterface
+class CampaignDonationService implements CampaignDonationServiceInterface
 {
     public function __construct(
-        private DonationRepositoryInterface $donationRepository,
+        private readonly DonationRepositoryInterface $donationRepository,
     ) {}
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getDonationsForCampaign(int $campaignId, Request $request): array
     {
         $perPage = $request->integer('per_page', 15);
@@ -75,7 +77,9 @@ final readonly class CampaignDonationService implements CampaignDonationServiceI
         ];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getCampaignDonationAnalytics(int $campaignId): array
     {
         $donations = collect($this->donationRepository->findByCampaign($campaignId));

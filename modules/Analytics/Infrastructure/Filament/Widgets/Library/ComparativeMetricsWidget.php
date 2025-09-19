@@ -15,6 +15,7 @@ class ComparativeMetricsWidget extends ChartWidget
 
     protected ?string $pollingInterval = '20m';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 16;

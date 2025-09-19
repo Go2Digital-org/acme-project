@@ -19,7 +19,9 @@ class CampaignCreatedNotification extends Notification implements ShouldQueue
         private readonly string $campaignDescription,
     ) {}
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, string>
+     */
     public function via(object $notifiable): array
     {
         return ['database', 'mail'];
@@ -35,7 +37,9 @@ class CampaignCreatedNotification extends Notification implements ShouldQueue
             ->line(__('notifications.campaign_email_footer'));
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(object $notifiable): array
     {
         return [

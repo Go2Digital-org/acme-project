@@ -187,7 +187,7 @@ class MigrateTenantCommand extends Command
     /**
      * Get all tenant migration paths.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     protected function getTenantMigrationPaths(): array
     {

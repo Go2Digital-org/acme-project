@@ -22,9 +22,9 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  * @property string $action
  * @property string $entity_type
  * @property int|null $entity_id
- * @property array<array-key, mixed> $old_values
- * @property array<array-key, mixed> $new_values
- * @property array<array-key, mixed> $metadata
+ * @property array<string, mixed> $old_values
+ * @property array<string, mixed> $new_values
+ * @property array<string, mixed> $metadata
  * @property Carbon $performed_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -229,7 +229,9 @@ class AuditLog extends Model
     /**
      * Get changes summary for display.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getChangesSummary(): array
     {
         $changes = [];
@@ -337,6 +339,9 @@ class AuditLog extends Model
         return $query->where('performed_at', '>=', now()->subDays($days));
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

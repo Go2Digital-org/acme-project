@@ -65,7 +65,9 @@ class AddProviderToDomainCommand extends Command
         return $this->choice('Select a domain', $domains);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function askProviderTypes(): array
     {
         $options = [
@@ -82,7 +84,7 @@ class AddProviderToDomainCommand extends Command
     }
 
     /**
-     * @param  array<int, string>  $providerTypes
+     * @param  array<string, mixed>  $providerTypes
      */
     private function createFiles(string $basePath, string $domain, string $prefix, array $providerTypes): void
     {
@@ -103,7 +105,7 @@ class AddProviderToDomainCommand extends Command
     }
 
     /**
-     * @param  array<int, array{string, string, array<string, mixed>}>  $files
+     * @param  array<int, array<int, mixed>>  $files
      */
     private function createFilesFromStubs(string $basePath, string $domain, string $prefix, array $files): void
     {

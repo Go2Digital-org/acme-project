@@ -21,7 +21,7 @@ final class CommandServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Register console commands
-        /** @var array<class-string> $commands */
+        /** @var array<int, string> $commands */
         $commands = [
             MeilisearchConfigureCommand::class,
             PostDeployCommand::class,
@@ -64,7 +64,7 @@ final class CommandServiceProvider extends ServiceProvider
      * This allows for custom mappings that don't follow the standard convention.
      * Most commands will use the automatic convention-based mapping.
      *
-     * @return array<class-string<CommandInterface>, class-string<CommandHandlerInterface>>
+     * @return array<class-string<\Modules\Shared\Application\Command\CommandInterface>, class-string<CommandHandlerInterface>>
      */
     private function getCommandToHandlerMap(): array
     {

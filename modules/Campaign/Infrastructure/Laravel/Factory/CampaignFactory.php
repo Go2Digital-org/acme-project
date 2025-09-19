@@ -23,12 +23,14 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  *
  * @method static static new(array<string, mixed> $attributes = [])
  */
-final class CampaignFactory extends Factory
+class CampaignFactory extends Factory
 {
     /** @var class-string<Campaign> */
     protected $model = Campaign::class;
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $startDate = fake()->dateTimeBetween('-3 months', '+1 month');
@@ -52,62 +54,9 @@ final class CampaignFactory extends Factory
             'start_date' => $startDate,
             'end_date' => $endDate,
             'status' => $status,
-            'category_id' => function () {
-                // Try to use existing category first to avoid circular dependencies
-                $existing = Category::inRandomOrder()->first();
-                if ($existing) {
-                    return $existing->id;
-                }
-
-                // Create a simple category without using factory to avoid circular deps
-                $slugs = ['education', 'health', 'environment', 'community'];
-                $slug = fake()->randomElement($slugs);
-
-                return Category::firstOrCreate(
-                    ['slug' => $slug],
-                    [
-                        'name' => ['en' => ucfirst($slug)],
-                        'description' => ['en' => "Category for {$slug} campaigns"],
-                        'slug' => $slug,
-                    ]
-                )->id;
-            },
-            'organization_id' => function () {
-                // Use existing organization first to avoid circular dependencies
-                $existing = Organization::inRandomOrder()->first();
-                if ($existing) {
-                    return $existing->id;
-                }
-
-                // Create minimal organization without factory
-                return Organization::create([
-                    'name' => fake()->company(),
-                    'registration_number' => fake()->uuid(),
-                    'tax_id' => fake()->uuid(),
-                    'category' => 'environmental',
-                    'email' => fake()->companyEmail(),
-                    'phone' => fake()->phoneNumber(),
-                    'address' => fake()->streetAddress(),
-                    'city' => fake()->city(),
-                    'country' => fake()->country(),
-                    'is_verified' => true,
-                ])->id;
-            },
-            'user_id' => function () {
-                // Use existing user first to avoid circular dependencies
-                $existing = User::inRandomOrder()->first();
-                if ($existing) {
-                    return $existing->id;
-                }
-
-                // Create minimal user without factory
-                return User::create([
-                    'name' => fake()->name(),
-                    'email' => fake()->unique()->safeEmail(),
-                    'password' => bcrypt('password'),
-                    'email_verified_at' => now(),
-                ])->id;
-            },
+            'category_id' => Category::factory(),
+            'organization_id' => Organization::factory(),
+            'user_id' => User::factory(),
             'completed_at' => $status === CampaignStatus::COMPLETED ?
                 fake()->dateTimeBetween($startDate, $endDate) : null,
         ];

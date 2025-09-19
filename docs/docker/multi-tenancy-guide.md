@@ -73,18 +73,18 @@ The platform uses a **hybrid multi-tenancy model**:
 # Create a tenant with ID 'acme-corp'
 ./docker/scripts/tenant-manager.sh create acme-corp \
     "ACME Corporation" \
-    "acme-corp.localhost" \
-    "admin@acme-corp.localhost"
+    "localhost" \
+    "admin@localhost"
 ```
 
 ### 3. Access the Tenant
 
 Add to your `/etc/hosts` file:
 ```
-127.0.0.1 acme-corp.localhost
+127.0.0.1 localhost
 ```
 
-Visit: http://acme-corp.localhost:8000
+Visit: http://localhost:8000
 
 ## Tenant Management
 
@@ -108,8 +108,8 @@ Visit: http://acme-corp.localhost:8000
 # Create a production tenant
 ./docker/scripts/tenant-manager.sh create unicef \
     "UNICEF Foundation" \
-    "unicef.acme-corp.com" \
-    "admin@unicef.org"
+    "tenant.yourdomain.com" \
+    "admin@tenant.org"
 ```
 
 ### Listing Tenants
@@ -178,14 +178,14 @@ For local development, tenants use subdomains of `localhost`:
 
 ```bash
 # Pattern: <tenant-id>.localhost
-acme-corp.localhost
+localhost
 unicef.localhost
 redcross.localhost
 ```
 
 Add entries to `/etc/hosts`:
 ```bash
-127.0.0.1 acme-corp.localhost
+127.0.0.1 localhost
 127.0.0.1 unicef.localhost
 127.0.0.1 redcross.localhost
 ```
@@ -197,10 +197,10 @@ For production, configure DNS with wildcard subdomain:
 #### DNS Configuration
 ```dns
 # Main domain
-acme-csr.com.        A    YOUR_SERVER_IP
+yourdomain.com.        A    YOUR_SERVER_IP
 
 # Wildcard for all tenants
-*.acme-csr.com.      A    YOUR_SERVER_IP
+*.yourdomain.com.      A    YOUR_SERVER_IP
 ```
 
 #### SSL/TLS Setup
@@ -209,20 +209,20 @@ The platform automatically handles SSL certificates via Let's Encrypt:
 ```yaml
 # In docker-compose.prod.yml
 environment:
-  SERVER_NAME: "acme-csr.com, *.acme-csr.com:443"
-  LETS_ENCRYPT_EMAIL: admin@acme-csr.com
+  SERVER_NAME: "yourdomain.com, *.yourdomain.com:443"
+  LETS_ENCRYPT_EMAIL: admin@yourdomain.com
 ```
 
 ### Central vs Tenant Domains
 
 **Central Domains** (Admin access):
 - `localhost`
-- `acme-csr.com`
-- `admin.acme-csr.com`
+- `yourdomain.com`
+- `admin.yourdomain.com`
 
 **Tenant Domains** (Tenant access):
 - `tenant-id.localhost`
-- `tenant-id.acme-csr.com`
+- `tenant-id.yourdomain.com`
 
 ## Database Isolation
 
@@ -424,7 +424,7 @@ handle @admin {
 grep "tenant-id.localhost" /etc/hosts
 
 # Verify DNS (production)
-nslookup tenant-id.acme-csr.com
+nslookup tenant-id.yourdomain.com
 
 # Check Caddy configuration
 docker exec acme-app cat /etc/caddy/Caddyfile | grep SERVER_NAME

@@ -8,13 +8,11 @@ use Modules\Shared\Application\Query\QueryInterface;
 
 final readonly class GetUserActivityQuery implements QueryInterface
 {
-    /**
-     * @param  array<int, string>  $activityTypes
-     */
     public function __construct(
         public ?int $userId = null,
         public ?int $organizationId = null,
         public ?string $timeRange = null,
+        /** @var array<string> */
         public array $activityTypes = [],
         public bool $includeSessionData = false,
         public bool $includeEngagementMetrics = true,

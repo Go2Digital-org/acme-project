@@ -21,6 +21,9 @@ final class OrganizationCreatedEvent extends AbstractDomainEvent
         return 'organization.created';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return array_merge(parent::getEventData(), [

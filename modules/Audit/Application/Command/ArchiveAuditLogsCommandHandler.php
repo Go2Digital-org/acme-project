@@ -16,14 +16,16 @@ class ArchiveAuditLogsCommandHandler
         private readonly AuditRepositoryInterface $repository
     ) {}
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function handle(ArchiveAuditLogsCommand $command): array
     {
         $cutoffDate = Carbon::now()->subDays($command->daysOld);
         $archivedCount = 0;
         $archivedFiles = [];
 
-        DB::transaction(function () use ($command, $cutoffDate, &$archivedCount, &$archivedFiles) {
+        DB::transaction(function () use ($command, $cutoffDate, &$archivedCount, &$archivedFiles): void {
             $query = $this->repository->newQuery()
                 ->where('created_at', '<', $cutoffDate);
 

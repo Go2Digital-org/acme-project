@@ -27,10 +27,10 @@ This project is configured for automated deployment to a Hetzner server using:
 
 ```bash
 # SSH to your Hetzner server
-ssh root@78.47.63.156
+ssh user@your-server
 
 # Download and run the setup script
-wget https://raw.githubusercontent.com/go2digit-al/acme-corp-optimy/main/scripts/server-setup.sh
+wget https://github.com/go2digit-al/acme-corp-optimy/raw/main/scripts/server-setup.sh
 chmod +x server-setup.sh
 ./server-setup.sh
 
@@ -173,8 +173,8 @@ config/nginx/
 After DNS is configured, generate certificates:
 ```bash
 # On the server
-certbot --nginx -d acme-corp.com -d www.acme-corp.com
-certbot --nginx -d staging.acme-corp.com
+certbot --nginx -d yourdomain.com -d www.yourdomain.com
+certbot --nginx -d staging.yourdomain.com
 ```
 
 ### Auto-renewal
@@ -186,9 +186,9 @@ gh workflow run deploy-hetzner.yml -f action=renew-ssl
 ## Monitoring
 
 ### Health Checks
-- Production: https://acme-corp.com/health
-- Staging: https://staging.acme-corp.com/health
-- Nginx: https://acme-corp.com/nginx-health
+- Production: https://localhost/health
+- Staging: https://localhost/health
+- Nginx: https://localhost/nginx-health
 
 ### Logs
 ```bash

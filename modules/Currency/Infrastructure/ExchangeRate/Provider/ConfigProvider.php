@@ -18,6 +18,9 @@ class ConfigProvider implements ExchangeRateProviderInterface
 
     private const PRIORITY = 999; // Lowest priority (fallback)
 
+    /**
+     * @return array<string, mixed>
+     */
     public function fetchRates(string $baseCurrency): array
     {
         $configRates = config('currency.exchange_rates', []);

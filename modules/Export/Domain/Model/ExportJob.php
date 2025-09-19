@@ -71,9 +71,7 @@ class ExportJob extends Model
     ];
 
     // Aggregate root - collects domain events
-    /**
-     * @var array<int, ExportRequested|ExportStarted|ExportProgressUpdated|ExportCompleted|ExportFailed>
-     */
+    /** @var array<int, ExportRequested|ExportStarted|ExportProgressUpdated|ExportCompleted|ExportFailed> */
     private array $domainEvents = [];
 
     /**
@@ -397,6 +395,9 @@ class ExportJob extends Model
         return $this->organization_id;
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

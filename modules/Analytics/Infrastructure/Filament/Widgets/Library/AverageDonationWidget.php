@@ -14,6 +14,7 @@ class AverageDonationWidget extends BaseWidget
 
     protected ?string $pollingInterval = '10m';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 15;
@@ -23,9 +24,7 @@ class AverageDonationWidget extends BaseWidget
         return true;
     }
 
-    /**
-     * @return array<Stat>
-     */
+    /** @return array<int, Stat> */
     protected function getStats(): array
     {
         $stats = ApplicationCache::getStats('average_donation');
@@ -62,9 +61,7 @@ class AverageDonationWidget extends BaseWidget
         ];
     }
 
-    /**
-     * @return array<Stat>
-     */
+    /** @return array<int, Stat> */
     private function getEmptyData(): array
     {
         return [

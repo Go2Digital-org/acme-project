@@ -33,6 +33,10 @@ final class JobFailureNotificationJob implements ShouldQueue
     /** @var array<int, int> */
     public array $backoff = [30, 60, 120];
 
+    /**
+     * @param  array<string, mixed>  $jobPayload
+     * @param  array<string, mixed>  $metadata
+     */
     public function __construct(
         private readonly string $failedJobId,
         private readonly string $jobClass,
@@ -442,7 +446,7 @@ final class JobFailureNotificationJob implements ShouldQueue
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     private function getNotificationRecipients(string $priority): array
     {
@@ -484,6 +488,9 @@ final class JobFailureNotificationJob implements ShouldQueue
         return $sanitized;
     }
 
+    /**
+     * @return list<string>
+     */
     /**
      * @param  array<string, mixed>  $failurePattern
      * @return list<string>

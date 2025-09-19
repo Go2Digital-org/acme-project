@@ -118,6 +118,9 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
         return $eloquentModels->map(fn (ExportJobEloquent $model): ExportJob => $this->toDomainModel($model))->toArray();
     }
 
+    /**
+     * @return array<int, ExportJob>
+     */
     public function findPendingJobs(int $limit = 50): array
     {
         $eloquentModels = $this->model
@@ -129,6 +132,9 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
         return $eloquentModels->map(fn (ExportJobEloquent $model): ExportJob => $this->toDomainModel($model))->toArray();
     }
 
+    /**
+     * @return array<int, ExportJob>
+     */
     public function findProcessingJobs(): array
     {
         $eloquentModels = $this->model
@@ -138,6 +144,9 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
         return $eloquentModels->map(fn (ExportJobEloquent $model): ExportJob => $this->toDomainModel($model))->toArray();
     }
 
+    /**
+     * @return array<int, ExportJob>
+     */
     public function findExpiredJobs(?Carbon $expiredBefore = null): array
     {
         $cutoffDate = $expiredBefore ?? now();
@@ -150,6 +159,9 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
         return $eloquentModels->map(fn (ExportJobEloquent $model): ExportJob => $this->toDomainModel($model))->toArray();
     }
 
+    /**
+     * @return array<int, ExportJob>
+     */
     public function findExpired(Carbon $cutoffDate, int $limit = 100): array
     {
         $eloquentModels = $this->model
@@ -160,6 +172,9 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
         return $eloquentModels->map(fn (ExportJobEloquent $model): ExportJob => $this->toDomainModel($model))->toArray();
     }
 
+    /**
+     * @return array<int, ExportJob>
+     */
     public function findJobsForCleanup(Carbon $olderThan): array
     {
         $eloquentModels = $this->model
@@ -216,8 +231,10 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
     }
 
     /**
-     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, ExportJob>
+     */
+    /**
+     * @param  array<string, mixed>  $filters
      */
     public function getUserExportsHistory(
         int $userId,
@@ -242,8 +259,10 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
     }
 
     /**
-     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, ExportJob>
+     */
+    /**
+     * @param  array<string, mixed>  $filters
      */
     public function getOrganizationExportsHistory(
         int $organizationId,
@@ -268,8 +287,10 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
     }
 
     /**
-     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, ExportJob>
+     */
+    /**
+     * @param  array<string, mixed>  $filters
      */
     public function paginate(
         int $page = 1,
@@ -388,7 +409,7 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
     }
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getStatistics(?int $organizationId = null, ?Carbon $from = null, ?Carbon $to = null): array
     {
@@ -416,6 +437,9 @@ class EloquentExportJobRepository implements ExportJobRepositoryInterface
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $filters
+     */
     public function findSimilarRecentExport(
         int $userId,
         string $resourceType,

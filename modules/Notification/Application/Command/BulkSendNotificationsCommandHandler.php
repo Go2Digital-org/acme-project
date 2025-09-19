@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Modules\Notification\Application\Event\NotificationsSentEvent;
 use Modules\Notification\Application\Service\NotificationDeliveryService;
+use Modules\Notification\Domain\Model\Notification;
 use Modules\Notification\Domain\Repository\NotificationRepositoryInterface;
 
 final readonly class BulkSendNotificationsCommandHandler
@@ -45,9 +46,12 @@ final readonly class BulkSendNotificationsCommandHandler
             $chunks = array_chunk($command->notificationIds, 50);
 
             foreach ($chunks as $chunk) {
-                $notifications = $this->notificationRepository->findByIds(array_map('strval', $chunk));
+                /** @var array<string, mixed> $chunkIds */
+                $chunkIds = array_map('strval', $chunk);
+                $notifications = $this->notificationRepository->findByIds($chunkIds);
 
                 foreach ($notifications as $notification) {
+                    /** @var Notification $notification */
                     try {
                         // Skip already sent notifications unless forced
                         if (! $command->force && $notification->sent_at) {
@@ -103,7 +107,7 @@ final readonly class BulkSendNotificationsCommandHandler
                         }
 
                         // Update notification status
-                        DB::transaction(function () use ($notification, $allChannelsSuccessful) {
+                        DB::transaction(function () use ($notification, $allChannelsSuccessful): void {
                             $updateData = [
                                 'updated_at' => now(),
                             ];
@@ -150,8 +154,11 @@ final readonly class BulkSendNotificationsCommandHandler
 
             // Dispatch bulk sent event
             if ($sentCount > 0) {
+                $sentNotificationIds = array_keys(array_filter($results, fn (array $r): bool => $r['status'] === 'sent'));
+                /** @var array<string, mixed> $eventNotificationIds */
+                $eventNotificationIds = array_map('strval', $sentNotificationIds);
                 Event::dispatch(new NotificationsSentEvent(
-                    notificationIds: array_keys(array_filter($results, fn ($r) => $r['status'] === 'sent')),
+                    notificationIds: $eventNotificationIds,
                     channels: $command->channels ?? [],
                     metadata: ['sent_count' => $sentCount, 'results' => $results]
                 ));
@@ -175,10 +182,9 @@ final readonly class BulkSendNotificationsCommandHandler
     }
 
     /**
-     * @param  mixed  $notification
-     * @return array<string>
+     * @return array<int, string>
      */
-    private function getNotificationChannels($notification): array
+    private function getNotificationChannels(Notification $notification): array
     {
         // Default channels based on notification type and user preferences
         $channels = [];

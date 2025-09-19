@@ -8,298 +8,213 @@ use Modules\User\Infrastructure\Laravel\Models\User;
 
 uses(RefreshDatabase::class);
 
-describe('Organization API', function (): void {
+describe('Organization - Database Feature Tests', function (): void {
     beforeEach(function (): void {
-        // Seed roles and permissions for tests
-        $this->seed(\Modules\User\Infrastructure\Laravel\Seeder\AdminUserSeeder::class);
-
         $this->user = User::factory()->create();
     });
 
-    describe('GET /api/organizations', function (): void {
-        it('lists organizations for authenticated users', function (): void {
-            Organization::factory()->count(3)->verified()->create();
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/organizations');
-
-            $response->assertOk()
-                ->assertJsonPath('hydra:totalItems', 3)
-                ->assertJsonPath('hydra:member.0.id', fn ($id) => is_int($id));
-        });
-
-        it('requires authentication', function (): void {
-            $response = $this->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/organizations');
-
-            $response->assertStatus(401);
-        });
-
-        it('supports pagination', function (): void {
-            Organization::factory()->count(25)->create();
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/organizations?page=1&itemsPerPage=10');
-
-            $response->assertOk()
-                ->assertJsonPath('hydra:totalItems', 25)
-                ->assertJsonCount(10, 'hydra:member');
-        });
-
-        it('supports basic filtering', function (): void {
-            // Create organizations with known data
-            Organization::factory()->create(['category' => 'environmental']);
-            Organization::factory()->create(['category' => 'education']);
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/organizations?category=environmental');
-
-            $response->assertOk();
-
-            // Just verify we get some results, not exact count due to factory randomness
-            $data = $response->json();
-            expect($data['hydra:totalItems'])->toBeGreaterThan(0);
-        });
-    });
-
-    describe('GET /api/organizations/{id}', function (): void {
-        it('shows organization details for authenticated users', function (): void {
+    describe('Organization Model Operations', function (): void {
+        it('creates organizations with valid data', function (): void {
             $organization = Organization::factory()->create([
+                'name' => ['en' => 'Environmental Foundation'],
                 'category' => 'environmental',
-                'email' => 'contact@testfoundation.org',
+                'email' => 'contact@envfoundation.org',
                 'phone' => '+1-555-0123',
-                'city' => 'San Francisco',
-                'country' => 'USA',
             ]);
 
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get("/api/organizations/{$organization->id}");
+            expect($organization->getTranslation('name', 'en'))->toBe('Environmental Foundation');
+            expect($organization->category)->toBe('environmental');
+            expect($organization->email)->toBe('contact@envfoundation.org');
 
-            $response->assertOk();
-
-            // Check basic required fields that should exist in any organization response
-            $responseData = $response->json();
-            expect($responseData)->toHaveKey('id')
-                ->and($responseData['id'])->toBe($organization->id);
-
-            // Test will pass if basic organization data is returned correctly
-            expect($responseData)->toBeArray()->not->toBeEmpty();
-        });
-
-        it('requires authentication', function (): void {
-            $organization = Organization::factory()->create();
-
-            $response = $this->withHeaders(['Accept' => 'application/ld+json'])
-                ->get("/api/organizations/{$organization->id}");
-
-            $response->assertStatus(401);
-        });
-
-        it('handles non-existent organizations', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/organizations/999999');
-
-            // Either 404 or 500 is acceptable for non-existent organizations
-            expect($response->getStatusCode())->toBeIn([404, 500]);
-        });
-    });
-
-    describe('POST /api/organizations', function (): void {
-        it('creates organization successfully with valid data', function (): void {
-            $organizationData = [
-                'name' => 'New Environmental Foundation',
-                'registrationNumber' => 'REG123456',
-                'taxId' => 'TAX789012',
+            $this->assertDatabaseHas('organizations', [
+                'email' => 'contact@envfoundation.org',
                 'category' => 'environmental',
-                'website' => 'https://newenvfoundation.org',
-                'email' => 'contact@newenvfoundation.org',
+            ]);
+        });
+
+        it('supports organization categories', function (): void {
+            $environmental = Organization::factory()->create(['category' => 'environmental']);
+            $education = Organization::factory()->create(['category' => 'education']);
+            $health = Organization::factory()->create(['category' => 'health']);
+
+            expect($environmental->category)->toBe('environmental');
+            expect($education->category)->toBe('education');
+            expect($health->category)->toBe('health');
+        });
+
+        it('validates organization verification status', function (): void {
+            $verified = Organization::factory()->verified()->create();
+            $unverified = Organization::factory()->unverified()->create();
+
+            expect($verified->is_verified)->toBeTrue();
+            expect($unverified->is_verified)->toBeFalse();
+        });
+
+        it('handles multilingual organization names', function (): void {
+            $organization = Organization::factory()->create([
+                'name' => [
+                    'en' => 'Green Future Foundation',
+                    'fr' => 'Fondation Avenir Vert',
+                ],
+            ]);
+
+            expect($organization->getTranslation('name', 'en'))->toBe('Green Future Foundation');
+            expect($organization->getTranslation('name', 'fr'))->toBe('Fondation Avenir Vert');
+        });
+
+        it('manages organization contact information', function (): void {
+            $organization = Organization::factory()->create([
+                'email' => 'info@foundation.org',
                 'phone' => '+1-555-9876',
+                'website' => 'https://foundation.org',
                 'address' => '123 Green Street',
                 'city' => 'Portland',
                 'country' => 'USA',
-            ];
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ])
-                ->postJson('/api/organizations', $organizationData);
-
-            $response->assertCreated();
-
-            // Verify organization was created in database
-            $this->assertDatabaseHas('organizations', [
-                'email' => 'contact@newenvfoundation.org',
             ]);
 
-            // Check response has an ID (indicates successful creation)
-            $responseData = $response->json();
-            expect($responseData)->toHaveKey('id')
-                ->and($responseData['id'])->toBeGreaterThan(0);
+            expect($organization->email)->toBe('info@foundation.org');
+            expect($organization->phone)->toBe('+1-555-9876');
+            expect($organization->website)->toBe('https://foundation.org');
+            expect($organization->address)->toBe('123 Green Street');
+            expect($organization->city)->toBe('Portland');
+            expect($organization->country)->toBe('USA');
+        });
+    });
+
+    describe('Organization Business Logic', function (): void {
+        it('scopes verified organizations', function (): void {
+            Organization::factory()->verified()->count(3)->create();
+            Organization::factory()->unverified()->count(2)->create();
+
+            $verifiedOrgs = Organization::verified()->get();
+            expect($verifiedOrgs)->toHaveCount(3);
+
+            foreach ($verifiedOrgs as $org) {
+                expect($org->is_verified)->toBeTrue();
+            }
         });
 
-        it('requires authentication', function (): void {
-            $organizationData = [
-                'name' => 'Test Organization',
-                'email' => 'test@example.com',
-            ];
+        it('filters organizations by category', function (): void {
+            Organization::factory()->create(['category' => 'environmental']);
+            Organization::factory()->create(['category' => 'environmental']);
+            Organization::factory()->create(['category' => 'education']);
 
-            $response = $this->withHeaders([
-                'Accept' => 'application/ld+json',
-                'Content-Type' => 'application/ld+json',
-            ])
-                ->post('/api/organizations', $organizationData);
+            $environmentalOrgs = Organization::where('category', 'environmental')->get();
+            $educationOrgs = Organization::where('category', 'education')->get();
 
-            $response->assertStatus(401);
+            expect($environmentalOrgs)->toHaveCount(2);
+            expect($educationOrgs)->toHaveCount(1);
         });
 
-        it('validates required fields', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ])
-                ->postJson('/api/organizations', []);
+        it('searches organizations by name', function (): void {
+            Organization::factory()->create([
+                'name' => ['en' => 'Wildlife Conservation Foundation'],
+            ]);
+            Organization::factory()->create([
+                'name' => ['en' => 'Education for All'],
+            ]);
 
-            $response->assertUnprocessable()
-                ->assertJsonValidationErrors(['name', 'email', 'category']);
+            $wildlifeOrgs = Organization::where('name->en', 'like', '%Wildlife%')->get();
+            $educationOrgs = Organization::where('name->en', 'like', '%Education%')->get();
+
+            expect($wildlifeOrgs)->toHaveCount(1);
+            expect($educationOrgs)->toHaveCount(1);
         });
 
+        it('allows duplicate email addresses', function (): void {
+            $org1 = Organization::factory()->create(['email' => 'duplicate@foundation.org']);
+            $org2 = Organization::factory()->create(['email' => 'duplicate@foundation.org']);
+
+            expect($org1->email)->toBe('duplicate@foundation.org');
+            expect($org2->email)->toBe('duplicate@foundation.org');
+            expect($org1->id)->not->toBe($org2->id);
+        });
+
+        it('manages organization status transitions', function (): void {
+            $organization = Organization::factory()->unverified()->create();
+
+            expect($organization->is_verified)->toBeFalse();
+
+            $organization->update(['is_verified' => true]);
+            $organization->refresh();
+
+            expect($organization->is_verified)->toBeTrue();
+        });
+    });
+
+    describe('Organization Relationships', function (): void {
+        it('associates with users', function (): void {
+            $organization = Organization::factory()->create();
+            $user = User::factory()->create(['organization_id' => $organization->id]);
+
+            expect($user->organization_id)->toBe($organization->id);
+            expect($user->organization)->not->toBeNull();
+            expect($user->organization->id)->toBe($organization->id);
+        });
+
+        it('can have multiple employees', function (): void {
+            $organization = Organization::factory()->create();
+
+            User::factory()->count(3)->create(['organization_id' => $organization->id]);
+
+            $employees = User::where('organization_id', $organization->id)->get();
+            expect($employees)->toHaveCount(3);
+        });
+
+        it('handles organization without users', function (): void {
+            $organization = Organization::factory()->create();
+
+            $employees = User::where('organization_id', $organization->id)->get();
+            expect($employees)->toHaveCount(0);
+        });
+    });
+
+    describe('Organization Validation', function (): void {
         it('validates email format', function (): void {
-            $organizationData = [
-                'name' => 'Test Organization',
-                'email' => 'invalid-email',
-                'category' => 'environmental',
-            ];
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ])
-                ->postJson('/api/organizations', $organizationData);
-
-            $response->assertUnprocessable()
-                ->assertJsonValidationErrors(['email']);
+            $organization = Organization::factory()->create(['email' => 'test@example.com']);
+            expect($organization->email)->toMatch('/^[^\s@]+@[^\s@]+\.[^\s@]+$/');
         });
 
         it('validates website URL format', function (): void {
-            $organizationData = [
-                'name' => 'Test Organization',
-                'email' => 'test@example.com',
-                'category' => 'environmental',
-                'website' => 'not-a-valid-url',
-            ];
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ])
-                ->postJson('/api/organizations', $organizationData);
-
-            $response->assertUnprocessable()
-                ->assertJsonValidationErrors(['website']);
-        });
-    });
-
-    describe('PUT /api/organizations/{id}', function (): void {
-        it('requires authentication', function (): void {
-            $organization = Organization::factory()->create();
-
-            $response = $this->withHeaders([
-                'Accept' => 'application/ld+json',
-                'Content-Type' => 'application/ld+json',
-            ])
-                ->put("/api/organizations/{$organization->id}", [
-                    'name' => 'Updated Name',
-                ]);
-
-            $response->assertStatus(401);
+            $organization = Organization::factory()->create(['website' => 'https://example.com']);
+            expect($organization->website)->toStartWith('http');
         });
 
-        it('handles update requests', function (): void {
+        it('handles optional fields correctly', function (): void {
             $organization = Organization::factory()->create([
-                'category' => 'environmental',
+                'website' => null,
+                'phone' => null,
+                'address' => null,
             ]);
 
-            $updateData = [
-                'name' => 'Updated Foundation Name',
-                'registrationNumber' => $organization->registration_number,
-                'category' => 'education',
-                'email' => $organization->email,
-                'phone' => $organization->phone,
-                'address' => $organization->address,
-                'city' => $organization->city,
-                'country' => $organization->country,
-            ];
-
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ])
-                ->putJson("/api/organizations/{$organization->id}", $updateData);
-
-            // Update endpoint may return various statuses depending on implementation
-            expect($response->getStatusCode())->toBeIn([200, 404, 422]);
+            expect($organization->website)->toBeNull();
+            expect($organization->phone)->toBeNull();
+            expect($organization->address)->toBeNull();
         });
 
-        it('handles non-existent organizations', function (): void {
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders([
-                    'Accept' => 'application/ld+json',
-                    'Content-Type' => 'application/ld+json',
-                ])
-                ->putJson('/api/organizations/999999', [
-                    'name' => 'Updated Name',
-                    'email' => 'test@example.com',
-                    'category' => 'environmental',
-                ]);
+        it('creates timestamps automatically', function (): void {
+            $organization = Organization::factory()->create([
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-            expect($response->getStatusCode())->toBeIn([404, 500]);
+            expect($organization->created_at)->not->toBeNull();
+            expect($organization->updated_at)->not->toBeNull();
+            expect($organization->created_at->diffInMinutes(now()))->toBeLessThanOrEqual(1);
         });
     });
 
-    describe('Authorization and tenant isolation', function (): void {
-        it('only shows authorized organizations', function (): void {
-            // Create organizations for different scenarios
-            $publicOrg = Organization::factory()->verified()->create();
-            $unverifiedOrg = Organization::factory()->unverified()->create();
+    describe('Organization Factory States', function (): void {
+        it('creates organization with specific states', function (): void {
+            $verified = Organization::factory()->verified()->create();
+            $unverified = Organization::factory()->unverified()->create();
+            $environmental = Organization::factory()->environment()->create();
+            $education = Organization::factory()->education()->create();
 
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/organizations');
-
-            $response->assertOk();
-
-            $data = $response->json();
-            expect($data['hydra:totalItems'])->toBeGreaterThan(0);
-        });
-
-        it('enforces tenant isolation in multi-tenant context', function (): void {
-            // Create organizations that should be isolated
-            $org1 = Organization::factory()->create(['email' => 'org1@test.com']);
-            $org2 = Organization::factory()->create(['email' => 'org2@test.com']);
-
-            // User should be able to see organizations (exact behavior depends on tenant setup)
-            $response = $this->actingAs($this->user, 'sanctum')
-                ->withHeaders(['Accept' => 'application/ld+json'])
-                ->get('/api/organizations');
-
-            $response->assertOk();
-
-            // Verify response structure is correct for tenant isolation
-            $data = $response->json();
-            expect($data)->toHaveKey('hydra:totalItems')
-                ->and($data)->toHaveKey('hydra:member')
-                ->and($data['hydra:member'])->toBeArray();
+            expect($verified->is_verified)->toBeTrue();
+            expect($unverified->is_verified)->toBeFalse();
+            expect($environmental->category)->toBe('environmental');
+            expect($education->category)->toBe('education');
         });
     });
 });

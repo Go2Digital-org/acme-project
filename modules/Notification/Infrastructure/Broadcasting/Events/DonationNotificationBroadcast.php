@@ -18,6 +18,9 @@ class DonationNotificationBroadcast implements ShouldBroadcast
     use InteractsWithSockets;
     use SerializesModels;
 
+    /**
+     * @param  array<string, mixed>  $additionalData
+     */
     public function __construct(
         public readonly Donation $donation,
         public readonly string $eventType,
@@ -27,8 +30,7 @@ class DonationNotificationBroadcast implements ShouldBroadcast
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return array<int, Channel>
+     * @return array<int, Channel|PrivateChannel>
      */
     public function broadcastOn(): array
     {
@@ -70,7 +72,8 @@ class DonationNotificationBroadcast implements ShouldBroadcast
 
     /**
      * Get the data to broadcast.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function broadcastWith(): array

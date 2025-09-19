@@ -14,6 +14,9 @@ class PaymentGatewayFactory extends Factory
 {
     protected $model = PaymentGateway::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $provider = fake()->randomElement(['stripe', 'mollie', 'paypal']);

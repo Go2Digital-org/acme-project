@@ -14,6 +14,9 @@ abstract class ApiException extends Exception
 
     protected ?string $translationKey = null;
 
+    /**
+     * @param  array<string, mixed>  $details
+     */
     public function __construct(
         string $message = '',
         /** @var array<string, mixed> */
@@ -42,7 +45,9 @@ abstract class ApiException extends Exception
         return $this->statusCode;
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getDetails(): array
     {
         return $this->details;
@@ -68,7 +73,9 @@ abstract class ApiException extends Exception
     /**
      * @deprecated Use getDetails() instead
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getErrors(): array
     {
         return $this->getDetails();

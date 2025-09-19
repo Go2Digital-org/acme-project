@@ -66,7 +66,7 @@ final class AdminServiceProvider extends ServiceProvider
         // Listen to admin settings updated event
         $events->listen(
             AdminSettingsUpdatedEvent::class,
-            function ($event) {
+            function ($event): void {
                 // Log the settings change
                 Log::info('Admin settings updated', [
                     'settings_id' => $event->settingsId,
@@ -79,7 +79,7 @@ final class AdminServiceProvider extends ServiceProvider
         // Listen to maintenance mode toggled event
         $events->listen(
             MaintenanceModeToggledEvent::class,
-            function ($event) {
+            function ($event): void {
                 // Log maintenance mode change
                 Log::warning('Maintenance mode toggled', [
                     'enabled' => $event->enabled,
@@ -101,7 +101,7 @@ final class AdminServiceProvider extends ServiceProvider
         // Listen to cache cleared event
         $events->listen(
             CacheClearedEvent::class,
-            function ($event) {
+            function ($event): void {
                 // Log cache clearing
                 Log::info('Cache cleared', [
                     'cache_types' => $event->cacheTypes,

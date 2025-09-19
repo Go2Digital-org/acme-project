@@ -191,7 +191,7 @@ class Currency implements JsonSerializable, Stringable
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, array<string, mixed>>
      */
     public static function getAvailableCurrenciesData(): array
     {

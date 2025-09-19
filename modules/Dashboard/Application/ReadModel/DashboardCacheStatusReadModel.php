@@ -8,6 +8,10 @@ use Modules\Shared\Application\ReadModel\ReadModelInterface;
 
 final readonly class DashboardCacheStatusReadModel implements ReadModelInterface
 {
+    /**
+     * @param  array<string, mixed>  $progress
+     * @param  array<string, mixed>  $cacheDetails
+     */
     public function __construct(
         public string $status,
         public bool $ready,
@@ -29,6 +33,9 @@ final readonly class DashboardCacheStatusReadModel implements ReadModelInterface
         return "dashboard:cache:status:{$userId}";
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getCacheTags(): array
     {
         $userId = $this->progress['user_id'] ?? 'unknown';
@@ -51,6 +58,9 @@ final readonly class DashboardCacheStatusReadModel implements ReadModelInterface
         return $this->progress['updated_at'] ?? now()->toISOString();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [

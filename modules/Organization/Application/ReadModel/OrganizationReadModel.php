@@ -387,7 +387,7 @@ final class OrganizationReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function getSocialMediaLinks(): array
     {
@@ -670,7 +670,8 @@ final class OrganizationReadModel extends AbstractReadModel
 
     /**
      * Get summary data optimized for lists and cards
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toSummary(): array
@@ -701,7 +702,8 @@ final class OrganizationReadModel extends AbstractReadModel
 
     /**
      * Get data optimized for public display
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toPublicArray(): array

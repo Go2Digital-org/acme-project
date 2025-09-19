@@ -25,7 +25,9 @@ final readonly class DonationCollectionProvider implements ProviderInterface
     ) {}
 
     /**
-     * @return Paginator<DonationResource>|array<DonationResource>
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     * @return Paginator<DonationResource>|array<int, DonationResource>
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): Paginator|array
     {
@@ -76,13 +78,16 @@ final readonly class DonationCollectionProvider implements ProviderInterface
             /** @var ArrayIterator<int, DonationResource> $iterator */
             $iterator = new ArrayIterator($resources->all());
 
-            return new Paginator(
+            /** @var Paginator<DonationResource> $paginator */
+            $paginator = new Paginator(
                 $iterator,
                 $models->currentPage(),
                 $models->perPage(),
                 $models->lastPage(),
                 $models->total(),
             );
+
+            return $paginator;
         }
 
         return $resources->all();

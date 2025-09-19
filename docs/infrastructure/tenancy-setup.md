@@ -48,7 +48,7 @@ php artisan tenant:create \
   --subdomain=acme \
   --admin-email=admin@acme.org \
   --admin-name="John Doe" \
-  --admin-password=secret123
+  --admin-password=[secure-password]
 
 # List all tenants
 php artisan tenant:list

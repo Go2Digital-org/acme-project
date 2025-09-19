@@ -23,7 +23,9 @@ class CampaignStatusService
         return $campaign->status;
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getStatusMetrics(Campaign $campaign): array
     {
         $progress = CampaignProgress::fromCampaign($campaign);
@@ -80,17 +82,22 @@ class CampaignStatusService
         $currentStatus = $campaign->status->value;
 
         $transitions = [
-            'draft' => ['active', 'cancelled'],
-            'active' => ['completed', 'cancelled', 'expired'],
+            'draft' => ['pending_approval', 'cancelled'],
+            'pending_approval' => ['active', 'rejected'],
+            'rejected' => ['draft', 'pending_approval', 'cancelled'],
+            'active' => ['paused', 'completed', 'cancelled', 'expired'],
+            'paused' => ['active', 'cancelled', 'expired'],
             'completed' => [], // Final state
             'cancelled' => [], // Final state
-            'expired' => ['active'], // Can reactivate if end_date is extended
+            'expired' => [], // Final state
         ];
 
         return in_array($targetStatus, $transitions[$currentStatus], true);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, string>
+     */
     public function getValidTransitions(Campaign $campaign): array
     {
         $currentStatus = $campaign->status->value;
@@ -98,12 +105,28 @@ class CampaignStatusService
 
         $baseTransitions = [
             'draft' => [
-                'active' => __('campaigns.publish_campaign_action'),
+                'pending_approval' => __('campaigns.submit_for_approval'),
+                'cancelled' => __('campaigns.cancel_campaign'),
+            ],
+            'pending_approval' => [
+                'active' => __('campaigns.approve_campaign'),
+                'rejected' => __('campaigns.reject_campaign'),
+            ],
+            'rejected' => [
+                'draft' => __('campaigns.return_to_draft'),
+                'pending_approval' => __('campaigns.resubmit_for_approval'),
                 'cancelled' => __('campaigns.cancel_campaign'),
             ],
             'active' => [
+                'paused' => __('campaigns.pause_campaign'),
                 'completed' => __('campaigns.mark_as_completed'),
                 'cancelled' => __('campaigns.cancel_campaign'),
+                'expired' => __('campaigns.mark_as_expired'),
+            ],
+            'paused' => [
+                'active' => __('campaigns.resume_campaign'),
+                'cancelled' => __('campaigns.cancel_campaign'),
+                'expired' => __('campaigns.mark_as_expired'),
             ],
             'completed' => [],
             'cancelled' => [],
@@ -139,7 +162,9 @@ class CampaignStatusService
         };
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getListingData(Campaign $campaign): array
     {
         $metrics = $this->getStatusMetrics($campaign);

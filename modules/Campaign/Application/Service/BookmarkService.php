@@ -12,7 +12,7 @@ use Modules\Campaign\Domain\Model\Bookmark;
 use Modules\Campaign\Domain\Model\Campaign;
 use Modules\Shared\Infrastructure\Laravel\Traits\HasTenantAwareCache;
 
-final class BookmarkService
+class BookmarkService
 {
     use HasTenantAwareCache;
 

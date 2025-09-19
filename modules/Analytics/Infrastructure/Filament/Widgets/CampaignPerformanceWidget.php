@@ -15,6 +15,7 @@ class CampaignPerformanceWidget extends ChartWidget
 
     protected ?string $pollingInterval = '30s';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 2;
@@ -35,9 +36,7 @@ class CampaignPerformanceWidget extends ChartWidget
         );
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     protected function getData(): array
     {
         $stats = ApplicationCache::getStats('campaign_performance');
@@ -76,9 +75,7 @@ class CampaignPerformanceWidget extends ChartWidget
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     private function getEmptyData(): array
     {
         return [
@@ -112,9 +109,7 @@ class CampaignPerformanceWidget extends ChartWidget
         return 'doughnut';
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     protected function getOptions(): array
     {
         return [

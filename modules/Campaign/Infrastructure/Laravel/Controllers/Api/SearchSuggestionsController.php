@@ -51,8 +51,9 @@ final readonly class SearchSuggestionsController
 
     /**
      * Get search suggestions based on campaign titles and descriptions
-     *
-     * @return array<int, array{text: string, type: string, highlighted?: string}>
+     */
+    /**
+     * @return array<string, mixed>
      */
     private function getSuggestions(string $query, int $limit, bool $employeeOnly, Request $request): array
     {
@@ -85,7 +86,7 @@ final readonly class SearchSuggestionsController
             $description = $campaign->getDescription();
 
             // Add full titles as phrase suggestions
-            if (stripos($title, $query) !== false) {
+            if (stripos((string) $title, $query) !== false) {
                 $phrases->push([
                     'text' => $title,
                     'type' => 'campaign_title',
@@ -94,7 +95,7 @@ final readonly class SearchSuggestionsController
             }
 
             // Extract words from titles and descriptions
-            $titleWords = str_word_count(strtolower($title), 1);
+            $titleWords = str_word_count(strtolower((string) $title), 1);
             $descriptionWords = str_word_count(strtolower($description ?? ''), 1);
 
             foreach (array_merge($titleWords, $descriptionWords) as $word) {

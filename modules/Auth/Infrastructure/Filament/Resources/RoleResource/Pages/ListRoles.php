@@ -12,6 +12,9 @@ class ListRoles extends ListRecords
 {
     protected static string $resource = RoleResource::class;
 
+    /**
+     * @return array<int, CreateAction>
+     */
     protected function getActions(): array
     {
         return [

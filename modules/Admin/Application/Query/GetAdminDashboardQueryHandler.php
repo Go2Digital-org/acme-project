@@ -17,7 +17,7 @@ final class GetAdminDashboardQueryHandler
         // Cache key for dashboard data
         $cacheKey = "admin.dashboard.{$query->userId}.{$query->dateRange}";
 
-        return Cache::remember($cacheKey, 300, function () use ($query) {
+        return Cache::remember($cacheKey, 300, function () use ($query): AdminDashboardReadModel {
             $systemStats = $this->buildSystemStats($query);
             $recentActivity = $this->buildRecentActivity($query);
             $quickActions = $this->buildQuickActions();

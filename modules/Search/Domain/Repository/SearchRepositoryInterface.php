@@ -17,21 +17,23 @@ interface SearchRepositoryInterface
     /**
      * Get search suggestions for autocomplete.
      *
-     * @return array<int, array{text: string, id: mixed, type: string}>
+     * @return array<int, string>
      */
     public function getSuggestions(string $query, string $index, int $limit = 10): array;
 
     /**
      * Get popular search terms.
-     *
-     * @return array<array{term: string, count: int}>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getPopularSearches(int $limit = 10): array;
 
     /**
      * Get recent searches for a user.
-     *
-     * @return array<array{query: string, timestamp: int}>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getRecentSearches(?int $userId, int $limit = 10): array;
 

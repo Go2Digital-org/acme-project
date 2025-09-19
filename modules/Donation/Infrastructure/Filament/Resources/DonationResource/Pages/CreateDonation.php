@@ -16,6 +16,10 @@ class CreateDonation extends CreateRecord
         return 'Record New Donation';
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Set default timestamp if not provided

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Modules\Organization\Domain\ValueObject\Address;
 
-describe('Address', function () {
-    describe('construction', function () {
-        it('creates valid address with all required fields', function () {
+describe('Address', function (): void {
+    describe('construction', function (): void {
+        it('creates valid address with all required fields', function (): void {
             $address = new Address(
                 street: '123 Main St',
                 city: 'New York',
@@ -25,7 +25,7 @@ describe('Address', function () {
                 ->and($address)->toBeInstanceOf(Stringable::class);
         });
 
-        it('creates valid address with unit', function () {
+        it('creates valid address with unit', function (): void {
             $address = new Address(
                 street: '456 Oak Ave',
                 city: 'Los Angeles',
@@ -43,7 +43,7 @@ describe('Address', function () {
                 ->and($address->unit)->toBe('Apt 5B');
         });
 
-        it('creates address with various international formats', function () {
+        it('creates address with various international formats', function (): void {
             $ukAddress = new Address(
                 street: '10 Downing Street',
                 city: 'London',
@@ -59,7 +59,7 @@ describe('Address', function () {
                 ->and($ukAddress->country)->toBe('United Kingdom');
         });
 
-        it('throws exception for empty street', function () {
+        it('throws exception for empty street', function (): void {
             expect(fn () => new Address('', 'City', 'State', '12345', 'Country'))
                 ->toThrow(InvalidArgumentException::class, 'Street address cannot be empty');
 
@@ -67,7 +67,7 @@ describe('Address', function () {
                 ->toThrow(InvalidArgumentException::class, 'Street address cannot be empty');
         });
 
-        it('throws exception for empty city', function () {
+        it('throws exception for empty city', function (): void {
             expect(fn () => new Address('123 Street', '', 'State', '12345', 'Country'))
                 ->toThrow(InvalidArgumentException::class, 'City cannot be empty');
 
@@ -75,7 +75,7 @@ describe('Address', function () {
                 ->toThrow(InvalidArgumentException::class, 'City cannot be empty');
         });
 
-        it('throws exception for empty state', function () {
+        it('throws exception for empty state', function (): void {
             expect(fn () => new Address('123 Street', 'City', '', '12345', 'Country'))
                 ->toThrow(InvalidArgumentException::class, 'State cannot be empty');
 
@@ -83,7 +83,7 @@ describe('Address', function () {
                 ->toThrow(InvalidArgumentException::class, 'State cannot be empty');
         });
 
-        it('throws exception for empty postal code', function () {
+        it('throws exception for empty postal code', function (): void {
             expect(fn () => new Address('123 Street', 'City', 'State', '', 'Country'))
                 ->toThrow(InvalidArgumentException::class, 'Postal code cannot be empty');
 
@@ -91,7 +91,7 @@ describe('Address', function () {
                 ->toThrow(InvalidArgumentException::class, 'Postal code cannot be empty');
         });
 
-        it('throws exception for empty country', function () {
+        it('throws exception for empty country', function (): void {
             expect(fn () => new Address('123 Street', 'City', 'State', '12345', ''))
                 ->toThrow(InvalidArgumentException::class, 'Country cannot be empty');
 
@@ -99,7 +99,7 @@ describe('Address', function () {
                 ->toThrow(InvalidArgumentException::class, 'Country cannot be empty');
         });
 
-        it('throws exception for empty unit string', function () {
+        it('throws exception for empty unit string', function (): void {
             expect(fn () => new Address('123 Street', 'City', 'State', '12345', 'Country', ''))
                 ->toThrow(InvalidArgumentException::class, 'Unit cannot be empty string');
 
@@ -107,15 +107,15 @@ describe('Address', function () {
                 ->toThrow(InvalidArgumentException::class, 'Unit cannot be empty string');
         });
 
-        it('accepts null unit', function () {
+        it('accepts null unit', function (): void {
             $address = new Address('123 Street', 'City', 'State', '12345', 'Country', null);
 
             expect($address->unit)->toBeNull();
         });
     });
 
-    describe('create factory method', function () {
-        it('creates address without unit', function () {
+    describe('create factory method', function (): void {
+        it('creates address without unit', function (): void {
             $address = Address::create(
                 street: '789 Pine St',
                 city: 'Chicago',
@@ -133,7 +133,7 @@ describe('Address', function () {
                 ->and($address->unit)->toBeNull();
         });
 
-        it('creates address with unit', function () {
+        it('creates address with unit', function (): void {
             $address = Address::create(
                 street: '321 Elm St',
                 city: 'Miami',
@@ -151,7 +151,7 @@ describe('Address', function () {
                 ->and($address->unit)->toBe('Suite 200');
         });
 
-        it('creates address with complex international data', function () {
+        it('creates address with complex international data', function (): void {
             $address = Address::create(
                 street: 'Champs-Élysées',
                 city: 'Paris',
@@ -170,20 +170,20 @@ describe('Address', function () {
         });
     });
 
-    describe('hasUnit method', function () {
-        it('returns false when unit is null', function () {
+    describe('hasUnit method', function (): void {
+        it('returns false when unit is null', function (): void {
             $address = new Address('123 St', 'City', 'State', '12345', 'Country');
 
             expect($address->hasUnit())->toBeFalse();
         });
 
-        it('returns true when unit is provided', function () {
+        it('returns true when unit is provided', function (): void {
             $address = new Address('123 St', 'City', 'State', '12345', 'Country', 'Unit 1');
 
             expect($address->hasUnit())->toBeTrue();
         });
 
-        it('returns true for various unit formats', function () {
+        it('returns true for various unit formats', function (): void {
             $addressApt = new Address('123 St', 'City', 'State', '12345', 'Country', 'Apt 5');
             $addressSuite = new Address('123 St', 'City', 'State', '12345', 'Country', 'Suite 100');
             $addressFloor = new Address('123 St', 'City', 'State', '12345', 'Country', '2nd Floor');
@@ -194,20 +194,20 @@ describe('Address', function () {
         });
     });
 
-    describe('getFullStreetAddress method', function () {
-        it('returns street when unit is null', function () {
+    describe('getFullStreetAddress method', function (): void {
+        it('returns street when unit is null', function (): void {
             $address = new Address('123 Main St', 'City', 'State', '12345', 'Country');
 
             expect($address->getFullStreetAddress())->toBe('123 Main St');
         });
 
-        it('returns unit and street when unit is provided', function () {
+        it('returns unit and street when unit is provided', function (): void {
             $address = new Address('456 Oak Ave', 'City', 'State', '12345', 'Country', 'Apt 2B');
 
             expect($address->getFullStreetAddress())->toBe('Apt 2B 456 Oak Ave');
         });
 
-        it('formats various unit types correctly', function () {
+        it('formats various unit types correctly', function (): void {
             $addressSuite = new Address('789 Pine St', 'City', 'State', '12345', 'Country', 'Suite 300');
             $addressFloor = new Address('321 Elm St', 'City', 'State', '12345', 'Country', '5th Floor');
             $addressUnit = new Address('654 Maple Ave', 'City', 'State', '12345', 'Country', 'Unit B');
@@ -217,7 +217,7 @@ describe('Address', function () {
                 ->and($addressUnit->getFullStreetAddress())->toBe('Unit B 654 Maple Ave');
         });
 
-        it('handles long addresses correctly', function () {
+        it('handles long addresses correctly', function (): void {
             $address = new Address(
                 'The Very Long Street Name With Many Words Avenue',
                 'City',
@@ -232,29 +232,29 @@ describe('Address', function () {
         });
     });
 
-    describe('getFormattedAddress method', function () {
-        it('formats address without unit correctly', function () {
+    describe('getFormattedAddress method', function (): void {
+        it('formats address without unit correctly', function (): void {
             $address = new Address('123 Main St', 'New York', 'NY', '10001', 'USA');
             $expected = "123 Main St\nNew York, NY 10001\nUSA";
 
             expect($address->getFormattedAddress())->toBe($expected);
         });
 
-        it('formats address with unit correctly', function () {
+        it('formats address with unit correctly', function (): void {
             $address = new Address('456 Oak Ave', 'Los Angeles', 'CA', '90210', 'USA', 'Apt 5B');
             $expected = "Apt 5B 456 Oak Ave\nLos Angeles, CA 90210\nUSA";
 
             expect($address->getFormattedAddress())->toBe($expected);
         });
 
-        it('formats international addresses correctly', function () {
+        it('formats international addresses correctly', function (): void {
             $address = new Address('10 Downing Street', 'London', 'England', 'SW1A 2AA', 'United Kingdom');
             $expected = "10 Downing Street\nLondon, England SW1A 2AA\nUnited Kingdom";
 
             expect($address->getFormattedAddress())->toBe($expected);
         });
 
-        it('handles addresses with special characters', function () {
+        it('handles addresses with special characters', function (): void {
             $address = new Address(
                 'Champs-Élysées 123',
                 'Paris',
@@ -268,7 +268,7 @@ describe('Address', function () {
             expect($address->getFormattedAddress())->toBe($expected);
         });
 
-        it('maintains consistent formatting structure', function () {
+        it('maintains consistent formatting structure', function (): void {
             $addresses = [
                 new Address('Street 1', 'City 1', 'State 1', 'Code 1', 'Country 1'),
                 new Address('Street 2', 'City 2', 'State 2', 'Code 2', 'Country 2', 'Unit 2'),
@@ -287,8 +287,8 @@ describe('Address', function () {
         });
     });
 
-    describe('equals method', function () {
-        it('returns true for identical addresses without unit', function () {
+    describe('equals method', function (): void {
+        it('returns true for identical addresses without unit', function (): void {
             $address1 = new Address('123 Main St', 'New York', 'NY', '10001', 'USA');
             $address2 = new Address('123 Main St', 'New York', 'NY', '10001', 'USA');
 
@@ -296,62 +296,62 @@ describe('Address', function () {
                 ->and($address2->equals($address1))->toBeTrue();
         });
 
-        it('returns true for identical addresses with unit', function () {
+        it('returns true for identical addresses with unit', function (): void {
             $address1 = new Address('456 Oak Ave', 'LA', 'CA', '90210', 'USA', 'Apt 5B');
             $address2 = new Address('456 Oak Ave', 'LA', 'CA', '90210', 'USA', 'Apt 5B');
 
             expect($address1->equals($address2))->toBeTrue();
         });
 
-        it('returns true for same instance', function () {
+        it('returns true for same instance', function (): void {
             $address = new Address('789 Pine St', 'Chicago', 'IL', '60601', 'USA');
 
             expect($address->equals($address))->toBeTrue();
         });
 
-        it('returns false for different streets', function () {
+        it('returns false for different streets', function (): void {
             $address1 = new Address('123 Main St', 'City', 'State', '12345', 'Country');
             $address2 = new Address('456 Oak Ave', 'City', 'State', '12345', 'Country');
 
             expect($address1->equals($address2))->toBeFalse();
         });
 
-        it('returns false for different cities', function () {
+        it('returns false for different cities', function (): void {
             $address1 = new Address('123 Main St', 'New York', 'NY', '10001', 'USA');
             $address2 = new Address('123 Main St', 'Boston', 'NY', '10001', 'USA');
 
             expect($address1->equals($address2))->toBeFalse();
         });
 
-        it('returns false for different states', function () {
+        it('returns false for different states', function (): void {
             $address1 = new Address('123 Main St', 'City', 'NY', '12345', 'USA');
             $address2 = new Address('123 Main St', 'City', 'CA', '12345', 'USA');
 
             expect($address1->equals($address2))->toBeFalse();
         });
 
-        it('returns false for different postal codes', function () {
+        it('returns false for different postal codes', function (): void {
             $address1 = new Address('123 Main St', 'City', 'State', '12345', 'USA');
             $address2 = new Address('123 Main St', 'City', 'State', '67890', 'USA');
 
             expect($address1->equals($address2))->toBeFalse();
         });
 
-        it('returns false for different countries', function () {
+        it('returns false for different countries', function (): void {
             $address1 = new Address('123 Main St', 'City', 'State', '12345', 'USA');
             $address2 = new Address('123 Main St', 'City', 'State', '12345', 'Canada');
 
             expect($address1->equals($address2))->toBeFalse();
         });
 
-        it('returns false for different units', function () {
+        it('returns false for different units', function (): void {
             $address1 = new Address('123 Main St', 'City', 'State', '12345', 'USA', 'Apt 1');
             $address2 = new Address('123 Main St', 'City', 'State', '12345', 'USA', 'Apt 2');
 
             expect($address1->equals($address2))->toBeFalse();
         });
 
-        it('returns false when one has unit and other does not', function () {
+        it('returns false when one has unit and other does not', function (): void {
             $address1 = new Address('123 Main St', 'City', 'State', '12345', 'USA');
             $address2 = new Address('123 Main St', 'City', 'State', '12345', 'USA', 'Apt 1');
 
@@ -359,7 +359,7 @@ describe('Address', function () {
                 ->and($address2->equals($address1))->toBeFalse();
         });
 
-        it('returns true when both have null units', function () {
+        it('returns true when both have null units', function (): void {
             $address1 = new Address('123 Main St', 'City', 'State', '12345', 'USA', null);
             $address2 = new Address('123 Main St', 'City', 'State', '12345', 'USA', null);
 
@@ -367,8 +367,8 @@ describe('Address', function () {
         });
     });
 
-    describe('toString method', function () {
-        it('converts to string without unit', function () {
+    describe('toString method', function (): void {
+        it('converts to string without unit', function (): void {
             $address = new Address('123 Main St', 'New York', 'NY', '10001', 'USA');
             $expected = '123 Main St, New York, NY 10001, USA';
 
@@ -376,14 +376,14 @@ describe('Address', function () {
                 ->and($address->__toString())->toBe($expected);
         });
 
-        it('converts to string with unit', function () {
+        it('converts to string with unit', function (): void {
             $address = new Address('456 Oak Ave', 'Los Angeles', 'CA', '90210', 'USA', 'Apt 5B');
             $expected = 'Apt 5B 456 Oak Ave, Los Angeles, CA 90210, USA';
 
             expect((string) $address)->toBe($expected);
         });
 
-        it('replaces newlines with commas', function () {
+        it('replaces newlines with commas', function (): void {
             $address = new Address('789 Pine St', 'Chicago', 'IL', '60601', 'USA');
             $formatted = $address->getFormattedAddress();
             $toString = (string) $address;
@@ -393,7 +393,7 @@ describe('Address', function () {
                 ->and($toString)->toContain(', ');
         });
 
-        it('maintains consistency with formatted address', function () {
+        it('maintains consistency with formatted address', function (): void {
             $address = new Address('321 Elm St', 'Miami', 'FL', '33101', 'USA', 'Suite 200');
             $formatted = $address->getFormattedAddress();
             $toString = (string) $address;
@@ -402,7 +402,7 @@ describe('Address', function () {
             expect($toString)->toBe($expectedString);
         });
 
-        it('handles international addresses correctly', function () {
+        it('handles international addresses correctly', function (): void {
             $address = new Address('10 Downing Street', 'London', 'England', 'SW1A 2AA', 'United Kingdom');
             $expected = '10 Downing Street, London, England SW1A 2AA, United Kingdom';
 
@@ -410,8 +410,8 @@ describe('Address', function () {
         });
     });
 
-    describe('edge cases and validation', function () {
-        it('handles addresses with leading/trailing spaces', function () {
+    describe('edge cases and validation', function (): void {
+        it('handles addresses with leading/trailing spaces', function (): void {
             $address = new Address(
                 '  123 Main St  ',
                 '  New York  ',
@@ -429,7 +429,7 @@ describe('Address', function () {
                 ->and($address->unit)->toBe('  Apt 5B  ');
         });
 
-        it('handles very long address components', function () {
+        it('handles very long address components', function (): void {
             $longStreet = str_repeat('Very Long Street Name ', 10);
             $longCity = str_repeat('Very Long City Name ', 5);
             $longState = str_repeat('Very Long State Name ', 3);
@@ -445,7 +445,7 @@ describe('Address', function () {
                 ->and(strlen($address->unit))->toBeGreaterThan(40);
         });
 
-        it('handles special characters in all fields', function () {
+        it('handles special characters in all fields', function (): void {
             $address = new Address(
                 'Rüdesheimer Straße 123',
                 'Düsseldorf',
@@ -462,7 +462,7 @@ describe('Address', function () {
                 ->and($address->unit)->toBe('Büro 4a');
         });
 
-        it('handles numeric postal codes correctly', function () {
+        it('handles numeric postal codes correctly', function (): void {
             $address1 = new Address('123 St', 'City', 'State', '12345', 'Country');
             $address2 = new Address('123 St', 'City', 'State', '00001', 'Country');
             $address3 = new Address('123 St', 'City', 'State', '99999', 'Country');
@@ -472,7 +472,7 @@ describe('Address', function () {
                 ->and($address3->postalCode)->toBe('99999');
         });
 
-        it('handles alphanumeric postal codes', function () {
+        it('handles alphanumeric postal codes', function (): void {
             $ukAddress = new Address('123 St', 'London', 'England', 'SW1A 2AA', 'UK');
             $canadaAddress = new Address('123 St', 'Toronto', 'ON', 'M5V 3A8', 'Canada');
 
@@ -481,8 +481,8 @@ describe('Address', function () {
         });
     });
 
-    describe('immutability and value object behavior', function () {
-        it('maintains immutable properties', function () {
+    describe('immutability and value object behavior', function (): void {
+        it('maintains immutable properties', function (): void {
             $address = new Address('123 Main St', 'City', 'State', '12345', 'Country', 'Unit 1');
 
             expect($address->street)->toBe('123 Main St')
@@ -496,7 +496,7 @@ describe('Address', function () {
             expect($address->street)->toBe('123 Main St');
         });
 
-        it('creates separate instances correctly', function () {
+        it('creates separate instances correctly', function (): void {
             $address1 = new Address('123 Main St', 'City1', 'State1', '12345', 'Country1');
             $address2 = new Address('456 Oak Ave', 'City2', 'State2', '67890', 'Country2');
 
@@ -507,7 +507,7 @@ describe('Address', function () {
                 ->and($address1->country)->not->toBe($address2->country);
         });
 
-        it('behaves as value object in collections', function () {
+        it('behaves as value object in collections', function (): void {
             $address1 = new Address('123 Main St', 'City', 'State', '12345', 'Country');
             $address2 = new Address('123 Main St', 'City', 'State', '12345', 'Country');
             $address3 = new Address('456 Oak Ave', 'City', 'State', '12345', 'Country');

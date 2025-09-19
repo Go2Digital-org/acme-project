@@ -27,7 +27,9 @@ final readonly class CreateNotificationCommand implements CommandInterface
         public string $channel = 'database',
         public string $priority = 'normal',
         public ?string $senderId = null,
+        /** @var array<string, mixed> */
         public array $data = [],
+        /** @var array<string, mixed> */
         public array $metadata = [],
         public ?DateTime $scheduledFor = null,
     ) {}

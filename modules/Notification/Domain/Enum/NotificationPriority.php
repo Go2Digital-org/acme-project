@@ -168,7 +168,7 @@ enum NotificationPriority: string
     /**
      * Get priorities that require immediate attention.
      *
-     * @return array<NotificationPriority>
+     * @return array<self>
      */
     public static function urgentPriorities(): array
     {
@@ -178,7 +178,7 @@ enum NotificationPriority: string
     /**
      * Get priorities that can be batched or delayed.
      *
-     * @return array<NotificationPriority>
+     * @return array<self>
      */
     public static function batchablePriorities(): array
     {
@@ -191,7 +191,7 @@ enum NotificationPriority: string
     /**
      * Get all priorities ordered by weight (lowest to highest).
      *
-     * @return array<NotificationPriority>
+     * @return array<self>
      */
     public static function orderedByWeight(): array
     {

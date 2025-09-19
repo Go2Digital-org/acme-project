@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 use Modules\Search\Domain\ValueObject\SearchFilters;
 
-describe('SearchFilters Value Object', function () {
-    it('creates empty filters with all null values', function () {
+describe('SearchFilters Value Object', function (): void {
+    it('creates empty filters with all null values', function (): void {
         $filters = new SearchFilters;
 
         expect($filters->entityTypes)->toBeNull()
             ->and($filters->statuses)->toBeNull()
             ->and($filters->categories)->toBeNull()
             ->and($filters->organizationIds)->toBeNull()
-            ->and($filters->employeeIds)->toBeNull()
+            ->and($filters->userIds)->toBeNull()
             ->and($filters->dateFrom)->toBeNull()
             ->and($filters->dateTo)->toBeNull()
             ->and($filters->amountRange)->toBeNull()
@@ -23,7 +23,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->customFilters)->toBeNull();
     });
 
-    it('creates filters with entity types', function () {
+    it('creates filters with entity types', function (): void {
         $entityTypes = ['campaign', 'donation', 'organization'];
         $filters = new SearchFilters(entityTypes: $entityTypes);
 
@@ -31,7 +31,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->statuses)->toBeNull();
     });
 
-    it('creates filters with statuses', function () {
+    it('creates filters with statuses', function (): void {
         $statuses = ['active', 'draft', 'completed'];
         $filters = new SearchFilters(statuses: $statuses);
 
@@ -39,7 +39,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->entityTypes)->toBeNull();
     });
 
-    it('creates filters with categories', function () {
+    it('creates filters with categories', function (): void {
         $categories = ['environment', 'education', 'health'];
         $filters = new SearchFilters(categories: $categories);
 
@@ -47,7 +47,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->statuses)->toBeNull();
     });
 
-    it('creates filters with organization IDs', function () {
+    it('creates filters with organization IDs', function (): void {
         $orgIds = [1, 2, 3, 5, 8];
         $filters = new SearchFilters(organizationIds: $orgIds);
 
@@ -55,25 +55,25 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->categories)->toBeNull();
     });
 
-    it('creates filters with employee IDs', function () {
-        $employeeIds = [10, 20, 30];
-        $filters = new SearchFilters(employeeIds: $employeeIds);
+    it('creates filters with user IDs', function (): void {
+        $userIds = [10, 20, 30];
+        $filters = new SearchFilters(userIds: $userIds);
 
-        expect($filters->employeeIds)->toBe($employeeIds)
+        expect($filters->userIds)->toBe($userIds)
             ->and($filters->organizationIds)->toBeNull();
     });
 
-    it('creates filters with date range', function () {
+    it('creates filters with date range', function (): void {
         $dateFrom = '2024-01-01';
         $dateTo = '2024-12-31';
         $filters = new SearchFilters(dateFrom: $dateFrom, dateTo: $dateTo);
 
         expect($filters->dateFrom)->toBe($dateFrom)
             ->and($filters->dateTo)->toBe($dateTo)
-            ->and($filters->employeeIds)->toBeNull();
+            ->and($filters->userIds)->toBeNull();
     });
 
-    it('creates filters with amount range', function () {
+    it('creates filters with amount range', function (): void {
         $amountRange = [100.0, 5000.0];
         $filters = new SearchFilters(amountRange: $amountRange);
 
@@ -81,7 +81,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->dateFrom)->toBeNull();
     });
 
-    it('creates filters with boolean flags', function () {
+    it('creates filters with boolean flags', function (): void {
         $filters = new SearchFilters(
             isActive: true,
             isVerified: false,
@@ -94,7 +94,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->amountRange)->toBeNull();
     });
 
-    it('creates filters with tags', function () {
+    it('creates filters with tags', function (): void {
         $tags = ['urgent', 'priority', 'environmental'];
         $filters = new SearchFilters(tags: $tags);
 
@@ -102,7 +102,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->isActive)->toBeNull();
     });
 
-    it('creates filters with custom filters', function () {
+    it('creates filters with custom filters', function (): void {
         $customFilters = ['region' => 'europe', 'type' => 'premium'];
         $filters = new SearchFilters(customFilters: $customFilters);
 
@@ -110,7 +110,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->tags)->toBeNull();
     });
 
-    it('converts filters to array excluding null values', function () {
+    it('converts filters to array excluding null values', function (): void {
         $filters = new SearchFilters(
             entityTypes: ['campaign'],
             statuses: ['active', 'draft'],
@@ -132,7 +132,7 @@ describe('SearchFilters Value Object', function () {
         ]);
     });
 
-    it('filters out null values in toArray', function () {
+    it('filters out null values in toArray', function (): void {
         $filters = new SearchFilters(
             entityTypes: ['campaign'],
             statuses: null,
@@ -147,7 +147,7 @@ describe('SearchFilters Value Object', function () {
             ->and($array)->not->toHaveKeys(['statuses', 'categories', 'organization_ids']);
     });
 
-    it('detects empty filters correctly', function () {
+    it('detects empty filters correctly', function (): void {
         $emptyFilters = new SearchFilters;
         $nonEmptyFilters = new SearchFilters(entityTypes: ['campaign']);
 
@@ -155,7 +155,7 @@ describe('SearchFilters Value Object', function () {
             ->and($nonEmptyFilters->isEmpty())->toBeFalse();
     });
 
-    it('creates filters from array data', function () {
+    it('creates filters from array data', function (): void {
         $data = [
             'entity_types' => ['campaign', 'donation'],
             'statuses' => ['active'],
@@ -176,7 +176,7 @@ describe('SearchFilters Value Object', function () {
         expect($filters->entityTypes)->toBe(['campaign', 'donation'])
             ->and($filters->statuses)->toBe(['active'])
             ->and($filters->organizationIds)->toBe([1, 2, 3])
-            ->and($filters->employeeIds)->toBe([10, 20])
+            ->and($filters->userIds)->toBe([10, 20])
             ->and($filters->dateFrom)->toBe('2024-01-01')
             ->and($filters->dateTo)->toBe('2024-12-31')
             ->and($filters->amountRange)->toBe([500.0, 10000.0])
@@ -187,7 +187,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->customFilters)->toBe(['region' => 'asia']);
     });
 
-    it('creates filters from partial array data', function () {
+    it('creates filters from partial array data', function (): void {
         $data = ['entity_types' => ['campaign'], 'is_active' => true];
         $filters = SearchFilters::fromArray($data);
 
@@ -197,7 +197,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->organizationIds)->toBeNull();
     });
 
-    it('creates filters from empty array', function () {
+    it('creates filters from empty array', function (): void {
         $filters = SearchFilters::fromArray([]);
 
         expect($filters->isEmpty())->toBeTrue()
@@ -205,7 +205,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->statuses)->toBeNull();
     });
 
-    it('merges filters correctly', function () {
+    it('merges filters correctly', function (): void {
         $base = new SearchFilters(
             entityTypes: ['campaign'],
             statuses: ['active'],
@@ -227,7 +227,7 @@ describe('SearchFilters Value Object', function () {
             ->and($merged->isVerified)->toBeTrue(); // Added from other
     });
 
-    it('preserves null values during merge when other has null', function () {
+    it('preserves null values during merge when other has null', function (): void {
         $base = new SearchFilters(entityTypes: ['campaign'], isActive: true);
         $other = new SearchFilters(entityTypes: null, isVerified: false);
         $merged = $base->merge($other);
@@ -237,7 +237,7 @@ describe('SearchFilters Value Object', function () {
             ->and($merged->isVerified)->toBeFalse(); // Other value used
     });
 
-    it('overwrites base values with other non-null values', function () {
+    it('overwrites base values with other non-null values', function (): void {
         $base = new SearchFilters(entityTypes: ['campaign'], statuses: ['draft']);
         $other = new SearchFilters(entityTypes: ['donation'], statuses: null);
         $merged = $base->merge($other);
@@ -246,70 +246,70 @@ describe('SearchFilters Value Object', function () {
             ->and($merged->statuses)->toBe(['draft']); // Base preserved when other is null
     });
 
-    it('builds meilisearch filter for entity types', function () {
+    it('builds meilisearch filter for entity types', function (): void {
         $filters = new SearchFilters(entityTypes: ['campaign', 'donation']);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('entity_type IN ["campaign","donation"]');
     });
 
-    it('builds meilisearch filter for statuses', function () {
+    it('builds meilisearch filter for statuses', function (): void {
         $filters = new SearchFilters(statuses: ['active', 'completed']);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('status IN ["active","completed"]');
     });
 
-    it('builds meilisearch filter for categories', function () {
+    it('builds meilisearch filter for categories', function (): void {
         $filters = new SearchFilters(categories: ['environment', 'education']);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('category IN ["environment","education"]');
     });
 
-    it('builds meilisearch filter for organization IDs', function () {
+    it('builds meilisearch filter for organization IDs', function (): void {
         $filters = new SearchFilters(organizationIds: [1, 5, 10]);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('organization_id IN [1,5,10]');
     });
 
-    it('builds meilisearch filter for employee IDs', function () {
-        $filters = new SearchFilters(employeeIds: [20, 30, 40]);
+    it('builds meilisearch filter for user IDs', function (): void {
+        $filters = new SearchFilters(userIds: [20, 30, 40]);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('user_id IN [20,30,40]');
     });
 
-    it('builds meilisearch filter for date from', function () {
+    it('builds meilisearch filter for date from', function (): void {
         $filters = new SearchFilters(dateFrom: '2024-01-01');
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('created_at >= "2024-01-01"');
     });
 
-    it('builds meilisearch filter for date to', function () {
+    it('builds meilisearch filter for date to', function (): void {
         $filters = new SearchFilters(dateTo: '2024-12-31');
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('created_at <= "2024-12-31"');
     });
 
-    it('builds meilisearch filter for amount range', function () {
+    it('builds meilisearch filter for amount range', function (): void {
         $filters = new SearchFilters(amountRange: [100.5, 5000.0]);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('amount >= 100.5 AND amount <= 5000');
     });
 
-    it('ignores invalid amount range', function () {
+    it('ignores invalid amount range', function (): void {
         $filters = new SearchFilters(amountRange: [100.0]); // Invalid: only one value
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('');
     });
 
-    it('builds meilisearch filter for boolean flags', function () {
+    it('builds meilisearch filter for boolean flags', function (): void {
         $activeFilters = new SearchFilters(isActive: true);
         $inactiveFilters = new SearchFilters(isActive: false);
         $verifiedFilters = new SearchFilters(isVerified: true);
@@ -323,7 +323,7 @@ describe('SearchFilters Value Object', function () {
             ->and($featuredFilters->toMeilisearchFilter())->toBe('is_featured = true');
     });
 
-    it('combines multiple filters with AND', function () {
+    it('combines multiple filters with AND', function (): void {
         $filters = new SearchFilters(
             entityTypes: ['campaign'],
             statuses: ['active'],
@@ -337,7 +337,7 @@ describe('SearchFilters Value Object', function () {
         );
     });
 
-    it('handles complex filter combination', function () {
+    it('handles complex filter combination', function (): void {
         $filters = new SearchFilters(
             entityTypes: ['campaign', 'donation'],
             organizationIds: [1, 2],
@@ -362,21 +362,21 @@ describe('SearchFilters Value Object', function () {
         expect($meilisearchFilter)->toBe(implode(' AND ', $expectedParts));
     });
 
-    it('returns empty string for no filters', function () {
+    it('returns empty string for no filters', function (): void {
         $filters = new SearchFilters;
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('');
     });
 
-    it('handles quotes in string values for meilisearch', function () {
+    it('handles quotes in string values for meilisearch', function (): void {
         $filters = new SearchFilters(entityTypes: ['campaign"test', 'donation']);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('entity_type IN ["campaign"test","donation"]');
     });
 
-    it('is immutable during operations', function () {
+    it('is immutable during operations', function (): void {
         $original = new SearchFilters(entityTypes: ['campaign'], isActive: true);
         $other = new SearchFilters(statuses: ['active']);
         $merged = $original->merge($other);
@@ -387,7 +387,7 @@ describe('SearchFilters Value Object', function () {
             ->and($merged->entityTypes)->toBe(['campaign']); // Copied to merged
     });
 
-    it('handles empty arrays in filters', function () {
+    it('handles empty arrays in filters', function (): void {
         $filters = new SearchFilters(
             entityTypes: [],
             statuses: [],
@@ -399,7 +399,7 @@ describe('SearchFilters Value Object', function () {
             ->and($filters->categories)->toBe([]);
     });
 
-    it('includes empty arrays in toArray output', function () {
+    it('includes empty arrays in toArray output', function (): void {
         $filters = new SearchFilters(entityTypes: [], isActive: true);
         $array = $filters->toArray();
 
@@ -409,17 +409,17 @@ describe('SearchFilters Value Object', function () {
             ->and($array['is_active'])->toBeTrue();
     });
 
-    it('handles edge case with single amount in range', function () {
+    it('handles edge case with single amount in range', function (): void {
         $filters = new SearchFilters(amountRange: [1000.0, 1000.0]);
         $meilisearchFilter = $filters->toMeilisearchFilter();
 
         expect($meilisearchFilter)->toBe('amount >= 1000 AND amount <= 1000');
     });
 
-    it('preserves order in meilisearch filter construction', function () {
+    it('preserves order in meilisearch filter construction', function (): void {
         $filters = new SearchFilters(
             organizationIds: [3, 1, 2],
-            employeeIds: [30, 10, 20]
+            userIds: [30, 10, 20]
         );
 
         $meilisearchFilter = $filters->toMeilisearchFilter();

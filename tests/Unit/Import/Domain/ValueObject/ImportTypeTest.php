@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Modules\Import\Domain\ValueObject\ImportType;
 
-describe('ImportType', function () {
-    describe('static constructors', function () {
-        it('creates campaigns type', function () {
+describe('ImportType', function (): void {
+    describe('static constructors', function (): void {
+        it('creates campaigns type', function (): void {
             $type = ImportType::campaigns();
 
             expect($type->value())->toBe('campaigns')
@@ -14,7 +14,7 @@ describe('ImportType', function () {
                 ->and((string) $type)->toBe('campaigns');
         });
 
-        it('creates donations type', function () {
+        it('creates donations type', function (): void {
             $type = ImportType::donations();
 
             expect($type->value())->toBe('donations')
@@ -22,7 +22,7 @@ describe('ImportType', function () {
                 ->and((string) $type)->toBe('donations');
         });
 
-        it('creates organizations type', function () {
+        it('creates organizations type', function (): void {
             $type = ImportType::organizations();
 
             expect($type->value())->toBe('organizations')
@@ -30,7 +30,7 @@ describe('ImportType', function () {
                 ->and((string) $type)->toBe('organizations');
         });
 
-        it('creates users type', function () {
+        it('creates users type', function (): void {
             $type = ImportType::users();
 
             expect($type->value())->toBe('users')
@@ -38,7 +38,7 @@ describe('ImportType', function () {
                 ->and((string) $type)->toBe('users');
         });
 
-        it('creates employees type', function () {
+        it('creates employees type', function (): void {
             $type = ImportType::employees();
 
             expect($type->value())->toBe('employees')
@@ -47,36 +47,36 @@ describe('ImportType', function () {
         });
     });
 
-    describe('constructor with valid types', function () {
-        it('accepts campaigns type', function () {
+    describe('constructor with valid types', function (): void {
+        it('accepts campaigns type', function (): void {
             $type = new ImportType('campaigns');
 
             expect($type->value())->toBe('campaigns')
                 ->and($type->isCampaigns())->toBeTrue();
         });
 
-        it('accepts donations type', function () {
+        it('accepts donations type', function (): void {
             $type = new ImportType('donations');
 
             expect($type->value())->toBe('donations')
                 ->and($type->isDonations())->toBeTrue();
         });
 
-        it('accepts organizations type', function () {
+        it('accepts organizations type', function (): void {
             $type = new ImportType('organizations');
 
             expect($type->value())->toBe('organizations')
                 ->and($type->isOrganizations())->toBeTrue();
         });
 
-        it('accepts users type', function () {
+        it('accepts users type', function (): void {
             $type = new ImportType('users');
 
             expect($type->value())->toBe('users')
                 ->and($type->isUsers())->toBeTrue();
         });
 
-        it('accepts employees type', function () {
+        it('accepts employees type', function (): void {
             $type = new ImportType('employees');
 
             expect($type->value())->toBe('employees')
@@ -84,27 +84,27 @@ describe('ImportType', function () {
         });
     });
 
-    describe('constructor validation', function () {
-        it('throws exception for invalid type', function () {
+    describe('constructor validation', function (): void {
+        it('throws exception for invalid type', function (): void {
             expect(fn () => new ImportType('invalid'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new ImportType('invalid'))
                 ->toThrow('Invalid import type "invalid"');
         });
 
-        it('throws exception for empty string', function () {
+        it('throws exception for empty string', function (): void {
             expect(fn () => new ImportType(''))
                 ->toThrow(InvalidArgumentException::class);
         });
 
-        it('throws exception for case-sensitive mismatch', function () {
+        it('throws exception for case-sensitive mismatch', function (): void {
             expect(fn () => new ImportType('Campaigns'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new ImportType('CAMPAIGNS'))
                 ->toThrow(InvalidArgumentException::class);
         });
 
-        it('includes allowed types in error message', function () {
+        it('includes allowed types in error message', function (): void {
             try {
                 new ImportType('invalid');
             } catch (InvalidArgumentException $e) {
@@ -118,8 +118,8 @@ describe('ImportType', function () {
         });
     });
 
-    describe('type checking methods', function () {
-        it('correctly identifies campaigns', function () {
+    describe('type checking methods', function (): void {
+        it('correctly identifies campaigns', function (): void {
             $campaigns = ImportType::campaigns();
 
             expect($campaigns->isCampaigns())->toBeTrue()
@@ -129,7 +129,7 @@ describe('ImportType', function () {
                 ->and($campaigns->isEmployees())->toBeFalse();
         });
 
-        it('correctly identifies donations', function () {
+        it('correctly identifies donations', function (): void {
             $donations = ImportType::donations();
 
             expect($donations->isCampaigns())->toBeFalse()
@@ -139,7 +139,7 @@ describe('ImportType', function () {
                 ->and($donations->isEmployees())->toBeFalse();
         });
 
-        it('correctly identifies organizations', function () {
+        it('correctly identifies organizations', function (): void {
             $organizations = ImportType::organizations();
 
             expect($organizations->isCampaigns())->toBeFalse()
@@ -149,7 +149,7 @@ describe('ImportType', function () {
                 ->and($organizations->isEmployees())->toBeFalse();
         });
 
-        it('correctly identifies users', function () {
+        it('correctly identifies users', function (): void {
             $users = ImportType::users();
 
             expect($users->isCampaigns())->toBeFalse()
@@ -159,7 +159,7 @@ describe('ImportType', function () {
                 ->and($users->isEmployees())->toBeFalse();
         });
 
-        it('correctly identifies employees', function () {
+        it('correctly identifies employees', function (): void {
             $employees = ImportType::employees();
 
             expect($employees->isCampaigns())->toBeFalse()
@@ -170,8 +170,8 @@ describe('ImportType', function () {
         });
     });
 
-    describe('equals method', function () {
-        it('returns true for same types', function () {
+    describe('equals method', function (): void {
+        it('returns true for same types', function (): void {
             $type1 = ImportType::campaigns();
             $type2 = ImportType::campaigns();
 
@@ -179,7 +179,7 @@ describe('ImportType', function () {
                 ->and($type2->equals($type1))->toBeTrue();
         });
 
-        it('returns false for different types', function () {
+        it('returns false for different types', function (): void {
             $campaigns = ImportType::campaigns();
             $donations = ImportType::donations();
 
@@ -187,7 +187,7 @@ describe('ImportType', function () {
                 ->and($donations->equals($campaigns))->toBeFalse();
         });
 
-        it('works with constructed instances', function () {
+        it('works with constructed instances', function (): void {
             $type1 = new ImportType('users');
             $type2 = ImportType::users();
 
@@ -196,14 +196,14 @@ describe('ImportType', function () {
         });
     });
 
-    describe('string conversion', function () {
-        it('implements Stringable interface', function () {
+    describe('string conversion', function (): void {
+        it('implements Stringable interface', function (): void {
             $type = ImportType::campaigns();
 
             expect($type)->toBeInstanceOf(Stringable::class);
         });
 
-        it('converts to string correctly', function () {
+        it('converts to string correctly', function (): void {
             expect((string) ImportType::campaigns())->toBe('campaigns')
                 ->and((string) ImportType::donations())->toBe('donations')
                 ->and((string) ImportType::organizations())->toBe('organizations')
@@ -211,21 +211,21 @@ describe('ImportType', function () {
                 ->and((string) ImportType::employees())->toBe('employees');
         });
 
-        it('value method returns same as __toString', function () {
+        it('value method returns same as __toString', function (): void {
             $type = ImportType::campaigns();
 
             expect($type->value())->toBe((string) $type);
         });
     });
 
-    describe('readonly behavior', function () {
-        it('is readonly class', function () {
+    describe('readonly behavior', function (): void {
+        it('is readonly class', function (): void {
             $reflection = new ReflectionClass(ImportType::class);
 
             expect($reflection->isReadOnly())->toBeTrue();
         });
 
-        it('maintains value integrity', function () {
+        it('maintains value integrity', function (): void {
             $type = ImportType::campaigns();
 
             expect($type->value())->toBe('campaigns')

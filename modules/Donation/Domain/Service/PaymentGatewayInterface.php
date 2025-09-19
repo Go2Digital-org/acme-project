@@ -39,7 +39,7 @@ interface PaymentGatewayInterface
     /**
      * Process webhook notifications from gateway.
      *
-     * @param  array<array-key, mixed>  $payload
+     * @param  array<string, mixed>  $payload
      */
     public function handleWebhook(array $payload, string $signature): void;
 
@@ -56,7 +56,7 @@ interface PaymentGatewayInterface
     /**
      * Get supported currencies for this gateway.
      *
-     * @return string[]
+     * @return array<int, string>
      */
     public function getSupportedCurrencies(): array;
 

@@ -7,6 +7,7 @@ namespace Modules\Currency\Application\Service;
 use Exception;
 use Illuminate\Support\Collection;
 use Modules\Currency\Application\Query\GetCurrenciesForViewQuery;
+use Modules\Currency\Domain\Model\Currency;
 use Modules\Currency\Domain\Service\CurrencyCacheInterface;
 use Modules\Shared\Application\Query\QueryBusInterface;
 use stdClass;
@@ -28,8 +29,9 @@ class CurrencyViewService
      * Get active currencies for view display.
      *
      * @deprecated Use GetCurrenciesForViewQuery directly via QueryBus.
-     *
-     * @return Collection<int, stdClass>
+     */
+    /**
+     * @return Collection<int, Currency>
      */
     public function getActiveCurrencies(): Collection
     {
@@ -39,13 +41,25 @@ class CurrencyViewService
 
             // Transform to Collection of stdClass for backward compatibility
             $currencyData = $readModel->getCurrenciesForDropdown();
-            /** @var array<int, array<string, mixed>> $typedData */
+            /** @var array<string, mixed> $typedData */
             $typedData = $currencyData;
-            /** @var Collection<int, stdClass> $currencies */
+            /** @var Collection<int, Currency> $currencies */
             $currencies = collect($typedData)
-                ->map(fn (array $currency): stdClass => (object) $currency);
+                ->map(function (array $currency): Currency {
+                    $currencyModel = new Currency;
+                    $currencyModel->id = $currency['id'] ?? null;
+                    $currencyModel->code = $currency['code'];
+                    $currencyModel->name = $currency['name'];
+                    $currencyModel->symbol = $currency['symbol'];
+                    $currencyModel->flag = $currency['flag'];
+                    $currencyModel->is_default = $currency['is_default'] ?? false;
+                    $currencyModel->is_active = $currency['is_active'] ?? true;
+                    $currencyModel->sort_order = $currency['sort_order'] ?? 0;
 
-            // Store in request cache for backward compatibility
+                    return $currencyModel;
+                });
+
+            // Store in request cache
             $this->cache->set($currencies);
 
             return $currencies;
@@ -56,7 +70,7 @@ class CurrencyViewService
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            /** @var Collection<int, stdClass> $result */
+            /** @var Collection<int, Currency> $result */
             $result = collect([]);
             $this->cache->set($result);
 

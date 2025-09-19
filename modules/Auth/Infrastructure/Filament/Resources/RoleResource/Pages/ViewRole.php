@@ -12,6 +12,9 @@ class ViewRole extends ViewRecord
 {
     protected static string $resource = RoleResource::class;
 
+    /**
+     * @return array<int, EditAction>
+     */
     protected function getActions(): array
     {
         return [

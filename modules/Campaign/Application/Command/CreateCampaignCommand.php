@@ -14,7 +14,9 @@ final readonly class CreateCampaignCommand implements CommandInterface
      * @param  array<string, mixed>  $metadata
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public array $title,
+        /** @var array<string, mixed> */
         public array $description,
         public float $goalAmount,
         public string $startDate,
@@ -24,6 +26,7 @@ final readonly class CreateCampaignCommand implements CommandInterface
         public ?string $locale = 'en',
         public ?string $category = null,
         public ?int $categoryId = null,
+        /** @var array<string, mixed> */
         public array $metadata = [],
         public string $status = 'draft',
     ) {}

@@ -16,12 +16,12 @@ final readonly class UserDashboardDataReadModel implements ReadModelInterface
         public int $userId,
         /** @var DashboardStatistics|array<string, mixed> */
         public DashboardStatistics|array $statistics,
-        /** @var array<int, ActivityFeedItem|array<string, mixed>> */
+        /** @var array<string, mixed> */
         public array $activityFeed,
         /** @var ImpactMetrics|array<string, mixed> */
         public ImpactMetrics|array $impactMetrics,
         public int $ranking,
-        /** @var array<int, LeaderboardEntry|array<string, mixed>> */
+        /** @var array<string, mixed> */
         public array $leaderboard,
         public string $generatedAt,
         public bool $fromCache = true
@@ -37,6 +37,9 @@ final readonly class UserDashboardDataReadModel implements ReadModelInterface
         return "dashboard:data:{$this->userId}";
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getCacheTags(): array
     {
         return ['dashboard', 'user-data', "user:{$this->userId}"];
@@ -57,6 +60,9 @@ final readonly class UserDashboardDataReadModel implements ReadModelInterface
         return $this->generatedAt;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -65,7 +71,7 @@ final readonly class UserDashboardDataReadModel implements ReadModelInterface
                 ? $this->statistics->toArray()
                 : $this->statistics,
             'activity_feed' => array_map(
-                fn ($item) => $item instanceof ActivityFeedItem ? $item->toArray() : $item,
+                fn ($item): mixed => $item instanceof ActivityFeedItem ? $item->toArray() : $item,
                 $this->activityFeed
             ),
             'impact_metrics' => $this->impactMetrics instanceof ImpactMetrics
@@ -73,7 +79,7 @@ final readonly class UserDashboardDataReadModel implements ReadModelInterface
                 : $this->impactMetrics,
             'ranking' => $this->ranking,
             'leaderboard' => array_map(
-                fn ($entry) => $entry instanceof LeaderboardEntry ? $entry->toArray() : $entry,
+                fn ($entry): mixed => $entry instanceof LeaderboardEntry ? $entry->toArray() : $entry,
                 $this->leaderboard
             ),
             'generated_at' => $this->generatedAt,

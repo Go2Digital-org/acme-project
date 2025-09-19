@@ -9,15 +9,17 @@ use Modules\Shared\Domain\Event\CampaignEventInterface;
 
 class CampaignCreatedEvent extends AbstractDomainEvent implements CampaignEventInterface
 {
+    /**
+     * @param  array<string, string>|null  $titleTranslations
+     * @param  array<string, string>|null  $descriptionTranslations
+     */
     public function __construct(
         public readonly int $campaignId,
         public readonly int $userId,
         public readonly int $organizationId,
         public readonly string $title,
         public readonly float $goalAmount,
-        /** @var array<string, string>|null */
         public readonly ?array $titleTranslations = null,
-        /** @var array<string, string>|null */
         public readonly ?array $descriptionTranslations = null,
         public readonly ?string $locale = 'en',
     ) {
@@ -44,7 +46,9 @@ class CampaignCreatedEvent extends AbstractDomainEvent implements CampaignEventI
         return $this->campaignId;
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return [

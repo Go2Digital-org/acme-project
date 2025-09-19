@@ -23,24 +23,26 @@ use RuntimeException;
  */
 class DonationSuperSeeder extends PerformanceSuperSeeder
 {
-    /** @var array<int> */
+    /** @var array<string, mixed> */
     private array $userIds;
 
-    /** @var array<int> */
+    /** @var array<int, int> */
     private array $campaignIds;
 
-    /** @var array<int, array<string, mixed>> */
+    /** @var array<string, mixed> */
     private array $campaignGoals;
 
-    /** @var array<string, array<string, mixed>> */
+    /** @var array<string, mixed> */
     private array $donationPatterns;
 
-    /** @var array<string, int> */
+    /** @var array<string, mixed> */
     private array $paymentMethods;
 
     private int $paymentsGenerated = 0;
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function __construct(PerformanceMonitor $monitor, array $options = [])
     {
         // Optimize for donation records - typically 1.5KB per record + payment
@@ -73,9 +75,8 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
 
     /**
      * Generate batch of donation data optimized for massive scale
-     */
-    /**
-     * @return array<int, array<string, mixed>>
+     *
+     * @return list<array<string, mixed>>
      */
     protected function generateBatchData(int $batchSize): array
     {
@@ -194,8 +195,15 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
     private function generateRealisticDonationAmount(): float
     {
         $pattern = $this->weightedRandomSelection($this->donationPatterns);
-        $min = is_array($pattern) ? ($pattern['min'] ?? 10) : 10;
-        $max = is_array($pattern) ? ($pattern['max'] ?? 100) : 100;
+
+        // Ensure we have a valid pattern array with min/max values
+        if (!is_array($pattern) || !isset($pattern['min']) || !isset($pattern['max'])) {
+            // Fallback to default pattern if selection failed
+            $pattern = ['min' => 10, 'max' => 100];
+        }
+
+        $min = (int) $pattern['min'];
+        $max = (int) $pattern['max'];
 
         // Generate amount with some randomness but weighted toward round numbers
         $amount = random_int($min * 100, $max * 100) / 100;
@@ -261,7 +269,8 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
         ];
 
         $period = $this->weightedRandomSelection($weights);
-        $date = fake()->dateTimeBetween($period, 'now');
+        $periodString = is_string($period) ? $period : '-1 month';
+        $date = fake()->dateTimeBetween($periodString, 'now');
 
         // Add realistic time patterns (more donations during business hours)
         $hour = $this->generateRealisticHour();
@@ -361,7 +370,8 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
 
     /**
      * Select random campaign with weighted selection toward active campaigns
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function selectRandomCampaign(): array
@@ -444,17 +454,21 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
      * Weighted random selection helper
      *
      * @param  array<string|int, mixed>  $weights
-     * @return string|int|array<string, mixed>
+     * @return array<string, mixed>|string|int
      */
-    private function weightedRandomSelection(array $weights): string|int|array
+    private function weightedRandomSelection(array $weights): array|string|int
     {
         // If weights is associative array with weight values
-        if (is_array(current($weights))) {
+        $firstValue = current($weights);
+        if (is_array($firstValue) && isset($firstValue['weight'])) {
             $totalWeight = array_sum(array_column($weights, 'weight'));
             $randomNumber = random_int(1, $totalWeight);
 
             $currentWeight = 0;
-            foreach ($weights as $data) {
+            foreach ($weights as $key => $data) {
+                if (!is_array($data) || !isset($data['weight'])) {
+                    continue;
+                }
                 $currentWeight += $data['weight'];
                 if ($randomNumber <= $currentWeight) {
                     return $data;
@@ -463,14 +477,19 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
         }
 
         // If weights is simple associative array
-        $totalWeight = array_sum($weights);
-        $randomNumber = random_int(1, $totalWeight);
+        $totalWeight = (int) array_sum(array_filter($weights, 'is_numeric'));
+        if ($totalWeight > 0) {
+            $randomNumber = random_int(1, $totalWeight);
 
-        $currentWeight = 0;
-        foreach ($weights as $item => $weight) {
-            $currentWeight += $weight;
-            if ($randomNumber <= $currentWeight) {
-                return $item;
+            $currentWeight = 0;
+            foreach ($weights as $item => $weight) {
+                if (!is_numeric($weight)) {
+                    continue;
+                }
+                $currentWeight += $weight;
+                if ($randomNumber <= $currentWeight) {
+                    return $item;
+                }
             }
         }
 
@@ -482,7 +501,8 @@ class DonationSuperSeeder extends PerformanceSuperSeeder
 
     /**
      * Get additional metrics for donations
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getMetrics(): array

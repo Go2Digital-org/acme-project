@@ -19,7 +19,8 @@ final class ExportDonationRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function rules(): array
@@ -69,8 +70,9 @@ final class ExportDonationRequest extends FormRequest
 
     /**
      * Get custom error messages for validator errors.
-     *
-     * @return array<string, string>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function messages(): array
     {
@@ -90,8 +92,9 @@ final class ExportDonationRequest extends FormRequest
 
     /**
      * Get custom attribute names for error messages.
-     *
-     * @return array<string, string>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function attributes(): array
     {
@@ -117,15 +120,16 @@ final class ExportDonationRequest extends FormRequest
 
     /**
      * Get the export filters with proper types.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
-    public function getFilters(int $employeeId): array
+    public function getFilters(int $userId): array
     {
         $validated = $this->validated();
 
         $filters = [
-            'user_id' => $employeeId,
+            'user_id' => $userId,
         ];
 
         // Add optional filters only if they have values

@@ -165,7 +165,9 @@ final class SendMilestoneNotificationJob implements ShouldQueue
         return $this->milestonePercentage . '_percent';
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function getMilestoneNotificationRecipients(Campaign $campaign): array
     {
         $recipients = [];
@@ -202,7 +204,9 @@ final class SendMilestoneNotificationJob implements ShouldQueue
         return array_values($uniqueRecipients);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getMajorDonors(Campaign $campaign): array
     {
         $majorDonationThreshold = config('donation.notifications.major_donor_threshold', 100);
@@ -225,7 +229,9 @@ final class SendMilestoneNotificationJob implements ShouldQueue
             ->toArray();
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, array<string, string>>
+     */
     private function getAllDonors(Campaign $campaign): array
     {
         // Use chunked query processing for memory efficiency with large donor lists
@@ -235,7 +241,7 @@ final class SendMilestoneNotificationJob implements ShouldQueue
             ->where('status', 'completed')
             ->where('anonymous', false)
             ->with('user')
-            ->chunkById(500, function ($donations) use (&$donors) {
+            ->chunkById(500, function ($donations) use (&$donors): void {
                 foreach ($donations as $donation) {
                     if ($donation->user) {
                         $userId = $donation->user->id;
@@ -289,7 +295,9 @@ final class SendMilestoneNotificationJob implements ShouldQueue
         }
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function prepareMilestoneData(Campaign $campaign): array
     {
         $progressPercentage = $campaign->getProgressPercentage();
@@ -317,7 +325,9 @@ final class SendMilestoneNotificationJob implements ShouldQueue
             ->count();
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getAchievementGraphics(): array
     {
         $graphics = [

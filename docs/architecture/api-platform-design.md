@@ -360,7 +360,7 @@ api_platform:
     openapi:
         contact:
             name: 'Go2Digital Development Team'
-            email: 'dev@go2digit.al'
+            email: 'info@go2digit.al'
         license:
             name: 'Proprietary'
 ```

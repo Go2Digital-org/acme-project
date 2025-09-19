@@ -17,6 +17,9 @@ class ViewPaymentGateway extends ViewRecord
 {
     protected static string $resource = PaymentGatewayResource::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderActions(): array
     {
         return [

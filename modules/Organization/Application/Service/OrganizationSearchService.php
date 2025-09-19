@@ -27,6 +27,9 @@ class OrganizationSearchService extends SearchService
         return 'org_search';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDefaultFilters(): array
     {
         return [
@@ -34,6 +37,9 @@ class OrganizationSearchService extends SearchService
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getSearchableAttributesWeights(): array
     {
         return [
@@ -124,7 +130,7 @@ class OrganizationSearchService extends SearchService
             ->where('is_active', true)
             ->take($limit)
             ->get()
-            ->map(fn (Organization $org) => [
+            ->map(fn (Organization $org): array => [
                 'id' => $org->id,
                 'name' => $org->getName(),
                 'category' => $org->category,
@@ -137,13 +143,13 @@ class OrganizationSearchService extends SearchService
     /**
      * Get category facets.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getCategoryFacets(string $query = ''): array
     {
         $cacheKey = $this->getCachePrefix() . ':category_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             // This would use Meilisearch's faceting in production
             $builder = Organization::search($query)->where('is_active', true);
 
@@ -173,7 +179,7 @@ class OrganizationSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':location_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Organization::search($query)->where('is_active', true);
             $orgs = $builder->take(1000)->get();
 

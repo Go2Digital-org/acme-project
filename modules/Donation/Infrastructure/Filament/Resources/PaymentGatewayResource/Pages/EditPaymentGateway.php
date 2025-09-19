@@ -27,6 +27,9 @@ class EditPaymentGateway extends EditRecord
         return "Edit {$this->getPaymentGateway()->name}";
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderActions(): array
     {
         return [

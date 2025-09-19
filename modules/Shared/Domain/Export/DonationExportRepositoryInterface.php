@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Shared\Domain\Export;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Modules\Donation\Domain\Model\Donation;
 
 /**
  * Contract for donation export repository.
@@ -17,7 +17,7 @@ interface DonationExportRepositoryInterface extends ExportableRepositoryInterfac
      * Get donations query with all required relationships.
      *
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationsWithRelations(array $filters = []): Builder;
 
@@ -25,7 +25,7 @@ interface DonationExportRepositoryInterface extends ExportableRepositoryInterfac
      * Get donation summary query grouped by status.
      *
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationSummaryQuery(array $filters = []): Builder;
 
@@ -33,7 +33,7 @@ interface DonationExportRepositoryInterface extends ExportableRepositoryInterfac
      * Get donations grouped by campaign query.
      *
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationsByCampaignQuery(array $filters = []): Builder;
 
@@ -41,7 +41,7 @@ interface DonationExportRepositoryInterface extends ExportableRepositoryInterfac
      * Get donations grouped by employee query.
      *
      * @param  array<string, mixed>  $filters
-     * @return Builder<Model>
+     * @return Builder<Donation>
      */
     public function getDonationsByEmployeeQuery(array $filters = []): Builder;
 }

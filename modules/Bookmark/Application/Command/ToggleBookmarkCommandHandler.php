@@ -22,7 +22,7 @@ final readonly class ToggleBookmarkCommandHandler
      */
     public function handle(ToggleBookmarkCommand $command): array
     {
-        return DB::transaction(function () use ($command) {
+        return DB::transaction(function () use ($command): array {
             $existingBookmark = $this->repository->findByUserAndCampaign(
                 $command->userId,
                 $command->campaignId

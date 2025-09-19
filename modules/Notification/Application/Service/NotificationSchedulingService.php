@@ -37,7 +37,7 @@ final readonly class NotificationSchedulingService
     /**
      * Process all notifications that are due for delivery.
      *
-     * @return array{processed: array<int, string>, failed: array<int, array{notification_id: string, error: string}>, total_found: int, execution_time_ms: float}
+     * @return array{processed: array<int, string>, failed: array<int, array<string, mixed>>, total_found: int, execution_time_ms: float}
      */
     public function processDueNotifications(int $limit = 100): array
     {
@@ -50,12 +50,13 @@ final readonly class NotificationSchedulingService
                 'scheduled_for_lte' => Carbon::now(),
             ], $limit);
 
-            /** @var array<int, string> $processed */
+            /** @var array<string, mixed> $processed */
             $processed = [];
-            /** @var array<int, array{notification_id: string, error: string}> $failed */
+            /** @var array<string, mixed> $failed */
             $failed = [];
 
             foreach ($dueNotifications as $notification) {
+                /** @var Notification $notification */
                 try {
                     $this->processDueNotification($notification);
                     $processed[] = $notification->id;
@@ -103,7 +104,7 @@ final readonly class NotificationSchedulingService
     /**
      * Generate recurring notification instances for the specified period.
      *
-     * @return array{generated: array<int, string>, skipped: array<int, array{notification_id: string, error: string}>, total_recurring: int, generation_period_end: string, execution_time_ms: float}
+     * @return array{generated: array<int, string>, skipped: array<int, array<string, mixed>>, total_recurring: int, generation_period_end: string, execution_time_ms: float}
      */
     public function generateRecurringNotifications(?DateTimeInterface $upTo = null): array
     {
@@ -120,13 +121,16 @@ final readonly class NotificationSchedulingService
 
             /** @var array<int, string> $generated */
             $generated = [];
-            /** @var array<int, array{notification_id: string, error: string}> $skipped */
+            /** @var array<int, array<string, mixed>> $skipped */
             $skipped = [];
 
             foreach ($recurringNotifications as $notification) {
+                /** @var Notification $notification */
                 try {
                     $instances = $this->generateRecurringInstances($notification, $upTo);
-                    $generated = array_merge($generated, $instances);
+                    /** @var array<int, string> $stringInstances */
+                    $stringInstances = array_map('strval', $instances);
+                    $generated = array_merge($generated, $stringInstances);
                 } catch (Exception $e) {
                     $skipped[] = [
                         'notification_id' => $notification->id,
@@ -337,7 +341,7 @@ final readonly class NotificationSchedulingService
             // Check if this instance already exists
             if (! $this->instanceExists($notification, $nextTime)) {
                 $instance = $this->createRecurringInstance($notification, $nextTime);
-                $generated[] = $instance->id;
+                $generated[] = (string) $instance->id;
                 $instances++;
             }
 

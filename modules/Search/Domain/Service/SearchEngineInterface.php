@@ -17,7 +17,8 @@ interface SearchEngineInterface
 
     /**
      * Index a single document or batch of documents.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $documents
      */
     public function index(string $indexName, array $documents): bool;
@@ -44,14 +45,16 @@ interface SearchEngineInterface
 
     /**
      * Get index statistics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getIndexStats(string $indexName): array;
 
     /**
      * Bulk index documents for better performance.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $documents
      */
     public function bulkIndex(string $indexName, array $documents, int $batchSize = 1000): bool;
@@ -59,7 +62,7 @@ interface SearchEngineInterface
     /**
      * Get search suggestions for autocomplete.
      *
-     * @return array<int, array{text: string, id: mixed, type: string}>
+     * @return array<int, string>
      */
     public function suggest(string $indexName, string $query, int $limit = 10): array;
 
@@ -70,7 +73,8 @@ interface SearchEngineInterface
 
     /**
      * Get the health status of the search engine.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function health(): array;

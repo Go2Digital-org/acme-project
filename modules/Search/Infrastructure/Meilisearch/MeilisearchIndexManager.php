@@ -71,6 +71,9 @@ class MeilisearchIndexManager implements IndexManagerInterface
         // This method could trigger specific optimization tasks if needed
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function listIndexes(): array
     {
         try {
@@ -89,6 +92,9 @@ class MeilisearchIndexManager implements IndexManagerInterface
         return $config->validate();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getReindexProgress(string $entityType): array
     {
         // This would track the progress of reindexing

@@ -38,7 +38,7 @@ final readonly class CurrencyDropdownComposer
 
             // Transform ReadModel data for view compatibility
             $currencyData = $readModel->getCurrenciesForDropdown();
-            /** @var array<int, array<string, mixed>> $typedData */
+            /** @var array<string, mixed> $typedData */
             $typedData = $currencyData;
             /** @var Collection<int, stdClass> $currencies */
             $currencies = collect($typedData)

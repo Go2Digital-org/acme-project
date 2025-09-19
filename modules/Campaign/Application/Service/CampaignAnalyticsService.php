@@ -17,7 +17,8 @@ final readonly class CampaignAnalyticsService
 
     /**
      * Get campaign analytics overview data.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getCampaignOverview(): array
@@ -38,7 +39,8 @@ final readonly class CampaignAnalyticsService
 
     /**
      * Get campaign performance metrics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getCampaignPerformanceMetrics(): array
@@ -60,6 +62,9 @@ final readonly class CampaignAnalyticsService
     /**
      * Get campaign analytics by organization.
      *
+     * @return array<int, array<string, array<string, mixed>>
+     */
+    /**
      * @return array<int, array<string, mixed>>
      */
     public function getCampaignAnalyticsByOrganization(): array
@@ -93,7 +98,8 @@ final readonly class CampaignAnalyticsService
 
     /**
      * Get campaign timeline analytics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getCampaignTimelineAnalytics(): array
@@ -111,7 +117,8 @@ final readonly class CampaignAnalyticsService
 
     /**
      * Get donation analytics for campaigns.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getDonationAnalytics(): array
@@ -159,6 +166,9 @@ final readonly class CampaignAnalyticsService
     /**
      * Get top performing campaigns by progress percentage.
      *
+     * @return array<int, array<string, array<string, mixed>>
+     */
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function getTopPerformingCampaigns(int $limit = 10): array
@@ -188,6 +198,9 @@ final readonly class CampaignAnalyticsService
     /**
      * Get monthly campaign creation data.
      *
+     * @return array<int, array<string, array<string, mixed>>
+     */
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function getMonthlyCreationData(): array
@@ -222,7 +235,8 @@ final readonly class CampaignAnalyticsService
 
     /**
      * Get seasonal campaign trends.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function getSeasonalTrends(): array
@@ -275,8 +289,9 @@ final readonly class CampaignAnalyticsService
 
     /**
      * Get donation distribution by amount ranges.
-     *
-     * @return array<string, int>
+     */
+    /**
+     * @return array<string, mixed>
      */
     private function getDonationDistribution(): array
     {

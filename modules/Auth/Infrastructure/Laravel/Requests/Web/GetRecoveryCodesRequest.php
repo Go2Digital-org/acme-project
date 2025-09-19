@@ -13,13 +13,15 @@ final class GetRecoveryCodesRequest extends FormRequest
         return $this->user() !== null;
     }
 
-    /** @return array<string, array<string>> */
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [];
     }
 
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [];

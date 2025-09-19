@@ -47,6 +47,7 @@ final readonly class MaintenanceSettingsReadModel
     public function __construct(
         public bool $enabled,
         public ?string $message,
+        /** @var array<string, mixed> */
         public array $allowedIps,
         public ?DateTimeImmutable $scheduledAt = null
     ) {}
@@ -104,7 +105,9 @@ final readonly class NotificationSettingsReadModel
         public bool $emailNotifications,
         public bool $pushNotifications,
         public bool $slackNotifications,
+        /** @var array<string, mixed> */
         public array $channels,
+        /** @var array<string, mixed> */
         public array $preferences
     ) {}
 

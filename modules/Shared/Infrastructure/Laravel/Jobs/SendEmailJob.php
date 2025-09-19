@@ -33,6 +33,9 @@ final class SendEmailJob implements ShouldQueue
 
     public bool $deleteWhenMissingModels = true;
 
+    /**
+     * @param  array<string, mixed>  $emailData
+     */
     public function __construct(
         /** @var array<string, mixed> */
         private readonly array $emailData,
@@ -62,10 +65,14 @@ final class SendEmailJob implements ShouldQueue
         ]);
 
         // Set locale if provided
-        $originalLocale = app()->getLocale();
+        $originalLocale = null;
 
-        if ($this->locale) {
-            app()->setLocale($this->locale);
+        if (app()->bound('translator')) {
+            $originalLocale = app()->getLocale();
+
+            if ($this->locale) {
+                app()->setLocale($this->locale);
+            }
         }
 
         try {
@@ -89,7 +96,9 @@ final class SendEmailJob implements ShouldQueue
             throw $exception;
         } finally {
             // Restore original locale
-            app()->setLocale($originalLocale);
+            if ($originalLocale && app()->bound('translator')) {
+                app()->setLocale($originalLocale);
+            }
         }
     }
 
@@ -179,7 +188,9 @@ final class SendEmailJob implements ShouldQueue
     /**
      * Static helper methods for common email types.
      */
-    /** @param array<string, mixed> $data */
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public static function confirmation(string $to, string $subject, array $data, string $view = 'emails.confirmation'): self
     {
         return new self([
@@ -190,7 +201,9 @@ final class SendEmailJob implements ShouldQueue
         ], priority: 8);
     }
 
-    /** @param array<string, mixed> $data */
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public static function notification(string $to, string $subject, array $data, string $view = 'emails.notification'): self
     {
         return new self([
@@ -202,7 +215,7 @@ final class SendEmailJob implements ShouldQueue
     }
 
     /**
-     * @param  array<int|string, string>  $recipients
+     * @param  array<string, mixed>  $recipients
      * @param  array<string, mixed>  $data
      */
     public static function bulk(array $recipients, string $subject, array $data, string $view = 'emails.bulk'): self
@@ -216,7 +229,7 @@ final class SendEmailJob implements ShouldQueue
     }
 
     /**
-     * @param  array<int|string, string>  $recipients
+     * @param  array<string, mixed>  $recipients
      * @param  array<string, mixed>  $data
      */
     public static function marketing(array $recipients, string $subject, array $data, string $view = 'emails.marketing'): self
@@ -389,7 +402,9 @@ final class SendEmailJob implements ShouldQueue
         }
     }
 
-    /** @return array<int, array{email: string, name: string}> */
+    /**
+     * @return list<array<string, string>>
+     */
     private function normalizeRecipients(mixed $recipients): array
     {
         if (is_string($recipients)) {

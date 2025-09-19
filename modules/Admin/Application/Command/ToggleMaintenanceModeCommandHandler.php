@@ -20,7 +20,7 @@ final readonly class ToggleMaintenanceModeCommandHandler
 
     public function handle(ToggleMaintenanceModeCommand $command): AdminSettings
     {
-        return DB::transaction(function () use ($command) {
+        return DB::transaction(function () use ($command): AdminSettings {
             // Create maintenance mode value object for validation
             $maintenanceMode = $command->enabled
                 ? MaintenanceMode::enabled(

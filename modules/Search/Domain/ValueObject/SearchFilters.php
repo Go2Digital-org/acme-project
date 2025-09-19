@@ -7,21 +7,21 @@ namespace Modules\Search\Domain\ValueObject;
 class SearchFilters
 {
     /**
-     * @param  array<string>|null  $entityTypes
-     * @param  array<string>|null  $statuses
-     * @param  array<string>|null  $categories
-     * @param  array<int>|null  $organizationIds
-     * @param  array<int>|null  $employeeIds
-     * @param  array<float>|null  $amountRange
-     * @param  array<string>|null  $tags
-     * @param  array<string, mixed>|null  $customFilters
+     * @param  array<string, mixed>  $entityTypes
+     * @param  array<string, mixed>  $statuses
+     * @param  array<string, mixed>  $categories
+     * @param  array<string, mixed>  $organizationIds
+     * @param  array<string, mixed>  $userIds
+     * @param  array<string, mixed>  $amountRange
+     * @param  array<string, mixed>  $tags
+     * @param  array<string, mixed>  $customFilters
      */
     public function __construct(
         public readonly ?array $entityTypes = null,
         public readonly ?array $statuses = null,
         public readonly ?array $categories = null,
         public readonly ?array $organizationIds = null,
-        public readonly ?array $employeeIds = null,
+        public readonly ?array $userIds = null,
         public readonly ?string $dateFrom = null,
         public readonly ?string $dateTo = null,
         public readonly ?array $amountRange = null,
@@ -34,7 +34,8 @@ class SearchFilters
 
     /**
      * Convert filters to array.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toArray(): array
@@ -44,7 +45,7 @@ class SearchFilters
             'statuses' => $this->statuses,
             'categories' => $this->categories,
             'organization_ids' => $this->organizationIds,
-            'user_ids' => $this->employeeIds,
+            'user_ids' => $this->userIds,
             'date_from' => $this->dateFrom,
             'date_to' => $this->dateTo,
             'amount_range' => $this->amountRange,
@@ -66,7 +67,8 @@ class SearchFilters
 
     /**
      * Create filters from request data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
@@ -76,7 +78,7 @@ class SearchFilters
             statuses: $data['statuses'] ?? null,
             categories: $data['categories'] ?? null,
             organizationIds: $data['organization_ids'] ?? null,
-            employeeIds: $data['user_ids'] ?? null,
+            userIds: $data['user_ids'] ?? null,
             dateFrom: $data['date_from'] ?? null,
             dateTo: $data['date_to'] ?? null,
             amountRange: $data['amount_range'] ?? null,
@@ -98,7 +100,7 @@ class SearchFilters
             statuses: $other->statuses ?? $this->statuses,
             categories: $other->categories ?? $this->categories,
             organizationIds: $other->organizationIds ?? $this->organizationIds,
-            employeeIds: $other->employeeIds ?? $this->employeeIds,
+            userIds: $other->userIds ?? $this->userIds,
             dateFrom: $other->dateFrom ?? $this->dateFrom,
             dateTo: $other->dateTo ?? $this->dateTo,
             amountRange: $other->amountRange ?? $this->amountRange,
@@ -136,8 +138,8 @@ class SearchFilters
             $filters[] = 'organization_id IN [' . implode(',', $this->organizationIds) . ']';
         }
 
-        if ($this->employeeIds !== null) {
-            $filters[] = 'user_id IN [' . implode(',', $this->employeeIds) . ']';
+        if ($this->userIds !== null) {
+            $filters[] = 'user_id IN [' . implode(',', $this->userIds) . ']';
         }
 
         if ($this->dateFrom !== null) {
@@ -149,7 +151,8 @@ class SearchFilters
         }
 
         if ($this->amountRange !== null && count($this->amountRange) === 2) {
-            [$min, $max] = $this->amountRange;
+            $min = $this->amountRange[0] ?? 0;
+            $max = $this->amountRange[1] ?? 0;
             $filters[] = "amount >= {$min} AND amount <= {$max}";
         }
 

@@ -21,7 +21,8 @@ final class DonationProcessedNotification extends Notification implements Should
 
     /**
      * Get the notification's delivery channels.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public function via(mixed $notifiable): array

@@ -180,7 +180,7 @@ enum NotificationChannel: string
     /**
      * Get channels that support real-time delivery.
      *
-     * @return array<NotificationChannel>
+     * @return array<self>
      */
     public static function realTimeChannels(): array
     {
@@ -193,7 +193,7 @@ enum NotificationChannel: string
     /**
      * Get channels that support persistent storage.
      *
-     * @return array<NotificationChannel>
+     * @return array<self>
      */
     public static function persistentChannels(): array
     {
@@ -206,7 +206,7 @@ enum NotificationChannel: string
     /**
      * Get channels that require external services.
      *
-     * @return array<NotificationChannel>
+     * @return array<self>
      */
     public static function externalChannels(): array
     {

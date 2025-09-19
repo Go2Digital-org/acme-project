@@ -14,10 +14,6 @@ use DateTimeImmutable;
  */
 class PaymentResult
 {
-    /**
-     * @param  array<string, mixed>  $gatewayData
-     * @param  array<string, mixed>  $metadata
-     */
     private function __construct(
         public bool $successful,
         public ?string $transactionId = null,
@@ -28,14 +24,17 @@ class PaymentResult
         public ?string $errorCode = null,
         public ?float $amount = null,
         public ?string $currency = null,
+        /** @var array<string, mixed> */
         public array $gatewayData = [],
+        /** @var array<string, mixed> */
         public array $metadata = [],
         public ?DateTimeImmutable $processedAt = null,
     ) {}
 
     /**
      * Create successful payment result.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public static function success(array $data = []): self
@@ -64,7 +63,8 @@ class PaymentResult
 
     /**
      * Create failed payment result.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $gatewayData
      */
     public static function failure(
@@ -84,7 +84,8 @@ class PaymentResult
 
     /**
      * Create pending payment result.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public static function pending(array $data = []): self
@@ -198,7 +199,9 @@ class PaymentResult
     /**
      * Get gateway-specific data.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getGatewayData(): array
     {
         return $this->gatewayData;
@@ -207,7 +210,9 @@ class PaymentResult
     /**
      * Get metadata associated with payment.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getMetadata(): array
     {
         return $this->metadata;
@@ -241,7 +246,9 @@ class PaymentResult
     /**
      * Convert to array for serialization.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [

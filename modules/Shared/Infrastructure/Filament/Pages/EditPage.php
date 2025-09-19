@@ -18,6 +18,9 @@ class EditPage extends EditRecord
         return 'Edit Page';
     }
 
+    /**
+     * @return array<int, \Filament\Actions\Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -26,6 +29,10 @@ class EditPage extends EditRecord
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Auto-generate slug if empty and title changed

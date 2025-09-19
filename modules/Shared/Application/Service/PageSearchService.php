@@ -26,6 +26,9 @@ class PageSearchService extends SearchService
         return 'page_search';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDefaultFilters(): array
     {
         return [
@@ -33,6 +36,9 @@ class PageSearchService extends SearchService
         ];
     }
 
+    /**
+     * @return array<string, int>
+     */
     protected function getSearchableAttributesWeights(): array
     {
         return [
@@ -124,7 +130,7 @@ class PageSearchService extends SearchService
             ->where('is_published', true)
             ->take($limit)
             ->get()
-            ->map(fn (Page $page) => [
+            ->map(fn (Page $page): array => [
                 'id' => $page->id,
                 'title' => $page->getTranslation('title') ?? 'Untitled Page',
                 'slug' => $page->slug,
@@ -173,7 +179,7 @@ class PageSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':status_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Page::search($query);
             $pages = $builder->take(1000)->get();
             $facets = [];
@@ -219,7 +225,7 @@ class PageSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':empty_content:' . $limit;
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, fn () =>
+        return cache()->remember($cacheKey, self::CACHE_TTL, fn (): Collection =>
             // This would need to be implemented with custom logic
             // since we can't easily filter by empty content in search
             new Collection);

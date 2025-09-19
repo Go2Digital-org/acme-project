@@ -8,11 +8,9 @@ use Modules\Shared\Application\Query\QueryInterface;
 
 final readonly class SearchCampaignsQuery implements QueryInterface
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
         public string $searchTerm = '',
+        /** @var array<string, mixed> */
         public array $filters = [],
         public int $page = 1,
         public int $perPage = 15,

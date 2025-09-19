@@ -14,6 +14,9 @@ class LanguageFactory extends Factory
 {
     protected $model = Language::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $languageMap = [
@@ -48,7 +51,7 @@ class LanguageFactory extends Factory
      */
     public function active(): self
     {
-        return $this->state(fn () => [
+        return $this->state(fn (): array => [
             'is_active' => true,
         ]);
     }
@@ -58,7 +61,7 @@ class LanguageFactory extends Factory
      */
     public function inactive(): self
     {
-        return $this->state(fn () => [
+        return $this->state(fn (): array => [
             'is_active' => false,
         ]);
     }
@@ -68,7 +71,7 @@ class LanguageFactory extends Factory
      */
     public function default(): self
     {
-        return $this->state(fn () => [
+        return $this->state(fn (): array => [
             'is_default' => true,
             'is_active' => true,
         ]);
@@ -79,7 +82,7 @@ class LanguageFactory extends Factory
      */
     public function english(): self
     {
-        return $this->state(fn () => [
+        return $this->state(fn (): array => [
             'code' => 'en',
             'name' => 'English',
             'native_name' => 'English',
@@ -92,7 +95,7 @@ class LanguageFactory extends Factory
      */
     public function spanish(): self
     {
-        return $this->state(fn () => [
+        return $this->state(fn (): array => [
             'code' => 'es',
             'name' => 'Spanish',
             'native_name' => 'Español',
@@ -105,7 +108,7 @@ class LanguageFactory extends Factory
      */
     public function french(): self
     {
-        return $this->state(fn () => [
+        return $this->state(fn (): array => [
             'code' => 'fr',
             'name' => 'French',
             'native_name' => 'Français',

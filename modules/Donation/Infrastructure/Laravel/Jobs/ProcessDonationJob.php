@@ -301,7 +301,7 @@ final class ProcessDonationJob implements ShouldQueue
             return;
         }
 
-        /** @var array<int, array{percentage: int}> */
+        /** @var array<int, array<string, int>> */
         $milestones = [
             ['percentage' => 25],
             ['percentage' => 50],

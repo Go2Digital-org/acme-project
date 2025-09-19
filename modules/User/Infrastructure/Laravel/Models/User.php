@@ -55,7 +55,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int|null $organization_id
  * @property string|null $google_id
  * @property string|null $two_factor_secret
- * @property array<array-key, mixed>|null $two_factor_recovery_codes
+ * @property array<int, string>|null $two_factor_recovery_codes
  * @property string|null $two_factor_confirmed_at
  * @property string|null $remember_token
  * @property Carbon|null $created_at
@@ -319,8 +319,9 @@ class User extends Authenticatable implements Auditable, FilamentUser, UserInter
 
     /**
      * Get recovery codes for two-factor authentication.
+     *
+     * @return array<int, string>
      */
-    /** @return array<int, string> */
     public function recoveryCodes(): array
     {
         $codes = $this->two_factor_recovery_codes ?? [];

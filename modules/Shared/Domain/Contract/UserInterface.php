@@ -76,7 +76,8 @@ interface UserInterface
 
     /**
      * Update multiple preferences at once.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $preferences
      */
     public function updatePreferences(array $preferences): void;
@@ -89,7 +90,7 @@ interface UserInterface
     /**
      * Check if the user has any of the given roles.
      *
-     * @param  array<string>|string  $roles
+     * @param  list<string>|string  $roles
      */
     public function hasAnyRole(array|string $roles): bool;
 
@@ -125,7 +126,8 @@ interface UserInterface
 
     /**
      * Get user settings/preferences.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getSettings(): array;

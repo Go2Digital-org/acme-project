@@ -25,6 +25,10 @@ final readonly class CancelDonationProcessor implements ProcessorInterface
         private DonationRepositoryInterface $donationRepository,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,
@@ -48,7 +52,7 @@ final readonly class CancelDonationProcessor implements ProcessorInterface
 
         $command = new CancelDonationCommand(
             donationId: $donationId,
-            employeeId: $user->id,
+            userId: $user->id,
             reason: $requestData->reason ?? null,
         );
 

@@ -152,11 +152,17 @@ class AuditResource extends Resource
             ->poll('10s');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelations(): array
     {
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [
@@ -174,6 +180,9 @@ class AuditResource extends Resource
             ->with(['auditable', 'user']);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function getGloballySearchableAttributes(): array
     {
         return ['auditable_type', 'auditable_id', 'event', 'user.name'];

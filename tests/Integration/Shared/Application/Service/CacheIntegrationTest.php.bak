@@ -1,0 +1,268 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Integration\Shared\Application\Service;
+
+use Illuminate\Support\Facades\Cache;
+use Modules\Campaign\Domain\Model\Campaign;
+use Modules\Donation\Domain\Model\Donation;
+use Modules\Organization\Domain\Model\Organization;
+use Modules\Shared\Application\Service\CacheService;
+use Modules\User\Application\Service\UserPermissionsCacheService;
+use Modules\User\Infrastructure\Laravel\Models\User;
+use Tests\Integration\IntegrationTestCase;
+
+/**
+ * Lightweight integration tests for cache service functionality.
+ */
+class CacheIntegrationTest extends IntegrationTestCase
+{
+
+    private CacheService $cacheService;
+
+    private UserPermissionsCacheService $userPermissionsCache;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->cacheService = app(CacheService::class);
+        $this->userPermissionsCache = app(UserPermissionsCacheService::class);
+
+        // Use array cache for lightweight testing
+        config(['cache.default' => 'array']);
+    }
+
+    protected function tearDown(): void
+    {
+        // Clear all cache after each test
+        Cache::flush();
+        parent::tearDown();
+    }
+
+    /** @test */
+    public function it_caches_data_with_different_durations(): void
+    {
+        $shortKey = 'test:short:ttl';
+        $mediumKey = 'test:medium:ttl';
+        $longKey = 'test:long:ttl';
+
+        $shortData = ['type' => 'short_data'];
+        $mediumData = ['type' => 'medium_data'];
+        $longData = ['type' => 'long_data'];
+
+        $shortResult = $this->cacheService->remember($shortKey, fn () => $shortData, 'short');
+        $mediumResult = $this->cacheService->remember($mediumKey, fn () => $mediumData, 'medium');
+        $longResult = $this->cacheService->remember($longKey, fn () => $longData, 'long');
+
+        $this->assertSame($shortData, $shortResult);
+        $this->assertSame($mediumData, $mediumResult);
+        $this->assertSame($longData, $longResult);
+
+        $this->assertTrue(Cache::has($shortKey));
+        $this->assertTrue(Cache::has($mediumKey));
+        $this->assertTrue(Cache::has($longKey));
+    }
+
+    /** @test */
+    public function it_handles_custom_ttl(): void
+    {
+        $key = 'test:custom:ttl';
+        $data = ['custom' => 'data'];
+        $customTtl = 1800; // 30 minutes
+
+        $result = $this->cacheService->remember($key, fn () => $data, $customTtl);
+
+        $this->assertSame($data, $result);
+        $this->assertTrue(Cache::has($key));
+    }
+
+    /** @test */
+    public function it_invalidates_cache_by_pattern(): void
+    {
+        // Store multiple related cache keys
+        Cache::put('donation_metrics:user:1', ['total' => 100], 3600);
+        Cache::put('donation_metrics:user:2', ['total' => 200], 3600);
+        Cache::put('donation_metrics:campaign:1', ['total' => 150], 3600);
+        Cache::put('other_data:test', ['data' => 'test'], 3600);
+
+        $this->assertTrue(Cache::has('donation_metrics:user:1'));
+        $this->assertTrue(Cache::has('donation_metrics:user:2'));
+        $this->assertTrue(Cache::has('donation_metrics:campaign:1'));
+        $this->assertTrue(Cache::has('other_data:test'));
+
+        // Simulate pattern-based cache invalidation
+        $keysToDelete = ['donation_metrics:user:1', 'donation_metrics:user:2', 'donation_metrics:campaign:1'];
+        foreach ($keysToDelete as $key) {
+            Cache::forget($key);
+        }
+
+        $this->assertFalse(Cache::has('donation_metrics:user:1'));
+        $this->assertFalse(Cache::has('donation_metrics:user:2'));
+        $this->assertFalse(Cache::has('donation_metrics:campaign:1'));
+        $this->assertTrue(Cache::has('other_data:test')); // Should remain
+    }
+
+    /** @test */
+    public function it_handles_search_facets_cache_invalidation(): void
+    {
+        // Store multiple search facets cache keys
+        Cache::put('search_facets:campaigns:status', ['active' => 10, 'completed' => 5], 3600);
+        Cache::put('search_facets:campaigns:category', ['health' => 8, 'education' => 7], 3600);
+        Cache::put('search_facets:organizations:verified', ['true' => 20, 'false' => 3], 3600);
+        Cache::put('unrelated_cache:key', ['data' => 'value'], 3600);
+
+        $this->assertTrue(Cache::has('search_facets:campaigns:status'));
+        $this->assertTrue(Cache::has('search_facets:campaigns:category'));
+        $this->assertTrue(Cache::has('search_facets:organizations:verified'));
+        $this->assertTrue(Cache::has('unrelated_cache:key'));
+
+        // Simulate facets cache invalidation
+        $facetsKeys = ['search_facets:campaigns:status', 'search_facets:campaigns:category', 'search_facets:organizations:verified'];
+        foreach ($facetsKeys as $key) {
+            Cache::forget($key);
+        }
+
+        $this->assertFalse(Cache::has('search_facets:campaigns:status'));
+        $this->assertFalse(Cache::has('search_facets:campaigns:category'));
+        $this->assertFalse(Cache::has('search_facets:organizations:verified'));
+        $this->assertTrue(Cache::has('unrelated_cache:key')); // Should remain
+    }
+
+    /** @test */
+    public function it_warms_user_permissions_cache(): void
+    {
+        $user = User::factory()->create();
+        $key = "user_permissions:{$user->id}";
+
+        // Initially no cache
+        $this->assertFalse(Cache::has($key));
+
+        // Warm the cache
+        $permissions = ['create_campaign', 'edit_campaign', 'view_donations'];
+        Cache::put($key, $permissions, 3600);
+
+        $this->assertTrue(Cache::has($key));
+        $this->assertSame($permissions, Cache::get($key));
+    }
+
+    /** @test */
+    public function it_handles_campaign_statistics_cache(): void
+    {
+        $organization = Organization::factory()->create();
+        $user = User::factory()->create(['organization_id' => $organization->id]);
+
+        $campaign = Campaign::factory()
+            ->for($organization)
+            ->for($user, 'employee')
+            ->create();
+
+        $statsKey = "campaign_stats:{$campaign->id}";
+        $stats = [
+            'total_donations' => 1500.00,
+            'donors_count' => 25,
+            'last_donation' => now()->toISOString(),
+        ];
+
+        // Cache campaign statistics
+        Cache::put($statsKey, $stats, 1800); // 30 minutes
+
+        $this->assertTrue(Cache::has($statsKey));
+        $this->assertSame($stats, Cache::get($statsKey));
+
+        // Invalidate when campaign is updated
+        Cache::forget($statsKey);
+        $this->assertFalse(Cache::has($statsKey));
+    }
+
+    /** @test */
+    public function it_manages_organization_summary_cache(): void
+    {
+        $organization = Organization::factory()->create();
+        $summaryKey = "org_summary:{$organization->id}";
+
+        $summary = [
+            'total_campaigns' => 10,
+            'active_campaigns' => 7,
+            'total_raised' => 25000.00,
+            'employees_count' => 15,
+        ];
+
+        Cache::put($summaryKey, $summary, 3600); // 1 hour
+
+        $this->assertTrue(Cache::has($summaryKey));
+        $this->assertSame($summary, Cache::get($summaryKey));
+    }
+
+    /** @test */
+    public function it_handles_global_metrics_cache(): void
+    {
+        $metricsKey = 'global_metrics:dashboard';
+        $metrics = [
+            'total_organizations' => 50,
+            'total_campaigns' => 200,
+            'total_donations' => 100000.00,
+            'active_users' => 500,
+        ];
+
+        Cache::put($metricsKey, $metrics, 1800);
+
+        $this->assertTrue(Cache::has($metricsKey));
+        $this->assertSame($metrics, Cache::get($metricsKey));
+    }
+
+    /** @test */
+    public function it_supports_cache_tagging_simulation(): void
+    {
+        // Simulate tagged cache entries
+        $userTags = ['user:1', 'permissions'];
+        $campaignTags = ['campaign:1', 'organization:1'];
+
+        Cache::put('user:1:permissions', ['create', 'read'], 3600);
+        Cache::put('campaign:1:stats', ['donations' => 100], 3600);
+        Cache::put('organization:1:summary', ['campaigns' => 5], 3600);
+
+        $this->assertTrue(Cache::has('user:1:permissions'));
+        $this->assertTrue(Cache::has('campaign:1:stats'));
+        $this->assertTrue(Cache::has('organization:1:summary'));
+
+        // Simulate flushing by tags (manual approach since array driver doesn't support tags)
+        $userCacheKeys = ['user:1:permissions'];
+        foreach ($userCacheKeys as $key) {
+            Cache::forget($key);
+        }
+
+        $this->assertFalse(Cache::has('user:1:permissions'));
+        $this->assertTrue(Cache::has('campaign:1:stats'));
+        $this->assertTrue(Cache::has('organization:1:summary'));
+    }
+
+    /** @test */
+    public function it_handles_cache_miss_and_regeneration(): void
+    {
+        $key = 'expensive:calculation';
+        $callCount = 0;
+
+        $calculator = function () use (&$callCount) {
+            $callCount++;
+            return ['result' => 'computed', 'timestamp' => time()];
+        };
+
+        // First call should execute the calculator
+        $result1 = Cache::remember($key, 3600, $calculator);
+        $this->assertEquals(1, $callCount);
+        $this->assertArrayHasKey('result', $result1);
+
+        // Second call should use cached result
+        $result2 = Cache::remember($key, 3600, $calculator);
+        $this->assertEquals(1, $callCount); // Should not increment
+        $this->assertSame($result1, $result2);
+
+        // After forgetting, should recalculate
+        Cache::forget($key);
+        $result3 = Cache::remember($key, 3600, $calculator);
+        $this->assertEquals(2, $callCount); // Should increment
+        $this->assertNotSame($result1, $result3);
+    }
+}

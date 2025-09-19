@@ -21,6 +21,10 @@ final readonly class DashboardCacheStatusProvider implements ProviderInterface
         private GetDashboardCacheStatusQueryHandler $queryHandler
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function provide(
         Operation $operation,
         array $uriVariables = [],

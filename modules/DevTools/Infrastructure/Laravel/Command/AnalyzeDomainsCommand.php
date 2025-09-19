@@ -43,26 +43,26 @@ class AnalyzeDomainsCommand extends Command
         $outputJson = $this->option('json');
 
         if ($specificDomain) {
-            return $this->analyzeSingleDomain($specificDomain, $outputJson);
+            return $this->analyzeSingleDomain((string) $specificDomain, (bool) $outputJson);
         }
 
         if ($missingComponent) {
-            return $this->showDomainsWithoutComponent($missingComponent, $outputJson);
+            return $this->showDomainsWithoutComponent((string) $missingComponent, (bool) $outputJson);
         }
 
         if ($showPartial) {
-            return $this->showPartialDomains($outputJson);
+            return $this->showPartialDomains((bool) $outputJson);
         }
 
         if ($showComplete) {
-            return $this->showDomainsByCompleteness(90, 100, $outputJson);
+            return $this->showDomainsByCompleteness(90, 100, (bool) $outputJson);
         }
 
         if ($showIncomplete) {
-            return $this->showDomainsByCompleteness(0, 50, $outputJson);
+            return $this->showDomainsByCompleteness(0, 50, (bool) $outputJson);
         }
 
-        return $this->analyzeAllDomains($outputJson);
+        return $this->analyzeAllDomains((bool) $outputJson);
     }
 
     private function analyzeSingleDomain(string $domain, bool $outputJson): int
@@ -237,7 +237,7 @@ class AnalyzeDomainsCommand extends Command
     }
 
     /**
-     * @param  array<string, array<string, mixed>>  $allDomains
+     * @param  array<string, mixed>  $allDomains
      */
     private function displayOverview(array $allDomains): void
     {
@@ -277,7 +277,7 @@ class AnalyzeDomainsCommand extends Command
     }
 
     /**
-     * @param  array<string, array<string, mixed>>  $domainsAnalysis
+     * @param  array<string, mixed>  $domainsAnalysis
      */
     private function displayComponentsTable(array $domainsAnalysis): void
     {
@@ -321,7 +321,7 @@ class AnalyzeDomainsCommand extends Command
     }
 
     /**
-     * @param  array<string, array<string, mixed>>  $domainsAnalysis
+     * @param  array<string, mixed>  $domainsAnalysis
      */
     private function displayDetailedRecommendations(array $domainsAnalysis): void
     {
@@ -338,7 +338,7 @@ class AnalyzeDomainsCommand extends Command
     }
 
     /**
-     * @param  array<string, mixed>  $analysis
+     * @param array<string, mixed> $analysis
      */
     private function displayRecommendations(string $domain, array $analysis): void
     {

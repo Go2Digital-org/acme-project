@@ -193,8 +193,8 @@ final readonly class GetNotificationDigestQueryHandler implements QueryHandlerIn
     /**
      * Group notifications by type for better digest organization.
      *
-     * @param  array<int, Notification>  $notifications
-     * @return array<int, array<string, mixed>>
+     * @param  array<mixed>  $notifications
+     * @return list<array<string, mixed>>
      */
     private function groupNotificationsByType(array $notifications): array
     {

@@ -13,11 +13,11 @@ use Illuminate\Translation\PotentiallyTranslatedString;
  */
 final readonly class ValidCurrencyRule implements ValidationRule
 {
-    /** @var array<string> */
+    /** @var list<string> */
     private array $supportedCurrencies;
 
     /**
-     * @param  array<string>|null  $supportedCurrencies
+     * @param  list<string>|null  $supportedCurrencies
      */
     public function __construct(?array $supportedCurrencies = null)
     {

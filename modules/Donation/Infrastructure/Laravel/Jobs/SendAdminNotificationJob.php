@@ -24,7 +24,7 @@ final class SendAdminNotificationJob implements ShouldQueue
 
     public int $tries = 3;
 
-    /** @var array<int> */
+    /** @var array<int, int> */
     public array $backoff = [10, 30, 60];
 
     public function __construct(
@@ -52,7 +52,7 @@ final class SendAdminNotificationJob implements ShouldQueue
                 $this->subject,
                 $this->data,
                 $this->template,
-                $this->recipients,
+                $this->recipients
             );
 
             Log::info('Admin notification sent successfully', [

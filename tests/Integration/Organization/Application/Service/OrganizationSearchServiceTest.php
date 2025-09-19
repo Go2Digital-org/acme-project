@@ -3,13 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Modules\Organization\Application\Service\OrganizationSearchService;
 use Modules\Organization\Domain\Model\Organization;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->service = new OrganizationSearchService;

@@ -19,6 +19,7 @@ class ExchangeRatesUpdatedEvent implements ShouldBroadcast
      * @param  array<string, float>  $rates
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public readonly array $rates,
         public readonly string $baseCurrency,
         public readonly string $provider,

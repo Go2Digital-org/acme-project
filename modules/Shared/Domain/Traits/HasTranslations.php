@@ -6,6 +6,7 @@ namespace Modules\Shared\Domain\Traits;
 
 use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
+use Throwable;
 
 trait HasTranslations
 {
@@ -17,14 +18,14 @@ trait HasTranslations
     /**
      * Available locales.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected array $availableLocales = ['en', 'nl', 'fr'];
 
     /**
      * Get translatable fields.
      *
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getTranslatableFields(): array
     {
@@ -34,7 +35,7 @@ trait HasTranslations
     /**
      * Get available locales.
      *
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getAvailableLocales(): array
     {
@@ -52,7 +53,13 @@ trait HasTranslations
             return is_string($value) ? $value : null;
         }
 
-        $locale ??= App::getLocale() ?? $this->defaultLocale;
+        if ($locale === null) {
+            try {
+                $locale = App::getLocale() ?? $this->defaultLocale;
+            } catch (Throwable) {
+                $locale = $this->defaultLocale;
+            }
+        }
 
         // Get the field value which should be an array of translations
         $translations = $this->getDirectAttribute($field);
@@ -78,7 +85,7 @@ trait HasTranslations
             throw new InvalidArgumentException("Locale {$locale} is not supported");
         }
 
-        /** @var array<string, string|null> $translations */
+        /** @var array<string, mixed> $translations */
         $translations = $this->getDirectAttribute($field) ?? [];
         if (! is_array($translations)) {
             $translations = [];
@@ -92,8 +99,9 @@ trait HasTranslations
 
     /**
      * Set translations for multiple locales at once.
-     *
-     * @param  array<string, string|null>  $translations
+     */
+    /**
+     * @param  array<string, mixed>  $translations
      */
     public function setTranslations(string $field, array $translations): self
     {
@@ -106,8 +114,9 @@ trait HasTranslations
 
     /**
      * Get all translations for a field.
-     *
-     * @return array<string, string|null>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getTranslations(string $field): array
     {
@@ -117,7 +126,7 @@ trait HasTranslations
             return [$this->defaultLocale => is_string($value) ? $value : null];
         }
 
-        /** @var array<string, string|null> $translations */
+        /** @var array<string, mixed> $translations */
         $translations = $this->getDirectAttribute($field) ?? [];
 
         if (! is_array($translations)) {
@@ -140,11 +149,11 @@ trait HasTranslations
     /**
      * Get all missing translations for the model.
      *
-     * @return array<string, array<int, string>>
+     * @return array<string, mixed>
      */
     public function getMissingTranslations(): array
     {
-        /** @var array<string, array<int, string>> $missing */
+        /** @var array<string, mixed> $missing */
         $missing = [];
 
         foreach ($this->getTranslatableFields() as $field) {
@@ -170,11 +179,11 @@ trait HasTranslations
     /**
      * Get translation status.
      *
-     * @return array<string, array<string, bool>>
+     * @return array<string, mixed>
      */
     public function getTranslationStatus(): array
     {
-        /** @var array<string, array<string, bool>> $status */
+        /** @var array<string, mixed> $status */
         $status = [];
 
         foreach ($this->getTranslatableFields() as $field) {
@@ -297,7 +306,7 @@ trait HasTranslations
 
                     if (is_array($translations)) {
                         // Remove null and empty values
-                        /** @var array<string, string|null> $filteredTranslations */
+                        /** @var array<string, mixed> $filteredTranslations */
                         $filteredTranslations = array_filter($translations, static fn ($value): bool => $value !== null && $value !== '');
                         $model->setAttribute($field, $filteredTranslations);
                     }

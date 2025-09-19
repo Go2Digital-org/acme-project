@@ -14,7 +14,9 @@ final readonly class UpdateCampaignCommand implements CommandInterface
      */
     public function __construct(
         public int $campaignId,
+        /** @var array<string, mixed> */
         public array $title,
+        /** @var array<string, mixed> */
         public array $description,
         public float $goalAmount,
         public string $startDate,

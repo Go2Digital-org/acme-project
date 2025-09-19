@@ -14,11 +14,9 @@ final class SecurityAlertNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
-    /**
-     * @param  array<string, mixed>  $details
-     */
     public function __construct(
         private readonly string $event,
+        /** @var array<string, mixed> */
         private readonly array $details,
     ) {}
 

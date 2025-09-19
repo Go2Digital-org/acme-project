@@ -46,8 +46,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $failure_reason
  * @property string|null $refund_reason
  * @property string|null $notes
- * @property array<array-key, mixed>|null $notes_translations
- * @property array<array-key, mixed>|null $metadata
+ * @property array<string, string>|null $notes_translations
+ * @property array<string, mixed>|null $metadata
  * @property bool $is_anonymous
  * @property float|null $corporate_match_amount
  * @property \Illuminate\Support\Carbon|null $confirmation_email_failed_at
@@ -107,7 +107,6 @@ class Donation extends Model implements Auditable, DonationInterface
     use Searchable;
     use SoftDeletes;
 
-    /** @var list<string> */
     protected $fillable = [
         'campaign_id',
         'user_id',
@@ -144,16 +143,8 @@ class Donation extends Model implements Auditable, DonationInterface
      *
      * @var list<string>
      */
-    protected array $translatable = [
+    protected $translatable = [
         'notes',
-    ];
-
-    /** @var array<string, mixed> */
-    protected $attributes = [
-        'currency' => 'EUR',
-        'anonymous' => false,
-        'recurring' => false,
-        'status' => DonationStatus::PENDING,
     ];
 
     /**
@@ -162,6 +153,14 @@ class Donation extends Model implements Auditable, DonationInterface
     protected static function boot(): void
     {
         parent::boot();
+
+        // Set default values for new models
+        static::creating(function (Donation $donation): void {
+            $donation->currency ??= 'EUR';
+            $donation->anonymous ??= false;
+            $donation->recurring ??= false;
+            $donation->status ??= DonationStatus::PENDING;
+        });
 
         // Update donations_count when a donation is created and completed
         static::created(function (Donation $donation): void {
@@ -348,7 +347,7 @@ class Donation extends Model implements Auditable, DonationInterface
     /**
      * Update payment details from gateway response.
      *
-     * @param  array<array-key, mixed>|null  $gatewayData
+     * @param  array<string, mixed>|null  $gatewayData
      */
     public function updatePaymentDetails(string $gatewayPaymentId, ?array $gatewayData = null): void
     {
@@ -550,7 +549,8 @@ class Donation extends Model implements Auditable, DonationInterface
     }
 
     /**
-     * @return array<string, string> */
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

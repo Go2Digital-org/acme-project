@@ -57,11 +57,9 @@ class ProcessDonationExportJob implements ShouldQueue
 
     private int $lastReportedPercentage = 0;
 
-    /**
-     * @param  array<string, mixed>  $filters
-     */
     public function __construct(
         private readonly string $exportId,
+        /** @var array<string, mixed> */
         private readonly array $filters,
         private readonly string $format,
         private readonly int $userId,
@@ -372,8 +370,7 @@ class ProcessDonationExportJob implements ShouldQueue
 
     /**
      * Calculate the number of seconds to wait before retrying the job.
-     */
-    /**
+     *
      * @return array<int, int>
      */
     public function backoff(): array
@@ -383,8 +380,7 @@ class ProcessDonationExportJob implements ShouldQueue
 
     /**
      * Get the tags that should be assigned to the job.
-     */
-    /**
+     *
      * @return array<int, string>
      */
     public function tags(): array

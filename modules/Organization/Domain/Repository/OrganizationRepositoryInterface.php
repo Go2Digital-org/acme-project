@@ -24,17 +24,17 @@ interface OrganizationRepositoryInterface
     public function delete(int $id): bool;
 
     /**
-     * @return array<int, Organization>
+     * @return array<int, mixed>
      */
     public function findActiveOrganizations(): array;
 
     /**
-     * @return array<int, Organization>
+     * @return array<int, mixed>
      */
     public function findVerifiedOrganizations(): array;
 
     /**
-     * @return array<int, Organization>
+     * @return array<int, mixed>
      */
     public function findPendingVerificationOrganizations(): array;
 
@@ -59,7 +59,7 @@ interface OrganizationRepositoryInterface
     /**
      * Get all organizations.
      *
-     * @return array<int, Organization>
+     * @return array<int, mixed>
      */
     public function findAll(): array;
 }

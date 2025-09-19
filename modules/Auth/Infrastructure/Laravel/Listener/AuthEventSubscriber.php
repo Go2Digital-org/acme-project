@@ -23,7 +23,8 @@ class AuthEventSubscriber
 {
     /**
      * Register the listeners for the subscriber.
-     *
+     */
+    /**
      * @return array<class-string, string>
      */
     public function subscribe(Dispatcher $events): array

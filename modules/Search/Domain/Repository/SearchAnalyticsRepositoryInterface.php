@@ -8,7 +8,8 @@ interface SearchAnalyticsRepositoryInterface
 {
     /**
      * Track a search query.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $metadata
      */
     public function trackSearch(
@@ -31,22 +32,25 @@ interface SearchAnalyticsRepositoryInterface
 
     /**
      * Get search analytics for a date range.
-     *
-     * @return array<array{date: string, searches: int, unique_users: int, avg_results: float}>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getAnalytics(string $startDate, string $endDate): array;
 
     /**
      * Get top performing queries.
-     *
-     * @return array<array{query: string, count: int, avg_clicks: float, ctr: float}>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getTopQueries(int $limit = 10, string $period = 'day'): array;
 
     /**
      * Get queries with no results.
-     *
-     * @return array<array{query: string, count: int}>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getNoResultQueries(int $limit = 10): array;
 

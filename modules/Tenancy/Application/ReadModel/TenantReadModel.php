@@ -8,9 +8,6 @@ use Modules\Tenancy\Domain\Model\Tenant;
 
 final class TenantReadModel
 {
-    /**
-     * @param  array<string, mixed>  $config
-     */
     public function __construct(
         public string $id,
         public string $name,
@@ -18,6 +15,7 @@ final class TenantReadModel
         public string $domain,
         public string $database,
         public string $email,
+        /** @var array<string, mixed> */
         public array $config,
         public bool $isActive,
         public ?string $createdAt,

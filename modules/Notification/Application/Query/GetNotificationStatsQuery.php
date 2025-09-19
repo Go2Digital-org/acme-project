@@ -22,8 +22,11 @@ final readonly class GetNotificationStatsQuery implements QueryInterface
         public ?int $organizationId = null,
         public ?CarbonInterface $startDate = null,
         public ?CarbonInterface $endDate = null,
+        /** @var array<string, mixed> */
         public array $types = [],
+        /** @var array<string, mixed> */
         public array $channels = [],
+        /** @var array<string, mixed> */
         public array $statuses = [],
         public bool $includeBreakdown = true,
         public bool $includeTrends = false,

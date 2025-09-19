@@ -93,7 +93,6 @@ class PaymentGateway extends Model implements Auditable
         self::PROVIDER_PAYPAL,
     ];
 
-    /** @var list<string> */
     protected $fillable = [
         'name',
         'provider',
@@ -105,19 +104,6 @@ class PaymentGateway extends Model implements Auditable
         'min_amount',
         'max_amount',
         'test_mode',
-    ];
-
-    /**
-     * Default attribute values.
-     *
-     * @var array<string, mixed>
-     */
-    protected $attributes = [
-        'is_active' => false,
-        'test_mode' => true,
-        'priority' => 0,
-        'min_amount' => '1.00',
-        'max_amount' => '10000.00',
     ];
 
     /**
@@ -380,10 +366,12 @@ class PaymentGateway extends Model implements Auditable
                 throw new InvalidArgumentException('Invalid payment gateway provider: ' . $gateway->provider);
             }
 
-            // Set default priority if not provided
-            if ($gateway->priority === null) {
-                $gateway->priority = 0;
-            }
+            // Set default values
+            $gateway->is_active ??= false;
+            $gateway->test_mode ??= true;
+            $gateway->priority ??= 0;
+            $gateway->min_amount ??= '1.00';
+            $gateway->max_amount ??= '10000.00';
         });
 
         self::updating(function (self $gateway): void {
@@ -442,7 +430,8 @@ class PaymentGateway extends Model implements Auditable
     }
 
     /**
-     * @return array<string, string> */
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

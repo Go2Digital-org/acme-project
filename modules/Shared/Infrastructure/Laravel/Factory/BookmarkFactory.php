@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Shared\Infrastructure\Laravel\Factory;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Bookmark\Domain\Model\Bookmark;
+use Modules\Campaign\Domain\Model\Bookmark;
 use Modules\Campaign\Domain\Model\Campaign;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
@@ -16,6 +16,9 @@ class BookmarkFactory extends Factory
 {
     protected $model = Bookmark::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [

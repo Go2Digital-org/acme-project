@@ -20,7 +20,8 @@ interface NotificationRepositoryInterface
 {
     /**
      * Create a new notification.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function create(array $data): Notification;
@@ -110,7 +111,8 @@ interface NotificationRepositoryInterface
 
     /**
      * Update notification by ID.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function updateById(string $id, array $data): bool;
@@ -163,6 +165,10 @@ interface NotificationRepositoryInterface
      * Search notifications with filters.
      *
      * @param  array<string, mixed>  $filters
+     * @param  string  $sortBy
+     * @param  string  $sortOrder
+     * @param  int  $page
+     * @param  int  $perPage
      * @return LengthAwarePaginator<int, Notification>
      */
     public function search(
@@ -201,8 +207,9 @@ interface NotificationRepositoryInterface
 
     /**
      * Bulk update notifications.
-     *
-     * @param  array<int, string>  $ids
+     */
+    /**
+     * @param  array<string>  $ids
      * @param  array<string, mixed>  $data
      */
     public function bulkUpdate(array $ids, array $data): int;
@@ -221,7 +228,7 @@ interface NotificationRepositoryInterface
     /**
      * Get notification count by status for a recipient.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getStatusCountsForRecipient(string $recipientId): array;
 
@@ -236,7 +243,8 @@ interface NotificationRepositoryInterface
 
     /**
      * Get notification delivery metrics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getDeliveryMetrics(
@@ -247,13 +255,16 @@ interface NotificationRepositoryInterface
     /**
      * Bulk create notifications for performance.
      *
-     * @param  array<int, array<string, mixed>>  $notifications
+     * @param  array<array<string, mixed>>  $notifications
      */
     public function bulkCreate(array $notifications): int;
 
     /**
      * Get notifications with cursor-based pagination for better performance.
      *
+     * @param  string  $recipientId
+     * @param  string|null  $cursor
+     * @param  int  $limit
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -266,7 +277,8 @@ interface NotificationRepositoryInterface
 
     /**
      * Get notification digest for user (summary of recent notifications).
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getDigest(
@@ -276,15 +288,19 @@ interface NotificationRepositoryInterface
 
     /**
      * Batch mark multiple notifications as read.
-     *
-     * @param  array<int, string>  $notificationIds
+     */
+    /**
+     * @param  array<string>  $notificationIds
      */
     public function batchMarkAsRead(array $notificationIds, string $recipientId): int;
 
     /**
      * Find duplicate notifications to prevent spam.
      *
+     * @param  string  $recipientId
+     * @param  string  $type
      * @param  array<string, mixed>  $data
+     * @param  int  $withinMinutes
      * @return Collection<int, Notification>
      */
     public function findDuplicateNotifications(
@@ -315,14 +331,17 @@ interface NotificationRepositoryInterface
     /**
      * Get real-time notification counts for dashboard.
      *
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getRealTimeCounts(): array;
 
     /**
      * Search notifications using full-text search capabilities.
      *
+     * @param  string  $query
+     * @param  string|null  $recipientId
      * @param  array<string, mixed>  $filters
+     * @param  int  $limit
      * @return Collection<int, Notification>
      */
     public function fullTextSearch(
@@ -361,7 +380,8 @@ interface NotificationRepositoryInterface
 
     /**
      * Update notification metadata without triggering full model events.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $metadata
      */
     public function updateMetadata(string $id, array $metadata): bool;
@@ -369,14 +389,16 @@ interface NotificationRepositoryInterface
     /**
      * Get counts by a specific field.
      *
+     * @param  string  $field
      * @param  array<string, mixed>  $filters
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     public function getCountsByField(string $field, array $filters = []): array;
 
     /**
      * Count notifications by filters.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function countByFilters(array $filters): int;
@@ -385,6 +407,7 @@ interface NotificationRepositoryInterface
      * Find notifications by filters.
      *
      * @param  array<string, mixed>  $filters
+     * @param  int  $limit
      * @return Collection<int, Notification>
      */
     public function findByFilters(array $filters, int $limit = 100): Collection;
@@ -392,7 +415,7 @@ interface NotificationRepositoryInterface
     /**
      * Get time series data with extended parameters.
      *
-     * @param  array<string, DateTimeInterface>|string  $periodOrDateRange
+     * @param  array<string, mixed>|string  $periodOrDateRange
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -423,7 +446,8 @@ interface NotificationRepositoryInterface
 
     /**
      * Update a notification.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function update(Notification $notification, array $data): bool;

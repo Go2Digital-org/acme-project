@@ -24,7 +24,8 @@ class MeilisearchSearchEngine implements SearchEngineInterface
             $startTime = microtime(true);
 
             if (count($query->indexes) === 1) {
-                $results = $this->searchSingleIndex($query->indexes[0], $query);
+                $indexName = $query->indexes[0] ?? '';
+                $results = $this->searchSingleIndex($indexName, $query);
             }
 
             if (count($query->indexes) !== 1) {
@@ -48,6 +49,9 @@ class MeilisearchSearchEngine implements SearchEngineInterface
         }
     }
 
+    /**
+     * @param  array<string, mixed>  $documents
+     */
     public function index(string $indexName, array $documents): bool
     {
         try {
@@ -119,6 +123,9 @@ class MeilisearchSearchEngine implements SearchEngineInterface
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getIndexStats(string $indexName): array
     {
         try {
@@ -135,6 +142,9 @@ class MeilisearchSearchEngine implements SearchEngineInterface
         }
     }
 
+    /**
+     * @param  array<string, mixed>  $documents
+     */
     public function bulkIndex(string $indexName, array $documents, int $batchSize = 1000): bool
     {
         try {
@@ -168,17 +178,22 @@ class MeilisearchSearchEngine implements SearchEngineInterface
 
     /**
      * Get search suggestions.
-     *
-     * @return array<int, array{text: string, id: mixed, type: string}>
+     */
+    /**
+     * @return array<int, string>
      */
     public function suggest(string $indexName, string $query, int $limit = 10): array
     {
         try {
             $index = $this->client->index($indexName);
+
+            // Determine attributes based on entity type
+            $attributesToRetrieve = $this->getAttributesForIndex($indexName);
+
             $results = $index->search($query, [
                 'limit' => $limit,
-                'attributesToRetrieve' => ['title', 'name', 'id'],
-                'attributesToHighlight' => ['title', 'name'],
+                'attributesToRetrieve' => $attributesToRetrieve,
+                'attributesToHighlight' => array_slice($attributesToRetrieve, 0, 2), // Highlight first 2 attributes
             ]);
 
             // Extract suggestions from hits
@@ -186,21 +201,69 @@ class MeilisearchSearchEngine implements SearchEngineInterface
             $hits = $results->getHits();
 
             foreach ($hits as $hit) {
-                $text = $hit['title'] ?? $hit['name'] ?? '';
+                $text = $this->extractTextFromHit($hit, $indexName);
 
-                if (! empty($text)) {
+                if ($text !== '' && $text !== '0') {
                     $suggestions[] = [
                         'text' => $text,
                         'id' => $hit['id'] ?? null,
-                        'type' => $indexName,
+                        'type' => $this->getEntityTypeFromIndex($indexName),
                     ];
                 }
             }
 
-            return $suggestions;
+            return array_values(array_column($suggestions, 'text'));
         } catch (ApiException) {
             return [];
         }
+    }
+
+    /**
+     * Get attributes to retrieve based on index type.
+     *
+     * @return array<int, string>
+     */
+    private function getAttributesForIndex(string $indexName): array
+    {
+        $mapping = [
+            'acme_campaigns' => ['title', 'description', 'id'],
+            'acme_users' => ['name', 'email', 'id'],
+            'acme_organizations' => ['name', 'description', 'id'],
+            'acme_donations' => ['amount', 'id', 'campaign_title'],
+        ];
+
+        return $mapping[$indexName] ?? ['title', 'name', 'id'];
+    }
+
+    /**
+     * Extract display text from hit based on entity type.
+     */
+    /**
+     * @param  array<string, mixed>  $hit
+     */
+    private function extractTextFromHit(array $hit, string $indexName): string
+    {
+        return match ($indexName) {
+            'acme_campaigns' => $hit['title'] ?? '',
+            'acme_users' => $hit['name'] ?? $hit['email'] ?? '',
+            'acme_organizations' => $hit['name'] ?? '',
+            'acme_donations' => ($hit['campaign_title'] ?? '') . ' - ' . ($hit['amount'] ?? ''),
+            default => $hit['title'] ?? $hit['name'] ?? '',
+        };
+    }
+
+    /**
+     * Get entity type from index name.
+     */
+    private function getEntityTypeFromIndex(string $indexName): string
+    {
+        return match ($indexName) {
+            'acme_campaigns' => 'campaign',
+            'acme_users' => 'user',
+            'acme_organizations' => 'organization',
+            'acme_donations' => 'donation',
+            default => 'campaign',
+        };
     }
 
     public function indexExists(string $indexName): bool
@@ -214,6 +277,9 @@ class MeilisearchSearchEngine implements SearchEngineInterface
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function health(): array
     {
         try {
@@ -232,7 +298,8 @@ class MeilisearchSearchEngine implements SearchEngineInterface
 
     /**
      * Search a single index.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function searchSingleIndex(string $indexName, SearchQuery $query): array
@@ -273,7 +340,8 @@ class MeilisearchSearchEngine implements SearchEngineInterface
 
     /**
      * Perform multi-index search.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function performMultiIndexSearch(SearchQuery $query): array

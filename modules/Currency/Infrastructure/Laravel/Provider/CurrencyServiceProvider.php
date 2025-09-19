@@ -100,14 +100,6 @@ class CurrencyServiceProvider extends ServiceProvider
         // Register migrations
         $this->loadMigrationsFrom(__DIR__ . '/../Migration');
 
-        // Routes are handled centrally by API Platform or main /routes directory
-        // Module routes have been moved to centralized route management
-        // $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
-
-        // Routes are handled centrally by API Platform or main /routes directory
-        // Module routes have been moved to centralized route management
-        // $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-
         // Apply middleware to web routes
         /** @var Router $router */
         $router = $this->app->make('router');

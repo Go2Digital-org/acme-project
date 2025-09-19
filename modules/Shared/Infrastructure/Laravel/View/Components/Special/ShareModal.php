@@ -16,11 +16,14 @@ final class ShareModal extends Component
 
     public string $shareText;
 
-    /** @var array<string, string> */
+    /** @var array<string, mixed> */
     public array $platformUrls;
 
     public ?string $qrCodeUrl;
 
+    /**
+     * @param  array<string, mixed>  $sharingData
+     */
     public function __construct(
         public ?CampaignInterface $campaign = null,
         /** @var array<string, mixed>|null */

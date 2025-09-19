@@ -23,8 +23,8 @@ use Modules\Donation\Domain\ValueObject\PaymentStatus;
  * @property string $gateway_name
  * @property string $gateway_action
  * @property string|null $gateway_request_id
- * @property array<array-key, mixed>|null $request_data
- * @property array<array-key, mixed>|null $response_data
+ * @property array<string, mixed>|null $request_data
+ * @property array<string, mixed>|null $response_data
  * @property PaymentStatus $status
  * @property string|null $error_code
  * @property string|null $error_message
@@ -66,7 +66,7 @@ use Modules\Donation\Domain\ValueObject\PaymentStatus;
  *
  * @mixin Model
  */
-final class PaymentAttempt extends Model
+class PaymentAttempt extends Model
 {
     public int $id;
 
@@ -106,7 +106,6 @@ final class PaymentAttempt extends Model
 
     public Carbon $updated_at;
 
-    /** @var list<string> */
     protected $fillable = [
         'payment_id',
         'attempt_number',
@@ -125,7 +124,6 @@ final class PaymentAttempt extends Model
         'attempted_at',
     ];
 
-    /** @var array<string, mixed> */
     protected $attributes = [
         'status' => PaymentStatus::PENDING,
     ];
@@ -144,7 +142,7 @@ final class PaymentAttempt extends Model
      * Create a new payment attempt.
      */
     /**
-     * @param  array<array-key, mixed>  $requestData
+     * @param  array<string, mixed>  $requestData
      */
     public static function create(
         int $paymentId,
@@ -180,8 +178,9 @@ final class PaymentAttempt extends Model
 
     /**
      * Mark attempt as successful.
-     *
-     * @param  array<array-key, mixed>  $responseData
+     */
+    /**
+     * @param  array<string, mixed>  $responseData
      */
     public function markSuccessful(
         array $responseData = [],
@@ -198,8 +197,9 @@ final class PaymentAttempt extends Model
 
     /**
      * Mark attempt as failed.
-     *
-     * @param  array<array-key, mixed>  $responseData
+     */
+    /**
+     * @param  array<string, mixed>  $responseData
      */
     public function markFailed(
         string $errorMessage,
@@ -218,8 +218,9 @@ final class PaymentAttempt extends Model
 
     /**
      * Mark attempt as pending (requires action).
-     *
-     * @param  array<array-key, mixed>  $responseData
+     */
+    /**
+     * @param  array<string, mixed>  $responseData
      */
     public function markPending(
         array $responseData = [],
@@ -295,8 +296,9 @@ final class PaymentAttempt extends Model
 
     /**
      * Get sanitized request data (removes sensitive information).
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getSanitizedRequestData(): array
     {
         if (! $this->request_data) {
@@ -317,8 +319,9 @@ final class PaymentAttempt extends Model
 
     /**
      * Get sanitized response data (removes sensitive information).
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getSanitizedResponseData(): array
     {
         if (! $this->response_data) {
@@ -351,9 +354,9 @@ final class PaymentAttempt extends Model
     }
 
     /**
-     * @param  array<array-key, mixed>  $data
-     * @param  list<string>  $sensitiveKeys
-     * @return array<array-key, mixed>
+     * @param  array<string, mixed>  $data
+     * @param  array<int, string>  $sensitiveKeys
+     * @return array<string, mixed>
      */
     private function sanitizeArray(array $data, array $sensitiveKeys): array
     {
@@ -373,7 +376,8 @@ final class PaymentAttempt extends Model
     }
 
     /**
-     * @return array<string, string> */
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

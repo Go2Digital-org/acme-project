@@ -23,7 +23,7 @@ final readonly class WidgetStatsCalculator
     /**
      * Calculate statistics for all widget types
      *
-     * @return array<string, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function calculateAllWidgetStats(): array
     {

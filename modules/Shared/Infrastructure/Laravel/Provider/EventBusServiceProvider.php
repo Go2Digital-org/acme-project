@@ -25,7 +25,7 @@ class EventBusServiceProvider extends ServiceProvider
     /**
      * Event to listener mappings for automatic registration
      *
-     * @var array<string, array<string>>
+     * @var array<string, mixed>
      */
     private array $eventListeners = [
         // Organization Events
@@ -119,8 +119,8 @@ class EventBusServiceProvider extends ServiceProvider
         foreach ($this->eventListeners as $eventName => $listeners) {
             foreach ($listeners as $listener) {
                 // Convert 'Class@method' format to proper callable
-                if (str_contains($listener, '@')) {
-                    [$class, $method] = explode('@', $listener);
+                if (str_contains((string) $listener, '@')) {
+                    [$class, $method] = explode('@', (string) $listener);
                     $dispatcher->listen($eventName, [$class, $method]);
                 } elseif (class_exists($listener)) {
                     // Ensure it's a valid class string
@@ -204,7 +204,7 @@ class EventBusServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider
      *
-     * @return array<class-string>
+     * @return array<int, string>
      */
     public function provides(): array
     {

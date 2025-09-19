@@ -25,6 +25,10 @@ final readonly class VerifyOrganizationProcessor implements ProcessorInterface
         private OrganizationRepositoryInterface $organizationRepository,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,

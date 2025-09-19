@@ -65,8 +65,8 @@ graph TB
 - Manual workflow dispatch
 
 **Environments:**
-- **Staging**: `https://staging.acme-csr.com`
-- **Production**: `https://csr.acme-corp.com`
+- **Staging**: `https://staging.yourdomain.com`
+- **Production**: `https://yourdomain.com`
 
 **Deployment Strategy:**
 - **Staging**: Direct deployment with immediate verification
@@ -124,10 +124,10 @@ SESSION_DRIVER=redis
 mysql:
   image: mysql:8.0
   env:
-    MYSQL_ROOT_PASSWORD: password
+    MYSQL_ROOT_PASSWORD: # Set in CI environment
     MYSQL_DATABASE: testing
     MYSQL_USER: user
-    MYSQL_PASSWORD: password
+    MYSQL_PASSWORD: # Set in CI environment
   options: --health-cmd="mysqladmin ping --silent"
 ```
 
@@ -404,12 +404,12 @@ composer require --dev barryvdh/laravel-debugbar
 - **Error Tracking**: Sentry, Rollbar  
 - **APM**: Application performance monitoring
 - **Log Management**: ELK Stack
-- **Notification**: Slack, Microsoft Teams
+- **Notification**: Email notifications
 - **Documentation**: Auto-generated API docs
 
 ---
 
-For questions or support with the CI/CD pipeline, contact the DevOps team or create an issue in the repository.
+For questions or support with the CI/CD pipeline, contact info@go2digit.al.
 
 ---
 

@@ -61,9 +61,8 @@ describe('CacheWarming Redis Integration', function (): void {
 
         expect(Cache::has($key))->toBeTrue();
 
-        // Wait for expiry (in real Redis this would expire, in array cache we simulate)
-        sleep(2);
-        Cache::forget($key); // Manually remove to simulate expiry in array cache
+        // Manually remove to simulate expiry in array cache
+        Cache::forget($key);
 
         expect(Cache::has($key))->toBeFalse();
     });

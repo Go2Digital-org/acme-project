@@ -19,7 +19,7 @@ class PurgeOldAuditLogsCommandHandler
         $cutoffDate = Carbon::now()->subDays($command->daysToKeep);
         $deletedCount = 0;
 
-        DB::transaction(function () use ($command, $cutoffDate, &$deletedCount) {
+        DB::transaction(function () use ($command, $cutoffDate, &$deletedCount): void {
             $query = $this->repository->newQuery()
                 ->where('created_at', '<', $cutoffDate);
 

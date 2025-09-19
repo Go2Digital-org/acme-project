@@ -64,6 +64,9 @@ class CampaignStatusChangedEvent extends AbstractDomainEvent
         return 'campaign.status_changed';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return array_merge(parent::getEventData(), [

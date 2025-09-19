@@ -7,7 +7,7 @@ namespace Modules\Auth\Infrastructure\Laravel\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Modules\Auth\Application\Service\ProfileManagementService;
+use Modules\Auth\Application\Services\ProfileManagementService;
 use Modules\Shared\Infrastructure\Laravel\Controllers\Traits\AuthenticatedUserTrait;
 
 final readonly class DeleteProfilePhotoController

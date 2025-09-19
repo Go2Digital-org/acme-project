@@ -145,7 +145,10 @@ class DonationMetricsReadModel extends AbstractReadModel
 
     // Trend Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getTrendData(): array
     {
@@ -175,7 +178,10 @@ class DonationMetricsReadModel extends AbstractReadModel
 
     // Top Donors
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getTopDonorsList(): array
     {
@@ -191,7 +197,10 @@ class DonationMetricsReadModel extends AbstractReadModel
 
     // Segmentation Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getAmountSegments(): array
     {
@@ -201,7 +210,10 @@ class DonationMetricsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getFrequencySegments(): array
     {
@@ -211,7 +223,10 @@ class DonationMetricsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getPaymentMethodSegments(): array
     {
@@ -231,7 +246,10 @@ class DonationMetricsReadModel extends AbstractReadModel
 
     // Geographic Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getOrganizationBreakdown(): array
     {
@@ -242,7 +260,10 @@ class DonationMetricsReadModel extends AbstractReadModel
 
     // Temporal Pattern Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getHourlyPattern(): array
     {
@@ -252,7 +273,10 @@ class DonationMetricsReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getWeeklyPattern(): array
     {
@@ -296,7 +320,9 @@ class DonationMetricsReadModel extends AbstractReadModel
     }
 
     // Comparison Analysis
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getCurrentPeriodMetrics(): array
     {
         $comparisons = $this->getComparisons();
@@ -304,7 +330,9 @@ class DonationMetricsReadModel extends AbstractReadModel
         return $comparisons['current_period'] ?? [];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getPreviousPeriodMetrics(): array
     {
         $comparisons = $this->getComparisons();
@@ -361,7 +389,8 @@ class DonationMetricsReadModel extends AbstractReadModel
     // Summary Methods
     /**
      * Get a comprehensive summary of donation metrics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getSummary(): array
@@ -409,7 +438,8 @@ class DonationMetricsReadModel extends AbstractReadModel
 
     /**
      * Get key performance indicators.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getKPIs(): array

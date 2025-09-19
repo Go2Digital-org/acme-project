@@ -20,7 +20,7 @@ use Modules\Shared\Infrastructure\Notifications\Notifications\SecurityAlertNotif
 use Modules\Shared\Infrastructure\Notifications\Notifications\SystemMaintenanceNotification;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
-final class AdminNotificationService
+class AdminNotificationService
 {
     /**
      * Send notification when a large donation is received.
@@ -151,7 +151,7 @@ final class AdminNotificationService
     /**
      * Send custom notification to specific admin roles.
      *
-     * @param  array<int, string>  $roles
+     * @param  array<string>  $roles
      * @param  array<string, mixed>  $data
      */
     public function sendCustomNotification(
@@ -251,7 +251,7 @@ final class AdminNotificationService
     /**
      * Send notification for compliance issues.
      *
-     * @param  array<int, string>  $issues
+     * @param  array<string>  $issues
      */
     public function notifyComplianceIssue(Organization $organization, array $issues): void
     {
@@ -287,7 +287,7 @@ final class AdminNotificationService
     /**
      * Send notification when a translation is completed.
      *
-     * @param  array<int, string>  $translatedFields
+     * @param  array<string>  $translatedFields
      */
     public function notifyTranslationCompleted(
         string $modelType,
@@ -325,7 +325,7 @@ final class AdminNotificationService
      * Send generic notification to admins with subject, data and template.
      *
      * @param  array<string, mixed>  $data
-     * @param  array<int, string>  $recipients
+     * @param  array<string>  $recipients
      */
     public function sendToAdmins(
         string $subject,
@@ -359,7 +359,7 @@ final class AdminNotificationService
     /**
      * Get admin users by roles.
      *
-     * @param  array<int, string>  $roles
+     * @param  array<string>  $roles
      * @return Collection<int, User>
      */
     private function getAdminUsers(array $roles = []): Collection
@@ -432,7 +432,7 @@ final class AdminNotificationService
     /**
      * Broadcast message to specific roles.
      *
-     * @param  array<int, string>  $roles
+     * @param  array<string>  $roles
      * @param  array<string, mixed>  $data
      */
     private function broadcastToRoles(array $roles, string $event, array $data): void

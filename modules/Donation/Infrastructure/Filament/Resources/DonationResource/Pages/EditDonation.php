@@ -18,6 +18,9 @@ class EditDonation extends EditRecord
         return 'Edit Donation';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getHeaderActions(): array
     {
         return [

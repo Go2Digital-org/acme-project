@@ -15,6 +15,7 @@ class SuccessRateWidget extends ChartWidget
 
     protected ?string $pollingInterval = '15m';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 10;
@@ -39,6 +40,9 @@ class SuccessRateWidget extends ChartWidget
         return true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getData(): array
     {
         $stats = ApplicationCache::getStats('success_rate');

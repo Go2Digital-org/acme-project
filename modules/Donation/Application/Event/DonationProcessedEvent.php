@@ -22,7 +22,7 @@ final class DonationProcessedEvent extends AbstractDomainEvent
         public readonly string $paymentGateway = 'stripe',
         public readonly bool $anonymous = false,
         public readonly ?string $notes = null,
-        /** @var array<string, string>|null */
+        /** @var array<string, mixed>|null */
         public readonly ?array $notesTranslations = null,
         public readonly ?string $locale = 'en',
         /** @var array<string, mixed>|null */

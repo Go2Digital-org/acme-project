@@ -81,7 +81,8 @@ final class ValidateDomainCommand extends Command
     }
 
     /**
-     * @return array<int, string>
+     * @param string $domain
+     * @return array<string>
      */
     private function validateDomainStructure(string $domain): array
     {
@@ -122,7 +123,8 @@ final class ValidateDomainCommand extends Command
     }
 
     /**
-     * @return array<int, string>
+     * @param string $domain
+     * @return array<string>
      */
     private function validatePHPStanCompliance(string $domain): array
     {
@@ -163,7 +165,8 @@ final class ValidateDomainCommand extends Command
     }
 
     /**
-     * @return array<int, string>
+     * @param string $domain
+     * @return array<string>
      */
     private function validateCQRSCompliance(string $domain): array
     {
@@ -201,7 +204,8 @@ final class ValidateDomainCommand extends Command
     }
 
     /**
-     * @param  array<int, string>  $issues
+     * @param string $domain
+     * @param array<string> $issues
      */
     private function fixIssues(string $domain, array $issues): void
     {

@@ -82,6 +82,8 @@ final class BreadcrumbAdapter implements BreadcrumbManagerInterface
 
     /**
      * Convert breadcrumbs to array format.
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function toArray(): array
     {
@@ -117,6 +119,9 @@ final class BreadcrumbAdapter implements BreadcrumbManagerInterface
     /**
      * Get structured data for breadcrumbs (JSON-LD format for SEO).
      */
+    /**
+     * @return array<string, mixed>
+     */
     public function getStructuredData(): array
     {
         $breadcrumbs = $this->toArray();
@@ -132,7 +137,7 @@ final class BreadcrumbAdapter implements BreadcrumbManagerInterface
             if (! empty($breadcrumb['url'])) {
                 $items[] = [
                     '@type' => 'ListItem',
-                    'position' => $index + 1,
+                    'position' => is_int($index) ? $index + 1 : count($items) + 1,
                     'name' => $breadcrumb['title'] ?? $breadcrumb['name'] ?? '',
                     'item' => $breadcrumb['url'],
                 ];
@@ -160,6 +165,8 @@ final class BreadcrumbAdapter implements BreadcrumbManagerInterface
 
     /**
      * Get the current active breadcrumb item.
+     *
+     * @return array<string, mixed>|null
      */
     public function getCurrentBreadcrumb(): ?array
     {
@@ -225,8 +232,9 @@ final class BreadcrumbAdapter implements BreadcrumbManagerInterface
 
     /**
      * Get breadcrumbs with additional Laravel-specific metadata.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getLaravelBreadcrumbs(): array
     {
         $breadcrumbs = $this->toArray();
@@ -245,22 +253,29 @@ final class BreadcrumbAdapter implements BreadcrumbManagerInterface
     /**
      * Get breadcrumbs formatted for JSON API responses.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function toJsonApi(): array
     {
         $breadcrumbs = $this->toArray();
 
-        return [
-            'data' => array_map(static fn (array $breadcrumb, int $index): array => [
+        $data = [];
+        foreach ($breadcrumbs as $index => $breadcrumb) {
+            $data[] = [
                 'type' => 'breadcrumb',
                 'id' => (string) $index,
                 'attributes' => [
                     'title' => $breadcrumb['title'] ?? $breadcrumb['name'] ?? '',
                     'url' => $breadcrumb['url'] ?? null,
                     'active' => $breadcrumb['active'] ?? $breadcrumb['is_active'] ?? false,
-                    'position' => $index + 1,
+                    'position' => is_int($index) ? $index + 1 : count($data) + 1,
                 ],
-            ], $breadcrumbs, array_keys($breadcrumbs)),
+            ];
+        }
+
+        return [
+            'data' => $data,
             'meta' => [
                 'structured_data' => $this->getStructuredData(),
                 'total_count' => count($breadcrumbs),

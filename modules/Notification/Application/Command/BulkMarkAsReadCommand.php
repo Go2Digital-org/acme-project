@@ -17,10 +17,12 @@ final readonly class BulkMarkAsReadCommand implements CommandInterface
      */
     public function __construct(
         public int $userId,
+        /** @var array<string, mixed> */
         public array $notificationIds = [],
         public bool $markAllAsRead = false,
         public ?string $type = null,
         public ?string $channel = null,
+        /** @var array<string, mixed> */
         public array $metadata = [],
     ) {}
 }

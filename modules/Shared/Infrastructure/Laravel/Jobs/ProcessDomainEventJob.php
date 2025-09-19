@@ -31,8 +31,9 @@ class ProcessDomainEventJob implements ShouldQueue
 
     /**
      * The number of seconds to wait before retrying the job.
+     * @var array<int, int>
      */
-    public int $backoff = 5;
+    public array $backoff = [5, 15, 30];
 
     /**
      * The maximum number of seconds the job can run.
@@ -99,15 +100,14 @@ class ProcessDomainEventJob implements ShouldQueue
 
     /**
      * Get tags for job monitoring
-     *
-     * @return array<string>
+     * @return array<string, mixed>
      */
     public function tags(): array
     {
         return [
-            'domain-event',
-            'event:' . $this->event->getEventName(),
-            'context:' . $this->event->getContext(),
+            'type' => 'domain-event',
+            'event' => $this->event->getEventName(),
+            'context' => $this->event->getContext(),
         ];
     }
 }

@@ -7,7 +7,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2|^8.3|^8.4",
-        "api-platform/laravel": "^4.0",
+        "api-platform/hal": "^4.2@beta",
+        "api-platform/laravel": "^4.2",
         "barryvdh/laravel-dompdf": "^3.1",
         "bezhansalleh/filament-shield": "4.0.0-beta2",
         "darkaonline/l5-swagger": "^9.0",
@@ -120,7 +121,9 @@
         "rector": "vendor/bin/rector process --config=rector/rector-safe.php",
         "rector:dry": "vendor/bin/rector process --config=rector/rector-safe.php --dry-run",
         "rector:aggressive": "vendor/bin/rector process --config=rector/rector.php --dry-run",
-        "rector:aggressive:apply": "vendor/bin/rector process --config=rector/rector.php"
+        "rector:aggressive:apply": "vendor/bin/rector process --config=rector/rector.php",
+        "rector:phpstan-fix": "vendor/bin/rector process --config=rector/rector-phpstan-fix.php --dry-run",
+        "rector:phpstan-fix:apply": "vendor/bin/rector process --config=rector/rector-phpstan-fix.php"
     },
     "extra": {
         "laravel": {

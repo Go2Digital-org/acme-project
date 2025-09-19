@@ -38,7 +38,7 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  *
  * @mixin Model
  */
-final class Bookmark extends Model
+class Bookmark extends Model
 {
     /** @use HasFactory<BookmarkFactory> */
     use HasFactory;
@@ -74,7 +74,8 @@ final class Bookmark extends Model
     }
 
     /**
-     * @return array<string, string> */
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

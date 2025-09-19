@@ -14,6 +14,7 @@ final readonly class MaintenanceMode
     public function __construct(
         public bool $enabled,
         public ?string $message = null,
+        /** @var array<string, mixed> */
         public array $allowedIps = []
     ) {
         if ($this->enabled && ($this->message === null || $this->message === '' || $this->message === '0')) {

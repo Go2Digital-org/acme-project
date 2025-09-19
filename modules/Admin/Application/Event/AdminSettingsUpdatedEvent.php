@@ -18,6 +18,7 @@ final readonly class AdminSettingsUpdatedEvent
     public function __construct(
         public int $settingsId,
         public int $updatedBy,
+        /** @var array<string, mixed> */
         public array $changes,
         public DateTimeImmutable $occurredAt = new DateTimeImmutable
     ) {}

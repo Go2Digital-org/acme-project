@@ -45,7 +45,7 @@ class UserActivityReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTimeline(): array
     {
@@ -53,7 +53,7 @@ class UserActivityReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getAggregateTimeline(): array
     {
@@ -85,7 +85,7 @@ class UserActivityReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getActivityByType(): array
     {
@@ -93,7 +93,7 @@ class UserActivityReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getMostActiveUsers(): array
     {
@@ -146,7 +146,7 @@ class UserActivityReadModel extends AbstractReadModel
 
     // Session Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getSessionsList(): array
     {
@@ -231,7 +231,7 @@ class UserActivityReadModel extends AbstractReadModel
 
     // Behavior Pattern Analysis
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getHourlyPattern(): array
     {
@@ -241,7 +241,7 @@ class UserActivityReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getWeeklyPattern(): array
     {
@@ -298,13 +298,15 @@ class UserActivityReadModel extends AbstractReadModel
     }
 
     // Activity Type Analysis
-    /** @return array<int, mixed> */
+    /**
+     * @return list<mixed>
+     */
     public function getTopActivityTypes(): array
     {
         $activities = $this->getActivityByType();
 
         // Sort by count descending and take top 5
-        usort($activities, fn ($a, $b) => $b['count'] <=> $a['count']);
+        usort($activities, fn (array $a, array $b): int => $b['count'] <=> $a['count']);
 
         return array_slice($activities, 0, 5);
     }
@@ -328,7 +330,7 @@ class UserActivityReadModel extends AbstractReadModel
 
     // User Timeline (for individual users)
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getUserTimeline(): array
     {
@@ -340,16 +342,18 @@ class UserActivityReadModel extends AbstractReadModel
         return count($this->getUserTimeline());
     }
 
-    /** @return array<string, mixed>|null */
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getLatestActivity(): ?array
     {
         $timeline = $this->getUserTimeline();
 
-        return $timeline === [] ? null : $timeline[0];
+        return $timeline[0] ?? null;
     }
 
     // Most Active Users (for aggregate views)
-    /** @return array<int, array<string, mixed>> */
+    /** @return array<string, mixed> */
     public function getMostActiveUsersList(): array
     {
         return $this->getMostActiveUsers();
@@ -361,7 +365,9 @@ class UserActivityReadModel extends AbstractReadModel
     }
 
     // Comparison Analysis
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getCurrentPeriodActivity(): array
     {
         $comparisons = $this->getComparisons();
@@ -369,7 +375,9 @@ class UserActivityReadModel extends AbstractReadModel
         return $comparisons['current_period'] ?? [];
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getPreviousPeriodActivity(): array
     {
         $comparisons = $this->getComparisons();

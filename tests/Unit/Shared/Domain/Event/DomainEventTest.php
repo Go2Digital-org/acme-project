@@ -4,190 +4,14 @@ declare(strict_types=1);
 
 use Modules\Shared\Application\Event\AbstractDomainEvent;
 use Modules\Shared\Domain\Event\DomainEventInterface;
+use Tests\Fixtures\Shared\Domain\Event\TestCorrelatedEvent;
+use Tests\Fixtures\Shared\Domain\Event\TestDomainEvent;
+use Tests\Fixtures\Shared\Domain\Event\TestEventRouter;
+use Tests\Fixtures\Shared\Domain\Event\TestEventStore;
+use Tests\Fixtures\Shared\Domain\Event\TestVersionedEvent;
 
-/**
- * Test implementation of DomainEvent for testing purposes
- */
-class TestDomainEvent extends AbstractDomainEvent
-{
-    public function __construct(
-        public readonly string $testData,
-        public readonly ?string $optionalData = null,
-        string|int|null $aggregateId = null,
-        int $eventVersion = 1,
-        private readonly bool $asyncFlag = false
-    ) {
-        parent::__construct($aggregateId, $eventVersion);
-    }
-
-    public function getEventName(): string
-    {
-        return 'test.event.created';
-    }
-
-    public function getEventData(): array
-    {
-        return array_merge(parent::getEventData(), [
-            'test_data' => $this->testData,
-            'optional_data' => $this->optionalData,
-        ]);
-    }
-
-    public function isAsync(): bool
-    {
-        return $this->asyncFlag;
-    }
-}
-
-/**
- * Test event with correlation and causation
- */
-class TestCorrelatedEvent extends AbstractDomainEvent
-{
-    public function __construct(
-        public readonly string $correlationId,
-        public readonly ?string $causationId = null,
-        string|int|null $aggregateId = null,
-        int $eventVersion = 1
-    ) {
-        parent::__construct($aggregateId, $eventVersion);
-    }
-
-    public function getEventName(): string
-    {
-        return 'test.correlated.event';
-    }
-
-    public function getEventData(): array
-    {
-        return array_merge(parent::getEventData(), [
-            'correlation_id' => $this->correlationId,
-            'causation_id' => $this->causationId,
-        ]);
-    }
-
-    public function getCorrelationId(): string
-    {
-        return $this->correlationId;
-    }
-
-    public function getCausationId(): ?string
-    {
-        return $this->causationId;
-    }
-}
-
-/**
- * Test event for versioning scenarios
- */
-class TestVersionedEvent extends AbstractDomainEvent
-{
-    public function __construct(
-        public readonly string $data,
-        public readonly int $schemaVersion,
-        string|int|null $aggregateId = null,
-        int $eventVersion = 1
-    ) {
-        parent::__construct($aggregateId, $eventVersion);
-    }
-
-    public function getEventName(): string
-    {
-        return 'test.versioned.event';
-    }
-
-    public function getEventData(): array
-    {
-        return array_merge(parent::getEventData(), [
-            'data' => $this->data,
-            'schema_version' => $this->schemaVersion,
-        ]);
-    }
-
-    public function getSchemaVersion(): int
-    {
-        return $this->schemaVersion;
-    }
-}
-
-/**
- * Event Store implementation for testing
- */
-class TestEventStore
-{
-    /** @var array<int, DomainEventInterface> */
-    private array $events = [];
-
-    /** @var array<string, array<int, DomainEventInterface>> */
-    private array $aggregateEvents = [];
-
-    public function append(DomainEventInterface $event): void
-    {
-        $this->events[] = $event;
-
-        $aggregateId = (string) $event->getAggregateId();
-        if (! isset($this->aggregateEvents[$aggregateId])) {
-            $this->aggregateEvents[$aggregateId] = [];
-        }
-        $this->aggregateEvents[$aggregateId][] = $event;
-    }
-
-    /** @return array<int, DomainEventInterface> */
-    public function getEvents(): array
-    {
-        return $this->events;
-    }
-
-    /** @return array<int, DomainEventInterface> */
-    public function getEventsForAggregate(string $aggregateId): array
-    {
-        return $this->aggregateEvents[$aggregateId] ?? [];
-    }
-
-    /** @return array<int, DomainEventInterface> */
-    public function getEventsByType(string $eventType): array
-    {
-        return array_values(array_filter($this->events, fn (DomainEventInterface $event) => $event->getEventName() === $eventType
-        ));
-    }
-
-    public function clear(): void
-    {
-        $this->events = [];
-        $this->aggregateEvents = [];
-    }
-}
-
-/**
- * Event Router for testing filtering and routing
- */
-class TestEventRouter
-{
-    /** @var array<string, callable> */
-    private array $handlers = [];
-
-    public function register(string $eventType, callable $handler): void
-    {
-        $this->handlers[$eventType] = $handler;
-    }
-
-    public function route(DomainEventInterface $event): void
-    {
-        $eventType = $event->getEventName();
-        if (isset($this->handlers[$eventType])) {
-            $this->handlers[$eventType]($event);
-        }
-    }
-
-    /** @return array<string, callable> */
-    public function getHandlers(): array
-    {
-        return $this->handlers;
-    }
-}
-
-describe('Domain Event Creation and Validation', function () {
-    it('creates domain event with required data', function () {
+describe('Domain Event Creation and Validation', function (): void {
+    it('creates domain event with required data', function (): void {
         $event = new TestDomainEvent('test data', 'optional', 123, 1);
 
         expect($event)->toBeInstanceOf(DomainEventInterface::class)
@@ -198,7 +22,7 @@ describe('Domain Event Creation and Validation', function () {
             ->and($event->getEventVersion())->toBe(1);
     });
 
-    it('creates domain event with minimal required data', function () {
+    it('creates domain event with minimal required data', function (): void {
         $event = new TestDomainEvent('minimal');
 
         expect($event->testData)->toBe('minimal')
@@ -207,7 +31,7 @@ describe('Domain Event Creation and Validation', function () {
             ->and($event->getEventVersion())->toBe(1);
     });
 
-    it('validates event name format', function () {
+    it('validates event name format', function (): void {
         $event = new TestDomainEvent('test');
         $eventName = $event->getEventName();
 
@@ -216,7 +40,7 @@ describe('Domain Event Creation and Validation', function () {
             ->and($eventName)->toBe('test.event.created');
     });
 
-    it('generates unique occurrence timestamp', function () {
+    it('generates unique occurrence timestamp', function (): void {
         $event1 = new TestDomainEvent('first');
         usleep(1000); // Ensure different microseconds
         $event2 = new TestDomainEvent('second');
@@ -228,7 +52,7 @@ describe('Domain Event Creation and Validation', function () {
             );
     });
 
-    it('validates aggregate id types', function () {
+    it('validates aggregate id types', function (): void {
         $stringEvent = new TestDomainEvent('test', null, 'string-id');
         $intEvent = new TestDomainEvent('test', null, 123);
         $nullEvent = new TestDomainEvent('test', null, null);
@@ -239,8 +63,8 @@ describe('Domain Event Creation and Validation', function () {
     });
 });
 
-describe('Event Metadata Handling', function () {
-    it('includes all required metadata in event data', function () {
+describe('Event Metadata Handling', function (): void {
+    it('includes all required metadata in event data', function (): void {
         $event = new TestDomainEvent('test data', 'optional', 456, 2);
         $eventData = $event->getEventData();
 
@@ -255,7 +79,7 @@ describe('Event Metadata Handling', function () {
             ->and($eventData['optional_data'])->toBe('optional');
     });
 
-    it('formats occurred_at timestamp correctly', function () {
+    it('formats occurred_at timestamp correctly', function (): void {
         $event = new TestDomainEvent('test');
         $eventData = $event->getEventData();
 
@@ -263,13 +87,13 @@ describe('Event Metadata Handling', function () {
             ->and($eventData['occurred_at'])->toMatch('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}$/');
     });
 
-    it('extracts context from namespace correctly', function () {
+    it('extracts context from namespace correctly', function (): void {
         $event = new TestDomainEvent('test');
 
         expect($event->getContext())->toBe('Unknown'); // Test events are in global namespace
     });
 
-    it('handles null optional data in metadata', function () {
+    it('handles null optional data in metadata', function (): void {
         $event = new TestDomainEvent('test');
         $eventData = $event->getEventData();
 
@@ -277,8 +101,8 @@ describe('Event Metadata Handling', function () {
     });
 });
 
-describe('Event Versioning', function () {
-    it('supports multiple event versions', function () {
+describe('Event Versioning', function (): void {
+    it('supports multiple event versions', function (): void {
         $v1Event = new TestVersionedEvent('data v1', 1, 123, 1);
         $v2Event = new TestVersionedEvent('data v2', 2, 123, 2);
 
@@ -288,7 +112,7 @@ describe('Event Versioning', function () {
             ->and($v2Event->getSchemaVersion())->toBe(2);
     });
 
-    it('maintains version consistency for same aggregate', function () {
+    it('maintains version consistency for same aggregate', function (): void {
         $aggregateId = 789;
 
         $event1 = new TestVersionedEvent('first', 1, $aggregateId, 1);
@@ -303,7 +127,7 @@ describe('Event Versioning', function () {
             ->and($event3->getEventVersion())->toBe(3);
     });
 
-    it('handles schema version upgrades', function () {
+    it('handles schema version upgrades', function (): void {
         $oldEvent = new TestVersionedEvent('old format', 1, 123, 1);
         $newEvent = new TestVersionedEvent('new format', 2, 123, 2);
 
@@ -316,7 +140,7 @@ describe('Event Versioning', function () {
             ->and($newData['data'])->toBe('new format');
     });
 
-    it('validates version ordering', function () {
+    it('validates version ordering', function (): void {
         $versions = [];
         for ($i = 1; $i <= 5; $i++) {
             $event = new TestVersionedEvent("data $i", 1, 123, $i);
@@ -327,8 +151,8 @@ describe('Event Versioning', function () {
     });
 });
 
-describe('Event Correlation and Causation', function () {
-    it('tracks correlation id across related events', function () {
+describe('Event Correlation and Causation', function (): void {
+    it('tracks correlation id across related events', function (): void {
         $correlationId = 'correlation-123';
 
         $event1 = new TestCorrelatedEvent($correlationId, null, 123, 1);
@@ -340,7 +164,7 @@ describe('Event Correlation and Causation', function () {
             ->and($event2->getCausationId())->toBe('test.correlated.event');
     });
 
-    it('maintains causation chain', function () {
+    it('maintains causation chain', function (): void {
         $correlationId = 'correlation-456';
 
         $rootEvent = new TestCorrelatedEvent($correlationId, null, 456, 1);
@@ -352,7 +176,7 @@ describe('Event Correlation and Causation', function () {
             ->and($grandchildEvent->getCausationId())->toBe('test.correlated.event');
     });
 
-    it('includes correlation data in event payload', function () {
+    it('includes correlation data in event payload', function (): void {
         $correlationId = 'correlation-789';
         $causationId = 'causation-123';
 
@@ -363,7 +187,7 @@ describe('Event Correlation and Causation', function () {
             ->and($eventData['causation_id'])->toBe($causationId);
     });
 
-    it('handles null causation in correlation data', function () {
+    it('handles null causation in correlation data', function (): void {
         $event = new TestCorrelatedEvent('correlation-abc', null, 123, 1);
         $eventData = $event->getEventData();
 
@@ -372,12 +196,12 @@ describe('Event Correlation and Causation', function () {
     });
 });
 
-describe('Event Replay Logic', function () {
-    beforeEach(function () {
+describe('Event Replay Logic', function (): void {
+    beforeEach(function (): void {
         $this->eventStore = new TestEventStore;
     });
 
-    it('replays events for specific aggregate', function () {
+    it('replays events for specific aggregate', function (): void {
         $aggregateId = '123';
 
         $this->eventStore->append(new TestDomainEvent('event1', null, $aggregateId, 1));
@@ -393,7 +217,7 @@ describe('Event Replay Logic', function () {
             ->and($events[1]->getEventVersion())->toBe(2);
     });
 
-    it('replays events in correct chronological order', function () {
+    it('replays events in correct chronological order', function (): void {
         $aggregateId = '789';
 
         $event1 = new TestDomainEvent('first', null, $aggregateId, 1);
@@ -413,7 +237,7 @@ describe('Event Replay Logic', function () {
             ->and($events[2]->testData)->toBe('third');
     });
 
-    it('rebuilds aggregate state from events', function () {
+    it('rebuilds aggregate state from events', function (): void {
         $aggregateId = '999';
         $initialState = ['counter' => 0, 'name' => ''];
 
@@ -444,19 +268,19 @@ describe('Event Replay Logic', function () {
             ->and($finalState['name'])->toBe('test');
     });
 
-    it('handles empty event stream for non-existent aggregate', function () {
+    it('handles empty event stream for non-existent aggregate', function (): void {
         $events = $this->eventStore->getEventsForAggregate('non-existent');
 
         expect($events)->toBeEmpty();
     });
 });
 
-describe('Event Aggregation', function () {
-    beforeEach(function () {
+describe('Event Aggregation', function (): void {
+    beforeEach(function (): void {
         $this->eventStore = new TestEventStore;
     });
 
-    it('aggregates events by type', function () {
+    it('aggregates events by type', function (): void {
         $this->eventStore->append(new TestDomainEvent('data1', null, 1, 1));
         $this->eventStore->append(new TestVersionedEvent('data2', 1, 2, 1));
         $this->eventStore->append(new TestDomainEvent('data3', null, 3, 1));
@@ -471,7 +295,7 @@ describe('Event Aggregation', function () {
             ->and($versionedEvents[0]->data)->toBe('data2');
     });
 
-    it('calculates aggregate statistics', function () {
+    it('calculates aggregate statistics', function (): void {
         $aggregateId = '123';
 
         for ($i = 1; $i <= 10; $i++) {
@@ -487,7 +311,7 @@ describe('Event Aggregation', function () {
             ->and(array_sum($versions))->toBe(55); // Sum of 1..10
     });
 
-    it('groups events by time periods', function () {
+    it('groups events by time periods', function (): void {
         $now = new DateTimeImmutable;
         $events = [];
 
@@ -508,7 +332,7 @@ describe('Event Aggregation', function () {
             ->and($timestamps[0])->toBeLessThan($timestamps[4]);
     });
 
-    it('aggregates events by context', function () {
+    it('aggregates events by context', function (): void {
         $this->eventStore->append(new TestDomainEvent('shared1', null, 1, 1));
         $this->eventStore->append(new TestDomainEvent('shared2', null, 2, 1));
 
@@ -520,15 +344,15 @@ describe('Event Aggregation', function () {
     });
 });
 
-describe('Event Filtering and Routing', function () {
-    beforeEach(function () {
+describe('Event Filtering and Routing', function (): void {
+    beforeEach(function (): void {
         $this->router = new TestEventRouter;
         $this->handlerCalled = false;
         $this->receivedEvent = null;
     });
 
-    it('registers event handlers', function () {
-        $handler = function ($event) {
+    it('registers event handlers', function (): void {
+        $handler = function ($event): void {
             $this->handlerCalled = true;
             $this->receivedEvent = $event;
         };
@@ -538,8 +362,8 @@ describe('Event Filtering and Routing', function () {
         expect($this->router->getHandlers())->toHaveKey('test.event.created');
     });
 
-    it('routes events to correct handlers', function () {
-        $handler = function ($event) {
+    it('routes events to correct handlers', function (): void {
+        $handler = function ($event): void {
             $this->handlerCalled = true;
             $this->receivedEvent = $event;
         };
@@ -553,7 +377,7 @@ describe('Event Filtering and Routing', function () {
             ->and($this->receivedEvent)->toBe($event);
     });
 
-    it('ignores events without handlers', function () {
+    it('ignores events without handlers', function (): void {
         $event = new TestDomainEvent('test data');
 
         $this->router->route($event);
@@ -562,7 +386,7 @@ describe('Event Filtering and Routing', function () {
             ->and($this->receivedEvent)->toBeNull();
     });
 
-    it('filters events by aggregate id', function () {
+    it('filters events by aggregate id', function (): void {
         $events = [
             new TestDomainEvent('data1', null, 123, 1),
             new TestDomainEvent('data2', null, 456, 1),
@@ -576,7 +400,7 @@ describe('Event Filtering and Routing', function () {
             ->and(array_values($filtered)[1]->testData)->toBe('data3');
     });
 
-    it('filters events by version range', function () {
+    it('filters events by version range', function (): void {
         $events = [
             new TestDomainEvent('v1', null, 123, 1),
             new TestDomainEvent('v2', null, 123, 2),
@@ -592,8 +416,8 @@ describe('Event Filtering and Routing', function () {
     });
 });
 
-describe('Event Serialization', function () {
-    it('serializes event data to JSON', function () {
+describe('Event Serialization', function (): void {
+    it('serializes event data to JSON', function (): void {
         $event = new TestDomainEvent('test data', 'optional', 123, 1);
         $eventData = $event->getEventData();
 
@@ -607,7 +431,7 @@ describe('Event Serialization', function () {
             ->and($decoded['aggregate_id'])->toBe(123);
     });
 
-    it('handles null values in serialization', function () {
+    it('handles null values in serialization', function (): void {
         $event = new TestDomainEvent('test', null, null, 1);
         $eventData = $event->getEventData();
 
@@ -618,7 +442,7 @@ describe('Event Serialization', function () {
             ->and($decoded['aggregate_id'])->toBeNull();
     });
 
-    it('preserves data types after serialization', function () {
+    it('preserves data types after serialization', function (): void {
         $event = new TestVersionedEvent('test', 2, 123, 1);
         $eventData = $event->getEventData();
 
@@ -630,7 +454,7 @@ describe('Event Serialization', function () {
             ->and($decoded['aggregate_id'])->toBe(123);
     });
 
-    it('serializes complex event data structures', function () {
+    it('serializes complex event data structures', function (): void {
         $complexEvent = new class('complex') extends AbstractDomainEvent
         {
             public function __construct(
@@ -668,8 +492,8 @@ describe('Event Serialization', function () {
     });
 });
 
-describe('Event Timestamp Handling', function () {
-    it('creates immutable timestamps', function () {
+describe('Event Timestamp Handling', function (): void {
+    it('creates immutable timestamps', function (): void {
         $event = new TestDomainEvent('test');
         $timestamp1 = $event->getOccurredAt();
         $timestamp2 = $event->getOccurredAt();
@@ -679,7 +503,7 @@ describe('Event Timestamp Handling', function () {
             ->and($timestamp1)->toBe($timestamp2); // Same instance
     });
 
-    it('maintains microsecond precision', function () {
+    it('maintains microsecond precision', function (): void {
         $event = new TestDomainEvent('test');
         $timestamp = $event->getOccurredAt();
         $formatted = $timestamp->format('Y-m-d H:i:s.u');
@@ -687,7 +511,7 @@ describe('Event Timestamp Handling', function () {
         expect($formatted)->toMatch('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}$/');
     });
 
-    it('creates timestamps in chronological order', function () {
+    it('creates timestamps in chronological order', function (): void {
         $event1 = new TestDomainEvent('first');
         usleep(1000);
         $event2 = new TestDomainEvent('second');
@@ -698,7 +522,7 @@ describe('Event Timestamp Handling', function () {
         expect($time1)->toBeLessThan($time2);
     });
 
-    it('handles timezone correctly', function () {
+    it('handles timezone correctly', function (): void {
         $event = new TestDomainEvent('test');
         $timestamp = $event->getOccurredAt();
 
@@ -706,7 +530,7 @@ describe('Event Timestamp Handling', function () {
         expect($timestamp->getTimezone()->getName())->toBeString();
     });
 
-    it('formats timestamps consistently in event data', function () {
+    it('formats timestamps consistently in event data', function (): void {
         $event1 = new TestDomainEvent('test1');
         $event2 = new TestDomainEvent('test2');
 
@@ -718,13 +542,13 @@ describe('Event Timestamp Handling', function () {
     });
 });
 
-describe('Event Deduplication', function () {
-    beforeEach(function () {
+describe('Event Deduplication', function (): void {
+    beforeEach(function (): void {
         $this->eventStore = new TestEventStore;
         $this->seenEvents = [];
     });
 
-    it('identifies duplicate events by content', function () {
+    it('identifies duplicate events by content', function (): void {
         $event1 = new TestDomainEvent('same data', 'same optional', 123, 1);
         usleep(1); // Ensure different microsecond timestamps
         $event2 = new TestDomainEvent('same data', 'same optional', 123, 1);
@@ -744,7 +568,7 @@ describe('Event Deduplication', function () {
         expect($data1)->toBe($data2); // Without timestamps, content is identical
     });
 
-    it('creates unique event identifiers', function () {
+    it('creates unique event identifiers', function (): void {
         $events = [];
         for ($i = 0; $i < 5; $i++) {
             $events[] = new TestDomainEvent("data$i", null, 123, $i + 1);
@@ -757,7 +581,7 @@ describe('Event Deduplication', function () {
         expect(array_unique($identifiers))->toHaveCount(5);
     });
 
-    it('detects duplicate aggregate version combinations', function () {
+    it('detects duplicate aggregate version combinations', function (): void {
         $event1 = new TestDomainEvent('first', null, 123, 1);
         $event2 = new TestDomainEvent('different data', null, 123, 1); // Same aggregate + version
 
@@ -767,7 +591,7 @@ describe('Event Deduplication', function () {
         expect($id1)->toBe($id2); // Would indicate potential duplicate
     });
 
-    it('tracks processed events to prevent reprocessing', function () {
+    it('tracks processed events to prevent reprocessing', function (): void {
         $events = [
             new TestDomainEvent('event1', null, 123, 1),
             new TestDomainEvent('event2', null, 123, 2),
@@ -789,7 +613,7 @@ describe('Event Deduplication', function () {
             ->and($processedIds)->toBe(['123:1', '123:2']);
     });
 
-    it('handles idempotent event processing', function () {
+    it('handles idempotent event processing', function (): void {
         $event = new TestDomainEvent('idempotent', null, 456, 1);
         $eventId = $event->getAggregateId() . ':' . $event->getEventVersion();
 
@@ -809,20 +633,20 @@ describe('Event Deduplication', function () {
     });
 });
 
-describe('Async Event Handling', function () {
-    it('identifies synchronous events by default', function () {
+describe('Async Event Handling', function (): void {
+    it('identifies synchronous events by default', function (): void {
         $event = new TestDomainEvent('sync');
 
         expect($event->isAsync())->toBeFalse();
     });
 
-    it('identifies asynchronous events when configured', function () {
+    it('identifies asynchronous events when configured', function (): void {
         $event = new TestDomainEvent('async', null, null, 1, true);
 
         expect($event->isAsync())->toBeTrue();
     });
 
-    it('routes sync and async events differently', function () {
+    it('routes sync and async events differently', function (): void {
         $syncEvent = new TestDomainEvent('sync', null, null, 1, false);
         $asyncEvent = new TestDomainEvent('async', null, null, 1, true);
 
@@ -845,7 +669,7 @@ describe('Async Event Handling', function () {
             ->and($asyncEvents[0]->testData)->toBe('async');
     });
 
-    it('maintains event ordering for synchronous processing', function () {
+    it('maintains event ordering for synchronous processing', function (): void {
         $events = [
             new TestDomainEvent('first', null, 123, 1, false),
             new TestDomainEvent('second', null, 123, 2, false),

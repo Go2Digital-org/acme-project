@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Dashboard\Domain\Repository;
 
-use Modules\Dashboard\Domain\ValueObject\ActivityFeedItem;
 use Modules\Dashboard\Domain\ValueObject\DashboardStatistics;
 use Modules\Dashboard\Domain\ValueObject\ImpactMetrics;
-use Modules\Dashboard\Domain\ValueObject\LeaderboardEntry;
 
 interface DashboardRepositoryInterface
 {
@@ -19,7 +17,7 @@ interface DashboardRepositoryInterface
     /**
      * Get user's recent activity feed.
      *
-     * @return array<ActivityFeedItem>
+     * @return array<int, mixed>
      */
     public function getUserActivityFeed(int $userId, int $limit = 10): array;
 
@@ -36,7 +34,7 @@ interface DashboardRepositoryInterface
     /**
      * Get top donators leaderboard.
      *
-     * @return array<LeaderboardEntry>
+     * @return array<int, mixed>
      */
     public function getTopDonatorsLeaderboard(int $organizationId, int $limit = 5): array;
 

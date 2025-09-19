@@ -104,7 +104,8 @@ class NotificationType
 
     /**
      * Get all notification types.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function all(): array
@@ -181,7 +182,8 @@ class NotificationType
 
     /**
      * Get campaign-related notification types.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function campaignTypes(): array
@@ -200,7 +202,8 @@ class NotificationType
 
     /**
      * Get donation-related notification types.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function donationTypes(): array
@@ -218,7 +221,8 @@ class NotificationType
 
     /**
      * Get admin-only notification types.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function adminTypes(): array
@@ -238,7 +242,8 @@ class NotificationType
 
     /**
      * Get system-wide notification types.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function systemTypes(): array
@@ -254,7 +259,8 @@ class NotificationType
 
     /**
      * Get notification types that should trigger real-time updates.
-     *
+     */
+    /**
      * @return array<int, string>
      */
     public static function realTimeTypes(): array

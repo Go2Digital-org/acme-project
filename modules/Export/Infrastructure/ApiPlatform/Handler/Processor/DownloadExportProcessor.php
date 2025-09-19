@@ -23,6 +23,10 @@ class DownloadExportProcessor implements ProviderInterface
         private readonly Request $request
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): BinaryFileResponse
     {
         $user = $this->request->user();

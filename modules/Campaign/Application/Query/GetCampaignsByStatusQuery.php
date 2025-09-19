@@ -12,6 +12,7 @@ final readonly class GetCampaignsByStatusQuery implements QueryInterface
      * @param  array<int, string>  $statuses
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public array $statuses,
         public ?int $organizationId = null,
         public int $page = 1,

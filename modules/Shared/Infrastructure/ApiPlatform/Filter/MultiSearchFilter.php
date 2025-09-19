@@ -10,12 +10,14 @@ use InvalidArgumentException;
 
 class MultiSearchFilter
 {
-    /** @param array<string> $allowedFields */
+    /**
+     * @param  array<int, string>  $allowedFields
+     */
     public function __construct(protected array $allowedFields) {}
 
     /**
      * @param  Builder<Model>  $query
-     * @param  array<string, string>  $filters
+     * @param  array<string, mixed>  $filters
      */
     public function apply(Builder $query, array $filters): void
     {

@@ -17,6 +17,9 @@ final class Translation
 
     private DateTimeInterface $updatedAt;
 
+    /**
+     * @param  array<string, mixed>  $metadata
+     */
     public function __construct(
         private readonly ?string $id,
         private readonly TranslationKey $key,

@@ -131,6 +131,8 @@ trait OptimizedDatabaseTesting
 
     /**
      * Execute database operation with deadlock retry logic.
+     *
+     * @param  callable(): mixed  $callback
      */
     protected function withDeadlockRetry(callable $callback, ?int $maxRetries = null)
     {
@@ -173,7 +175,7 @@ trait OptimizedDatabaseTesting
         // Enable query log for debugging but with limit
         if (env('LOG_QUERIES', false)) {
             DB::enableQueryLog();
-            DB::listen(function ($query) {
+            DB::listen(function ($query): void {
                 if ($query->time > 100) { // Log slow queries only
                     logger()->warning('Slow test query', [
                         'sql' => $query->sql,
@@ -257,7 +259,7 @@ trait OptimizedDatabaseTesting
      */
     protected function seedOptimized(array $seeders): void
     {
-        $this->withDeadlockRetry(function () use ($seeders) {
+        $this->withDeadlockRetry(function () use ($seeders): void {
             foreach ($seeders as $seeder) {
                 $this->artisan('db:seed', [
                     '--class' => $seeder,
@@ -272,7 +274,7 @@ trait OptimizedDatabaseTesting
      */
     protected function assertDatabaseHasWithRetry(string $table, array $data): void
     {
-        $this->withDeadlockRetry(function () use ($table, $data) {
+        $this->withDeadlockRetry(function () use ($table, $data): void {
             $this->assertDatabaseHas($table, $data);
         });
     }
@@ -285,7 +287,7 @@ trait OptimizedDatabaseTesting
         $chunks = array_chunk($records, 500); // Insert in chunks
 
         foreach ($chunks as $chunk) {
-            $this->withDeadlockRetry(function () use ($model, $chunk) {
+            $this->withDeadlockRetry(function () use ($model, $chunk): void {
                 $model::insert($chunk);
             });
         }

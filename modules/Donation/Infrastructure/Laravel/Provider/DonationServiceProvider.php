@@ -12,6 +12,8 @@ use Modules\Donation\Domain\Repository\DonationRepositoryInterface;
 use Modules\Donation\Domain\Repository\PaymentAttemptRepositoryInterface;
 use Modules\Donation\Domain\Repository\PaymentGatewayRepositoryInterface;
 use Modules\Donation\Domain\Repository\PaymentRepositoryInterface;
+use Modules\Donation\Domain\Service\PaymentGatewayInterface;
+use Modules\Donation\Infrastructure\Gateway\MockPaymentGateway;
 use Modules\Donation\Infrastructure\Laravel\Observers\DonationCountObserver;
 use Modules\Donation\Infrastructure\Laravel\Repository\DonationEloquentRepository;
 use Modules\Donation\Infrastructure\Laravel\Repository\DonationExportRepository;
@@ -60,6 +62,13 @@ class DonationServiceProvider extends ServiceProvider
         $this->app->bind(
             PaymentAttemptRepositoryInterface::class,
             PaymentAttemptEloquentRepository::class,
+        );
+
+        // Bind PaymentGatewayInterface to MockPaymentGateway for testing
+        // In production, this would be bound to a real gateway based on configuration
+        $this->app->bind(
+            PaymentGatewayInterface::class,
+            MockPaymentGateway::class,
         );
 
         // Register read model builders

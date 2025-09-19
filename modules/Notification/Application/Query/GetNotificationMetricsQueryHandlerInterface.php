@@ -6,6 +6,8 @@ namespace Modules\Notification\Application\Query;
 
 interface GetNotificationMetricsQueryHandlerInterface
 {
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function handle(GetNotificationMetricsQuery $query): array;
 }

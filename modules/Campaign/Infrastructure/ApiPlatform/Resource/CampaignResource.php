@@ -180,7 +180,8 @@ class CampaignResource implements JsonSerializable
     /**
      * Custom JSON serialization to provide both camelCase and snake_case properties
      * for API compatibility
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function jsonSerialize(): array

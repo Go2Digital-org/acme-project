@@ -35,6 +35,9 @@ final class QueuedCacheInvalidationJob implements ShouldQueue
     /** @var array<int, int> */
     public array $backoff = [5, 15, 30]; // Quick retries for cache operations
 
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function __construct(
         private readonly string $invalidationType,
         /** @var array<string, mixed> */
@@ -222,8 +225,8 @@ final class QueuedCacheInvalidationJob implements ShouldQueue
     }
 
     /**
-     * @param  array<string>  $cacheKeys
-     * @param  array<string>  $patterns
+     * @param  array<string, mixed>  $cacheKeys
+     * @param  array<string, mixed>  $patterns
      */
     public static function forBulk(array $cacheKeys = [], array $patterns = [], ?string $eventName = null): self
     {
@@ -263,7 +266,7 @@ final class QueuedCacheInvalidationJob implements ShouldQueue
      * Create a batch of cache invalidation jobs for related entities
      */
     /**
-     * @param  array<int, array<string, mixed>>  $invalidations
+     * @param  list<array<string, mixed>>  $invalidations
      */
     public static function createBatchInvalidation(array $invalidations): void
     {

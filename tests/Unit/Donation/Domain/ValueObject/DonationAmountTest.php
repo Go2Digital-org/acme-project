@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Modules\Donation\Domain\ValueObject\Amount;
 
-describe('Amount Value Object', function () {
-    describe('Construction and Basic Properties', function () {
-        it('can be created with valid amount and currency', function () {
+describe('Amount Value Object', function (): void {
+    describe('Construction and Basic Properties', function (): void {
+        it('can be created with valid amount and currency', function (): void {
             $amount = new Amount(100.50, 'EUR');
 
             expect($amount->value)->toBe(100.50)
@@ -14,106 +14,106 @@ describe('Amount Value Object', function () {
                 ->and($amount->getAmount())->toBe(100.50);
         });
 
-        it('defaults to EUR currency when not specified', function () {
+        it('defaults to EUR currency when not specified', function (): void {
             $amount = new Amount(50.00);
 
             expect($amount->currency)->toBe('EUR');
         });
 
-        it('throws exception for negative amounts', function () {
+        it('throws exception for negative amounts', function (): void {
             expect(fn () => new Amount(-10.50, 'EUR'))
                 ->toThrow(InvalidArgumentException::class, 'Amount cannot be negative');
         });
 
-        it('throws exception for infinite values', function () {
+        it('throws exception for infinite values', function (): void {
             expect(fn () => new Amount(INF, 'EUR'))
                 ->toThrow(InvalidArgumentException::class, 'Amount must be a valid number');
         });
 
-        it('throws exception for NaN values', function () {
+        it('throws exception for NaN values', function (): void {
             expect(fn () => new Amount(NAN, 'EUR'))
                 ->toThrow(InvalidArgumentException::class, 'Amount must be a valid number');
         });
 
-        it('throws exception for unsupported currency', function () {
+        it('throws exception for unsupported currency', function (): void {
             expect(fn () => new Amount(100.00, 'XYZ'))
                 ->toThrow(InvalidArgumentException::class, 'Unsupported currency: XYZ');
         });
 
-        it('supports EUR currency', function () {
+        it('supports EUR currency', function (): void {
             $amount = new Amount(100.00, 'EUR');
             expect($amount->currency)->toBe('EUR');
         });
 
-        it('supports USD currency', function () {
+        it('supports USD currency', function (): void {
             $amount = new Amount(100.00, 'USD');
             expect($amount->currency)->toBe('USD');
         });
 
-        it('supports GBP currency', function () {
+        it('supports GBP currency', function (): void {
             $amount = new Amount(100.00, 'GBP');
             expect($amount->currency)->toBe('GBP');
         });
 
-        it('validates precision to 2 decimal places', function () {
+        it('validates precision to 2 decimal places', function (): void {
             $amount = new Amount(100.99, 'EUR');
             expect($amount->value)->toBe(100.99);
         });
 
-        it('allows zero amounts', function () {
+        it('allows zero amounts', function (): void {
             $amount = new Amount(0.00, 'EUR');
             expect($amount->value)->toBe(0.00);
         });
     });
 
-    describe('Static Factory Methods', function () {
-        it('can create from string representation', function () {
+    describe('Static Factory Methods', function (): void {
+        it('can create from string representation', function (): void {
             $amount = Amount::fromString('123.45', 'USD');
 
             expect($amount->value)->toBe(123.45)
                 ->and($amount->currency)->toBe('USD');
         });
 
-        it('creates from string with default EUR currency', function () {
+        it('creates from string with default EUR currency', function (): void {
             $amount = Amount::fromString('99.99');
 
             expect($amount->currency)->toBe('EUR');
         });
 
-        it('throws exception for invalid string format', function () {
+        it('throws exception for invalid string format', function (): void {
             expect(fn () => Amount::fromString('invalid', 'EUR'))
                 ->toThrow(InvalidArgumentException::class, 'Invalid amount format: invalid');
         });
 
-        it('can create from cents', function () {
+        it('can create from cents', function (): void {
             $amount = Amount::fromCents(12345, 'USD');
 
             expect($amount->value)->toBe(123.45)
                 ->and($amount->currency)->toBe('USD');
         });
 
-        it('creates minimum donation amount', function () {
+        it('creates minimum donation amount', function (): void {
             $amount = Amount::minimumDonation('EUR');
 
             expect($amount->value)->toBe(1.00)
                 ->and($amount->currency)->toBe('EUR');
         });
 
-        it('creates maximum donation amount', function () {
+        it('creates maximum donation amount', function (): void {
             $amount = Amount::maximumDonation('USD');
 
             expect($amount->value)->toBe(999999.99)
                 ->and($amount->currency)->toBe('USD');
         });
 
-        it('creates tax receipt threshold amount', function () {
+        it('creates tax receipt threshold amount', function (): void {
             $amount = Amount::taxReceiptThreshold('GBP');
 
             expect($amount->value)->toBe(20.00)
                 ->and($amount->currency)->toBe('GBP');
         });
 
-        it('creates zero amount', function () {
+        it('creates zero amount', function (): void {
             $amount = Amount::zero('EUR');
 
             expect($amount->value)->toBe(0.0)
@@ -121,8 +121,8 @@ describe('Amount Value Object', function () {
         });
     });
 
-    describe('Mathematical Operations', function () {
-        it('can add two amounts with same currency', function () {
+    describe('Mathematical Operations', function (): void {
+        it('can add two amounts with same currency', function (): void {
             $amount1 = new Amount(100.50, 'EUR');
             $amount2 = new Amount(50.25, 'EUR');
 
@@ -132,7 +132,7 @@ describe('Amount Value Object', function () {
                 ->and($result->currency)->toBe('EUR');
         });
 
-        it('throws exception when adding different currencies', function () {
+        it('throws exception when adding different currencies', function (): void {
             $amount1 = new Amount(100.00, 'EUR');
             $amount2 = new Amount(50.00, 'USD');
 
@@ -140,7 +140,7 @@ describe('Amount Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, 'Currency mismatch: EUR vs USD');
         });
 
-        it('can subtract amounts with same currency', function () {
+        it('can subtract amounts with same currency', function (): void {
             $amount1 = new Amount(100.50, 'EUR');
             $amount2 = new Amount(25.25, 'EUR');
 
@@ -150,7 +150,7 @@ describe('Amount Value Object', function () {
                 ->and($result->currency)->toBe('EUR');
         });
 
-        it('throws exception when subtracting different currencies', function () {
+        it('throws exception when subtracting different currencies', function (): void {
             $amount1 = new Amount(100.00, 'EUR');
             $amount2 = new Amount(50.00, 'USD');
 
@@ -158,7 +158,7 @@ describe('Amount Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, 'Currency mismatch: EUR vs USD');
         });
 
-        it('throws exception when subtraction results in negative', function () {
+        it('throws exception when subtraction results in negative', function (): void {
             $amount1 = new Amount(50.00, 'EUR');
             $amount2 = new Amount(100.00, 'EUR');
 
@@ -166,7 +166,7 @@ describe('Amount Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, 'Result cannot be negative');
         });
 
-        it('can multiply by positive factor', function () {
+        it('can multiply by positive factor', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             $result = $amount->multiply(2.5);
@@ -175,14 +175,14 @@ describe('Amount Value Object', function () {
                 ->and($result->currency)->toBe('EUR');
         });
 
-        it('throws exception when multiplying by negative factor', function () {
+        it('throws exception when multiplying by negative factor', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             expect(fn () => $amount->multiply(-1.5))
                 ->toThrow(InvalidArgumentException::class, 'Factor cannot be negative');
         });
 
-        it('can calculate percentage of amount', function () {
+        it('can calculate percentage of amount', function (): void {
             $amount = new Amount(200.00, 'EUR');
 
             $result = $amount->percentage(25.0);
@@ -191,21 +191,21 @@ describe('Amount Value Object', function () {
                 ->and($result->currency)->toBe('EUR');
         });
 
-        it('throws exception for negative percentage', function () {
+        it('throws exception for negative percentage', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             expect(fn () => $amount->percentage(-10.0))
                 ->toThrow(InvalidArgumentException::class, 'Percentage must be between 0 and 100');
         });
 
-        it('throws exception for percentage over 100', function () {
+        it('throws exception for percentage over 100', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             expect(fn () => $amount->percentage(150.0))
                 ->toThrow(InvalidArgumentException::class, 'Percentage must be between 0 and 100');
         });
 
-        it('handles zero percentage', function () {
+        it('handles zero percentage', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             $result = $amount->percentage(0.0);
@@ -213,7 +213,7 @@ describe('Amount Value Object', function () {
             expect($result->value)->toBe(0.00);
         });
 
-        it('handles 100 percentage', function () {
+        it('handles 100 percentage', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             $result = $amount->percentage(100.0);
@@ -222,8 +222,8 @@ describe('Amount Value Object', function () {
         });
     });
 
-    describe('Comparison Operations', function () {
-        it('correctly compares greater than', function () {
+    describe('Comparison Operations', function (): void {
+        it('correctly compares greater than', function (): void {
             $amount1 = new Amount(100.00, 'EUR');
             $amount2 = new Amount(50.00, 'EUR');
 
@@ -231,7 +231,7 @@ describe('Amount Value Object', function () {
                 ->and($amount2->greaterThan($amount1))->toBeFalse();
         });
 
-        it('correctly compares greater than or equal', function () {
+        it('correctly compares greater than or equal', function (): void {
             $amount1 = new Amount(100.00, 'EUR');
             $amount2 = new Amount(100.00, 'EUR');
             $amount3 = new Amount(50.00, 'EUR');
@@ -241,7 +241,7 @@ describe('Amount Value Object', function () {
                 ->and($amount3->greaterThanOrEqual($amount1))->toBeFalse();
         });
 
-        it('correctly compares less than', function () {
+        it('correctly compares less than', function (): void {
             $amount1 = new Amount(50.00, 'EUR');
             $amount2 = new Amount(100.00, 'EUR');
 
@@ -249,7 +249,7 @@ describe('Amount Value Object', function () {
                 ->and($amount2->lessThan($amount1))->toBeFalse();
         });
 
-        it('correctly compares less than or equal', function () {
+        it('correctly compares less than or equal', function (): void {
             $amount1 = new Amount(50.00, 'EUR');
             $amount2 = new Amount(50.00, 'EUR');
             $amount3 = new Amount(100.00, 'EUR');
@@ -259,7 +259,7 @@ describe('Amount Value Object', function () {
                 ->and($amount3->lessThanOrEqual($amount1))->toBeFalse();
         });
 
-        it('correctly compares equality', function () {
+        it('correctly compares equality', function (): void {
             $amount1 = new Amount(100.00, 'EUR');
             $amount2 = new Amount(100.00, 'EUR');
             $amount3 = new Amount(100.01, 'EUR');
@@ -268,7 +268,7 @@ describe('Amount Value Object', function () {
                 ->and($amount1->equals($amount3))->toBeFalse();
         });
 
-        it('throws exception when comparing different currencies', function () {
+        it('throws exception when comparing different currencies', function (): void {
             $amount1 = new Amount(100.00, 'EUR');
             $amount2 = new Amount(100.00, 'USD');
 
@@ -276,7 +276,7 @@ describe('Amount Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, 'Currency mismatch: EUR vs USD');
         });
 
-        it('handles floating point precision in equality', function () {
+        it('handles floating point precision in equality', function (): void {
             $amount1 = new Amount(100.00, 'EUR');
             $amount2 = new Amount(100.00, 'EUR');
 
@@ -284,8 +284,8 @@ describe('Amount Value Object', function () {
         });
     });
 
-    describe('State Checking Methods', function () {
-        it('correctly identifies zero amounts', function () {
+    describe('State Checking Methods', function (): void {
+        it('correctly identifies zero amounts', function (): void {
             $zeroAmount = new Amount(0.00, 'EUR');
             $nonZeroAmount = new Amount(0.01, 'EUR');
 
@@ -293,7 +293,7 @@ describe('Amount Value Object', function () {
                 ->and($nonZeroAmount->isZero())->toBeFalse();
         });
 
-        it('correctly identifies positive amounts', function () {
+        it('correctly identifies positive amounts', function (): void {
             $positiveAmount = new Amount(0.01, 'EUR');
             $zeroAmount = new Amount(0.00, 'EUR');
 
@@ -301,7 +301,7 @@ describe('Amount Value Object', function () {
                 ->and($zeroAmount->isPositive())->toBeFalse();
         });
 
-        it('validates donation amounts within range', function () {
+        it('validates donation amounts within range', function (): void {
             $validAmount = new Amount(50.00, 'EUR');
             $tooSmallAmount = new Amount(0.50, 'EUR');
             $tooLargeAmount = new Amount(1000000.00, 'EUR');
@@ -311,7 +311,7 @@ describe('Amount Value Object', function () {
                 ->and($tooLargeAmount->isValidDonationAmount())->toBeFalse();
         });
 
-        it('validates minimum donation amount', function () {
+        it('validates minimum donation amount', function (): void {
             $minAmount = new Amount(1.00, 'EUR');
             $belowMinAmount = new Amount(0.99, 'EUR');
 
@@ -319,7 +319,7 @@ describe('Amount Value Object', function () {
                 ->and($belowMinAmount->isValidDonationAmount())->toBeFalse();
         });
 
-        it('validates maximum donation amount', function () {
+        it('validates maximum donation amount', function (): void {
             $maxAmount = new Amount(999999.99, 'EUR');
             $aboveMaxAmount = new Amount(1000000.00, 'EUR');
 
@@ -327,7 +327,7 @@ describe('Amount Value Object', function () {
                 ->and($aboveMaxAmount->isValidDonationAmount())->toBeFalse();
         });
 
-        it('checks tax receipt qualification', function () {
+        it('checks tax receipt qualification', function (): void {
             $qualifyingAmount = new Amount(25.00, 'EUR');
             $nonQualifyingAmount = new Amount(15.00, 'EUR');
             $thresholdAmount = new Amount(20.00, 'EUR');
@@ -338,44 +338,44 @@ describe('Amount Value Object', function () {
         });
     });
 
-    describe('Conversion and Formatting', function () {
-        it('converts to cents correctly', function () {
+    describe('Conversion and Formatting', function (): void {
+        it('converts to cents correctly', function (): void {
             $amount = new Amount(123.45, 'EUR');
 
             expect($amount->toCents())->toBe(12345);
         });
 
-        it('handles zero amount conversion to cents', function () {
+        it('handles zero amount conversion to cents', function (): void {
             $amount = new Amount(0.00, 'EUR');
 
             expect($amount->toCents())->toBe(0);
         });
 
-        it('formats EUR amounts correctly', function () {
+        it('formats EUR amounts correctly', function (): void {
             $amount = new Amount(1234.56, 'EUR');
 
             expect($amount->format())->toBe('€1,234.56');
         });
 
-        it('formats USD amounts correctly', function () {
+        it('formats USD amounts correctly', function (): void {
             $amount = new Amount(1234.56, 'USD');
 
             expect($amount->format())->toBe('$1,234.56');
         });
 
-        it('formats GBP amounts correctly', function () {
+        it('formats GBP amounts correctly', function (): void {
             $amount = new Amount(1234.56, 'GBP');
 
             expect($amount->format())->toBe('£1,234.56');
         });
 
-        it('converts to decimal string for storage', function () {
+        it('converts to decimal string for storage', function (): void {
             $amount = new Amount(1234.56, 'EUR');
 
             expect($amount->toDecimalString())->toBe('1234.56');
         });
 
-        it('converts to array representation', function () {
+        it('converts to array representation', function (): void {
             $amount = new Amount(123.45, 'EUR');
 
             $array = $amount->toArray();
@@ -387,21 +387,21 @@ describe('Amount Value Object', function () {
                 ->and($array['cents'])->toBe(12345);
         });
 
-        it('provides string representation', function () {
+        it('provides string representation', function (): void {
             $amount = new Amount(123.45, 'EUR');
 
             expect((string) $amount)->toBe('€123.45');
         });
     });
 
-    describe('Magic Methods and Compatibility', function () {
-        it('provides amount property via magic getter', function () {
+    describe('Magic Methods and Compatibility', function (): void {
+        it('provides amount property via magic getter', function (): void {
             $amount = new Amount(123.45, 'EUR');
 
             expect($amount->amount)->toBe(123.45);
         });
 
-        it('throws exception for invalid magic property', function () {
+        it('throws exception for invalid magic property', function (): void {
             $amount = new Amount(123.45, 'EUR');
 
             expect(fn () => $amount->invalid_property)
@@ -409,22 +409,22 @@ describe('Amount Value Object', function () {
         });
     });
 
-    describe('Edge Cases and Precision', function () {
-        it('handles very small amounts', function () {
+    describe('Edge Cases and Precision', function (): void {
+        it('handles very small amounts', function (): void {
             $amount = new Amount(0.01, 'EUR');
 
             expect($amount->value)->toBe(0.01)
                 ->and($amount->toCents())->toBe(1);
         });
 
-        it('handles large amounts', function () {
+        it('handles large amounts', function (): void {
             $amount = new Amount(999999.99, 'EUR');
 
             expect($amount->value)->toBe(999999.99)
                 ->and($amount->toCents())->toBe(99999999);
         });
 
-        it('properly rounds floating point operations', function () {
+        it('properly rounds floating point operations', function (): void {
             $amount1 = new Amount(10.1, 'EUR');
             $amount2 = new Amount(20.2, 'EUR');
 
@@ -433,7 +433,7 @@ describe('Amount Value Object', function () {
             expect($result->value)->toBe(30.3);
         });
 
-        it('handles multiplication rounding correctly', function () {
+        it('handles multiplication rounding correctly', function (): void {
             $amount = new Amount(10.00, 'EUR');
 
             $result = $amount->multiply(0.333);
@@ -441,7 +441,7 @@ describe('Amount Value Object', function () {
             expect($result->value)->toBe(3.33);
         });
 
-        it('maintains precision in percentage calculations', function () {
+        it('maintains precision in percentage calculations', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             $result = $amount->percentage(33.33);
@@ -450,26 +450,26 @@ describe('Amount Value Object', function () {
         });
     });
 
-    describe('Business Rule Validation', function () {
-        it('enforces minimum donation amount constant', function () {
+    describe('Business Rule Validation', function (): void {
+        it('enforces minimum donation amount constant', function (): void {
             $minAmount = Amount::minimumDonation();
 
             expect($minAmount->value)->toBe(1.00);
         });
 
-        it('enforces maximum donation amount constant', function () {
+        it('enforces maximum donation amount constant', function (): void {
             $maxAmount = Amount::maximumDonation();
 
             expect($maxAmount->value)->toBe(999999.99);
         });
 
-        it('enforces tax receipt threshold constant', function () {
+        it('enforces tax receipt threshold constant', function (): void {
             $thresholdAmount = Amount::taxReceiptThreshold();
 
             expect($thresholdAmount->value)->toBe(20.00);
         });
 
-        it('validates amount is within business rules for donations', function () {
+        it('validates amount is within business rules for donations', function (): void {
             $validAmount = new Amount(100.00, 'EUR');
             $invalidMinAmount = new Amount(0.50, 'EUR');
             $invalidMaxAmount = new Amount(1000000.00, 'EUR');
@@ -480,54 +480,54 @@ describe('Amount Value Object', function () {
         });
     });
 
-    describe('Currency Symbol Mapping', function () {
-        it('maps EUR to euro symbol', function () {
+    describe('Currency Symbol Mapping', function (): void {
+        it('maps EUR to euro symbol', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             expect($amount->format())->toContain('€');
         });
 
-        it('maps USD to dollar symbol', function () {
+        it('maps USD to dollar symbol', function (): void {
             $amount = new Amount(100.00, 'USD');
 
             expect($amount->format())->toContain('$');
         });
 
-        it('maps GBP to pound symbol', function () {
+        it('maps GBP to pound symbol', function (): void {
             $amount = new Amount(100.00, 'GBP');
 
             expect($amount->format())->toContain('£');
         });
     });
 
-    describe('Static Factory Method Edge Cases', function () {
-        it('handles string with leading/trailing whitespace', function () {
+    describe('Static Factory Method Edge Cases', function (): void {
+        it('handles string with leading/trailing whitespace', function (): void {
             $amount = Amount::fromString('  123.45  ', 'EUR');
 
             expect($amount->value)->toBe(123.45);
         });
 
-        it('handles integer string input', function () {
+        it('handles integer string input', function (): void {
             $amount = Amount::fromString('100', 'EUR');
 
             expect($amount->value)->toBe(100.0);
         });
 
-        it('handles zero cents conversion', function () {
+        it('handles zero cents conversion', function (): void {
             $amount = Amount::fromCents(0, 'EUR');
 
             expect($amount->value)->toBe(0.0);
         });
 
-        it('handles large cents conversion', function () {
+        it('handles large cents conversion', function (): void {
             $amount = Amount::fromCents(99999999, 'EUR');
 
             expect($amount->value)->toBe(999999.99);
         });
     });
 
-    describe('Complex Mathematical Operations', function () {
-        it('chains multiple operations correctly', function () {
+    describe('Complex Mathematical Operations', function (): void {
+        it('chains multiple operations correctly', function (): void {
             $amount = new Amount(100.00, 'EUR');
 
             $result = $amount
@@ -538,7 +538,7 @@ describe('Amount Value Object', function () {
             expect($result->value)->toBe(200.00);
         });
 
-        it('performs complex percentage calculations', function () {
+        it('performs complex percentage calculations', function (): void {
             $amount = new Amount(1000.00, 'EUR');
 
             $vatAmount = $amount->percentage(21.0); // 21% VAT

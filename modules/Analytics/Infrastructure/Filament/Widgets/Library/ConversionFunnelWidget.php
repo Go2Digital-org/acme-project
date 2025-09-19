@@ -15,6 +15,7 @@ class ConversionFunnelWidget extends ChartWidget
 
     protected ?string $pollingInterval = '15m';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 12;
@@ -38,6 +39,9 @@ class ConversionFunnelWidget extends ChartWidget
         return true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getData(): array
     {
         $stats = ApplicationCache::getStats('conversion_funnel');

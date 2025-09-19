@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Organization\Infrastructure\Filament\Resources\OrganizationResource\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Organization\Infrastructure\Filament\Resources\OrganizationResource;
@@ -17,6 +18,9 @@ class ListOrganizations extends ListRecords
         return 'Organizations';
     }
 
+    /**
+     * @return array<int, Action>
+     */
     protected function getHeaderActions(): array
     {
         return [

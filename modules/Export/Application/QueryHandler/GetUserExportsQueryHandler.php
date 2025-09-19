@@ -37,7 +37,7 @@ class GetUserExportsQueryHandler
             sortOrder: $query->sortOrder
         );
 
-        /** @var array<int, array<string, mixed>> $exports */
+        /** @var array<string, mixed> $exports */
         $exports = collect($pagination->items())->map(fn ($exportJob): array => [
             'export_id' => $exportJob->export_id,
             'resource_type' => $exportJob->resource_type,

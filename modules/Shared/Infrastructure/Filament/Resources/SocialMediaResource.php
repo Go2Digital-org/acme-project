@@ -226,11 +226,17 @@ class SocialMediaResource extends Resource
             ->defaultSort('order');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelations(): array
     {
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getPages(): array
     {
         return [

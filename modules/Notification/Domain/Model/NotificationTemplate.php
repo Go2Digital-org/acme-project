@@ -49,7 +49,8 @@ class NotificationTemplate extends Model
 
     /**
      * Render the template with provided variables
-     *
+     */
+    /**
      * @param  array<string, mixed>  $variables
      */
     public function render(array $variables = []): Message
@@ -97,7 +98,8 @@ class NotificationTemplate extends Model
 
     /**
      * Simple template rendering with variable substitution
-     *
+     */
+    /**
      * @param  array<string, mixed>  $variables
      */
     private function renderTemplate(string $template, array $variables): string
@@ -121,7 +123,8 @@ class NotificationTemplate extends Model
 
     /**
      * Handle nested variable rendering
-     *
+     */
+    /**
      * @param  array<string, mixed>  $values
      */
     private function renderNestedVariables(string $template, string $prefix, array $values): string

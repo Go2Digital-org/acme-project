@@ -78,7 +78,7 @@ final class DonationHistoryReadModel extends AbstractReadModel
 
     // Donations Data
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getDonations(): array
     {
@@ -153,7 +153,7 @@ final class DonationHistoryReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopSupportedCampaigns(): array
     {
@@ -161,7 +161,7 @@ final class DonationHistoryReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopSupportedOrganizations(): array
     {
@@ -169,7 +169,7 @@ final class DonationHistoryReadModel extends AbstractReadModel
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopSupportedCategories(): array
     {
@@ -203,7 +203,9 @@ final class DonationHistoryReadModel extends AbstractReadModel
         $maxValue = max($pattern);
         $keys = array_keys($pattern, $maxValue);
 
-        return $keys[0] ?? null;
+        $key = $keys[0] ?? null;
+
+        return $key !== null ? (string) $key : null;
     }
 
     public function getAverageDonationsPerMonth(): float
@@ -294,7 +296,9 @@ final class DonationHistoryReadModel extends AbstractReadModel
             return null;
         }
 
-        return array_search(max($breakdown), $breakdown) ?: null;
+        $key = array_search(max($breakdown), $breakdown);
+
+        return $key !== false ? (string) $key : null;
     }
 
     // Corporate and Matching
@@ -414,7 +418,7 @@ final class DonationHistoryReadModel extends AbstractReadModel
 
     // Achievements and Milestones
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getMilestones(): array
     {
@@ -553,7 +557,8 @@ final class DonationHistoryReadModel extends AbstractReadModel
 
     /**
      * Get summary data for dashboard widgets
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toDashboardSummary(): array

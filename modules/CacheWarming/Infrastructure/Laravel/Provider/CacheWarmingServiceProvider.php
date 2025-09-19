@@ -22,9 +22,7 @@ use Modules\CacheWarming\Infrastructure\Laravel\Repository\RedisCacheRepository;
 
 final class CacheWarmingServiceProvider extends ServiceProvider
 {
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<class-string, class-string> */
     public array $bindings = [
         CacheRepositoryInterface::class => RedisCacheRepository::class,
     ];
@@ -134,38 +132,38 @@ final class CacheWarmingServiceProvider extends ServiceProvider
     private function invalidateCampaignCache(): void
     {
         $this->dispatchCacheInvalidation([
-            'campaign_performance',
-            'campaign_categories',
-            'optimized_campaign_stats',
-            'goal_completion',
-            'realtime_stats',
+            'campaign_performance' => 'campaign_performance',
+            'campaign_categories' => 'campaign_categories',
+            'optimized_campaign_stats' => 'optimized_campaign_stats',
+            'goal_completion' => 'goal_completion',
+            'realtime_stats' => 'realtime_stats',
         ]);
     }
 
     private function invalidateDonationCache(): void
     {
         $this->dispatchCacheInvalidation([
-            'total_donations',
-            'average_donation',
-            'donation_trends',
-            'donation_methods',
-            'revenue_summary',
-            'realtime_stats',
+            'total_donations' => 'total_donations',
+            'average_donation' => 'average_donation',
+            'donation_trends' => 'donation_trends',
+            'donation_methods' => 'donation_methods',
+            'revenue_summary' => 'revenue_summary',
+            'realtime_stats' => 'realtime_stats',
         ]);
     }
 
     private function invalidateOrganizationCache(): void
     {
         $this->dispatchCacheInvalidation([
-            'organization_stats',
-            'employee_participation',
-            'geographical_distribution',
-            'realtime_stats',
+            'organization_stats' => 'organization_stats',
+            'employee_participation' => 'employee_participation',
+            'geographical_distribution' => 'geographical_distribution',
+            'realtime_stats' => 'realtime_stats',
         ]);
     }
 
     /**
-     * @param  array<string>  $cacheKeys
+     * @param  array<string, mixed>  $cacheKeys
      */
     private function dispatchCacheInvalidation(array $cacheKeys): void
     {

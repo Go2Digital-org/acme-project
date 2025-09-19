@@ -242,7 +242,7 @@ class ProcessPaymentWebhookJob implements ShouldQueue
 #### Job Failure Notifications
 - Automatic notifications for critical job failures
 - Detailed error logs with stack traces
-- Slack/email integration for immediate alerts
+- Email integration for immediate alerts
 
 #### Health Monitoring
 ```bash

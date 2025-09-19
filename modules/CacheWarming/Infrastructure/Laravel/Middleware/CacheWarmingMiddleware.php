@@ -26,7 +26,7 @@ final readonly class CacheWarmingMiddleware
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     private function getSkipRoutes(): array
     {

@@ -143,4 +143,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Module Discovery Configuration
+    |--------------------------------------------------------------------------
+    |
+    | These settings control the module discovery behavior, particularly
+    | useful for testing environments where complex module discovery
+    | might interfere with test execution.
+    |
+    */
+
+    'disable_module_discovery_in_tests' => (bool) env('DISABLE_MODULE_DISCOVERY_IN_TESTS', false),
+
 ];

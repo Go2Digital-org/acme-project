@@ -20,6 +20,9 @@ class EditRole extends EditRecord
 
     protected static string $resource = RoleResource::class;
 
+    /**
+     * @return array<int, DeleteAction>
+     */
     protected function getActions(): array
     {
         return [
@@ -27,6 +30,10 @@ class EditRole extends EditRecord
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $this->permissions = collect($data)

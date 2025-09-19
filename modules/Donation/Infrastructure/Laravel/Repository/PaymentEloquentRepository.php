@@ -171,8 +171,9 @@ class PaymentEloquentRepository implements PaymentRepositoryInterface
 
     /**
      * Get payment statistics for dashboard.
-     *
-     * @return array<array-key, mixed>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getStatistics(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -305,8 +306,9 @@ class PaymentEloquentRepository implements PaymentRepositoryInterface
 
     /**
      * Get payment volume by gateway.
-     *
-     * @return array<string, int>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getVolumeByGateway(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -336,8 +338,9 @@ class PaymentEloquentRepository implements PaymentRepositoryInterface
 
     /**
      * Get failure reasons breakdown.
-     *
-     * @return array<string, int>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getFailureReasons(?DateTimeInterface $from = null, ?DateTimeInterface $to = null): array
     {
@@ -380,7 +383,7 @@ class PaymentEloquentRepository implements PaymentRepositoryInterface
         return $this->model
             ->where('status', PaymentStatus::COMPLETED)
             ->whereNull('transaction_id')
-            ->orWhere(function ($query) {
+            ->orWhere(function ($query): void {
                 $query->where('status', PaymentStatus::PENDING)
                     ->where('created_at', '<', now()->subHours(24));
             })
@@ -450,7 +453,7 @@ class PaymentEloquentRepository implements PaymentRepositoryInterface
     {
         return $this->model
             ->where('status', PaymentStatus::FAILED)
-            ->where(function ($query) {
+            ->where(function ($query): void {
                 $query->whereIn('failure_code', [
                     'network_error',
                     'gateway_timeout',
@@ -460,7 +463,7 @@ class PaymentEloquentRepository implements PaymentRepositoryInterface
                     ->orWhere('failure_message', 'like', '%temporary%')
                     ->orWhere('failure_message', 'like', '%retry%');
             })
-            ->where(function ($query) use ($maxRetries) {
+            ->where(function ($query) use ($maxRetries): void {
                 $query->whereJsonLength('metadata->retry_count', '<', $maxRetries)
                     ->orWhereNull('metadata->retry_count');
             })

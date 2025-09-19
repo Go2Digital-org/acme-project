@@ -265,7 +265,7 @@ class ValidationRulesService
      * Validate organization tax exemption status.
      */
     /**
-     * @param  array<string>  $allowedStatuses
+     * @param  list<string>  $allowedStatuses
      */
     public function validateTaxExemptionStatus(string $status, array $allowedStatuses = ['exempt', 'non-exempt', 'pending']): bool
     {

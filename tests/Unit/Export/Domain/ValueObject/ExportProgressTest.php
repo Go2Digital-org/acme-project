@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Modules\Export\Domain\ValueObject\ExportProgress;
 
-describe('ExportProgress', function () {
-    describe('constructor validation', function () {
-        it('creates valid progress object', function () {
+describe('ExportProgress', function (): void {
+    describe('constructor validation', function (): void {
+        it('creates valid progress object', function (): void {
             $progress = ExportProgress::create(50, 'Processing...', 100, 200);
 
             expect($progress->percentage)->toBe(50)
@@ -15,7 +15,7 @@ describe('ExportProgress', function () {
                 ->and($progress->totalRecords)->toBe(200);
         });
 
-        it('throws exception for invalid percentage range', function () {
+        it('throws exception for invalid percentage range', function (): void {
             expect(fn () => ExportProgress::create(-1, 'Test'))
                 ->toThrow(InvalidArgumentException::class, 'Percentage must be between 0 and 100');
 
@@ -23,29 +23,29 @@ describe('ExportProgress', function () {
                 ->toThrow(InvalidArgumentException::class, 'Percentage must be between 0 and 100');
         });
 
-        it('throws exception for negative processed records', function () {
+        it('throws exception for negative processed records', function (): void {
             expect(fn () => ExportProgress::create(50, 'Test', -1, 100))
                 ->toThrow(InvalidArgumentException::class, 'Processed records cannot be negative');
         });
 
-        it('throws exception for negative total records', function () {
+        it('throws exception for negative total records', function (): void {
             expect(fn () => ExportProgress::create(50, 'Test', 50, -1))
                 ->toThrow(InvalidArgumentException::class, 'Total records cannot be negative');
         });
 
-        it('throws exception when processed exceeds total', function () {
+        it('throws exception when processed exceeds total', function (): void {
             expect(fn () => ExportProgress::create(50, 'Test', 200, 100))
                 ->toThrow(InvalidArgumentException::class, 'Processed records cannot exceed total records');
         });
 
-        it('allows processed to equal total', function () {
+        it('allows processed to equal total', function (): void {
             $progress = ExportProgress::create(100, 'Complete', 100, 100);
 
             expect($progress->processedRecords)->toBe(100)
                 ->and($progress->totalRecords)->toBe(100);
         });
 
-        it('allows processed to exceed total when total is zero', function () {
+        it('allows processed to exceed total when total is zero', function (): void {
             $progress = ExportProgress::create(50, 'Processing', 100, 0);
 
             expect($progress->processedRecords)->toBe(100)
@@ -53,9 +53,9 @@ describe('ExportProgress', function () {
         });
     });
 
-    describe('static factory methods', function () {
-        describe('start', function () {
-            it('creates initial progress state', function () {
+    describe('static factory methods', function (): void {
+        describe('start', function (): void {
+            it('creates initial progress state', function (): void {
                 $progress = ExportProgress::start();
 
                 expect($progress->percentage)->toBe(0)
@@ -64,7 +64,7 @@ describe('ExportProgress', function () {
                     ->and($progress->totalRecords)->toBe(0);
             });
 
-            it('accepts custom message and total', function () {
+            it('accepts custom message and total', function (): void {
                 $progress = ExportProgress::start('Initializing...', 500);
 
                 expect($progress->percentage)->toBe(0)
@@ -74,8 +74,8 @@ describe('ExportProgress', function () {
             });
         });
 
-        describe('fromRecords', function () {
-            it('calculates percentage from records', function () {
+        describe('fromRecords', function (): void {
+            it('calculates percentage from records', function (): void {
                 $progress = ExportProgress::fromRecords(25, 100);
 
                 expect($progress->percentage)->toBe(25)
@@ -83,25 +83,25 @@ describe('ExportProgress', function () {
                     ->and($progress->totalRecords)->toBe(100);
             });
 
-            it('handles zero total records', function () {
+            it('handles zero total records', function (): void {
                 $progress = ExportProgress::fromRecords(0, 0);
 
                 expect($progress->percentage)->toBe(0);
             });
 
-            it('generates default message', function () {
+            it('generates default message', function (): void {
                 $progress = ExportProgress::fromRecords(75, 150);
 
                 expect($progress->message)->toBe('Processing 75 of 150 records');
             });
 
-            it('accepts custom message', function () {
+            it('accepts custom message', function (): void {
                 $progress = ExportProgress::fromRecords(10, 20, 'Custom message');
 
                 expect($progress->message)->toBe('Custom message');
             });
 
-            it('rounds percentage correctly', function () {
+            it('rounds percentage correctly', function (): void {
                 $progress = ExportProgress::fromRecords(33, 100);
                 expect($progress->percentage)->toBe(33);
 
@@ -113,15 +113,15 @@ describe('ExportProgress', function () {
             });
         });
 
-        describe('completed', function () {
-            it('creates 100% complete progress', function () {
+        describe('completed', function (): void {
+            it('creates 100% complete progress', function (): void {
                 $progress = ExportProgress::completed();
 
                 expect($progress->percentage)->toBe(100)
                     ->and($progress->message)->toBe('Export completed successfully');
             });
 
-            it('accepts custom completion message', function () {
+            it('accepts custom completion message', function (): void {
                 $progress = ExportProgress::completed('All done!');
 
                 expect($progress->percentage)->toBe(100)
@@ -130,15 +130,15 @@ describe('ExportProgress', function () {
         });
     });
 
-    describe('state checking methods', function () {
-        it('isStarted returns true when percentage > 0', function () {
+    describe('state checking methods', function (): void {
+        it('isStarted returns true when percentage > 0', function (): void {
             expect(ExportProgress::create(0, 'Start')->isStarted())->toBeFalse()
                 ->and(ExportProgress::create(1, 'Started')->isStarted())->toBeTrue()
                 ->and(ExportProgress::create(50, 'Progress')->isStarted())->toBeTrue()
                 ->and(ExportProgress::create(100, 'Done')->isStarted())->toBeTrue();
         });
 
-        it('isCompleted returns true when percentage is 100', function () {
+        it('isCompleted returns true when percentage is 100', function (): void {
             expect(ExportProgress::create(0, 'Start')->isCompleted())->toBeFalse()
                 ->and(ExportProgress::create(50, 'Progress')->isCompleted())->toBeFalse()
                 ->and(ExportProgress::create(99, 'Almost')->isCompleted())->toBeFalse()
@@ -146,9 +146,9 @@ describe('ExportProgress', function () {
         });
     });
 
-    describe('manipulation methods', function () {
-        describe('advance', function () {
-            it('advances processed records by specified amount', function () {
+    describe('manipulation methods', function (): void {
+        describe('advance', function (): void {
+            it('advances processed records by specified amount', function (): void {
                 $initial = ExportProgress::create(25, 'Progress', 25, 100);
                 $advanced = $initial->advance(25);
 
@@ -157,21 +157,21 @@ describe('ExportProgress', function () {
                     ->and($advanced->percentage)->toBe(50);
             });
 
-            it('keeps original message when no new message provided', function () {
+            it('keeps original message when no new message provided', function (): void {
                 $initial = ExportProgress::create(25, 'Original message', 25, 100);
                 $advanced = $initial->advance(25);
 
                 expect($advanced->message)->toBe('Original message');
             });
 
-            it('updates message when provided', function () {
+            it('updates message when provided', function (): void {
                 $initial = ExportProgress::create(25, 'Old message', 25, 100);
                 $advanced = $initial->advance(25, 'New message');
 
                 expect($advanced->message)->toBe('New message');
             });
 
-            it('returns new instance (immutable)', function () {
+            it('returns new instance (immutable)', function (): void {
                 $initial = ExportProgress::create(25, 'Progress', 25, 100);
                 $advanced = $initial->advance(25);
 
@@ -181,8 +181,8 @@ describe('ExportProgress', function () {
             });
         });
 
-        describe('withMessage', function () {
-            it('returns new instance with updated message', function () {
+        describe('withMessage', function (): void {
+            it('returns new instance with updated message', function (): void {
                 $initial = ExportProgress::create(50, 'Old message', 50, 100);
                 $updated = $initial->withMessage('New message');
 
@@ -193,7 +193,7 @@ describe('ExportProgress', function () {
                     ->and($initial)->not->toBe($updated);
             });
 
-            it('preserves all other properties', function () {
+            it('preserves all other properties', function (): void {
                 $initial = ExportProgress::create(75, 'Original', 150, 200);
                 $updated = $initial->withMessage('Updated');
 
@@ -204,36 +204,36 @@ describe('ExportProgress', function () {
         });
     });
 
-    describe('utility methods', function () {
-        describe('getRemainingRecords', function () {
-            it('calculates remaining records correctly', function () {
+    describe('utility methods', function (): void {
+        describe('getRemainingRecords', function (): void {
+            it('calculates remaining records correctly', function (): void {
                 $progress = ExportProgress::create(50, 'Progress', 50, 100);
 
                 expect($progress->getRemainingRecords())->toBe(50);
             });
 
-            it('returns zero when all records processed', function () {
+            it('returns zero when all records processed', function (): void {
                 $progress = ExportProgress::create(100, 'Done', 100, 100);
 
                 expect($progress->getRemainingRecords())->toBe(0);
             });
 
-            it('returns zero when processed exceeds total', function () {
+            it('returns zero when processed exceeds total', function (): void {
                 // Use totalRecords = 0 to allow processed > total as per constructor logic
                 $progress = ExportProgress::create(100, 'Overflow', 150, 0);
 
                 expect($progress->getRemainingRecords())->toBe(0);
             });
 
-            it('handles zero total records', function () {
+            it('handles zero total records', function (): void {
                 $progress = ExportProgress::create(0, 'No records', 0, 0);
 
                 expect($progress->getRemainingRecords())->toBe(0);
             });
         });
 
-        describe('getProgressBar', function () {
-            it('generates progress bar with default width', function () {
+        describe('getProgressBar', function (): void {
+            it('generates progress bar with default width', function (): void {
                 $progress = ExportProgress::create(50, 'Progress');
                 $bar = $progress->getProgressBar();
 
@@ -242,7 +242,7 @@ describe('ExportProgress', function () {
                     ->and($bar)->toEndWith(']');
             });
 
-            it('generates progress bar with custom width', function () {
+            it('generates progress bar with custom width', function (): void {
                 $progress = ExportProgress::create(50, 'Progress');
                 $bar = $progress->getProgressBar(10);
 
@@ -250,21 +250,21 @@ describe('ExportProgress', function () {
                     ->and($bar)->toBe('[=====-----]');
             });
 
-            it('handles 0% progress', function () {
+            it('handles 0% progress', function (): void {
                 $progress = ExportProgress::create(0, 'Start');
                 $bar = $progress->getProgressBar(10);
 
                 expect($bar)->toBe('[----------]');
             });
 
-            it('handles 100% progress', function () {
+            it('handles 100% progress', function (): void {
                 $progress = ExportProgress::create(100, 'Done');
                 $bar = $progress->getProgressBar(10);
 
                 expect($bar)->toBe('[' . str_repeat('=', 10) . ']');
             });
 
-            it('handles various percentages correctly', function () {
+            it('handles various percentages correctly', function (): void {
                 // 25% of 20 = 5 filled, 15 empty
                 $progress = ExportProgress::create(25, 'Quarter');
                 $bar = $progress->getProgressBar(20);
@@ -277,8 +277,8 @@ describe('ExportProgress', function () {
             });
         });
 
-        describe('toArray', function () {
-            it('converts to array with all properties', function () {
+        describe('toArray', function (): void {
+            it('converts to array with all properties', function (): void {
                 $progress = ExportProgress::create(60, 'Processing...', 120, 200);
                 $array = $progress->toArray();
 
@@ -291,14 +291,14 @@ describe('ExportProgress', function () {
                 ]);
             });
 
-            it('includes calculated remaining records', function () {
+            it('includes calculated remaining records', function (): void {
                 $progress = ExportProgress::create(75, 'Almost done', 75, 100);
                 $array = $progress->toArray();
 
                 expect($array['remaining_records'])->toBe(25);
             });
 
-            it('has consistent array structure', function () {
+            it('has consistent array structure', function (): void {
                 $progress = ExportProgress::start();
                 $array = $progress->toArray();
 
@@ -313,14 +313,14 @@ describe('ExportProgress', function () {
         });
     });
 
-    describe('readonly behavior', function () {
-        it('is readonly class', function () {
+    describe('readonly behavior', function (): void {
+        it('is readonly class', function (): void {
             $reflection = new ReflectionClass(ExportProgress::class);
 
             expect($reflection->isReadOnly())->toBeTrue();
         });
 
-        it('maintains property integrity', function () {
+        it('maintains property integrity', function (): void {
             $progress = ExportProgress::create(50, 'Test', 50, 100);
 
             expect($progress->percentage)->toBe(50)
@@ -333,8 +333,8 @@ describe('ExportProgress', function () {
         });
     });
 
-    describe('edge cases and boundaries', function () {
-        it('handles edge percentage values', function () {
+    describe('edge cases and boundaries', function (): void {
+        it('handles edge percentage values', function (): void {
             $progress1 = ExportProgress::create(0, 'Start');
             $progress2 = ExportProgress::create(100, 'End');
 
@@ -342,7 +342,7 @@ describe('ExportProgress', function () {
                 ->and($progress2->percentage)->toBe(100);
         });
 
-        it('handles large record counts', function () {
+        it('handles large record counts', function (): void {
             $progress = ExportProgress::create(50, 'Large dataset', 1000000, 2000000);
 
             expect($progress->processedRecords)->toBe(1000000)
@@ -350,13 +350,13 @@ describe('ExportProgress', function () {
                 ->and($progress->getRemainingRecords())->toBe(1000000);
         });
 
-        it('handles empty strings in messages', function () {
+        it('handles empty strings in messages', function (): void {
             $progress = ExportProgress::create(50, '');
 
             expect($progress->message)->toBe('');
         });
 
-        it('calculates percentage accurately for various ratios', function () {
+        it('calculates percentage accurately for various ratios', function (): void {
             // Test various fractions
             expect(ExportProgress::fromRecords(1, 4)->percentage)->toBe(25);
             expect(ExportProgress::fromRecords(1, 3)->percentage)->toBe(33);
@@ -365,8 +365,8 @@ describe('ExportProgress', function () {
         });
     });
 
-    describe('immutability', function () {
-        it('advance creates new instance', function () {
+    describe('immutability', function (): void {
+        it('advance creates new instance', function (): void {
             $original = ExportProgress::create(25, 'Original', 25, 100);
             $advanced = $original->advance(25);
 
@@ -374,7 +374,7 @@ describe('ExportProgress', function () {
                 ->and($advanced->processedRecords)->toBe(50);
         });
 
-        it('withMessage creates new instance', function () {
+        it('withMessage creates new instance', function (): void {
             $original = ExportProgress::create(50, 'Original message');
             $updated = $original->withMessage('New message');
 
@@ -382,7 +382,7 @@ describe('ExportProgress', function () {
                 ->and($updated->message)->toBe('New message');
         });
 
-        it('factory methods create independent instances', function () {
+        it('factory methods create independent instances', function (): void {
             $progress1 = ExportProgress::start('Message 1');
             $progress2 = ExportProgress::start('Message 2');
 

@@ -14,7 +14,6 @@ use Modules\Currency\Domain\Model\Currency;
 use Modules\Currency\Domain\Repository\CurrencyQueryRepositoryInterface;
 use Modules\Currency\Domain\Service\CurrencyCacheInterface;
 use Modules\Shared\Infrastructure\Laravel\Traits\HasTenantAwareCache;
-use stdClass;
 
 /**
  * Cache-first currency repository with fallback chain:
@@ -31,13 +30,16 @@ final readonly class CurrencyQueryRepository implements CurrencyQueryRepositoryI
         private CurrencyCacheInterface $requestCache
     ) {}
 
+    /**
+     * @return Collection<int, Currency>
+     */
     public function getActiveCurrencies(): Collection
     {
         // Check request-level cache first
         if ($this->requestCache->has()) {
             $cached = $this->requestCache->get();
             if ($cached instanceof Collection && $cached->isNotEmpty()) {
-                return $cached->map(fn ($item) => $this->stdClassToCurrency($item));
+                return $cached;
             }
         }
 
@@ -46,8 +48,8 @@ final readonly class CurrencyQueryRepository implements CurrencyQueryRepositoryI
         if ($cacheData !== null) {
             $currencies = $this->processCachedData($cacheData);
             if ($currencies->isNotEmpty()) {
-                // Store in request cache as stdClass for view compatibility
-                $this->requestCache->set($currencies->map(fn ($currency) => $this->currencyToStdClass($currency)));
+                // Store in request cache
+                $this->requestCache->set($currencies);
 
                 return $currencies;
             }
@@ -88,12 +90,20 @@ final readonly class CurrencyQueryRepository implements CurrencyQueryRepositoryI
         return $defaultCurrency;
     }
 
+    /**
+     * @return Collection<int, array<string, mixed>>
+     */
     public function getCurrenciesForView(): Collection
     {
         $currencies = $this->getActiveCurrencies();
 
         // Transform to optimized view format
-        return $currencies->map(fn (Currency $currency): stdClass => $this->currencyToStdClass($currency))->values();
+        return $currencies->map(function (Currency $currency): array {
+            /** @var array<string, mixed> $result */
+            $result = $currency->toArray();
+
+            return $result;
+        })->values();
     }
 
     public function clearCache(): void
@@ -133,7 +143,7 @@ final readonly class CurrencyQueryRepository implements CurrencyQueryRepositoryI
 
             // Prepare cache data
             $cacheData = [
-                'currencies' => $currencies->map(fn (Currency $currency) => [
+                'currencies' => $currencies->map(fn (Currency $currency): array => [
                     'id' => $currency->id,
                     'code' => $currency->code,
                     'name' => $currency->name,
@@ -165,10 +175,21 @@ final readonly class CurrencyQueryRepository implements CurrencyQueryRepositoryI
                 ]
             );
 
-            // Store in request cache
-            $this->requestCache->set(
-                collect($cacheData['currencies'])->map(fn (array $item) => (object) $item)
-            );
+            // Store in request cache as Currency objects
+            $currencyObjects = collect($cacheData['currencies'])->map(function (array $item): Currency {
+                $currency = new Currency;
+                $currency->id = $item['id'] ?? null;
+                $currency->code = $item['code'];
+                $currency->name = $item['name'];
+                $currency->symbol = $item['symbol'];
+                $currency->flag = $item['flag'];
+                $currency->is_default = $item['is_default'] ?? false;
+                $currency->is_active = $item['is_active'] ?? true;
+                $currency->sort_order = $item['sort_order'] ?? 0;
+
+                return $currency;
+            });
+            $this->requestCache->set($currencyObjects);
 
             Log::info('Currency cache warmed successfully', ['count' => $currencies->count()]);
         } catch (Exception $e) {
@@ -264,55 +285,20 @@ final readonly class CurrencyQueryRepository implements CurrencyQueryRepositoryI
                 ->orderBy('code')
                 ->get();
 
+            /** @var Collection<int, Currency> $result */
+            $result = $currencies;
+
             // Auto-warm cache after successful database query
             if ($currencies->isNotEmpty()) {
                 $this->warmCache();
             }
 
-            return $currencies->collect();
+            return $result;
         } catch (Exception $e) {
             Log::error('Failed to fetch currencies from database', ['error' => $e->getMessage()]);
 
             return collect();
         }
-    }
-
-    /**
-     * Convert Currency model to stdClass for view compatibility.
-     */
-    private function currencyToStdClass(Currency $currency): stdClass
-    {
-        return (object) [
-            'id' => $currency->id,
-            'code' => $currency->code,
-            'name' => $currency->name,
-            'symbol' => $currency->symbol,
-            'flag' => $currency->flag,
-            'is_default' => $currency->is_default,
-            'is_active' => $currency->is_active,
-            'exchange_rate' => $currency->exchange_rate,
-            'sort_order' => $currency->sort_order,
-        ];
-    }
-
-    /**
-     * Convert stdClass back to Currency model.
-     */
-    private function stdClassToCurrency(stdClass $item): Currency
-    {
-        $currency = new Currency;
-        $currency->id = $item->id ?? null;
-        $currency->code = $item->code;
-        $currency->name = $item->name;
-        $currency->symbol = $item->symbol;
-        $currency->flag = $item->flag ?? '💱';
-        $currency->is_default = (bool) ($item->is_default ?? false);
-        $currency->is_active = (bool) ($item->is_active ?? true);
-        $currency->exchange_rate = (float) ($item->exchange_rate ?? 1.0);
-        $currency->sort_order = (int) ($item->sort_order ?? 0);
-        $currency->exists = true;
-
-        return $currency;
     }
 
     /**

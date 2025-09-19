@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
  * Test implementation of PaymentGatewayInterface for development and testing.
  * Simulates payment gateway responses without actual payment processing.
  */
-final readonly class MockPaymentGateway implements PaymentGatewayInterface
+class MockPaymentGateway implements PaymentGatewayInterface
 {
     /** @var string */
     private const GATEWAY_NAME = 'mock';
@@ -45,9 +45,9 @@ final readonly class MockPaymentGateway implements PaymentGatewayInterface
     ];
 
     public function __construct(
-        private LoggerInterface $logger,
-        private bool $simulateFailures = false,
-        private float $failureRate = 0.1,
+        private readonly LoggerInterface $logger,
+        private readonly bool $simulateFailures = false,
+        private readonly float $failureRate = 0.1,
     ) {}
 
     public function createPaymentIntent(PaymentIntent $intent): PaymentResult
@@ -205,7 +205,9 @@ final readonly class MockPaymentGateway implements PaymentGatewayInterface
         return $this->processTransactionLookupForTesting($transactionId);
     }
 
-    /** @param array<array-key, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function handleWebhook(array $payload, string $signature): void
     {
         $this->logger->info('Mock webhook received', [
@@ -251,8 +253,9 @@ final readonly class MockPaymentGateway implements PaymentGatewayInterface
 
     /**
      * Get test card numbers for different scenarios.
-     *
-     * @return array<string, string>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function getTestCards(): array
     {
@@ -369,7 +372,9 @@ final readonly class MockPaymentGateway implements PaymentGatewayInterface
         ]);
     }
 
-    /** @param array<array-key, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function handlePaymentSucceeded(array $payload): void
     {
         $intentId = $payload['data']['object']['id'] ?? 'unknown';
@@ -379,7 +384,9 @@ final readonly class MockPaymentGateway implements PaymentGatewayInterface
         ]);
     }
 
-    /** @param array<array-key, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function handlePaymentFailed(array $payload): void
     {
         $intentId = $payload['data']['object']['id'] ?? 'unknown';
@@ -390,7 +397,9 @@ final readonly class MockPaymentGateway implements PaymentGatewayInterface
         ]);
     }
 
-    /** @param array<array-key, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function handleChargeDispute(array $payload): void
     {
         $disputeId = $payload['data']['object']['id'] ?? 'unknown';

@@ -18,6 +18,9 @@ class ViewCampaign extends ViewRecord
         return __('campaigns.view_campaign_title');
     }
 
+    /**
+     * @return array<int, \Filament\Actions\Action>
+     */
     protected function getHeaderActions(): array
     {
         return [

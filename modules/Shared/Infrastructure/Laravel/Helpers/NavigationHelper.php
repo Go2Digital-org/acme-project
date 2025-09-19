@@ -11,8 +11,9 @@ final class NavigationHelper
 {
     /**
      * Check if current route matches any of the given patterns.
-     *
-     * @param  string|array<int, string>  $patterns
+     */
+    /**
+     * @param  array<string, mixed>  $patterns
      */
     public static function isCurrentRoute(string|array $patterns): bool
     {
@@ -34,8 +35,9 @@ final class NavigationHelper
 
     /**
      * Get active class for route patterns.
-     *
-     * @param  string|array<int, string>  $patterns
+     */
+    /**
+     * @param  array<string, mixed>  $patterns
      */
     public static function getActiveRouteClass(string|array $patterns, string $activeClass = 'active', string $inactiveClass = ''): string
     {

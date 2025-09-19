@@ -17,6 +17,7 @@ final readonly class MarkNotificationAsReadCommand implements CommandInterface
     public function __construct(
         public string $notificationId,
         public string $userId,
+        /** @var array<string, mixed> */
         public array $context = [],
     ) {}
 }

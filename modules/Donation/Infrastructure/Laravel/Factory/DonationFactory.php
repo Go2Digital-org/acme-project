@@ -7,6 +7,7 @@ namespace Modules\Donation\Infrastructure\Laravel\Factory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Campaign\Domain\Model\Campaign;
 use Modules\Donation\Domain\Model\Donation;
+use Modules\Donation\Domain\ValueObject\PaymentMethod;
 use Modules\Shared\Domain\ValueObject\DonationStatus;
 use Modules\Shared\Infrastructure\Laravel\Traits\SafeDateGeneration;
 use Modules\User\Infrastructure\Laravel\Models\User;
@@ -20,6 +21,9 @@ class DonationFactory extends Factory
 
     protected $model = Donation::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $amount = fake()->randomFloat(2, 5.00, 2500.00);
@@ -39,7 +43,12 @@ class DonationFactory extends Factory
             'amount' => $amount,
             'currency' => fake()->randomElement(['EUR', 'USD', 'GBP']),
             'status' => $status->value,
-            'payment_method' => fake()->randomElement(['card', 'bank_transfer', 'paypal', 'stripe']),
+            'payment_method' => fake()->randomElement([
+                PaymentMethod::CARD,
+                PaymentMethod::BANK_TRANSFER,
+                PaymentMethod::PAYPAL,
+                PaymentMethod::STRIPE,
+            ])->value,
             'gateway_response_id' => fake()->optional(0.8)->uuid(),
             'transaction_id' => $this->generateTransactionId(),
             'user_id' => $isAnonymous ? null : User::factory(),
@@ -167,7 +176,7 @@ class DonationFactory extends Factory
     public function creditCard(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'payment_method' => 'card',
+            'payment_method' => PaymentMethod::CARD->value,
             'payment_gateway' => 'stripe',
         ]);
     }
@@ -175,7 +184,7 @@ class DonationFactory extends Factory
     public function paypal(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'payment_method' => 'paypal',
+            'payment_method' => PaymentMethod::PAYPAL->value,
             'payment_gateway' => 'paypal',
         ]);
     }
@@ -183,7 +192,7 @@ class DonationFactory extends Factory
     public function bankTransfer(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'payment_method' => 'bank_transfer',
+            'payment_method' => PaymentMethod::BANK_TRANSFER->value,
             'payment_gateway' => null,
         ]);
     }
@@ -273,25 +282,12 @@ class DonationFactory extends Factory
      */
     private function generateMetadata(): array
     {
-        $metadata = [
-            'ip_address' => fake()->ipv4(),
-            'user_agent' => fake()->userAgent(),
-            'referrer' => fake()->optional(0.7)->url(),
+        // Simplified metadata for performance in tests
+        return [
+            'ip_address' => '192.168.1.1',
+            'user_agent' => 'TestBrowser/1.0',
+            'utm_source' => 'test',
         ];
-
-        // Randomly add additional metadata
-        if (fake()->boolean(30)) {
-            $metadata['utm_source'] = fake()->randomElement(['google', 'facebook', 'email', 'direct']);
-            $metadata['utm_medium'] = fake()->randomElement(['cpc', 'social', 'email', 'organic']);
-            $metadata['utm_campaign'] = fake()->randomElement(['donation-drive', 'social-campaign', 'newsletter']);
-        }
-
-        if (fake()->boolean(20)) {
-            $metadata['device_type'] = fake()->randomElement(['desktop', 'mobile', 'tablet']);
-            $metadata['browser'] = fake()->randomElement(['chrome', 'firefox', 'safari', 'edge']);
-        }
-
-        return $metadata;
     }
 
     // safeDateTimeBetween method is now provided by SafeDateGeneration trait

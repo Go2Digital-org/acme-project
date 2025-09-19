@@ -360,7 +360,8 @@ class GetDonationMetricsQueryHandler
     /**
      * Load donation metrics data with optimized queries.
      * This method is called by the CacheService when cache misses occur.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @param  array<string>  $metrics
      * @return array<string, mixed>
@@ -439,7 +440,8 @@ class GetDonationMetricsQueryHandler
 
     /**
      * Get cache statistics for donation metrics.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
@@ -456,7 +458,8 @@ class GetDonationMetricsQueryHandler
 
     /**
      * Get top organization IDs by donation volume.
-     *
+     */
+    /**
      * @return array<int>
      */
     private function getTopOrganizationIds(int $limit = 10): array
@@ -475,7 +478,8 @@ class GetDonationMetricsQueryHandler
 
     /**
      * Get top campaign IDs by donation volume.
-     *
+     */
+    /**
      * @return array<int>
      */
     private function getTopCampaignIds(int $limit = 20): array
@@ -492,7 +496,8 @@ class GetDonationMetricsQueryHandler
 
     /**
      * Build cache key for donation metrics.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @param  array<string>  $metrics
      */
@@ -506,7 +511,8 @@ class GetDonationMetricsQueryHandler
 
     /**
      * Build cache tags for donation metrics.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string>
      */

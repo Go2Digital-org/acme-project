@@ -18,7 +18,9 @@ class GenerateReportCommandHandler
         private readonly LoggerInterface $logger,
     ) {}
 
-    /** @return array<string, mixed>|null */
+    /**
+     * @return array<string, mixed>|null
+     */
     public function handle(GenerateReportCommand $command): ?array
     {
         try {
@@ -104,7 +106,8 @@ class GenerateReportCommandHandler
         };
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     private function generateDonationReport(TimeRange $timeRange, array $filters): array
@@ -120,7 +123,8 @@ class GenerateReportCommandHandler
         ];
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     private function generateCampaignReport(TimeRange $timeRange, array $filters): array
@@ -130,7 +134,8 @@ class GenerateReportCommandHandler
         ];
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     private function generateUserActivityReport(TimeRange $timeRange, array $filters): array
@@ -162,7 +167,8 @@ class GenerateReportCommandHandler
         ];
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     private function generateOrganizationReport(TimeRange $timeRange, array $filters): array
@@ -172,7 +178,8 @@ class GenerateReportCommandHandler
         ];
     }
 
-    /** @param array<string, mixed> $filters
+    /**
+     * @param  array<string, mixed>  $filters
      * @return array<string, mixed>
      */
     private function generateDonorTrendsReport(TimeRange $timeRange, array $filters): array
@@ -186,7 +193,9 @@ class GenerateReportCommandHandler
         ];
     }
 
-    /** @param array<string, mixed> $report */
+    /**
+     * @param  array<string, mixed>  $report
+     */
     private function storeReport(GenerateReportCommand $command, array $report): void
     {
         DB::table('analytics_reports')->insert([

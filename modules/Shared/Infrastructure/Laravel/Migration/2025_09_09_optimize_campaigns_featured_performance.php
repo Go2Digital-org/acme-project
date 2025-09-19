@@ -16,6 +16,11 @@ return new class extends Migration
     {
         $isMySql = Schema::getConnection()->getDriverName() === 'mysql';
 
+        // Only proceed if campaigns table exists
+        if (! Schema::hasTable('campaigns')) {
+            return;
+        }
+
         Schema::table('campaigns', function (Blueprint $table) use ($isMySql): void {
             // Add goal_percentage as a generated column if it doesn't exist
             // This eliminates the need for runtime calculations
@@ -74,9 +79,9 @@ return new class extends Migration
         if ($isMySql) {
             DB::statement("
                 CREATE OR REPLACE VIEW v_featured_campaigns AS
-                SELECT 
+                SELECT
                     c.*,
-                    CASE 
+                    CASE
                         WHEN c.is_featured = 1 THEN 1
                         WHEN c.goal_percentage BETWEEN 70 AND 99.99 THEN 2
                         ELSE 3
@@ -88,7 +93,11 @@ return new class extends Migration
             ");
 
             // Force update statistics for MySQL
-            DB::statement('ANALYZE TABLE campaigns');
+            try {
+                DB::statement('ANALYZE TABLE campaigns');
+            } catch (Exception) {
+                // Continue if analyze fails
+            }
         } else {
             // SQLite version - drop first, then create
             try {
@@ -99,9 +108,9 @@ return new class extends Migration
 
             DB::statement("
                 CREATE VIEW v_featured_campaigns AS
-                SELECT 
+                SELECT
                     c.*,
-                    CASE 
+                    CASE
                         WHEN c.is_featured = 1 THEN 1
                         WHEN c.goal_percentage BETWEEN 70 AND 99.99 THEN 2
                         ELSE 3
@@ -149,12 +158,21 @@ return new class extends Migration
      */
     private function indexExists(string $table, string $index): bool
     {
+        // First check if the table exists
+        if (! Schema::hasTable($table)) {
+            return false;
+        }
+
         $isMySql = Schema::getConnection()->getDriverName() === 'mysql';
 
         if ($isMySql) {
-            $indexes = DB::select("SHOW INDEX FROM {$table} WHERE Key_name = ?", [$index]);
+            try {
+                $indexes = DB::select("SHOW INDEX FROM {$table} WHERE Key_name = ?", [$index]);
 
-            return count($indexes) > 0;
+                return count($indexes) > 0;
+            } catch (Exception) {
+                return false;
+            }
         }
         // SQLite: use PRAGMA index_info to check if index exists
         try {

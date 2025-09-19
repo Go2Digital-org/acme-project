@@ -1,10 +1,14 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
-# This pipeline uses Laravel schema dumps for faster database setup:
-# - Schema dumps located at database/schema/mysql-testing-schema.sql
-# - Fast path: Load schema dump (~3s) + incremental migrations
-# - Fallback: Full migrations if schema dump missing (~30s)
-# - Works for both self-hosted and GitHub-hosted runners
+# Enhanced CI/CD Pipeline with comprehensive quality gates:
+# - Pest test execution with 95% pass rate requirement
+# - PHPStan level 8 analysis with 0 errors
+# - Deptrac architecture validation with 0 violations
+# - Laravel Pint code style enforcement
+# - Docker image building and testing
+# - Browser tests with Pest 4
+# - Code coverage analysis with 80% minimum
+# - Fast database setup with schema dumps
 
 on:
   push:
@@ -31,6 +35,8 @@ concurrency:
 env:
   PHP_VERSION: '8.4'
   NODE_VERSION: '22'
+  COVERAGE_THRESHOLD: '80'
+  TEST_PASS_THRESHOLD: '95'
 
 jobs:
   # ================================================================
@@ -61,17 +67,26 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # Aggressive caching with vendor directory
-      - name: Cache dependencies
+      # Enhanced caching with layer optimization
+      - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
           path: |
             ~/.composer/cache
             vendor
-            node_modules
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/composer.lock', '**/package.json') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-deps-
+            ${{ runner.os }}-composer-
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies (optimized)
         run: |
@@ -99,22 +114,35 @@ jobs:
           # Rebuild native modules
           npm rebuild || true
 
-      - name: Code Quality Checks (combined)
+      - name: Code Quality Checks (strict)
         run: |
-          echo "::group::Laravel Pint"
+          echo "::group::Laravel Pint (Code Style)"
           vendor/bin/pint --test || {
-            echo "::error::Code style issues found"
+            echo "::error::Code style violations found. Run 'vendor/bin/pint' to fix."
             exit 1
           }
+          echo "✅ Code style check passed"
           echo "::endgroup::"
-          
-          echo "::group::PHPStan"
+
+          echo "::group::PHPStan Level 8 Analysis"
           export XDEBUG_MODE=off
-          vendor/bin/phpstan analyse --memory-limit=2G --error-format=github --no-progress
+          vendor/bin/phpstan analyse --memory-limit=2G --error-format=github --no-progress || {
+            echo "::error::PHPStan found errors at level 8. All errors must be fixed."
+            exit 1
+          }
+          echo "✅ PHPStan level 8 analysis passed"
           echo "::endgroup::"
-          
-          echo "::group::Rector (non-blocking)"
-          vendor/bin/rector process --config=rector/rector-safe.php --dry-run || true
+
+          echo "::group::Deptrac Architecture Validation"
+          vendor/bin/deptrac analyse --formatter=github-actions || {
+            echo "::error::Architecture violations found. Review and fix violations."
+            exit 1
+          }
+          echo "✅ Architecture validation passed"
+          echo "::endgroup::"
+
+          echo "::group::Rector Analysis (non-blocking)"
+          vendor/bin/rector process --config=rector/rector-safe.php --dry-run || echo "⚠️ Rector suggestions available"
           echo "::endgroup::"
 
       - name: Build Assets
@@ -252,16 +280,32 @@ jobs:
             echo "Migrations completed in $((end_time - start_time)) seconds"
           fi
 
-      - name: Run Tests (optimized)
+      - name: Run Tests with Quality Gates
         run: |
-          echo "::group::Unit, Feature & Integration Tests (Parallel)"
-          # Run main test suites in parallel with 10 processes for maximum speed
-          vendor/bin/pest --testsuite=Unit,Feature,Integration --no-coverage --parallel --processes=10 --compact --bail
+          echo "::group::Unit Tests (Parallel)"
+          # Unit tests with strict pass rate requirement
+          UNIT_RESULT=$(vendor/bin/pest --testsuite=Unit --no-coverage --parallel --processes=10 --compact --json | jq -r '.summary.passed / .summary.total * 100')
+          vendor/bin/pest --testsuite=Unit --no-coverage --parallel --processes=10 --compact
+          echo "Unit test pass rate: ${UNIT_RESULT}%"
+          if (( $(echo "${UNIT_RESULT} < ${TEST_PASS_THRESHOLD}" | bc -l) )); then
+            echo "::error::Unit test pass rate ${UNIT_RESULT}% is below required ${TEST_PASS_THRESHOLD}%"
+            exit 1
+          fi
+          echo "✅ Unit tests passed quality gate"
           echo "::endgroup::"
 
-          echo "::group::Browser Tests (Sequential)"
-          # Run browser tests separately to avoid flakiness
-          vendor/bin/pest --testsuite=Browser --no-coverage --compact --bail || echo "::warning::Browser tests failed - this is non-blocking"
+          echo "::group::Feature & Integration Tests"
+          vendor/bin/pest --testsuite=Feature,Integration --no-coverage --compact
+          echo "✅ Feature and integration tests passed"
+          echo "::endgroup::"
+
+          echo "::group::Browser Tests (Pest 4)"
+          # Browser tests with Pest 4 Browser Plugin
+          vendor/bin/pest --testsuite=Browser --no-coverage --compact || {
+            echo "::warning::Browser tests failed - check for environment issues"
+            exit 0  # Non-blocking for now
+          }
+          echo "✅ Browser tests completed"
           echo "::endgroup::"
 
       - name: Upload test artifacts
@@ -370,25 +414,35 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          # Run tests with coverage - only unit tests in parallel
+          echo "::group::Unit Tests Coverage"
+          # Run unit tests with strict coverage requirements
           vendor/bin/pest tests/Unit --coverage \
             --coverage-html=coverage/html \
             --coverage-clover=coverage/clover.xml \
             --coverage-text \
             --parallel --processes=4 \
-            --min=80 || true
+            --min=${COVERAGE_THRESHOLD} || {
+            echo "::error::Unit test coverage below ${COVERAGE_THRESHOLD}% threshold"
+            exit 1
+          }
+          echo "✅ Unit test coverage meets ${COVERAGE_THRESHOLD}% threshold"
+          echo "::endgroup::"
 
-          # Run integration and feature tests sequentially
+          echo "::group::Integration & Feature Tests Coverage"
           vendor/bin/pest tests/Feature tests/Integration \
             --coverage-clover=coverage/clover-integration.xml \
-            --no-coverage || true
+            --coverage-text
+          echo "✅ Integration & feature test coverage analyzed"
+          echo "::endgroup::"
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          files: coverage/clover.xml
-          fail_ci_if_error: false
+          files: coverage/clover.xml,coverage/clover-integration.xml
+          fail_ci_if_error: true
           verbose: true
+          flags: unittests,integration
+          name: acme-corp-csr-coverage
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
@@ -397,6 +451,84 @@ jobs:
           path: coverage/
           retention-days: 30
 
+
+  # ================================================================
+  # DOCKER BUILD & TEST
+  # ================================================================
+  docker:
+    name: Docker Build & Test
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 15
+    needs: lint
+    if: github.event_name == 'push' && contains(fromJSON('["main", "dev"]'), github.ref_name)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            network=host
+            image=moby/buildkit:v0.12.0
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          tags: |
+            acme-csr:latest
+            acme-csr:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          build-args: |
+            PHP_VERSION=${{ env.PHP_VERSION }}
+            NODE_VERSION=${{ env.NODE_VERSION }}
+
+      - name: Test Docker image
+        run: |
+          echo "::group::Container Health Check"
+          # Start container and verify it's healthy
+          docker run -d --name acme-test \
+            -p 8080:80 \
+            -e APP_ENV=testing \
+            -e APP_KEY=base64:test-key-for-docker-testing \
+            acme-csr:latest
+
+          # Wait for container to be ready
+          sleep 10
+
+          # Health check
+          if docker exec acme-test curl -f http://localhost/health 2>/dev/null; then
+            echo "✅ Docker container health check passed"
+          else
+            echo "::error::Docker container health check failed"
+            docker logs acme-test
+            exit 1
+          fi
+
+          # Cleanup
+          docker stop acme-test
+          docker rm acme-test
+          echo "::endgroup::"
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   # ================================================================
   # BASIC SECURITY AUDIT

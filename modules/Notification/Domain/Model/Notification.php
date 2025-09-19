@@ -61,7 +61,6 @@ class Notification extends Model
         'read_at',
     ];
 
-    /** @var array<string, string> */
     protected $attributes = [
         'data' => '{}',
     ];
@@ -500,7 +499,8 @@ class Notification extends Model
     }
 
     /**
-     * @return array<string, string> */
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

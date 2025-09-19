@@ -45,8 +45,9 @@ final class QueuedCacheInvalidationEventListener implements ShouldQueue
 
     /**
      * Register event listeners for queued cache invalidation.
-     *
-     * @return array<string, string>
+     */
+    /**
+     * @return array<string, mixed>
      */
     public function subscribe(Dispatcher $events): array
     {
@@ -300,7 +301,7 @@ final class QueuedCacheInvalidationEventListener implements ShouldQueue
     /**
      * Batch multiple cache invalidation operations
      *
-     * @param  array<array{type: string, parameters: array<string, mixed>, event_name?: string}>  $operations
+     * @param  array<int, array<string, mixed>>  $operations
      */
     public static function batchInvalidations(array $operations): void
     {

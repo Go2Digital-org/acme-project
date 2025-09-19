@@ -20,8 +20,8 @@ use Modules\Shared\Infrastructure\Laravel\Factory\PageFactory;
  * @property string $slug
  * @property string $status
  * @property int $order
- * @property array<array-key, mixed>|null $title
- * @property array<array-key, mixed>|null $content
+ * @property array<string, string>|null $title
+ * @property array<string, string>|null $content
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string $url
@@ -62,7 +62,7 @@ class Page extends Model
     /**
      * The attributes that are translatable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected array $translatable = [
         'title',
@@ -155,7 +155,8 @@ class Page extends Model
 
     /**
      * Get the indexable data array for the model.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function toSearchableArray(): array
@@ -206,7 +207,8 @@ class Page extends Model
     }
 
     /**
-     * @return array<string, string> */
+     * @return array<string, mixed>
+     */
     protected function casts(): array
     {
         return [

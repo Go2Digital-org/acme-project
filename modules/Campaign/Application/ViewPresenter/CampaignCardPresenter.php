@@ -25,8 +25,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Present campaign data for card display.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function present(): array
     {
         $daysRemaining = $this->campaign->getDaysRemaining();
@@ -101,8 +102,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Present campaign data specifically for dashboard display.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function presentForDashboard(): array
     {
         $baseData = $this->present();
@@ -117,8 +119,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Get progress data for visual components using new DonationProgress value object.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getProgressData(): array
     {
         $donationProgress = $this->getDonationProgress();
@@ -140,8 +143,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Get urgency indicator data.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     public function getUrgencyData(): array
     {
         $daysRemaining = $this->campaign->getDaysRemaining();
@@ -204,8 +208,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Get organization data for display.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     private function getOrganizationData(): array
     {
         if ($this->campaign->organization === null) {
@@ -221,8 +226,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Get creator data for display.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     private function getCreatorData(): array
     {
         if ($this->campaign->creator === null) {
@@ -238,8 +244,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Get corporate matching data.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     private function getCorporateMatchingData(): array
     {
         if (! $this->campaign->has_corporate_matching) {
@@ -259,8 +266,9 @@ final class CampaignCardPresenter extends AbstractViewPresenter
 
     /**
      * Get CSS classes for campaign card.
+     *
+     * @return array<string, mixed>
      */
-    /** @return array<array-key, mixed> */
     private function getCssClasses(): array
     {
         return [

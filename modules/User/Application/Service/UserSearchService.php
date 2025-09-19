@@ -133,7 +133,7 @@ class UserSearchService extends SearchService
             ->where('status', 'active')
             ->take($limit)
             ->get()
-            ->map(fn (User $user) => [
+            ->map(fn (User $user): array => [
                 'id' => $user->id,
                 'name' => $user->getFullName(),
                 'email' => $user->email,
@@ -152,7 +152,7 @@ class UserSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':department_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = User::search($query)->where('status', 'active');
             $users = $builder->take(1000)->get();
             $facets = [];
@@ -179,7 +179,7 @@ class UserSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':role_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = User::search($query)->where('status', 'active');
             $users = $builder->take(1000)->get();
             $facets = [];
@@ -206,7 +206,7 @@ class UserSearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':organization_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = User::search($query)->where('status', 'active');
             $users = $builder->take(1000)->get();
             $facets = [];

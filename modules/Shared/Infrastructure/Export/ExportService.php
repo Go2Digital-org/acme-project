@@ -29,7 +29,8 @@ final readonly class ExportService
 
     /**
      * Export donations data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function exportDonations(array $filters = [], string $format = 'xlsx'): string
@@ -43,7 +44,8 @@ final readonly class ExportService
 
     /**
      * Export organizations data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function exportOrganizations(array $filters = [], string $format = 'xlsx'): string
@@ -57,7 +59,8 @@ final readonly class ExportService
 
     /**
      * Export employees data.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function exportEmployees(array $filters = [], string $format = 'xlsx'): string
@@ -71,7 +74,8 @@ final readonly class ExportService
 
     /**
      * Export comprehensive CSR impact report.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function exportCSRImpact(array $filters = [], string $format = 'xlsx'): string
@@ -101,9 +105,10 @@ final readonly class ExportService
 
     /**
      * Schedule automated report generation.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
-     * @param  array<int, string>  $recipients
+     * @param  array<string, mixed>  $recipients
      */
     public function scheduleReport(string $type, array $filters, string $format, string $frequency, array $recipients): void
     {
@@ -132,7 +137,8 @@ final readonly class ExportService
 
     /**
      * Generate comprehensive executive dashboard PDF.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function generateExecutiveDashboard(array $filters = []): string
@@ -278,7 +284,9 @@ final readonly class ExportService
         return Storage::disk('local')->path($path);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function gatherExecutiveMetrics(): array
     {
         // Implementation would gather comprehensive metrics
@@ -291,7 +299,9 @@ final readonly class ExportService
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function generateDashboardCharts(): array
     {
         // Generate chart data for PDF inclusion
@@ -302,7 +312,9 @@ final readonly class ExportService
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function generateExecutiveSummary(): array
     {
         return [
@@ -322,7 +334,9 @@ final readonly class ExportService
         return collect();
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, int>
+     */
     private function generateComplianceSummary(): array
     {
         return [
@@ -333,7 +347,9 @@ final readonly class ExportService
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     private function identifyComplianceIssues(): array
     {
         return [
@@ -343,7 +359,9 @@ final readonly class ExportService
         ];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function generateComplianceRecommendations(): array
     {
         return [

@@ -13,6 +13,9 @@ final class FormSelect extends Component
     /** @var array<string, mixed> */
     public array $componentData;
 
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function __construct(
         public string $label = '',
         public string $name = '',
@@ -23,7 +26,7 @@ final class FormSelect extends Component
         public string $error = '',
         public string $help = '',
         public ?string $icon = null,
-        /** @var array<string, string> */
+        /** @var array<string, mixed> */
         public array $options = [],
         public bool $emptyOption = true,
     ) {

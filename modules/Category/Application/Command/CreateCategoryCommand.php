@@ -7,11 +7,13 @@ namespace Modules\Category\Application\Command;
 final class CreateCategoryCommand
 {
     /**
-     * @param  array<string, string>  $name  Translatable field
-     * @param  array<string, string>  $description  Translatable field
+     * @param  array<string, mixed>  $name  Translatable field
+     * @param  array<string, mixed>  $description  Translatable field
      */
     public function __construct(
+        /** @var array<string, mixed> */
         public array $name,
+        /** @var array<string, mixed> */
         public array $description,
         public ?string $parentId = null,
         public ?string $icon = null,

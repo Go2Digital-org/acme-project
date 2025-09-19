@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Modules\Auth\Domain\ValueObject\TwoFactorCode;
 
-describe('TwoFactorCode Value Object', function () {
+describe('TwoFactorCode Value Object', function (): void {
 
-    describe('Construction', function () {
-        it('creates a valid 2FA code with all parameters', function () {
+    describe('Construction', function (): void {
+        it('creates a valid 2FA code with all parameters', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $type = 'totp';
@@ -21,7 +21,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($twoFactorCode->getAttempts())->toBe($attempts);
         });
 
-        it('creates a valid 2FA code with default parameters', function () {
+        it('creates a valid 2FA code with default parameters', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -33,21 +33,21 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($twoFactorCode->getAttempts())->toBe(0);
         });
 
-        it('throws exception for empty code', function () {
+        it('throws exception for empty code', function (): void {
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
             expect(fn () => new TwoFactorCode('', $expiresAt))
                 ->toThrow(InvalidArgumentException::class, '2FA code cannot be empty');
         });
 
-        it('throws exception for code shorter than 4 characters', function () {
+        it('throws exception for code shorter than 4 characters', function (): void {
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
             expect(fn () => new TwoFactorCode('123', $expiresAt))
                 ->toThrow(InvalidArgumentException::class, '2FA code must be at least 4 characters long');
         });
 
-        it('throws exception for code longer than 16 characters', function () {
+        it('throws exception for code longer than 16 characters', function (): void {
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $longCode = '12345678901234567'; // 17 characters
 
@@ -55,7 +55,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, '2FA code cannot be longer than 16 characters');
         });
 
-        it('throws exception for invalid type', function () {
+        it('throws exception for invalid type', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -63,7 +63,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, '2FA code type must be one of: totp, sms, email, backup');
         });
 
-        it('accepts all valid types', function () {
+        it('accepts all valid types', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $validTypes = ['totp', 'sms', 'email', 'backup'];
@@ -74,7 +74,7 @@ describe('TwoFactorCode Value Object', function () {
             }
         });
 
-        it('throws exception for expiry more than 1 year in future', function () {
+        it('throws exception for expiry more than 1 year in future', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+2 years');
 
@@ -82,7 +82,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, '2FA code expiry cannot be more than 1 year in the future');
         });
 
-        it('throws exception for negative attempts', function () {
+        it('throws exception for negative attempts', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -90,7 +90,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->toThrow(InvalidArgumentException::class, '2FA code attempts cannot be negative');
         });
 
-        it('throws exception for excessive attempts', function () {
+        it('throws exception for excessive attempts', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -99,8 +99,8 @@ describe('TwoFactorCode Value Object', function () {
         });
     });
 
-    describe('Expiry Validation', function () {
-        it('returns false for isExpired when code is valid', function () {
+    describe('Expiry Validation', function (): void {
+        it('returns false for isExpired when code is valid', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -108,7 +108,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isExpired())->toBeFalse();
         });
 
-        it('returns true for isExpired when code is expired', function () {
+        it('returns true for isExpired when code is expired', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -117,7 +117,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isExpired($futureTime))->toBeTrue();
         });
 
-        it('returns true for isValid when code is not expired and not blocked', function () {
+        it('returns true for isValid when code is not expired and not blocked', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -125,7 +125,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isValid())->toBeTrue();
         });
 
-        it('returns false for isValid when code is expired', function () {
+        it('returns false for isValid when code is expired', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -134,7 +134,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isValid($futureTime))->toBeFalse();
         });
 
-        it('returns false for isValid when code is blocked', function () {
+        it('returns false for isValid when code is blocked', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt, 'totp', 3); // Max attempts for TOTP
@@ -142,7 +142,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isValid())->toBeFalse();
         });
 
-        it('calculates correct time to expiry', function () {
+        it('calculates correct time to expiry', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+300 seconds'); // 5 minutes
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -154,7 +154,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(300);
         });
 
-        it('returns zero time to expiry for expired codes', function () {
+        it('returns zero time to expiry for expired codes', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -164,8 +164,8 @@ describe('TwoFactorCode Value Object', function () {
         });
     });
 
-    describe('Attempt Management', function () {
-        it('returns correct max attempts for different types', function () {
+    describe('Attempt Management', function (): void {
+        it('returns correct max attempts for different types', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -182,7 +182,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($backupCode->getMaxAttempts())->toBe(1);
         });
 
-        it('calculates remaining attempts correctly', function () {
+        it('calculates remaining attempts correctly', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt, 'totp', 1);
@@ -190,7 +190,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->getRemainingAttempts())->toBe(2); // 3 max - 1 used = 2
         });
 
-        it('returns zero remaining attempts when blocked', function () {
+        it('returns zero remaining attempts when blocked', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt, 'totp', 3);
@@ -198,7 +198,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->getRemainingAttempts())->toBe(0);
         });
 
-        it('returns true for isBlocked when attempts equal max attempts', function () {
+        it('returns true for isBlocked when attempts equal max attempts', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt, 'totp', 3);
@@ -206,7 +206,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isBlocked())->toBeTrue();
         });
 
-        it('returns false for isBlocked when attempts below max', function () {
+        it('returns false for isBlocked when attempts below max', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt, 'totp', 2);
@@ -214,7 +214,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isBlocked())->toBeFalse();
         });
 
-        it('increments attempts correctly', function () {
+        it('increments attempts correctly', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt, 'totp', 1);
@@ -228,8 +228,8 @@ describe('TwoFactorCode Value Object', function () {
         });
     });
 
-    describe('Code Verification', function () {
-        it('returns true for matches with identical codes', function () {
+    describe('Code Verification', function (): void {
+        it('returns true for matches with identical codes', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -237,7 +237,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->matches('123456'))->toBeTrue();
         });
 
-        it('returns false for matches with different codes', function () {
+        it('returns false for matches with different codes', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -245,7 +245,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->matches('654321'))->toBeFalse();
         });
 
-        it('uses timing-safe comparison for matches', function () {
+        it('uses timing-safe comparison for matches', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -255,7 +255,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($twoFactorCode->matches('123457'))->toBeFalse();
         });
 
-        it('returns true for verify with valid code and conditions', function () {
+        it('returns true for verify with valid code and conditions', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -263,7 +263,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->verify('123456'))->toBeTrue();
         });
 
-        it('returns false for verify with invalid code', function () {
+        it('returns false for verify with invalid code', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -271,7 +271,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->verify('654321'))->toBeFalse();
         });
 
-        it('returns false for verify when code is expired', function () {
+        it('returns false for verify when code is expired', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -280,7 +280,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->verify('123456', $futureTime))->toBeFalse();
         });
 
-        it('returns false for verify when code is blocked', function () {
+        it('returns false for verify when code is blocked', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt, 'totp', 3);
@@ -289,8 +289,8 @@ describe('TwoFactorCode Value Object', function () {
         });
     });
 
-    describe('Static Factory Methods', function () {
-        it('generates valid TOTP code', function () {
+    describe('Static Factory Methods', function (): void {
+        it('generates valid TOTP code', function (): void {
             $totpCode = TwoFactorCode::generateTOTP();
 
             expect($totpCode->getCode())->toHaveLength(6)
@@ -303,7 +303,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(300);
         });
 
-        it('generates valid SMS code', function () {
+        it('generates valid SMS code', function (): void {
             $smsCode = TwoFactorCode::generateSMS();
 
             expect($smsCode->getCode())->toHaveLength(6)
@@ -316,7 +316,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(600);
         });
 
-        it('generates valid Email code', function () {
+        it('generates valid Email code', function (): void {
             $emailCode = TwoFactorCode::generateEmail();
 
             expect($emailCode->getCode())->toHaveLength(6)
@@ -329,7 +329,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(900);
         });
 
-        it('generates valid Backup code', function () {
+        it('generates valid Backup code', function (): void {
             $backupCode = TwoFactorCode::generateBackupCode();
 
             expect($backupCode->getCode())->toHaveLength(8) // 4 bytes = 8 hex chars
@@ -342,7 +342,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($timeToExpiry)->toBeGreaterThan(31536000 - 10); // 1 year - 10 seconds buffer
         });
 
-        it('generates TOTP codes with custom validity', function () {
+        it('generates TOTP codes with custom validity', function (): void {
             $validitySeconds = 600; // 10 minutes
             $totpCode = TwoFactorCode::generateTOTP($validitySeconds);
 
@@ -351,7 +351,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(600);
         });
 
-        it('generates SMS codes with custom validity', function () {
+        it('generates SMS codes with custom validity', function (): void {
             $validityMinutes = 5;
             $smsCode = TwoFactorCode::generateSMS($validityMinutes);
 
@@ -360,7 +360,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(300);
         });
 
-        it('generates Email codes with custom validity', function () {
+        it('generates Email codes with custom validity', function (): void {
             $validityMinutes = 30;
             $emailCode = TwoFactorCode::generateEmail($validityMinutes);
 
@@ -369,14 +369,14 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($timeToExpiry)->toBeLessThanOrEqual(1800);
         });
 
-        it('generates unique codes on multiple calls', function () {
+        it('generates unique codes on multiple calls', function (): void {
             $code1 = TwoFactorCode::generateTOTP();
             $code2 = TwoFactorCode::generateTOTP();
 
             expect($code1->getCode())->not->toBe($code2->getCode());
         });
 
-        it('generates numeric codes for TOTP, SMS, and Email', function () {
+        it('generates numeric codes for TOTP, SMS, and Email', function (): void {
             $totpCode = TwoFactorCode::generateTOTP();
             $smsCode = TwoFactorCode::generateSMS();
             $emailCode = TwoFactorCode::generateEmail();
@@ -386,7 +386,7 @@ describe('TwoFactorCode Value Object', function () {
             expect(ctype_digit($emailCode->getCode()))->toBeTrue();
         });
 
-        it('generates alphanumeric uppercase codes for backup', function () {
+        it('generates alphanumeric uppercase codes for backup', function (): void {
             $backupCode = TwoFactorCode::generateBackupCode();
 
             expect(ctype_alnum($backupCode->getCode()))->toBeTrue();
@@ -394,8 +394,8 @@ describe('TwoFactorCode Value Object', function () {
         });
     });
 
-    describe('Array Conversion', function () {
-        it('converts to array with all required fields', function () {
+    describe('Array Conversion', function (): void {
+        it('converts to array with all required fields', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('2025-01-01 12:00:00');
             $type = 'sms';
@@ -424,7 +424,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($array['remaining_attempts'])->toBeInt();
         });
 
-        it('includes correct calculated values in array', function () {
+        it('includes correct calculated values in array', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $type = 'totp';
@@ -440,8 +440,8 @@ describe('TwoFactorCode Value Object', function () {
         });
     });
 
-    describe('Edge Cases and Boundary Testing', function () {
-        it('handles code with exactly 4 characters', function () {
+    describe('Edge Cases and Boundary Testing', function (): void {
+        it('handles code with exactly 4 characters', function (): void {
             $code = '1234'; // Exactly 4 characters
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -450,7 +450,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->getCode())->toBe($code);
         });
 
-        it('handles code with exactly 16 characters', function () {
+        it('handles code with exactly 16 characters', function (): void {
             $code = '1234567890123456'; // Exactly 16 characters
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -459,7 +459,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->getCode())->toBe($code);
         });
 
-        it('handles expiry exactly 1 year in future', function () {
+        it('handles expiry exactly 1 year in future', function (): void {
             $code = '123456';
             $expiresAt = (new DateTimeImmutable)->modify('+1 year');
 
@@ -468,7 +468,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->isValid())->toBeTrue();
         });
 
-        it('handles maximum allowed attempts', function () {
+        it('handles maximum allowed attempts', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -477,7 +477,7 @@ describe('TwoFactorCode Value Object', function () {
             expect($twoFactorCode->getAttempts())->toBe(100);
         });
 
-        it('handles different code formats', function () {
+        it('handles different code formats', function (): void {
             $codes = ['123456', 'ABC123', 'a1b2c3', 'BACKUP01'];
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -487,7 +487,7 @@ describe('TwoFactorCode Value Object', function () {
             }
         });
 
-        it('handles case sensitivity in code matching', function () {
+        it('handles case sensitivity in code matching', function (): void {
             $code = 'AbC123';
             $expiresAt = new DateTimeImmutable('+5 minutes');
             $twoFactorCode = new TwoFactorCode($code, $expiresAt);
@@ -498,8 +498,8 @@ describe('TwoFactorCode Value Object', function () {
         });
     });
 
-    describe('Type-Specific Behavior', function () {
-        it('has different max attempts for each type', function () {
+    describe('Type-Specific Behavior', function (): void {
+        it('has different max attempts for each type', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 
@@ -516,7 +516,7 @@ describe('TwoFactorCode Value Object', function () {
             }
         });
 
-        it('blocks immediately for backup codes', function () {
+        it('blocks immediately for backup codes', function (): void {
             $code = 'BACKUP01';
             $expiresAt = new DateTimeImmutable('+1 year');
             $backupCode = new TwoFactorCode($code, $expiresAt, 'backup', 1);
@@ -525,7 +525,7 @@ describe('TwoFactorCode Value Object', function () {
                 ->and($backupCode->getRemainingAttempts())->toBe(0);
         });
 
-        it('allows more attempts for SMS and Email than TOTP', function () {
+        it('allows more attempts for SMS and Email than TOTP', function (): void {
             $code = '123456';
             $expiresAt = new DateTimeImmutable('+5 minutes');
 

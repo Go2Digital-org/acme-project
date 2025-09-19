@@ -6,12 +6,12 @@ namespace Tests\Unit\Shared\ReadModel;
 
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Modules\Shared\Application\ReadModel\ReadModelCacheInvalidator;
-use Tests\TestCase;
+use Tests\UnitTestCase;
 
 /**
  * Test suite for Read Model Cache Invalidator.
  */
-class ReadModelCacheInvalidatorTest extends TestCase
+class ReadModelCacheInvalidatorTest extends UnitTestCase
 {
     private CacheRepository $cache;
 

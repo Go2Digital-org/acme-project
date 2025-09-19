@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Modules\Export\Domain\ValueObject\ExportStatus;
 
-describe('ExportStatus', function () {
-    describe('enum cases', function () {
-        it('has correct enum values', function () {
+describe('ExportStatus', function (): void {
+    describe('enum cases', function (): void {
+        it('has correct enum values', function (): void {
             expect(ExportStatus::PENDING->value)->toBe('pending')
                 ->and(ExportStatus::PROCESSING->value)->toBe('processing')
                 ->and(ExportStatus::COMPLETED->value)->toBe('completed')
@@ -14,7 +14,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->value)->toBe('cancelled');
         });
 
-        it('can be instantiated from string values', function () {
+        it('can be instantiated from string values', function (): void {
             expect(ExportStatus::from('pending'))->toBe(ExportStatus::PENDING)
                 ->and(ExportStatus::from('processing'))->toBe(ExportStatus::PROCESSING)
                 ->and(ExportStatus::from('completed'))->toBe(ExportStatus::COMPLETED)
@@ -22,7 +22,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::from('cancelled'))->toBe(ExportStatus::CANCELLED);
         });
 
-        it('lists all cases', function () {
+        it('lists all cases', function (): void {
             $cases = ExportStatus::cases();
 
             expect($cases)->toHaveCount(5)
@@ -34,8 +34,8 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('status checking methods', function () {
-        it('isPending returns true only for pending status', function () {
+    describe('status checking methods', function (): void {
+        it('isPending returns true only for pending status', function (): void {
             expect(ExportStatus::PENDING->isPending())->toBeTrue()
                 ->and(ExportStatus::PROCESSING->isPending())->toBeFalse()
                 ->and(ExportStatus::COMPLETED->isPending())->toBeFalse()
@@ -43,7 +43,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->isPending())->toBeFalse();
         });
 
-        it('isProcessing returns true only for processing status', function () {
+        it('isProcessing returns true only for processing status', function (): void {
             expect(ExportStatus::PENDING->isProcessing())->toBeFalse()
                 ->and(ExportStatus::PROCESSING->isProcessing())->toBeTrue()
                 ->and(ExportStatus::COMPLETED->isProcessing())->toBeFalse()
@@ -51,7 +51,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->isProcessing())->toBeFalse();
         });
 
-        it('isCompleted returns true only for completed status', function () {
+        it('isCompleted returns true only for completed status', function (): void {
             expect(ExportStatus::PENDING->isCompleted())->toBeFalse()
                 ->and(ExportStatus::PROCESSING->isCompleted())->toBeFalse()
                 ->and(ExportStatus::COMPLETED->isCompleted())->toBeTrue()
@@ -59,7 +59,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->isCompleted())->toBeFalse();
         });
 
-        it('isFailed returns true only for failed status', function () {
+        it('isFailed returns true only for failed status', function (): void {
             expect(ExportStatus::PENDING->isFailed())->toBeFalse()
                 ->and(ExportStatus::PROCESSING->isFailed())->toBeFalse()
                 ->and(ExportStatus::COMPLETED->isFailed())->toBeFalse()
@@ -67,7 +67,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->isFailed())->toBeFalse();
         });
 
-        it('isCancelled returns true only for cancelled status', function () {
+        it('isCancelled returns true only for cancelled status', function (): void {
             expect(ExportStatus::PENDING->isCancelled())->toBeFalse()
                 ->and(ExportStatus::PROCESSING->isCancelled())->toBeFalse()
                 ->and(ExportStatus::COMPLETED->isCancelled())->toBeFalse()
@@ -76,19 +76,19 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('isFinished method', function () {
-        it('returns false for pending and processing', function () {
+    describe('isFinished method', function (): void {
+        it('returns false for pending and processing', function (): void {
             expect(ExportStatus::PENDING->isFinished())->toBeFalse()
                 ->and(ExportStatus::PROCESSING->isFinished())->toBeFalse();
         });
 
-        it('returns true for completed, failed, and cancelled', function () {
+        it('returns true for completed, failed, and cancelled', function (): void {
             expect(ExportStatus::COMPLETED->isFinished())->toBeTrue()
                 ->and(ExportStatus::FAILED->isFinished())->toBeTrue()
                 ->and(ExportStatus::CANCELLED->isFinished())->toBeTrue();
         });
 
-        it('uses individual status checks internally', function () {
+        it('uses individual status checks internally', function (): void {
             foreach (ExportStatus::cases() as $status) {
                 $expectedFinished = $status->isCompleted() || $status->isFailed() || $status->isCancelled();
                 expect($status->isFinished())->toBe($expectedFinished);
@@ -96,8 +96,8 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('canTransitionTo method', function () {
-        it('allows valid transitions from pending', function () {
+    describe('canTransitionTo method', function (): void {
+        it('allows valid transitions from pending', function (): void {
             $pending = ExportStatus::PENDING;
 
             expect($pending->canTransitionTo(ExportStatus::PROCESSING))->toBeTrue()
@@ -107,7 +107,7 @@ describe('ExportStatus', function () {
                 ->and($pending->canTransitionTo(ExportStatus::PENDING))->toBeFalse();
         });
 
-        it('allows valid transitions from processing', function () {
+        it('allows valid transitions from processing', function (): void {
             $processing = ExportStatus::PROCESSING;
 
             expect($processing->canTransitionTo(ExportStatus::COMPLETED))->toBeTrue()
@@ -117,7 +117,7 @@ describe('ExportStatus', function () {
                 ->and($processing->canTransitionTo(ExportStatus::PROCESSING))->toBeFalse();
         });
 
-        it('does not allow transitions from final states', function () {
+        it('does not allow transitions from final states', function (): void {
             $finalStates = [ExportStatus::COMPLETED, ExportStatus::FAILED, ExportStatus::CANCELLED];
 
             foreach ($finalStates as $finalState) {
@@ -127,7 +127,7 @@ describe('ExportStatus', function () {
             }
         });
 
-        it('validates transition rules comprehensively', function () {
+        it('validates transition rules comprehensively', function (): void {
             $validTransitions = [
                 ExportStatus::PENDING->value => [
                     ExportStatus::PROCESSING->value,
@@ -153,8 +153,8 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('getLabel method', function () {
-        it('returns human-readable labels', function () {
+    describe('getLabel method', function (): void {
+        it('returns human-readable labels', function (): void {
             expect(ExportStatus::PENDING->getLabel())->toBe('Pending')
                 ->and(ExportStatus::PROCESSING->getLabel())->toBe('Processing')
                 ->and(ExportStatus::COMPLETED->getLabel())->toBe('Completed')
@@ -162,14 +162,14 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->getLabel())->toBe('Cancelled');
         });
 
-        it('returns non-empty strings', function () {
+        it('returns non-empty strings', function (): void {
             foreach (ExportStatus::cases() as $status) {
                 expect($status->getLabel())->not->toBeEmpty()
                     ->and($status->getLabel())->toBeString();
             }
         });
 
-        it('returns capitalized labels', function () {
+        it('returns capitalized labels', function (): void {
             foreach (ExportStatus::cases() as $status) {
                 $label = $status->getLabel();
                 expect($label[0])->toBe(strtoupper($label[0]));
@@ -177,8 +177,8 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('getColor method', function () {
-        it('returns appropriate color codes', function () {
+    describe('getColor method', function (): void {
+        it('returns appropriate color codes', function (): void {
             expect(ExportStatus::PENDING->getColor())->toBe('yellow')
                 ->and(ExportStatus::PROCESSING->getColor())->toBe('blue')
                 ->and(ExportStatus::COMPLETED->getColor())->toBe('green')
@@ -186,7 +186,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->getColor())->toBe('gray');
         });
 
-        it('returns valid color names', function () {
+        it('returns valid color names', function (): void {
             $validColors = ['yellow', 'blue', 'green', 'red', 'gray', 'orange', 'purple', 'pink', 'indigo'];
 
             foreach (ExportStatus::cases() as $status) {
@@ -194,7 +194,7 @@ describe('ExportStatus', function () {
             }
         });
 
-        it('uses semantic colors', function () {
+        it('uses semantic colors', function (): void {
             // Success should be green
             expect(ExportStatus::COMPLETED->getColor())->toBe('green');
             // Error should be red
@@ -208,8 +208,8 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('enum behavior', function () {
-        it('supports strict comparison', function () {
+    describe('enum behavior', function (): void {
+        it('supports strict comparison', function (): void {
             $status1 = ExportStatus::PENDING;
             $status2 = ExportStatus::PENDING;
             $status3 = ExportStatus::PROCESSING;
@@ -218,7 +218,7 @@ describe('ExportStatus', function () {
                 ->and($status1 === $status3)->toBeFalse();
         });
 
-        it('works with switch statements', function () {
+        it('works with switch statements', function (): void {
             $getDescription = function (ExportStatus $status): string {
                 return match ($status) {
                     ExportStatus::PENDING => 'Export is queued',
@@ -236,7 +236,7 @@ describe('ExportStatus', function () {
                 ->and($getDescription(ExportStatus::CANCELLED))->toBe('Export was cancelled');
         });
 
-        it('can be serialized to string', function () {
+        it('can be serialized to string', function (): void {
             expect(ExportStatus::PENDING->value)->toBe('pending')
                 ->and(ExportStatus::PROCESSING->value)->toBe('processing')
                 ->and(ExportStatus::COMPLETED->value)->toBe('completed')
@@ -244,7 +244,7 @@ describe('ExportStatus', function () {
                 ->and(ExportStatus::CANCELLED->value)->toBe('cancelled');
         });
 
-        it('works in arrays', function () {
+        it('works in arrays', function (): void {
             $statuses = [
                 ExportStatus::PENDING,
                 ExportStatus::PROCESSING,
@@ -259,18 +259,18 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('edge cases', function () {
-        it('throws exception for invalid string values', function () {
+    describe('edge cases', function (): void {
+        it('throws exception for invalid string values', function (): void {
             expect(fn () => ExportStatus::from('invalid'))
                 ->toThrow(ValueError::class);
         });
 
-        it('handles tryFrom with invalid values', function () {
+        it('handles tryFrom with invalid values', function (): void {
             expect(ExportStatus::tryFrom('invalid'))->toBeNull()
                 ->and(ExportStatus::tryFrom('pending'))->toBe(ExportStatus::PENDING);
         });
 
-        it('handles tryFrom with all valid values', function () {
+        it('handles tryFrom with all valid values', function (): void {
             expect(ExportStatus::tryFrom('pending'))->toBe(ExportStatus::PENDING)
                 ->and(ExportStatus::tryFrom('processing'))->toBe(ExportStatus::PROCESSING)
                 ->and(ExportStatus::tryFrom('completed'))->toBe(ExportStatus::COMPLETED)
@@ -279,8 +279,8 @@ describe('ExportStatus', function () {
         });
     });
 
-    describe('state machine behavior', function () {
-        it('creates proper state machine flow', function () {
+    describe('state machine behavior', function (): void {
+        it('creates proper state machine flow', function (): void {
             // Normal flow: PENDING -> PROCESSING -> COMPLETED
             expect(ExportStatus::PENDING->canTransitionTo(ExportStatus::PROCESSING))->toBeTrue();
             expect(ExportStatus::PROCESSING->canTransitionTo(ExportStatus::COMPLETED))->toBeTrue();
@@ -294,7 +294,7 @@ describe('ExportStatus', function () {
             expect(ExportStatus::PROCESSING->canTransitionTo(ExportStatus::CANCELLED))->toBeTrue();
         });
 
-        it('groups statuses by lifecycle phase', function () {
+        it('groups statuses by lifecycle phase', function (): void {
             // Active states (can change)
             $activeStates = array_filter(
                 ExportStatus::cases(),

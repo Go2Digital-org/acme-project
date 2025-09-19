@@ -16,7 +16,7 @@ class CampaignDetailResource extends BaseApiResource
      * @param  Request  $request
      * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         /** @var Campaign $campaign */
         $campaign = $this->resource;
@@ -54,14 +54,14 @@ class CampaignDetailResource extends BaseApiResource
                 'is_ending_soon' => $campaign->getDaysRemaining() <= 7 && $campaign->getDaysRemaining() >= 0,
             ],
 
-            'creator' => $this->whenLoaded('creator', fn ($creator) => [
+            'creator' => $this->whenLoaded('creator', fn ($creator): array => [
                 'id' => $creator->getId(),
                 'name' => $creator->getName(),
                 'title' => $creator->title ?? 'ACME Employee',
                 'avatar_url' => $creator->profile_photo_url,
             ]),
 
-            'organization' => $this->whenLoaded('organization', fn ($organization) => [
+            'organization' => $this->whenLoaded('organization', fn ($organization): array => [
                 'id' => $organization->id,
                 'name' => $organization->getName(),
                 'logo_url' => $organization->logo_url,
@@ -87,7 +87,7 @@ class CampaignDetailResource extends BaseApiResource
             // Include donation statistics if requested
             'donation_stats' => $this->when(
                 $this->shouldIncludeRelation($request, 'donation_stats'),
-                fn () => [
+                fn (): array => [
                     'recent_donations_count' => $this->getRecentDonationsCount($campaign),
                     'top_donation_amount' => $this->getTopDonationAmount($campaign),
                     'donation_velocity' => $this->getDonationVelocity($campaign),

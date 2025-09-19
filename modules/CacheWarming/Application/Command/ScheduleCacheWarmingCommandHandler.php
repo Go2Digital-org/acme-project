@@ -43,7 +43,7 @@ final readonly class ScheduleCacheWarmingCommandHandler
     }
 
     /**
-     * @return array<string>
+     * @return array<int, string>
      */
     private function resolveKeys(ScheduleCacheWarmingCommand $command): array
     {
@@ -64,7 +64,7 @@ final readonly class ScheduleCacheWarmingCommandHandler
     }
 
     /**
-     * @param  array<CacheKey>  $cacheKeys
+     * @param  array<int, CacheKey>  $cacheKeys
      */
     private function scheduleImmediateWarming(array $cacheKeys, bool $highPriority): void
     {
@@ -81,7 +81,7 @@ final readonly class ScheduleCacheWarmingCommandHandler
     }
 
     /**
-     * @param  array<CacheKey>  $cacheKeys
+     * @param  array<int, CacheKey>  $cacheKeys
      */
     private function scheduleDelayedWarming(array $cacheKeys, int $delayInSeconds, bool $highPriority): void
     {

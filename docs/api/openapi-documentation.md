@@ -318,7 +318,7 @@ curl -o acme-api.postman.json http://localhost:8000/api/docs.json
 ```
 
 ### Sandbox Environment
-- URL: `https://sandbox-api.acme-corp.com`
+- URL: `https://sandbox-api.yourdomain.com`
 - Test credentials available upon request
 
 ## Security
@@ -333,8 +333,8 @@ curl -o acme-api.postman.json http://localhost:8000/api/docs.json
 // Allowed origins
 [
   "http://localhost:3000",
-  "https://app.acme-corp.com",
-  "https://admin.acme-corp.com"
+  "https://app.yourdomain.com",
+  "https://admin.yourdomain.com"
 ]
 ```
 
@@ -364,8 +364,8 @@ curl -o acme-api.postman.json http://localhost:8000/api/docs.json
 - This guide: `/docs/api/`
 
 ### Contact
-- Technical Support: api-support@acme-corp.com
-- Bug Reports: [GitHub Issues](https://github.com/acme-corp/api/issues)
+- Technical Support: info@go2digit.al
+- Bug Reports: Contact info@go2digit.al
 
 ---
 

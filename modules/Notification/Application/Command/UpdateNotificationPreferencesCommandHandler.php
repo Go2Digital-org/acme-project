@@ -134,7 +134,7 @@ final readonly class UpdateNotificationPreferencesCommandHandler implements Comm
                 throw NotificationException::invalidType("Invalid notification type: {$type}");
             }
 
-            // $channels is already typed as array<string, bool> from the command
+            // $channels is already typed as array from the command
 
             foreach ($channels as $channel => $enabled) {
                 if (! NotificationChannel::isValid($channel)) {
@@ -174,7 +174,7 @@ final readonly class UpdateNotificationPreferencesCommandHandler implements Comm
             }
         }
 
-        // metadata is already typed as array<string, mixed> in the command
+        // metadata is already typed as array in the command
     }
 
     /**

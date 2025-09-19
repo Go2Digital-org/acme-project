@@ -23,6 +23,8 @@ final readonly class SearchProvider implements ProviderInterface
     ) {}
 
     /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
      * @return array<int, SearchResource>
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array

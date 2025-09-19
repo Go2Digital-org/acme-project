@@ -6,6 +6,28 @@ namespace Modules\Analytics\Domain\ValueObject;
 
 enum WidgetType: string
 {
+    case TOTAL_DONATIONS = 'total_donations';
+    case ACTIVE_CAMPAIGNS = 'active_campaigns';
+    case TOP_DONORS = 'top_donors';
+    case DONATION_TRENDS = 'donation_trends';
+    case CAMPAIGN_PERFORMANCE = 'campaign_performance';
+    case MONTHLY_REVENUE = 'monthly_revenue';
+    case EMPLOYEE_PARTICIPATION = 'employee_participation';
+    case ORGANIZATION_STATS = 'organization_stats';
+    case DONATION_METHODS = 'donation_methods';
+    case CAMPAIGN_CATEGORIES = 'campaign_categories';
+    case RECENT_ACTIVITIES = 'recent_activities';
+    case SUCCESS_RATE = 'success_rate';
+    case AVERAGE_DONATION = 'average_donation';
+    case CONVERSION_FUNNEL = 'conversion_funnel';
+    case GEOGRAPHICAL_DISTRIBUTION = 'geographical_distribution';
+    case TIME_BASED_ANALYTICS = 'time_based_analytics';
+    case GOAL_COMPLETION = 'goal_completion';
+    case USER_ENGAGEMENT = 'user_engagement';
+    case PAYMENT_ANALYTICS = 'payment_analytics';
+    case COMPARATIVE_METRICS = 'comparative_metrics';
+    case REAL_TIME_STATS = 'real_time_stats';
+
     public function getDisplayName(): string
     {
         return match ($this) {
@@ -58,25 +80,4 @@ enum WidgetType: string
             default => false,
         };
     }
-    case TOTAL_DONATIONS = 'total_donations';
-    case ACTIVE_CAMPAIGNS = 'active_campaigns';
-    case TOP_DONORS = 'top_donors';
-    case DONATION_TRENDS = 'donation_trends';
-    case CAMPAIGN_PERFORMANCE = 'campaign_performance';
-    case MONTHLY_REVENUE = 'monthly_revenue';
-    case EMPLOYEE_PARTICIPATION = 'employee_participation';
-    case ORGANIZATION_STATS = 'organization_stats';
-    case DONATION_METHODS = 'donation_methods';
-    case CAMPAIGN_CATEGORIES = 'campaign_categories';
-    case RECENT_ACTIVITIES = 'recent_activities';
-    case SUCCESS_RATE = 'success_rate';
-    case AVERAGE_DONATION = 'average_donation';
-    case CONVERSION_FUNNEL = 'conversion_funnel';
-    case GEOGRAPHICAL_DISTRIBUTION = 'geographical_distribution';
-    case TIME_BASED_ANALYTICS = 'time_based_analytics';
-    case GOAL_COMPLETION = 'goal_completion';
-    case USER_ENGAGEMENT = 'user_engagement';
-    case PAYMENT_ANALYTICS = 'payment_analytics';
-    case COMPARATIVE_METRICS = 'comparative_metrics';
-    case REAL_TIME_STATS = 'real_time_stats';
 }

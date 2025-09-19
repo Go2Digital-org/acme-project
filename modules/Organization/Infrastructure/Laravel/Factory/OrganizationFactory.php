@@ -15,6 +15,9 @@ class OrganizationFactory extends Factory
 {
     protected $model = Organization::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $category = fake()->randomElement([
@@ -72,8 +75,8 @@ class OrganizationFactory extends Factory
             'city' => fake()->city(),
             'postal_code' => fake()->optional(0.8)->postcode(),
             'country' => fake()->countryCode(),
-            'registration_number' => 'REG-' . fake()->unique()->numerify('#####'),
-            'tax_id' => 'TAX-' . fake()->unique()->numerify('#####'),
+            'registration_number' => 'REG-' . uniqid() . '-' . fake()->numerify('####'),
+            'tax_id' => 'TAX-' . uniqid() . '-' . fake()->numerify('####'),
             'category' => fake()->randomElement(['nonprofit', 'charity', 'foundation', 'social', 'enterprise']),
             'type' => fake()->randomElement(['foundation', 'charity', 'ngo', 'social_enterprise']),
             'is_active' => true,
@@ -157,6 +160,7 @@ class OrganizationFactory extends Factory
                 'nl' => 'Gemeenschappen empoweren door onderwijs en kansen creëren voor levenslang leren.',
                 'fr' => 'Autonomiser les communautés par l\'éducation et créer des opportunités d\'apprentissage tout au long de la vie.',
             ],
+            'category' => 'education',
         ]);
     }
 
@@ -180,6 +184,7 @@ class OrganizationFactory extends Factory
                 'nl' => 'Onze planeet beschermen en duurzame praktijken promoten voor toekomstige generaties.',
                 'fr' => 'Protéger notre planète et promouvoir des pratiques durables pour les générations futures.',
             ],
+            'category' => 'environmental',
         ]);
     }
 
@@ -219,6 +224,33 @@ class OrganizationFactory extends Factory
                 'nl' => 'Sterkere gemeenschappen bouwen door samenwerkingsprogramma\'s en duurzame ontwikkelingsinitiatieven.',
                 'fr' => 'Construire des communautés plus fortes grâce à des programmes collaboratifs et des initiatives de développement durable.',
             ],
+        ]);
+    }
+
+    public function withNullValues(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'email' => null,
+            'website' => null,
+            'phone' => null,
+            'category' => null,
+            'type' => null,
+            'registration_number' => null,
+            'tax_id' => null,
+            'slug' => null,
+            'verification_date' => null,
+            'founded_date' => null,
+            'logo_url' => null,
+        ]);
+    }
+
+    public function withNullDates(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'created_at' => null,
+            'updated_at' => null,
+            'verification_date' => null,
+            'founded_date' => null,
         ]);
     }
 

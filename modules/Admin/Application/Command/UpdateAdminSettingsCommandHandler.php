@@ -19,7 +19,7 @@ final readonly class UpdateAdminSettingsCommandHandler
 
     public function handle(UpdateAdminSettingsCommand $command): AdminSettings
     {
-        return DB::transaction(function () use ($command) {
+        return DB::transaction(function () use ($command): AdminSettings {
             // Create value object to validate data
             $configuration = new SystemConfiguration(
                 siteName: $command->siteName,

@@ -96,7 +96,8 @@ final readonly class NotificationPerformanceMonitor
 
     /**
      * Record notification failure with detailed context.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $context
      */
     public function recordFailure(
@@ -173,7 +174,8 @@ final readonly class NotificationPerformanceMonitor
 
     /**
      * Get system health metrics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getSystemMetrics(): array
@@ -204,7 +206,8 @@ final readonly class NotificationPerformanceMonitor
 
     /**
      * Record a metric value.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     private function recordMetric(string $action, array $data): void
@@ -251,7 +254,7 @@ final readonly class NotificationPerformanceMonitor
     /**
      * Get error rates by type and channel.
      *
-     * @return array<string, array<string, float>>
+     * @return array<string, mixed>
      */
     private function getErrorRates(): array
     {
@@ -276,7 +279,8 @@ final readonly class NotificationPerformanceMonitor
 
     /**
      * Get volume statistics.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     private function getVolumeStats(): array

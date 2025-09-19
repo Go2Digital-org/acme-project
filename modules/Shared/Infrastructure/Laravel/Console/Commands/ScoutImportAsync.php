@@ -154,7 +154,7 @@ class ScoutImportAsync extends Command
     /**
      * Get a preview of jobs that will be created.
      *
-     * @return array<int, array<int, mixed>>
+     * @return list<list<int|string>>
      */
     private function getJobPreview(int $startId, int $endId, int $batchSize, int $numJobs, string $table): array
     {

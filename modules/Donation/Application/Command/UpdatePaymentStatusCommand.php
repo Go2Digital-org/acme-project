@@ -9,7 +9,7 @@ use Modules\Shared\Application\Command\CommandInterface;
 final readonly class UpdatePaymentStatusCommand implements CommandInterface
 {
     /**
-     * @param  array<string, mixed>  $gatewayResponse
+     * @param array<string, mixed>|null $gatewayResponse
      */
     public function __construct(
         public int $donationId,

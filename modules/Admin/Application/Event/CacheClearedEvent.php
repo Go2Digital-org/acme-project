@@ -17,8 +17,10 @@ final readonly class CacheClearedEvent
      * @param  array<string, array<string, bool|string|int>>  $results
      */
     public function __construct(
+        /** @var array<string> */
         public array $cacheTypes,
         public int $triggeredBy,
+        /** @var array<string, array<string, bool|string|int>> */
         public array $results,
         public DateTimeImmutable $occurredAt = new DateTimeImmutable
     ) {}

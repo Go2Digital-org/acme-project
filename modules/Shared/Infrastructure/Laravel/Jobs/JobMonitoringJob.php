@@ -33,6 +33,9 @@ final class JobMonitoringJob implements ShouldQueue
 
     public bool $deleteWhenMissingModels = true;
 
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function __construct(
         private readonly string $monitoringType = 'general',
         /** @var array<string, mixed> */
@@ -204,7 +207,7 @@ final class JobMonitoringJob implements ShouldQueue
     }
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     private function getQueueSizes(): array
     {
@@ -241,7 +244,7 @@ final class JobMonitoringJob implements ShouldQueue
     }
 
     /**
-     * @return array<string, int>
+     * @return array<string, mixed>
      */
     private function getQueueThroughput(): array
     {
@@ -295,7 +298,7 @@ final class JobMonitoringJob implements ShouldQueue
     }
 
     /**
-     * @param  array<string, int>  $failedByQueue
+     * @param  array<string, mixed>  $failedByQueue
      */
     private function sendFailedJobsAlert(int $failedCount, array $failedByQueue): void
     {

@@ -16,7 +16,9 @@ final readonly class SystemConfiguration
         public string $siteName,
         public string $siteDescription,
         public bool $debugMode,
+        /** @var array<string, mixed> */
         public array $emailSettings,
+        /** @var array<string, mixed> */
         public array $notificationSettings
     ) {
         if ($this->siteName === '' || $this->siteName === '0') {

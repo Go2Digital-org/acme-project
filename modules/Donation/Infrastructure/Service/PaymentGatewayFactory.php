@@ -24,7 +24,7 @@ use Throwable;
  */
 class PaymentGatewayFactory
 {
-    /** @var array<string, class-string<PaymentGatewayInterface>> */
+    /** @var array<string, mixed> */
     private const GATEWAY_CLASSES = [
         'mollie' => MolliePaymentGateway::class,
         'stripe' => StripePaymentGateway::class,
@@ -35,7 +35,7 @@ class PaymentGatewayFactory
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly PaymentGatewayRepositoryInterface $gatewayRepository,
-        /** @var array<string, array<string, mixed>> */
+        /** @var array<string, mixed> */
         private array $gatewayConfigs = [],
     ) {}
 
@@ -137,7 +137,7 @@ class PaymentGatewayFactory
     /**
      * Get gateway that supports specific payment method.
      *
-     * @return array<int, PaymentGatewayInterface>
+     * @return list<PaymentGatewayInterface>
      */
     public function getGatewaysForPaymentMethod(string $paymentMethod): array
     {
@@ -165,7 +165,7 @@ class PaymentGatewayFactory
     /**
      * Get gateway that supports specific currency.
      *
-     * @return array<int, PaymentGatewayInterface>
+     * @return list<PaymentGatewayInterface>
      */
     public function getGatewaysForCurrency(string $currency): array
     {
@@ -198,6 +198,7 @@ class PaymentGatewayFactory
         string $currency,
         ?float $amount = null,
     ): PaymentGatewayInterface {
+        /** @var list<array{name: string, gateway: PaymentGatewayInterface}> $candidates */
         $candidates = [];
 
         foreach (array_keys(self::GATEWAY_CLASSES) as $gatewayName) {
@@ -249,7 +250,9 @@ class PaymentGatewayFactory
         return $selected['gateway'];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getGatewayConfig(string $gatewayName): array
     {
         // Try to get configuration from database first
@@ -280,7 +283,9 @@ class PaymentGatewayFactory
     /**
      * Convert PaymentGateway domain model to configuration array format.
      */
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function convertDomainModelToConfig(PaymentGateway $gateway): array
     {
         $settings = $gateway->settings ?? [];
@@ -311,7 +316,9 @@ class PaymentGatewayFactory
         };
     }
 
-    /** @param array<string, mixed> $config */
+    /**
+     * @param  array<string, mixed>  $config
+     */
     private function createGatewayInstance(string $gatewayClass, array $config): PaymentGatewayInterface
     {
         return match ($gatewayClass) {
@@ -344,7 +351,7 @@ class PaymentGatewayFactory
     }
 
     /**
-     * @param  array<int, array{name: string, gateway: PaymentGatewayInterface}>  $candidates
+     * @param  list<array{name: string, gateway: PaymentGatewayInterface}>  $candidates
      * @return array{name: string, gateway: PaymentGatewayInterface}
      */
     private function applyGatewaySelectionLogic(array $candidates, ?float $amount): array

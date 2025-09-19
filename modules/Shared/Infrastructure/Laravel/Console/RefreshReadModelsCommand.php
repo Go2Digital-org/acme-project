@@ -40,9 +40,9 @@ class RefreshReadModelsCommand extends Command
         $this->donationReportRepo = App::make(DonationReportRepository::class);
         $this->organizationDashboardRepo = App::make(OrganizationDashboardRepository::class);
 
-        $types = array_filter((array) $this->option('type'), fn ($value): bool => $value !== null);
-        $ids = array_filter(array_map('intval', (array) $this->option('id')));
-        $organizationIds = array_filter(array_map('intval', (array) $this->option('organization')));
+        $types = array_values(array_filter((array) $this->option('type'), fn ($value): bool => $value !== null));
+        $ids = array_values(array_filter(array_map('intval', (array) $this->option('id'))));
+        $organizationIds = array_values(array_filter(array_map('intval', (array) $this->option('organization'))));
         $clearCache = $this->option('clear-cache');
         $force = $this->option('force');
 
@@ -68,7 +68,7 @@ class RefreshReadModelsCommand extends Command
     }
 
     /**
-     * @param  array<string>  $types
+     * @param  list<string>  $types
      */
     private function clearCaches(array $types): int
     {
@@ -110,8 +110,8 @@ class RefreshReadModelsCommand extends Command
     }
 
     /**
-     * @param  array<int>  $ids
-     * @param  array<int>  $organizationIds
+     * @param  list<int>  $ids
+     * @param  list<int>  $organizationIds
      */
     private function refreshReadModelType(string $type, array $ids, array $organizationIds, bool $force): void
     {
@@ -126,8 +126,8 @@ class RefreshReadModelsCommand extends Command
     }
 
     /**
-     * @param  array<int>  $campaignIds
-     * @param  array<int>  $organizationIds
+     * @param  list<int>  $campaignIds
+     * @param  list<int>  $organizationIds
      */
     private function refreshCampaignAnalytics(array $campaignIds, array $organizationIds, bool $force): void
     {
@@ -166,7 +166,7 @@ class RefreshReadModelsCommand extends Command
     }
 
     /**
-     * @param  array<int>  $organizationIds
+     * @param  list<int>  $organizationIds
      */
     private function refreshDonationReports(array $organizationIds, bool $force): void
     {
@@ -188,7 +188,7 @@ class RefreshReadModelsCommand extends Command
     }
 
     /**
-     * @param  array<int>  $organizationIds
+     * @param  list<int>  $organizationIds
      */
     private function refreshOrganizationDashboards(array $organizationIds, bool $force): void
     {

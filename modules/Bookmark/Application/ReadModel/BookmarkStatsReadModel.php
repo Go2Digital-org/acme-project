@@ -131,7 +131,7 @@ class BookmarkStatsReadModel extends AbstractReadModel
     /**
      * Get top bookmarked campaigns.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getTopBookmarkedCampaigns(): array
     {
@@ -141,7 +141,7 @@ class BookmarkStatsReadModel extends AbstractReadModel
     /**
      * Get most active bookmarkers.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getMostActiveBookmarkers(): array
     {
@@ -151,7 +151,7 @@ class BookmarkStatsReadModel extends AbstractReadModel
     /**
      * Get bookmark statistics by organization.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getStatsByOrganization(): array
     {
@@ -161,7 +161,7 @@ class BookmarkStatsReadModel extends AbstractReadModel
     /**
      * Get bookmark statistics by category.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function getStatsByCategory(): array
     {

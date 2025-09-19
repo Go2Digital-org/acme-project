@@ -36,8 +36,8 @@ class CancelDonationCommandHandler implements CommandHandlerInterface
                 throw DonationException::cannotBeCancelled($donation);
             }
 
-            // Validate permissions if employee is provided
-            if ($command->employeeId !== null && $donation->user_id !== $command->employeeId) {
+            // Validate permissions if user is provided
+            if ($command->userId !== null && $donation->user_id !== $command->userId) {
                 throw DonationException::unauthorizedAccess($donation);
             }
 
@@ -58,7 +58,7 @@ class CancelDonationCommandHandler implements CommandHandlerInterface
                 userId: $donation->user_id,
                 amount: $donation->amount,
                 currency: $donation->currency,
-                cancelledByEmployeeId: $command->employeeId ?? $donation->user_id ?? 1, // Default to system if no employee
+                cancelledByEmployeeId: $command->userId ?? $donation->user_id ?? 1, // Default to system if no user
             ));
 
             return $cancelledDonation;

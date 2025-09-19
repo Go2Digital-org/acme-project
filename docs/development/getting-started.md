@@ -37,7 +37,7 @@ This guide will help new developers get up and running with the ACME Corp CSR Do
 
 ```bash
 # Clone the repository
-git clone git@github.com:go2digit-al/acme-corp-optimy.git
+git clone git@github.com:your-username/acme-corp-optimy.git
 cd acme-corp-optimy
 
 # Verify you're on the correct branch
@@ -78,7 +78,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=acme-corp-optimy
 DB_USERNAME=root
-DB_PASSWORD=your_password
+DB_PASSWORD=# Set in .env
 
 # Test database (automatically used during testing)
 DB_TEST_DATABASE=acme-corp-optimy-test
@@ -556,7 +556,7 @@ MAIL_PORT=2525
 MAIL_USERNAME=null
 MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
-MAIL_FROM_ADDRESS=noreply@acme-corp.com
+MAIL_FROM_ADDRESS=noreply@yourdomain.com
 MAIL_FROM_NAME=\"${APP_NAME}\"
 ```
 
@@ -564,12 +564,12 @@ MAIL_FROM_NAME=\"${APP_NAME}\"
 ```env
 # Mollie (Test Mode)
 MOLLIE_API_KEY=test_your_mollie_test_key
-MOLLIE_WEBHOOK_SECRET=your_webhook_secret
+MOLLIE_WEBHOOK_SECRET=# Set in .env
 
 # Stripe (Test Mode)  
 STRIPE_PUBLIC_KEY=pk_test_your_stripe_test_key
 STRIPE_SECRET_KEY=sk_test_your_stripe_test_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+STRIPE_WEBHOOK_SECRET=# Set in .env
 ```
 
 ## Next Steps
@@ -589,7 +589,7 @@ After completing the setup:
 - **Code Examples**: Study existing implementations in `/modules`
 - **Architecture Guide**: `/docs/development/hex-commands.md` for hexagonal architecture commands
 - **Testing Guide**: `/docs/development/code-quality.md` - Testing patterns and quality standards
-- **Team Slack**: #acme-csr-dev channel for technical discussions
+- **Technical Support**: Contact info@go2digit.al for technical discussions
 
 Welcome to the ACME Corp CSR Development Team! This platform demonstrates enterprise-grade technical leadership through thoughtful architectural decisions, comprehensive testing, and maintainable code practices.
 

@@ -27,6 +27,9 @@ class CategorySearchService extends SearchService
         return 'category_search';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDefaultFilters(): array
     {
         return [
@@ -34,6 +37,9 @@ class CategorySearchService extends SearchService
         ];
     }
 
+    /**
+     * @return array<string, int>
+     */
     protected function getSearchableAttributesWeights(): array
     {
         return [
@@ -108,7 +114,7 @@ class CategorySearchService extends SearchService
             ->where('is_active', true)
             ->take($limit)
             ->get()
-            ->map(fn (Category $category) => [
+            ->map(fn (Category $category): array => [
                 'id' => $category->id,
                 'name' => $category->getName(),
                 'slug' => $category->slug,
@@ -181,7 +187,7 @@ class CategorySearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':color_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Category::search($query)->where('is_active', true);
             $categories = $builder->take(1000)->get();
             $facets = [];
@@ -208,7 +214,7 @@ class CategorySearchService extends SearchService
     {
         $cacheKey = $this->getCachePrefix() . ':status_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Category::search($query);
             $categories = $builder->take(1000)->get();
             $facets = [];

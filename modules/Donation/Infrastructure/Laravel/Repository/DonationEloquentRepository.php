@@ -34,11 +34,11 @@ class DonationEloquentRepository implements DonationRepositoryInterface
     /**
      * @return array<int, Donation>
      */
-    public function findByEmployee(int $employeeId): array
+    public function findByEmployee(int $userId): array
     {
         return $this->model
             ->with(['campaign', 'campaign.creator'])
-            ->where('user_id', $employeeId)
+            ->where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get()
             ->all();
@@ -65,12 +65,12 @@ class DonationEloquentRepository implements DonationRepositoryInterface
     }
 
     /**
-     * @param  array<string, mixed>  $filters
      * @return LengthAwarePaginator<int, Donation>
      */
     public function paginate(
         int $page = 1,
         int $perPage = 15,
+        /** @param array<string, mixed> $filters */
         array $filters = [],
         string $sortBy = 'created_at',
         string $sortOrder = 'desc',
@@ -108,10 +108,10 @@ class DonationEloquentRepository implements DonationRepositoryInterface
         return $this->model->where('id', $id)->delete() > 0;
     }
 
-    public function getTotalDonationsByEmployee(int $employeeId): float
+    public function getTotalDonationsByEmployee(int $userId): float
     {
         return (float) $this->model
-            ->where('user_id', $employeeId)
+            ->where('user_id', $userId)
             ->where('status', 'completed')
             ->sum('amount');
     }
@@ -186,7 +186,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get campaign donation statistics in single query (performance optimized).
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public function getCampaignStats(int $campaignId): array
@@ -231,15 +232,16 @@ class DonationEloquentRepository implements DonationRepositoryInterface
     }
 
     /**
-     * Get employee donation statistics in single query (performance optimized).
-     *
+     * Get user donation statistics in single query (performance optimized).
+     */
+    /**
      * @return array<string, mixed>
      */
-    public function getEmployeeStats(int $employeeId): array
+    public function getUserStats(int $userId): array
     {
         try {
             // Try Redis first - user stats continue using the existing pattern
-            $redisKey = "user_stats_{$employeeId}";
+            $redisKey = "user_stats_{$userId}";
             $cached = Redis::get($redisKey);
 
             if ($cached) {
@@ -251,7 +253,7 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
             // Fallback to database cache table
             $cached = DB::table('application_cache')
-                ->where('cache_key', "user_stats_{$employeeId}")
+                ->where('cache_key', "user_stats_{$userId}")
                 ->where('cache_status', 'ready')
                 ->first();
 
@@ -259,16 +261,16 @@ class DonationEloquentRepository implements DonationRepositoryInterface
                 return json_decode((string) $cached->stats_data, true);
             }
 
-            return $this->getEmptyEmployeeStats();
+            return $this->getEmptyUserStats();
         } catch (Exception) {
-            return $this->getEmptyEmployeeStats();
+            return $this->getEmptyUserStats();
         }
     }
 
     /**
-     * @return array<string, int|float>
+     * @return array<string, mixed>
      */
-    private function getEmptyEmployeeStats(): array
+    private function getEmptyUserStats(): array
     {
         return [
             'total_donations' => 0,
@@ -281,15 +283,16 @@ class DonationEloquentRepository implements DonationRepositoryInterface
     }
 
     /**
-     * Get available filters for employee donations (years and campaigns).
-     *
+     * Get available filters for user donations (years and campaigns).
+     */
+    /**
      * @return array<string, mixed>
      */
-    public function getAvailableFilters(int $employeeId): array
+    public function getAvailableFilters(int $userId): array
     {
         try {
             // Try Redis first - user filters continue using the existing pattern
-            $redisKey = "user_filters_{$employeeId}";
+            $redisKey = "user_filters_{$userId}";
             $cached = Redis::get($redisKey);
 
             if ($cached) {
@@ -301,7 +304,7 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
             // Fallback to database cache table
             $cached = DB::table('application_cache')
-                ->where('cache_key', "user_filters_{$employeeId}")
+                ->where('cache_key', "user_filters_{$userId}")
                 ->where('cache_status', 'ready')
                 ->first();
 
@@ -329,7 +332,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get count of recurring donations.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getRecurringDonationsCount(array $filters = []): int
@@ -345,7 +349,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get total amount of recurring donations.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getRecurringDonationsAmount(array $filters = []): float
@@ -361,7 +366,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get total amount of corporate donations.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getCorporateDonationsAmount(array $filters = []): float
@@ -377,7 +383,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get total amount of individual donations.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getIndividualDonationsAmount(array $filters = []): float
@@ -439,7 +446,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get total amount of donations with filtering.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getTotalAmountByFilters(array $filters = []): float
@@ -455,7 +463,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get average donation amount.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getAverageAmount(array $filters = []): float
@@ -471,7 +480,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get maximum donation amount.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getMaxAmount(array $filters = []): float
@@ -487,7 +497,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get minimum donation amount.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getMlnAmount(array $filters = []): float
@@ -503,7 +514,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get daily donation totals.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, float>
      */
@@ -519,12 +531,13 @@ class DonationEloquentRepository implements DonationRepositoryInterface
             $query = $this->applyFilters($query, $filters);
         }
 
-        return $query->pluck('total', 'date')->map(fn ($value) => (float) $value)->toArray();
+        return $query->pluck('total', 'date')->map(fn ($value): float => (float) $value)->toArray();
     }
 
     /**
      * Get weekly donation totals.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, float>
      */
@@ -540,12 +553,13 @@ class DonationEloquentRepository implements DonationRepositoryInterface
             $query = $this->applyFilters($query, $filters);
         }
 
-        return $query->pluck('total', 'week')->map(fn ($value) => (float) $value)->toArray();
+        return $query->pluck('total', 'week')->map(fn ($value): float => (float) $value)->toArray();
     }
 
     /**
      * Get monthly donation totals.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, float>
      */
@@ -561,12 +575,13 @@ class DonationEloquentRepository implements DonationRepositoryInterface
             $query = $this->applyFilters($query, $filters);
         }
 
-        return $query->pluck('total', 'month')->map(fn ($value) => (float) $value)->toArray();
+        return $query->pluck('total', 'month')->map(fn ($value): float => (float) $value)->toArray();
     }
 
     /**
      * Get daily growth rate percentage.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getDailyGrowthRate(array $filters = []): float
@@ -583,7 +598,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get weekly growth rate percentage.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getWeeklyGrowthRate(array $filters = []): float
@@ -600,7 +616,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get monthly growth rate percentage.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getMonthlyGrowthRate(array $filters = []): float
@@ -617,9 +634,10 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get top donors by total donation amount.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
-     * @return array<array{user_id: int, total_amount: float, donation_count: int}>
+     * @return array<int, array<string, mixed>>
      */
     public function getTopDonors(int $limit = 10, array $filters = []): array
     {
@@ -634,7 +652,7 @@ class DonationEloquentRepository implements DonationRepositoryInterface
             $query = $this->applyFilters($query, $filters);
         }
 
-        return $query->get()->map(fn ($item) => [
+        return $query->get()->map(fn ($item): array => [
             'user_id' => (int) $item->user_id, // @phpstan-ignore-line
             'total_amount' => (float) $item->total_amount, // @phpstan-ignore-line
             'donation_count' => (int) $item->donation_count, // @phpstan-ignore-line
@@ -643,9 +661,10 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get top campaigns by total donations received.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
-     * @return array<array{campaign_id: int, total_amount: float, donation_count: int}>
+     * @return array<int, array<string, mixed>>
      */
     public function getTopCampaignsByDonations(int $limit = 10, array $filters = []): array
     {
@@ -660,7 +679,7 @@ class DonationEloquentRepository implements DonationRepositoryInterface
             $query = $this->applyFilters($query, $filters);
         }
 
-        return $query->get()->map(fn ($item) => [
+        return $query->get()->map(fn ($item): array => [
             'campaign_id' => (int) $item->campaign_id, // @phpstan-ignore-line
             'total_amount' => (float) $item->total_amount, // @phpstan-ignore-line
             'donation_count' => (int) $item->donation_count, // @phpstan-ignore-line
@@ -669,9 +688,10 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get payment method breakdown statistics.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
-     * @return array<string, array{count: int, total_amount: float, percentage: float}>
+     * @return array<string, array<string, mixed>>
      */
     public function getPaymentMethodBreakdown(array $filters = []): array
     {
@@ -687,7 +707,7 @@ class DonationEloquentRepository implements DonationRepositoryInterface
         $results = $query->get();
         $totalAmount = $results->sum('total_amount');
 
-        return $results->mapWithKeys(function ($item) use ($totalAmount) {
+        return $results->mapWithKeys(function ($item) use ($totalAmount): array {
             $percentage = $totalAmount > 0 ? (((float) $item->total_amount) / $totalAmount) * 100 : 0.0; // @phpstan-ignore-line
             $paymentMethod = (string) $item->payment_method; // @phpstan-ignore-line
 
@@ -703,9 +723,10 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get currency breakdown statistics.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
-     * @return array<string, array{count: int, total_amount: float, percentage: float}>
+     * @return array<string, array<string, mixed>>
      */
     public function getCurrencyBreakdown(array $filters = []): array
     {
@@ -721,7 +742,7 @@ class DonationEloquentRepository implements DonationRepositoryInterface
         $results = $query->get();
         $totalAmount = $results->sum('total_amount');
 
-        return $results->mapWithKeys(function ($item) use ($totalAmount) {
+        return $results->mapWithKeys(function ($item) use ($totalAmount): array {
             $percentage = $totalAmount > 0 ? (((float) $item->total_amount) / $totalAmount) * 100 : 0.0; // @phpstan-ignore-line
             $currency = (string) $item->currency; // @phpstan-ignore-line
 
@@ -737,7 +758,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get count of donations by status.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<string, int>
      */
@@ -751,12 +773,13 @@ class DonationEloquentRepository implements DonationRepositoryInterface
             $query = $this->applyFilters($query, $filters);
         }
 
-        return $query->pluck('count', 'status')->map(fn ($value) => (int) $value)->toArray();
+        return $query->pluck('count', 'status')->map(fn ($value): int => (int) $value)->toArray();
     }
 
     /**
      * Get total amount for a specific date.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function getTotalAmountForDate(string $date, array $filters = []): float
@@ -774,7 +797,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get total amount for a specific week.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function getTotalAmountForWeek(string $week, array $filters = []): float
@@ -792,7 +816,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get total amount for a specific month.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function getTotalAmountForMonth(string $month, array $filters = []): float
@@ -810,7 +835,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get count of donations with filtering.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getCountByFilters(array $filters = []): int
@@ -826,7 +852,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get unique donors count with filtering.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getUniqueDonorsCount(array $filters = []): int
@@ -842,7 +869,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get median donation amount.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getMedianAmount(array $filters = []): float
@@ -880,7 +908,8 @@ class DonationEloquentRepository implements DonationRepositoryInterface
 
     /**
      * Get minimum donation amount (alias for getMlnAmount).
-     *
+     */
+    /**
      * @param  array<string, mixed>  $filters
      */
     public function getMinAmount(array $filters = []): float

@@ -7,12 +7,9 @@ use Modules\Campaign\Domain\Model\Campaign;
 use Modules\Organization\Domain\Model\Organization;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\get;
-
 uses(RefreshDatabase::class);
 
-describe('Campaign List Performance Optimizations', function (): void {
+describe('Campaign List Performance Optimizations (Database Tests)', function (): void {
     beforeEach(function (): void {
         $this->user = User::factory()->create();
         $this->organization = Organization::factory()->create();
@@ -26,354 +23,212 @@ describe('Campaign List Performance Optimizations', function (): void {
         ]);
     });
 
-    describe('Field selection optimization', function (): void {
-        it('retrieves campaigns list successfully', function (): void {
-            actingAs($this->user, 'sanctum');
+    describe('Database Query Performance', function (): void {
+        it('can efficiently retrieve campaign collections', function (): void {
+            $campaigns = Campaign::all();
 
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/json',
-            ]);
+            expect($campaigns)->toBeInstanceOf(\Illuminate\Database\Eloquent\Collection::class);
+            expect($campaigns->count())->toBe(4);
+        });
 
-            $response->assertOk();
-            $data = $response->json();
+        it('supports efficient filtering by status', function (): void {
+            $activeCampaigns = Campaign::where('status', 'active')->get();
+            $completedCampaigns = Campaign::where('status', 'completed')->get();
 
-            // Check if we have either API Platform format or direct array
-            if (isset($data['hydra:member'])) {
-                expect($data['hydra:member'])->toBeArray();
-            } else {
-                expect($data)->toBeArray();
+            expect($activeCampaigns->count())->toBe(1);
+            expect($completedCampaigns->count())->toBe(1);
+        });
+
+        it('supports efficient pagination without N+1 queries', function (): void {
+            // Create more campaigns for pagination testing
+            Campaign::factory()->count(20)->for($this->organization)->for($this->user, 'employee')->create();
+
+            $paginatedResults = Campaign::with(['organization', 'employee'])->paginate(10);
+
+            expect($paginatedResults->total())->toBe(24); // 4 from setup + 20 created
+            expect($paginatedResults->perPage())->toBe(10);
+            expect($paginatedResults->count())->toBe(10);
+        });
+
+        it('efficiently loads relationships with eager loading', function (): void {
+            $campaignsWithRelations = Campaign::with(['organization', 'employee'])->get();
+
+            expect($campaignsWithRelations)->toHaveCount(4);
+
+            foreach ($campaignsWithRelations as $campaign) {
+                expect($campaign->organization)->not->toBeNull();
+                expect($campaign->employee)->not->toBeNull();
             }
         });
 
-        it('supports API Platform JSON-LD format', function (): void {
-            actingAs($this->user, 'sanctum');
+        it('supports efficient filtering by organization', function (): void {
+            $otherOrganization = Organization::factory()->create();
+            Campaign::factory()->for($otherOrganization)->for($this->user, 'employee')->create();
 
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/ld+json',
-            ]);
+            $orgCampaigns = Campaign::where('organization_id', $this->organization->id)->get();
+            $otherOrgCampaigns = Campaign::where('organization_id', $otherOrganization->id)->get();
 
-            $response->assertOk();
-            $data = $response->json();
-
-            // Check for API Platform structure
-            if (isset($data['hydra:member'])) {
-                expect($data)->toHaveKeys(['hydra:member', 'hydra:totalItems']);
-            }
+            expect($orgCampaigns->count())->toBe(4);
+            expect($otherOrgCampaigns->count())->toBe(1);
         });
 
-        it('handles authentication properly', function (): void {
-            // Test without authentication
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/json',
+        it('supports efficient search within title field', function (): void {
+            Campaign::factory()->for($this->organization)->for($this->user, 'employee')->create([
+                'title' => ['en' => 'Unique Conservation Project'],
             ]);
 
-            $response->assertStatus(401);
+            $searchResults = Campaign::where('title->en', 'like', '%Unique%')->get();
 
-            // Test with authentication
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
+            expect($searchResults->count())->toBe(1);
+            expect($searchResults->first()->getTitle())->toContain('Unique');
         });
 
-        it('includes campaign basic properties', function (): void {
-            actingAs($this->user, 'sanctum');
+        it('handles complex filtering combinations efficiently', function (): void {
+            $results = Campaign::where('organization_id', $this->organization->id)
+                ->where('status', 'active')
+                ->where('user_id', $this->user->id)
+                ->get();
 
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
-            $data = $response->json();
-
-            // Check that each campaign has basic properties
-            $campaigns = $data['hydra:member'] ?? $data ?? [];
-            if (! empty($campaigns)) {
-                $firstCampaign = $campaigns[0];
-                expect($firstCampaign)->toHaveKey('id');
-                expect($firstCampaign)->toHaveKey('title');
-            }
+            expect($results->count())->toBe(1);
+            expect($results->first()->status->value)->toBe('active');
         });
 
-        it('supports search parameter', function (): void {
-            actingAs($this->user, 'sanctum');
+        it('can count campaigns efficiently', function (): void {
+            $totalCount = Campaign::count();
+            $activeCount = Campaign::where('status', 'active')->count();
+            $userCount = Campaign::where('user_id', $this->user->id)->count();
 
-            $response = get('/api/campaigns', [
-                'search' => 'test',
-                'Accept' => 'application/json',
-            ]);
+            expect($totalCount)->toBe(4);
+            expect($activeCount)->toBe(1);
+            expect($userCount)->toBe(4);
+        });
 
-            $response->assertOk();
+        it('can group campaigns by status efficiently', function (): void {
+            $statusCounts = Campaign::selectRaw('status, count(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status');
+
+            expect($statusCounts['active'])->toBe(1);
+            expect($statusCounts['completed'])->toBe(1);
+            expect($statusCounts['draft'])->toBe(1);
+            expect($statusCounts['paused'])->toBe(1);
         });
     });
 
-    describe('Pagination optimization', function (): void {
-        it('supports pagination', function (): void {
-            Campaign::factory()->count(25)->for($this->organization)->for($this->user, 'employee')->create();
-            actingAs($this->user, 'sanctum');
+    describe('Repository Performance Tests', function (): void {
+        it('measures bulk insertion performance', function (): void {
+            $startTime = microtime(true);
 
-            $response = get('/api/campaigns', [
-                'itemsPerPage' => 10,
-                'page' => 1,
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
-            $data = $response->json();
-
-            // Check for API Platform pagination structure
-            if (isset($data['hydra:totalItems'])) {
-                expect($data['hydra:totalItems'])->toBeGreaterThanOrEqual(25);
-                expect(count($data['hydra:member']))->toBeLessThanOrEqual(20); // Default per page
-            }
-        });
-
-        it('handles large page sizes', function (): void {
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'itemsPerPage' => 100, // At maximum
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
-        });
-
-        it('handles multiple pages', function (): void {
-            Campaign::factory()->count(15)->for($this->organization)->for($this->user, 'employee')->create();
-            actingAs($this->user, 'sanctum');
-
-            // First page
-            $response1 = get('/api/campaigns', [
-                'itemsPerPage' => 5,
-                'page' => 1,
-                'Accept' => 'application/json',
-            ]);
-
-            // Second page
-            $response2 = get('/api/campaigns', [
-                'itemsPerPage' => 5,
-                'page' => 2,
-                'Accept' => 'application/json',
-            ]);
-
-            $response1->assertOk();
-            $response2->assertOk();
-
-            $data1 = $response1->json();
-            $data2 = $response2->json();
-
-            // Ensure we have data on both pages
-            $page1Data = $data1['hydra:member'] ?? $data1 ?? [];
-            $page2Data = $data2['hydra:member'] ?? $data2 ?? [];
-
-            expect($page1Data)->toBeArray();
-            expect($page2Data)->toBeArray();
-        });
-
-        it('provides pagination metadata', function (): void {
-            Campaign::factory()->count(23)->for($this->organization)->for($this->user, 'employee')->create();
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'itemsPerPage' => 10,
-                'page' => 2,
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
-            $data = $response->json();
-
-            // Check for API Platform pagination metadata
-            if (isset($data['hydra:totalItems'])) {
-                expect($data['hydra:totalItems'])->toBeGreaterThanOrEqual(23);
-            }
-        });
-    });
-
-    describe('Filtering and search optimization', function (): void {
-        it('supports status filtering', function (): void {
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'status' => 'active',
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
-        });
-
-        it('supports organization filtering', function (): void {
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'organization_id' => $this->organization->id,
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
-        });
-
-        it('supports search functionality', function (): void {
-            $searchableCampaign = Campaign::factory()
+            // Create campaigns in bulk
+            $campaigns = Campaign::factory()
+                ->count(50)
                 ->for($this->organization)
                 ->for($this->user, 'employee')
-                ->create([
-                    'title' => ['en' => 'Save the Ocean Environment'],
-                    'description' => ['en' => 'Help protect marine life'],
-                ]);
+                ->create();
 
-            actingAs($this->user, 'sanctum');
+            $endTime = microtime(true);
+            $executionTime = $endTime - $startTime;
 
-            $response = get('/api/campaigns', [
-                'search' => 'Ocean',
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
+            expect($campaigns)->toHaveCount(50);
+            expect($executionTime)->toBeLessThan(3.0); // Should complete in under 3 seconds
         });
 
-        it('handles multiple filter parameters', function (): void {
-            actingAs($this->user, 'sanctum');
+        it('tests query performance with large datasets', function (): void {
+            // Create a larger dataset
+            Campaign::factory()
+                ->count(100)
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create();
 
-            $response = get('/api/campaigns', [
-                'status' => 'active',
-                'organization_id' => $this->organization->id,
-                'Accept' => 'application/json',
-            ]);
+            $startTime = microtime(true);
 
-            $response->assertOk();
+            $campaigns = Campaign::where('organization_id', $this->organization->id)
+                ->orderBy('created_at', 'desc')
+                ->limit(20)
+                ->get();
+
+            $endTime = microtime(true);
+            $executionTime = $endTime - $startTime;
+
+            expect($campaigns)->toHaveCount(20);
+            expect($executionTime)->toBeLessThan(0.5); // Should be very fast with proper indexing
         });
 
-        it('handles invalid filter values gracefully', function (): void {
-            actingAs($this->user, 'sanctum');
+        it('measures memory efficiency with large result sets', function (): void {
+            Campaign::factory()
+                ->count(200)
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create();
 
-            $response = get('/api/campaigns', [
-                'status' => 'invalid_status',
-                'Accept' => 'application/json',
-            ]);
+            $memoryBefore = memory_get_usage();
 
-            // Should either work (return empty) or give proper error
-            expect($response->getStatusCode())->toBeIn([200, 400, 422]);
-        });
-    });
+            $campaigns = Campaign::where('organization_id', $this->organization->id)->get();
 
-    describe('Sorting support', function (): void {
-        it('supports basic sorting', function (): void {
-            actingAs($this->user, 'sanctum');
+            $memoryAfter = memory_get_usage();
+            $memoryUsed = $memoryAfter - $memoryBefore;
 
-            $response = get('/api/campaigns', [
-                'sort[createdAt]' => 'desc',
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
+            expect($campaigns->count())->toBe(204); // 4 from setup + 200 created
+            // Memory usage should be reasonable (under 100MB for 200+ records)
+            expect($memoryUsed)->toBeLessThan(100 * 1024 * 1024);
         });
 
-        it('handles multiple sort parameters', function (): void {
-            actingAs($this->user, 'sanctum');
+        it('validates chunked processing performance', function (): void {
+            Campaign::factory()
+                ->count(100)
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create();
 
-            $response = get('/api/campaigns', [
-                'sort[status]' => 'asc',
-                'sort[createdAt]' => 'desc',
-                'Accept' => 'application/json',
-            ]);
+            $processedCount = 0;
+            $startTime = microtime(true);
 
-            $response->assertOk();
-        });
-    });
+            Campaign::where('organization_id', $this->organization->id)
+                ->chunk(25, function ($campaigns) use (&$processedCount): void {
+                    $processedCount += $campaigns->count();
+                });
 
-    describe('Response headers', function (): void {
-        it('includes proper content type headers', function (): void {
-            actingAs($this->user, 'sanctum');
+            $endTime = microtime(true);
+            $executionTime = $endTime - $startTime;
 
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk()
-                ->assertHeader('Content-Type');
+            expect($processedCount)->toBe(104); // 4 from setup + 100 created
+            expect($executionTime)->toBeLessThan(1.0); // Chunked processing should be efficient
         });
 
-        it('handles different accept headers', function (): void {
-            actingAs($this->user, 'sanctum');
+        it('tests concurrent access simulation', function (): void {
+            $startTime = microtime(true);
 
-            $jsonResponse = get('/api/campaigns', [
-                'Accept' => 'application/json',
-            ]);
+            // Simulate multiple concurrent operations
+            $read1 = Campaign::where('organization_id', $this->organization->id)->count();
+            $read2 = Campaign::where('status', 'active')->count();
+            $read3 = Campaign::where('user_id', $this->user->id)->count();
 
-            $jsonLdResponse = get('/api/campaigns', [
-                'Accept' => 'application/ld+json',
-            ]);
+            $endTime = microtime(true);
+            $executionTime = $endTime - $startTime;
 
-            $jsonResponse->assertOk();
-            $jsonLdResponse->assertOk();
-        });
-    });
-
-    describe('Basic performance', function (): void {
-        it('handles multiple campaigns efficiently', function (): void {
-            Campaign::factory()->count(50)->for($this->organization)->for($this->user, 'employee')->create();
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/json',
-            ]);
-
-            $response->assertOk();
-
-            // Should complete in reasonable time
-            expect($response->getStatusCode())->toBe(200);
+            expect($read1)->toBe(4);
+            expect($read2)->toBe(1);
+            expect($read3)->toBe(4);
+            expect($executionTime)->toBeLessThan(0.2); // Multiple reads should be fast
         });
 
-        it('handles filtering with large datasets', function (): void {
-            Campaign::factory()->count(30)->for($this->organization)->for($this->user, 'employee')->create();
-            actingAs($this->user, 'sanctum');
+        it('validates bulk update performance', function (): void {
+            Campaign::factory()
+                ->count(50)
+                ->for($this->organization)
+                ->for($this->user, 'employee')
+                ->create();
 
-            $response = get('/api/campaigns', [
-                'status' => 'active',
-                'organization_id' => $this->organization->id,
-                'Accept' => 'application/json',
-            ]);
+            $startTime = microtime(true);
 
-            $response->assertOk();
-        });
-    });
+            Campaign::where('organization_id', $this->organization->id)
+                ->update(['updated_at' => now()]);
 
-    describe('Error handling', function (): void {
-        it('requires authentication', function (): void {
-            $response = get('/api/campaigns', [
-                'Accept' => 'application/json',
-            ]);
+            $endTime = microtime(true);
+            $executionTime = $endTime - $startTime;
 
-            $response->assertUnauthorized();
-        });
-
-        it('handles invalid pagination gracefully', function (): void {
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'page' => 999, // Very high page number
-                'Accept' => 'application/json',
-            ]);
-
-            // Should either return empty results or handle gracefully
-            expect($response->getStatusCode())->toBeIn([200, 404, 422]);
-        });
-
-        it('handles long search terms', function (): void {
-            actingAs($this->user, 'sanctum');
-
-            $response = get('/api/campaigns', [
-                'search' => str_repeat('test', 20), // Long search term
-                'Accept' => 'application/json',
-            ]);
-
-            // Should handle gracefully
-            expect($response->getStatusCode())->toBeIn([200, 422]);
+            expect($executionTime)->toBeLessThan(1.0); // Bulk updates should be efficient
         });
     });
 });

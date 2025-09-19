@@ -138,7 +138,9 @@ final class SendCampaignUpdateNotificationJob implements ShouldQueue
         return true;
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function getNotificationRecipients(Campaign $campaign): array
     {
         // If specific recipients provided, use those
@@ -194,7 +196,9 @@ final class SendCampaignUpdateNotificationJob implements ShouldQueue
         return array_values($uniqueRecipients);
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getDonorContacts(Campaign $campaign): array
     {
         // Get all donors for this campaign (excluding anonymous)
@@ -217,7 +221,9 @@ final class SendCampaignUpdateNotificationJob implements ShouldQueue
         return $donors;
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getFollowerContacts(): array
     {
         // TODO: Implement follower system
@@ -225,7 +231,9 @@ final class SendCampaignUpdateNotificationJob implements ShouldQueue
         return [];
     }
 
-    /** @return array<array-key, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function getMajorDonorContacts(Campaign $campaign): array
     {
         $majorDonationThreshold = config('donation.notifications.major_donor_threshold', 100);

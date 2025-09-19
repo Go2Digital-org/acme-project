@@ -17,6 +17,10 @@ class CreateCampaign extends CreateRecord
         return __('campaigns.create_new_campaign');
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Auto-generate slug if not provided

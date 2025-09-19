@@ -25,7 +25,9 @@ final readonly class OrganizationCollectionProvider implements ProviderInterface
     ) {}
 
     /**
-     * @return Paginator<OrganizationResource>|array<int, OrganizationResource>
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     * @return Paginator<OrganizationResource>|array<string, mixed>
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): Paginator|array
     {

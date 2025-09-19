@@ -15,6 +15,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final readonly class UserItemProvider implements ProviderInterface
 {
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): UserResource
     {
         if (! isset($uriVariables['id']) || ! is_numeric($uriVariables['id'])) {

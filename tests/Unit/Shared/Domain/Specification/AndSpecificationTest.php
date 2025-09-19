@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Modules\Shared\Domain\Specification\AndSpecification;
 use Modules\Shared\Domain\Specification\SpecificationInterface;
 
-describe('AndSpecification', function () {
-    beforeEach(function () {
+describe('AndSpecification', function (): void {
+    beforeEach(function (): void {
         $this->trueSpec = new class implements SpecificationInterface
         {
             public function isSatisfiedBy(mixed $candidate): bool
@@ -77,8 +77,8 @@ describe('AndSpecification', function () {
         };
     });
 
-    describe('Construction', function () {
-        it('creates AND specification with two specifications', function () {
+    describe('Construction', function (): void {
+        it('creates AND specification with two specifications', function (): void {
             $andSpec = new AndSpecification($this->trueSpec, $this->falseSpec);
 
             expect($andSpec)->toBeInstanceOf(AndSpecification::class)
@@ -86,34 +86,34 @@ describe('AndSpecification', function () {
         });
     });
 
-    describe('Logical AND Operations', function () {
-        it('returns true when both specifications are true', function () {
+    describe('Logical AND Operations', function (): void {
+        it('returns true when both specifications are true', function (): void {
             $andSpec = new AndSpecification($this->trueSpec, $this->trueSpec);
 
             expect($andSpec->isSatisfiedBy('any_candidate'))->toBeTrue();
         });
 
-        it('returns false when left specification is false', function () {
+        it('returns false when left specification is false', function (): void {
             $andSpec = new AndSpecification($this->falseSpec, $this->trueSpec);
 
             expect($andSpec->isSatisfiedBy('any_candidate'))->toBeFalse();
         });
 
-        it('returns false when right specification is false', function () {
+        it('returns false when right specification is false', function (): void {
             $andSpec = new AndSpecification($this->trueSpec, $this->falseSpec);
 
             expect($andSpec->isSatisfiedBy('any_candidate'))->toBeFalse();
         });
 
-        it('returns false when both specifications are false', function () {
+        it('returns false when both specifications are false', function (): void {
             $andSpec = new AndSpecification($this->falseSpec, $this->falseSpec);
 
             expect($andSpec->isSatisfiedBy('any_candidate'))->toBeFalse();
         });
     });
 
-    describe('Short-circuit Evaluation', function () {
-        it('evaluates left specification first', function () {
+    describe('Short-circuit Evaluation', function (): void {
+        it('evaluates left specification first', function (): void {
             $leftEvaluated = false;
             $rightEvaluated = false;
 
@@ -180,8 +180,8 @@ describe('AndSpecification', function () {
         });
     });
 
-    describe('Complex Specifications', function () {
-        it('works with conditional specifications', function () {
+    describe('Complex Specifications', function (): void {
+        it('works with conditional specifications', function (): void {
             $positiveSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -238,8 +238,8 @@ describe('AndSpecification', function () {
         });
     });
 
-    describe('Different Data Types', function () {
-        it('handles string candidates', function () {
+    describe('Different Data Types', function (): void {
+        it('handles string candidates', function (): void {
             $lengthSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -294,7 +294,7 @@ describe('AndSpecification', function () {
                 ->and($longContainsTestSpec->isSatisfiedBy('short'))->toBeFalse(); // both conditions fail
         });
 
-        it('handles array candidates', function () {
+        it('handles array candidates', function (): void {
             $countSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -349,7 +349,7 @@ describe('AndSpecification', function () {
                 ->and($largeArrayWithKeySpec->isSatisfiedBy(['a', 'b']))->toBeFalse(); // both conditions fail
         });
 
-        it('handles object candidates', function () {
+        it('handles object candidates', function (): void {
             $obj1 = new stdClass;
             $obj1->name = 'test';
             $obj1->value = 100;
@@ -411,8 +411,8 @@ describe('AndSpecification', function () {
         });
     });
 
-    describe('Null and Edge Cases', function () {
-        it('handles null candidates', function () {
+    describe('Null and Edge Cases', function (): void {
+        it('handles null candidates', function (): void {
             $nullSafeSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -442,7 +442,7 @@ describe('AndSpecification', function () {
                 ->and($andSpec->isSatisfiedBy('not null'))->toBeTrue();
         });
 
-        it('handles false values correctly', function () {
+        it('handles false values correctly', function (): void {
             $booleanSpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool
@@ -473,7 +473,7 @@ describe('AndSpecification', function () {
                 ->and($andSpec->isSatisfiedBy(0))->toBeFalse(); // 0 is not a boolean
         });
 
-        it('handles empty collections', function () {
+        it('handles empty collections', function (): void {
             $nonEmptySpec = new class implements SpecificationInterface
             {
                 public function isSatisfiedBy(mixed $candidate): bool

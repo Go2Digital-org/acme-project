@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 use Modules\User\Domain\ValueObject\EmailAddress;
 
-describe('EmailAddress Value Object', function () {
-    describe('constructor validation', function () {
-        it('creates valid email address from valid email string', function () {
+describe('EmailAddress Value Object', function (): void {
+    describe('constructor validation', function (): void {
+        it('creates valid email address from valid email string', function (): void {
             $email = new EmailAddress('user@example.com');
 
             expect($email->value)->toBe('user@example.com')
                 ->and($email)->toBeInstanceOf(EmailAddress::class);
         });
 
-        it('accepts common email formats', function () {
+        it('accepts common email formats', function (): void {
             $validEmails = [
                 'simple@example.com',
                 'user.name@example.com',
@@ -31,7 +31,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('accepts international domain names', function () {
+        it('accepts international domain names', function (): void {
             $internationalEmails = [
                 'user@münchen.de',
                 'test@xn--mnchen-3ya.de', // IDN ASCII form
@@ -43,24 +43,24 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('throws exception for empty email', function () {
+        it('throws exception for empty email', function (): void {
             expect(fn () => new EmailAddress(''))
                 ->toThrow(InvalidArgumentException::class, 'Email address cannot be empty');
         });
 
-        it('throws exception for zero string', function () {
+        it('throws exception for zero string', function (): void {
             expect(fn () => new EmailAddress('0'))
                 ->toThrow(InvalidArgumentException::class, 'Email address cannot be empty');
         });
 
-        it('throws exception for too long email', function () {
+        it('throws exception for too long email', function (): void {
             $longEmail = str_repeat('a', 250) . '@example.com';
 
             expect(fn () => new EmailAddress($longEmail))
                 ->toThrow(InvalidArgumentException::class, 'Email address is too long (max 255 characters)');
         });
 
-        it('throws exception for invalid email formats', function () {
+        it('throws exception for invalid email formats', function (): void {
             $invalidEmails = [
                 'invalid',
                 'invalid@',
@@ -87,21 +87,21 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('handles malformed IDN domains gracefully', function () {
+        it('handles malformed IDN domains gracefully', function (): void {
             // This email should be rejected due to invalid domain format
             expect(fn () => new EmailAddress('user@invalid..domain'))
                 ->toThrow(InvalidArgumentException::class);
         });
     });
 
-    describe('getDomain method', function () {
-        it('returns domain part of email', function () {
+    describe('getDomain method', function (): void {
+        it('returns domain part of email', function (): void {
             $email = new EmailAddress('user@example.com');
 
             expect($email->getDomain())->toBe('example.com');
         });
 
-        it('returns domain for various email formats', function () {
+        it('returns domain for various email formats', function (): void {
             $testCases = [
                 ['user@example.com', 'example.com'],
                 ['test.user@sub.domain.com', 'sub.domain.com'],
@@ -116,7 +116,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('throws exception when email has no @ symbol', function () {
+        it('throws exception when email has no @ symbol', function (): void {
             // This should not happen with valid construction, but test defensive programming
             $email = new EmailAddress('user@example.com');
 
@@ -131,14 +131,14 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('getLocalPart method', function () {
-        it('returns local part of email', function () {
+    describe('getLocalPart method', function (): void {
+        it('returns local part of email', function (): void {
             $email = new EmailAddress('user@example.com');
 
             expect($email->getLocalPart())->toBe('user');
         });
 
-        it('returns local part for various email formats', function () {
+        it('returns local part for various email formats', function (): void {
             $testCases = [
                 ['user@example.com', 'user'],
                 ['test.user@domain.com', 'test.user'],
@@ -154,7 +154,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('throws exception when email has no @ symbol', function () {
+        it('throws exception when email has no @ symbol', function (): void {
             $email = new EmailAddress('user@example.com');
 
             // Simulate corrupted state
@@ -168,14 +168,14 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('isAcmeEmail method', function () {
-        it('returns true for acme.com domain', function () {
+    describe('isAcmeEmail method', function (): void {
+        it('returns true for acme.com domain', function (): void {
             $email = new EmailAddress('user@acme.com');
 
             expect($email->isAcmeEmail())->toBeTrue();
         });
 
-        it('returns true for subdomains of acme.com', function () {
+        it('returns true for subdomains of acme.com', function (): void {
             $acmeEmails = [
                 'user@subdomain.acme.com',
                 'test@hr.acme.com',
@@ -190,7 +190,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('returns false for non-acme domains', function () {
+        it('returns false for non-acme domains', function (): void {
             $nonAcmeEmails = [
                 'user@example.com',
                 'test@google.com',
@@ -207,7 +207,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('is case insensitive for domain checking', function () {
+        it('is case insensitive for domain checking', function (): void {
             $caseVariations = [
                 'user@ACME.COM',
                 'user@Acme.Com',
@@ -222,8 +222,8 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('__toString method', function () {
-        it('returns email value as string', function () {
+    describe('__toString method', function (): void {
+        it('returns email value as string', function (): void {
             $emailAddress = 'user@example.com';
             $email = new EmailAddress($emailAddress);
 
@@ -231,7 +231,7 @@ describe('EmailAddress Value Object', function () {
                 ->and($email->__toString())->toBe($emailAddress);
         });
 
-        it('returns original email format for various cases', function () {
+        it('returns original email format for various cases', function (): void {
             $testEmails = [
                 'simple@example.com',
                 'user.name@example.com',
@@ -247,8 +247,8 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('equals method', function () {
-        it('returns true for identical email addresses', function () {
+    describe('equals method', function (): void {
+        it('returns true for identical email addresses', function (): void {
             $email1 = new EmailAddress('user@example.com');
             $email2 = new EmailAddress('user@example.com');
 
@@ -256,7 +256,7 @@ describe('EmailAddress Value Object', function () {
                 ->and($email2->equals($email1))->toBeTrue();
         });
 
-        it('returns false for different email addresses', function () {
+        it('returns false for different email addresses', function (): void {
             $email1 = new EmailAddress('user@example.com');
             $email2 = new EmailAddress('other@example.com');
 
@@ -264,7 +264,7 @@ describe('EmailAddress Value Object', function () {
                 ->and($email2->equals($email1))->toBeFalse();
         });
 
-        it('is case sensitive for comparison', function () {
+        it('is case sensitive for comparison', function (): void {
             $email1 = new EmailAddress('user@example.com');
             $email2 = new EmailAddress('User@example.com');
 
@@ -272,13 +272,13 @@ describe('EmailAddress Value Object', function () {
                 ->and($email2->equals($email1))->toBeFalse();
         });
 
-        it('returns true for same instance', function () {
+        it('returns true for same instance', function (): void {
             $email = new EmailAddress('user@example.com');
 
             expect($email->equals($email))->toBeTrue();
         });
 
-        it('handles international characters consistently', function () {
+        it('handles international characters consistently', function (): void {
             $email1 = new EmailAddress('user@münchen.de');
             $email2 = new EmailAddress('user@münchen.de');
 
@@ -286,24 +286,28 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('IDN (Internationalized Domain Names) handling', function () {
-        it('handles IDN domains when idn_to_ascii is available', function () {
+    describe('IDN (Internationalized Domain Names) handling', function (): void {
+        it('handles IDN domains when idn_to_ascii is available', function (): void {
             if (! function_exists('idn_to_ascii')) {
                 $this->markTestSkipped('idn_to_ascii function not available');
+
+                return;
             }
 
             expect(fn () => new EmailAddress('user@münchen.de'))->not->toThrow(Exception::class);
         });
 
-        it('handles IDN domains gracefully when idn_to_ascii is not available', function () {
+        it('handles IDN domains gracefully when idn_to_ascii is not available', function (): void {
             // This test simulates the behavior when idn_to_ascii is not available
             // The implementation should still work with the original domain
             expect(fn () => new EmailAddress('user@example.com'))->not->toThrow(Exception::class);
         });
 
-        it('converts IDN to ASCII for validation', function () {
+        it('converts IDN to ASCII for validation', function (): void {
             if (! function_exists('idn_to_ascii')) {
                 $this->markTestSkipped('idn_to_ascii function not available');
+
+                return;
             }
 
             $email = new EmailAddress('user@münchen.de');
@@ -312,14 +316,14 @@ describe('EmailAddress Value Object', function () {
             expect($email->getDomain())->toBe('münchen.de');
         });
 
-        it('handles IDN conversion errors gracefully', function () {
+        it('handles IDN conversion errors gracefully', function (): void {
             // Test with potentially problematic IDN
             expect(fn () => new EmailAddress('user@valid.com'))->not->toThrow(Exception::class);
         });
     });
 
-    describe('edge cases and security', function () {
-        it('handles maximum length emails correctly', function () {
+    describe('edge cases and security', function (): void {
+        it('handles maximum length emails correctly', function (): void {
             // Create email under the limit (255 characters) but not excessively long for local part
             $localPart = str_repeat('a', 60); // Much more reasonable length
             $domain = 'example.com'; // 11 chars + @ + 60 = 72 total, well under 255
@@ -329,7 +333,7 @@ describe('EmailAddress Value Object', function () {
                 ->and($email->getDomain())->toBe($domain);
         });
 
-        it('prevents email header injection', function () {
+        it('prevents email header injection', function (): void {
             $maliciousEmails = [
                 "user@example.com\r\nBcc: attacker@evil.com",
                 "user@example.com\nBcc: attacker@evil.com",
@@ -343,7 +347,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('handles special characters in local part correctly', function () {
+        it('handles special characters in local part correctly', function (): void {
             $specialCharEmails = [
                 'user.name@example.com',
                 'user+tag@example.com',
@@ -357,7 +361,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('rejects dangerous characters', function () {
+        it('rejects dangerous characters', function (): void {
             $dangerousEmails = [
                 'user@exam ple.com', // Space in domain
                 'user@example.com.', // Trailing dot
@@ -375,8 +379,8 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('validation consistency', function () {
-        it('maintains consistency between validation and access methods', function () {
+    describe('validation consistency', function (): void {
+        it('maintains consistency between validation and access methods', function (): void {
             $email = new EmailAddress('user@example.com');
 
             // If construction succeeds, all access methods should work
@@ -386,7 +390,7 @@ describe('EmailAddress Value Object', function () {
                 ->and(fn () => (string) $email)->not->toThrow(Exception::class);
         });
 
-        it('validates that constructed email can be reconstructed', function () {
+        it('validates that constructed email can be reconstructed', function (): void {
             $originalEmail = 'user@example.com';
             $email = new EmailAddress($originalEmail);
 
@@ -394,7 +398,7 @@ describe('EmailAddress Value Object', function () {
             expect($reconstructed)->toBe($originalEmail);
         });
 
-        it('ensures domain and local part extraction is accurate', function () {
+        it('ensures domain and local part extraction is accurate', function (): void {
             $testCases = [
                 ['a@b.com', 'a', 'b.com'],
                 ['very.long.name@very.long.domain.com', 'very.long.name', 'very.long.domain.com'],
@@ -411,8 +415,8 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('immutability and value object properties', function () {
-        it('is immutable after construction', function () {
+    describe('immutability and value object properties', function (): void {
+        it('is immutable after construction', function (): void {
             $email = new EmailAddress('user@example.com');
             $originalValue = $email->value;
 
@@ -426,7 +430,7 @@ describe('EmailAddress Value Object', function () {
                 ->and($email->isAcmeEmail())->toBe($email->isAcmeEmail());
         });
 
-        it('behaves as a proper value object', function () {
+        it('behaves as a proper value object', function (): void {
             $email1 = new EmailAddress('user@example.com');
             $email2 = new EmailAddress('user@example.com');
             $email3 = new EmailAddress('other@example.com');
@@ -443,7 +447,7 @@ describe('EmailAddress Value Object', function () {
             expect($email1->equals($email1))->toBeTrue();
         });
 
-        it('implements Stringable interface correctly', function () {
+        it('implements Stringable interface correctly', function (): void {
             $emailAddress = 'user@example.com';
             $email = new EmailAddress($emailAddress);
 
@@ -453,8 +457,8 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('performance and memory considerations', function () {
-        it('handles multiple email creations efficiently', function () {
+    describe('performance and memory considerations', function (): void {
+        it('handles multiple email creations efficiently', function (): void {
             $emails = [];
             $testEmails = [
                 'user1@example.com',
@@ -475,7 +479,7 @@ describe('EmailAddress Value Object', function () {
             }
         });
 
-        it('string conversion is consistent and efficient', function () {
+        it('string conversion is consistent and efficient', function (): void {
             $emailAddress = 'user@example.com';
             $email = new EmailAddress($emailAddress);
 
@@ -492,8 +496,8 @@ describe('EmailAddress Value Object', function () {
         });
     });
 
-    describe('error handling and exceptions', function () {
-        it('throws appropriate exception types', function () {
+    describe('error handling and exceptions', function (): void {
+        it('throws appropriate exception types', function (): void {
             expect(fn () => new EmailAddress(''))
                 ->toThrow(InvalidArgumentException::class);
 
@@ -504,7 +508,7 @@ describe('EmailAddress Value Object', function () {
                 ->toThrow(InvalidArgumentException::class);
         });
 
-        it('provides meaningful error messages', function () {
+        it('provides meaningful error messages', function (): void {
             try {
                 new EmailAddress('');
                 $this->fail('Should have thrown exception');

@@ -32,7 +32,7 @@ interface RepositoryInterface extends Countable, IteratorAggregate
 
     /**
      * @param  array<string, mixed>  $filters
-     * @param  array<string, string>  $sorts
+     * @param  array<string, mixed>  $sorts
      * @return LengthAwarePaginator<int, TEntity>
      */
     public function withPagination(
@@ -45,7 +45,7 @@ interface RepositoryInterface extends Countable, IteratorAggregate
 
     /**
      * @param  array<string, mixed>  $filters
-     * @param  array<string, string>  $sorts
+     * @param  array<string, mixed>  $sorts
      * @return iterable<int, TEntity>
      */
     public function withoutPagination(array $filters, array $sorts, Operation $operation): iterable;

@@ -16,7 +16,8 @@ interface PaymentGatewayRepositoryInterface
 {
     /**
      * Create a new payment gateway.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function create(array $data): PaymentGateway;
@@ -33,7 +34,8 @@ interface PaymentGatewayRepositoryInterface
 
     /**
      * Update a payment gateway by ID.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $data
      */
     public function updateById(int $id, array $data): bool;

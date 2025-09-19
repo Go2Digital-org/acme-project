@@ -36,7 +36,7 @@ final readonly class CampaignProgressService
      * Get progress data for multiple campaigns.
      *
      * @param  array<int>  $campaignIds
-     * @return array<int, CampaignProgress>
+     * @return array<int|string, array<string, bool|float|int>|int|float>
      */
     public function calculateMultipleCampaignProgress(array $campaignIds): array
     {
@@ -44,7 +44,16 @@ final readonly class CampaignProgressService
         $progressData = [];
 
         foreach ($campaigns as $campaign) {
-            $progressData[$campaign->id] = $this->progressCalculator->calculate($campaign);
+            $progress = $this->progressCalculator->calculate($campaign);
+            $progressData[(string) $campaign->id] = [
+                'campaign_id' => $campaign->id,
+                'percentage' => $progress->getPercentage(),
+                'remaining_amount' => $progress->getRemainingAmount(),
+                'velocity' => $progress->getVelocity(),
+                'projected_final_amount' => $progress->getProjectedFinalAmount(),
+                'is_behind_schedule' => $progress->isBehindSchedule(),
+                'has_reached_goal' => $progress->hasReachedGoal(),
+            ];
         }
 
         return $progressData;
@@ -247,7 +256,7 @@ final readonly class CampaignProgressService
     /**
      * Get campaigns that need attention based on various criteria.
      *
-     * @return array<string, array<int, array<string, mixed>>>
+     * @return array<string, mixed>
      */
     public function getCampaignsNeedingAttention(): array
     {

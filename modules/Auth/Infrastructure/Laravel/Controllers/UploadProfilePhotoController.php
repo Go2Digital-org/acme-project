@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Dimensions;
 use Illuminate\Validation\Rules\File;
-use Modules\Auth\Application\Service\ProfileManagementService;
+use Modules\Auth\Application\Services\ProfileManagementService;
 use Modules\Shared\Infrastructure\Laravel\Controllers\Traits\AuthenticatedUserTrait;
 
 final readonly class UploadProfilePhotoController

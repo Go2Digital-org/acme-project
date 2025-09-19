@@ -49,7 +49,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findActiveByOrganization(int $organizationId): array
     {
@@ -127,7 +127,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findActiveCampaigns(): array
     {
@@ -141,7 +141,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findExpiredCampaigns(): array
     {
@@ -173,7 +173,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findWithCompleteTranslations(string $locale): array
     {
@@ -185,7 +185,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findMissingTranslations(string $locale): array
     {
@@ -628,7 +628,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findForIndexing(int $offset, int $limit): array
     {
@@ -641,7 +641,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByUserId(int $userId): array
     {
@@ -1024,7 +1024,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByStatus(CampaignStatus $status, ?int $limit = null): array
     {
@@ -1041,7 +1041,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByUserAndStatus(int $userId, CampaignStatus $status): array
     {
@@ -1056,7 +1056,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     }
 
     /**
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findByEmployeeAndStatus(int $userId, CampaignStatus $status): array
     {
@@ -1074,7 +1074,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
      * Get featured campaigns for homepage display.
      *
      * @param  int  $limit  Number of featured campaigns to return
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getFeaturedCampaigns(int $limit = 3): array
     {
@@ -1141,7 +1141,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Find all campaigns.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function findAll(): array
     {
@@ -1225,6 +1225,8 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
 
     /**
      * Get count of campaigns by status.
+     *
+     * @param  array<string, mixed>  $filters
      */
     public function countByStatus(CampaignStatus $status, array $filters = []): int
     {
@@ -1250,7 +1252,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
      * Find campaigns by multiple IDs.
      *
      * @param  array<int>  $ids
-     * @return array<Campaign>
+     * @return array<int, mixed>
      */
     public function findByIds(array $ids): array
     {
@@ -1264,7 +1266,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Find campaigns by organization ID.
      *
-     * @return array<Campaign>
+     * @return array<int, mixed>
      */
     public function findByOrganizationId(int $organizationId): array
     {
@@ -1282,7 +1284,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Get popular campaigns with caching.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getPopularCampaigns(int $limit = 20): array
     {
@@ -1303,7 +1305,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Get trending campaigns (high donation velocity) with caching.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getTrendingCampaigns(int $limit = 20): array
     {
@@ -1332,7 +1334,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Get campaigns ending soon with caching.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getEndingSoonCampaigns(int $days = 7, int $limit = 20): array
     {
@@ -1355,7 +1357,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Get recently created campaigns with caching.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getRecentCampaigns(int $days = 7, int $limit = 20): array
     {
@@ -1377,7 +1379,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Get campaigns by organization with caching.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getCachedCampaignsByOrganization(int $organizationId, int $limit = 50): array
     {
@@ -1387,7 +1389,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Get campaigns by status with caching.
      *
-     * @return array<Campaign>
+     * @return array<int, Campaign>
      */
     public function getCachedCampaignsByStatus(CampaignStatus $status, int $limit = 100): array
     {
@@ -1478,7 +1480,7 @@ class CampaignEloquentRepository implements CampaignRepositoryInterface
     /**
      * Get cache statistics for campaign lists.
      *
-     * @return array<string, mixed>
+     * @return array<string, array<string, mixed>>
      */
     public function getCampaignListCacheStatistics(): array
     {

@@ -12,7 +12,7 @@ final class OrganizationLeaderboardReadModel extends AbstractReadModel
     protected int $cacheTtl = 600; // 10 minutes for leaderboard
 
     /**
-     * @return array<LeaderboardEntry>
+     * @return array<string, mixed>
      */
     public function getEntries(): array
     {
@@ -34,7 +34,7 @@ final class OrganizationLeaderboardReadModel extends AbstractReadModel
         return $this->getTotalEntries() === 0;
     }
 
-    public function getTopEntry(): ?LeaderboardEntry
+    public function getTopEntry(): mixed
     {
         $entries = $this->getEntries();
 
@@ -48,7 +48,7 @@ final class OrganizationLeaderboardReadModel extends AbstractReadModel
     {
         return [
             'organization_id' => $this->getId(),
-            'entries' => array_map(fn (LeaderboardEntry $entry) => $entry->toArray(), $this->getEntries()),
+            'entries' => array_map(fn (LeaderboardEntry $entry): array => $entry->toArray(), $this->getEntries()),
             'limit' => $this->getLimit(),
             'total_entries' => $this->getTotalEntries(),
             'is_empty' => $this->isEmpty(),

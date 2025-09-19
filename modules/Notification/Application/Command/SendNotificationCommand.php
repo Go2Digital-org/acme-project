@@ -17,6 +17,7 @@ final readonly class SendNotificationCommand implements CommandInterface
     public function __construct(
         public string $notificationId,
         public bool $forceImmediate = false,
+        /** @var array<string, mixed> */
         public array $deliveryOptions = [],
     ) {}
 }

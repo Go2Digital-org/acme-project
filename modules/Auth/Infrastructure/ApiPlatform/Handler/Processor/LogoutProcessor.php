@@ -14,6 +14,10 @@ use Modules\Auth\Infrastructure\ApiPlatform\Resource\AuthenticationResource;
  */
 final readonly class LogoutProcessor implements ProcessorInterface
 {
+    /**
+     * @param  array<string, mixed>  $uriVariables
+     * @param  array<string, mixed>  $context
+     */
     public function process(
         mixed $data,
         Operation $operation,

@@ -39,14 +39,10 @@ class ChunkedExcelExporter
     private int $currentWorksheetNumber = 1;
 
     // Column configuration for auto-width calculation
-    /**
-     * @var array<string, float>
-     */
+    /** @var array<string, mixed> */
     private array $columnWidths = [];
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, mixed> */
     private array $headerMapping = [];
 
     public function __construct(
@@ -91,8 +87,9 @@ class ChunkedExcelExporter
 
     /**
      * Initialize column mappings and widths
-     *
-     * @param  array<string>|null  $headers
+     */
+    /**
+     * @param  array<int, string>|null  $headers
      */
     private function initializeColumnMappings(?array $headers = null): void
     {
@@ -138,7 +135,7 @@ class ChunkedExcelExporter
     /**
      * Write headers to the Excel file
      *
-     * @param  array<string>|null  $headers  Optional headers to write. If not provided, uses default donation headers
+     * @param  array<int, string>|null  $headers  Optional headers to write. If not provided, uses default donation headers
      */
     public function writeHeaders(?array $headers = null): void
     {
@@ -152,6 +149,7 @@ class ChunkedExcelExporter
         }
 
         $headerRow = array_values($this->headerMapping);
+        /** @var array<int, string> $headerRow */
         $this->writeHeaderRow($headerRow);
         $this->headerWritten = true;
     }
@@ -159,7 +157,7 @@ class ChunkedExcelExporter
     /**
      * Write styled header row
      *
-     * @param  array<string>  $headers
+     * @param  array<int, string>  $headers
      */
     private function writeHeaderRow(array $headers): void
     {
@@ -222,7 +220,7 @@ class ChunkedExcelExporter
     /**
      * Write multiple rows to the Excel file
      *
-     * @param  array<array<mixed>>  $rows
+     * @param  list<array<string, mixed>>  $rows
      */
     public function writeRows(array $rows): void
     {
@@ -239,7 +237,7 @@ class ChunkedExcelExporter
     /**
      * Write a single row to the Excel file
      *
-     * @param  array<mixed>  $row
+     * @param  array<string, mixed>  $row
      */
     public function writeRow(array $row): void
     {
@@ -422,7 +420,7 @@ class ChunkedExcelExporter
     /**
      * Get memory usage information
      *
-     * @return array<string, int|string>
+     * @return array<string, mixed>
      */
     public function getMemoryUsage(): array
     {

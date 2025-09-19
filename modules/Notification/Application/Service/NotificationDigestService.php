@@ -46,7 +46,7 @@ final readonly class NotificationDigestService
      * Generate and send digests for specified users and digest type.
      *
      * @param  array<int>  $userIds
-     * @return array{digest_type: string, generated: array<array{user_id: int, notification_id: string, notification_count: int}>, skipped: array<array{user_id: int, reason: string}>, failed: array<array{user_id: int, error: string}>, execution_time_ms: float}
+     * @return array{digest_type: string, generated: array<int, array<string, mixed>>, skipped: array<int, array<string, mixed>>, failed: array<int, array<string, mixed>>, execution_time_ms: float}
      */
     public function generateAndSendDigests(string $digestType = 'daily', array $userIds = []): array
     {
@@ -222,6 +222,7 @@ final readonly class NotificationDigestService
         ];
 
         foreach ($digestNotifications as $notification) {
+            /** @var Notification $notification */
             $digestType = $notification->metadata['digest_type'] ?? 'unknown';
             $stats['by_type'][$digestType] = ($stats['by_type'][$digestType] ?? 0) + 1;
             $stats['by_status'][$notification->status] = ($stats['by_status'][$notification->status] ?? 0) + 1;
@@ -247,8 +248,8 @@ final readonly class NotificationDigestService
     /**
      * Get users who should receive digests of the specified type.
      *
-     * @param  array<int>  $specificUserIds
-     * @return array<array<string, mixed>>
+     * @param  array<int, int>  $specificUserIds
+     * @return array<int, array<string, mixed>>
      */
     private function getDigestTargetUsers(string $digestType, array $specificUserIds = []): array
     {
@@ -467,6 +468,11 @@ final readonly class NotificationDigestService
             'type' => 'digest',
         ], 1);
 
-        return isset($lastDigest[0]) ? $lastDigest[0]->created_at->toISOString() : null;
+        if (isset($lastDigest[0])) {
+            /** @var Notification $lastDigestNotification */
+            $lastDigestNotification = $lastDigest[0];
+            return $lastDigestNotification->created_at->toISOString();
+        }
+        return null;
     }
 }

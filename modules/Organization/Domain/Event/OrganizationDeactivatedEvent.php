@@ -22,6 +22,9 @@ final class OrganizationDeactivatedEvent extends AbstractDomainEvent
         return 'organization.deactivated';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return array_merge(parent::getEventData(), [

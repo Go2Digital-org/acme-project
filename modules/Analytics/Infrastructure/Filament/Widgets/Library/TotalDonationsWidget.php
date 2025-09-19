@@ -12,6 +12,7 @@ class TotalDonationsWidget extends BaseWidget
 {
     protected ?string $pollingInterval = '60s';
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
     public static function canView(): bool
@@ -20,7 +21,7 @@ class TotalDonationsWidget extends BaseWidget
     }
 
     /**
-     * @return array<Stat>
+     * @return array<int, Stat>
      */
     protected function getStats(): array
     {
@@ -54,7 +55,7 @@ class TotalDonationsWidget extends BaseWidget
     }
 
     /**
-     * @return array<Stat>
+     * @return array<int, Stat>
      */
     private function getEmptyData(): array
     {

@@ -17,8 +17,8 @@ final class AuthController extends Controller
     /**
      * Convert Laravel validation errors to API Platform format.
      *
-     * @param  array<string, array<string>>  $errors
-     * @return array<array<string, string>>
+     * @param  array<string, array<int, string>>  $errors
+     * @return array<int, array<string, string>>
      */
     private function formatValidationErrors(array $errors): array
     {

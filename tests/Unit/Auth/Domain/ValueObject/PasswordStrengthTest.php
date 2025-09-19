@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Modules\Auth\Domain\ValueObject\PasswordStrength;
 
-describe('PasswordStrength Value Object', function () {
+describe('PasswordStrength Value Object', function (): void {
 
-    describe('Valid Password Construction', function () {
-        it('creates password strength for strong password', function () {
+    describe('Valid Password Construction', function (): void {
+        it('creates password strength for strong password', function (): void {
             $password = 'StrongP@ssw0rd91';
             $passwordStrength = new PasswordStrength($password);
 
@@ -17,7 +17,7 @@ describe('PasswordStrength Value Object', function () {
                 ->and($passwordStrength->getScore())->toBeGreaterThan(70);
         });
 
-        it('calculates correct strength level for very strong password', function () {
+        it('calculates correct strength level for very strong password', function (): void {
             $password = 'VeryStr0ng&C0mpl3xP@ssw0rd!';
             $passwordStrength = new PasswordStrength($password);
 
@@ -25,7 +25,7 @@ describe('PasswordStrength Value Object', function () {
                 ->and($passwordStrength->getScore())->toBeGreaterThanOrEqual(90);
         });
 
-        it('calculates correct strength level for strong password', function () {
+        it('calculates correct strength level for strong password', function (): void {
             $password = 'Str0ng@P91xY!';
             $passwordStrength = new PasswordStrength($password);
 
@@ -35,8 +35,8 @@ describe('PasswordStrength Value Object', function () {
         });
     });
 
-    describe('Invalid Password Construction', function () {
-        it('throws exception for password too short', function () {
+    describe('Invalid Password Construction', function (): void {
+        it('throws exception for password too short', function (): void {
             expect(fn () => new PasswordStrength('Short1!'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new PasswordStrength('Short1!'))->toThrow(
@@ -45,7 +45,7 @@ describe('PasswordStrength Value Object', function () {
                 );
         });
 
-        it('throws exception for password without uppercase', function () {
+        it('throws exception for password without uppercase', function (): void {
             expect(fn () => new PasswordStrength('lowercase123!'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new PasswordStrength('lowercase123!'))->toThrow(
@@ -54,7 +54,7 @@ describe('PasswordStrength Value Object', function () {
                 );
         });
 
-        it('throws exception for password without lowercase', function () {
+        it('throws exception for password without lowercase', function (): void {
             expect(fn () => new PasswordStrength('UPPERCASE123!'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new PasswordStrength('UPPERCASE123!'))->toThrow(
@@ -63,7 +63,7 @@ describe('PasswordStrength Value Object', function () {
                 );
         });
 
-        it('throws exception for password without numbers', function () {
+        it('throws exception for password without numbers', function (): void {
             expect(fn () => new PasswordStrength('NoNumbers!'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new PasswordStrength('NoNumbers!'))->toThrow(
@@ -72,7 +72,7 @@ describe('PasswordStrength Value Object', function () {
                 );
         });
 
-        it('throws exception for password without special characters', function () {
+        it('throws exception for password without special characters', function (): void {
             expect(fn () => new PasswordStrength('NoSpecial123'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new PasswordStrength('NoSpecial123'))->toThrow(
@@ -81,7 +81,7 @@ describe('PasswordStrength Value Object', function () {
                 );
         });
 
-        it('throws exception for common passwords', function () {
+        it('throws exception for common passwords', function (): void {
             $commonPasswords = ['password', '123456', 'Password123', 'Admin123!', 'Qwerty123!'];
 
             foreach ($commonPasswords as $commonPassword) {
@@ -90,7 +90,7 @@ describe('PasswordStrength Value Object', function () {
             }
         });
 
-        it('throws exception for password with sequential characters', function () {
+        it('throws exception for password with sequential characters', function (): void {
             expect(fn () => new PasswordStrength('Abc123def!'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new PasswordStrength('Password123!'))->toThrow(
@@ -99,7 +99,7 @@ describe('PasswordStrength Value Object', function () {
                 );
         });
 
-        it('throws exception for password with repeating characters', function () {
+        it('throws exception for password with repeating characters', function (): void {
             expect(fn () => new PasswordStrength('Passsword123!'))
                 ->toThrow(InvalidArgumentException::class)
                 ->and(fn () => new PasswordStrength('Passsword123!'))->toThrow(
@@ -109,8 +109,8 @@ describe('PasswordStrength Value Object', function () {
         });
     });
 
-    describe('Individual Validation Methods', function () {
-        it('validates minimum length correctly', function () {
+    describe('Individual Validation Methods', function (): void {
+        it('validates minimum length correctly', function (): void {
             $validPassword = new PasswordStrength('ValidP@ss91');
             expect($validPassword->hasMinimumLength())->toBeTrue();
 
@@ -119,7 +119,7 @@ describe('PasswordStrength Value Object', function () {
             expect($edgeCase->hasMinimumLength())->toBeTrue();
         });
 
-        it('validates uppercase characters correctly', function () {
+        it('validates uppercase characters correctly', function (): void {
             $validPassword = new PasswordStrength('ValidP@ss91');
             expect($validPassword->hasUppercase())->toBeTrue();
 
@@ -127,17 +127,17 @@ describe('PasswordStrength Value Object', function () {
             expect($passwordStrength->hasUppercase())->toBeTrue();
         });
 
-        it('validates lowercase characters correctly', function () {
+        it('validates lowercase characters correctly', function (): void {
             $validPassword = new PasswordStrength('ValidP@ss91');
             expect($validPassword->hasLowercase())->toBeTrue();
         });
 
-        it('validates numbers correctly', function () {
+        it('validates numbers correctly', function (): void {
             $validPassword = new PasswordStrength('ValidP@ss91');
             expect($validPassword->hasNumbers())->toBeTrue();
         });
 
-        it('validates special characters correctly', function () {
+        it('validates special characters correctly', function (): void {
             $validPassword = new PasswordStrength('ValidP@ss91');
             expect($validPassword->hasSpecialCharacters())->toBeTrue();
 
@@ -148,24 +148,24 @@ describe('PasswordStrength Value Object', function () {
             }
         });
 
-        it('validates against common passwords correctly', function () {
+        it('validates against common passwords correctly', function (): void {
             $validPassword = new PasswordStrength('UniqueP@ss91');
             expect($validPassword->hasNoCommonPasswords())->toBeTrue();
         });
 
-        it('validates against sequential characters correctly', function () {
+        it('validates against sequential characters correctly', function (): void {
             $validPassword = new PasswordStrength('RandomP@ss91');
             expect($validPassword->hasNoSequentialCharacters())->toBeTrue();
         });
 
-        it('validates against repeating characters correctly', function () {
+        it('validates against repeating characters correctly', function (): void {
             $validPassword = new PasswordStrength('ValidP@ss91');
             expect($validPassword->hasNoRepeatingCharacters())->toBeTrue();
         });
     });
 
-    describe('Score Calculation', function () {
-        it('calculates higher scores for longer passwords', function () {
+    describe('Score Calculation', function (): void {
+        it('calculates higher scores for longer passwords', function (): void {
             $short = new PasswordStrength('Short1@#');
             $medium = new PasswordStrength('MediumP@ssw0rd');
             $long = new PasswordStrength('VeryLongAndComplexP@ssw0rd91');
@@ -174,21 +174,21 @@ describe('PasswordStrength Value Object', function () {
                 ->and($medium->getScore())->toBeGreaterThan($short->getScore());
         });
 
-        it('calculates bonus points for very long passwords', function () {
+        it('calculates bonus points for very long passwords', function (): void {
             $standardLength = new PasswordStrength('StandardP@ss91'); // 14 chars
             $longPassword = new PasswordStrength('VeryLongP@ssw0rd926185374'); // 25 chars
 
             expect($longPassword->getScore())->toBeGreaterThan($standardLength->getScore());
         });
 
-        it('awards points for character variety', function () {
+        it('awards points for character variety', function (): void {
             $complexPassword = new PasswordStrength('C0mpl3xP@ssw0rd');
 
             // Test that complex password gets high score
             expect($complexPassword->getScore())->toBeGreaterThan(60);
         });
 
-        it('penalizes for security violations', function () {
+        it('penalizes for security violations', function (): void {
             // Test with a password that meets basic requirements but has issues
             $passwordWithSequence = 'TestP@ss91bxd'; // Has no sequence - passes validation
             $cleanPassword = new PasswordStrength('TestP@ssw0rd91');
@@ -196,7 +196,7 @@ describe('PasswordStrength Value Object', function () {
             expect($cleanPassword->getScore())->toBeGreaterThan(50);
         });
 
-        it('ensures score is within 0-100 range', function () {
+        it('ensures score is within 0-100 range', function (): void {
             $password = new PasswordStrength('ExtremelyComplexP@ssw0rd926185374!@#$%^&*()');
 
             expect($password->getScore())->toBeGreaterThanOrEqual(0)
@@ -204,8 +204,8 @@ describe('PasswordStrength Value Object', function () {
         });
     });
 
-    describe('Strength Level Mapping', function () {
-        it('maps score ranges to correct strength levels', function () {
+    describe('Strength Level Mapping', function (): void {
+        it('maps score ranges to correct strength levels', function (): void {
             // We need to create passwords that would result in specific score ranges
             $veryStrongPassword = new PasswordStrength('VeryStr0ng&C0mpl3xP@ssw0rd!926185374');
             $strongPassword = new PasswordStrength('Str0ngP@ss79');
@@ -214,7 +214,7 @@ describe('PasswordStrength Value Object', function () {
             expect($strongPassword->getStrengthLevel())->toBe('strong');
         });
 
-        it('correctly identifies strength levels for all ranges', function () {
+        it('correctly identifies strength levels for all ranges', function (): void {
             $testCases = [
                 ['very_strong', 95],
                 ['strong', 80],
@@ -246,8 +246,8 @@ describe('PasswordStrength Value Object', function () {
         });
     });
 
-    describe('Array Conversion', function () {
-        it('converts to array with all required fields', function () {
+    describe('Array Conversion', function (): void {
+        it('converts to array with all required fields', function (): void {
             $password = 'ValidP@ssw0rd91';
             $passwordStrength = new PasswordStrength($password);
 
@@ -267,7 +267,7 @@ describe('PasswordStrength Value Object', function () {
                 ->and($array['requirements'])->toBeArray();
         });
 
-        it('includes correct requirements in array', function () {
+        it('includes correct requirements in array', function (): void {
             $passwordStrength = new PasswordStrength('ValidP@ssw0rd91');
             $array = $passwordStrength->toArray();
 
@@ -286,8 +286,8 @@ describe('PasswordStrength Value Object', function () {
         });
     });
 
-    describe('Static Validation Method', function () {
-        it('validates and returns PasswordStrength instance', function () {
+    describe('Static Validation Method', function (): void {
+        it('validates and returns PasswordStrength instance', function (): void {
             $password = 'ValidP@ssw0rd91';
             $passwordStrength = PasswordStrength::validate($password);
 
@@ -296,14 +296,14 @@ describe('PasswordStrength Value Object', function () {
                 ->and($passwordStrength->isValid())->toBeTrue();
         });
 
-        it('throws exception for invalid password via static method', function () {
+        it('throws exception for invalid password via static method', function (): void {
             expect(fn () => PasswordStrength::validate('weak'))
                 ->toThrow(InvalidArgumentException::class);
         });
     });
 
-    describe('Edge Cases and Boundary Testing', function () {
-        it('handles password with exactly 8 characters', function () {
+    describe('Edge Cases and Boundary Testing', function (): void {
+        it('handles password with exactly 8 characters', function (): void {
             $password = 'Valid1@#'; // Exactly 8 characters
             $passwordStrength = new PasswordStrength($password);
 
@@ -311,7 +311,7 @@ describe('PasswordStrength Value Object', function () {
                 ->and($passwordStrength->isValid())->toBeTrue();
         });
 
-        it('handles password with multiple special characters', function () {
+        it('handles password with multiple special characters', function (): void {
             $password = 'Valid1@#$%^&*()';
             $passwordStrength = new PasswordStrength($password);
 
@@ -319,7 +319,7 @@ describe('PasswordStrength Value Object', function () {
                 ->and($passwordStrength->isValid())->toBeTrue();
         });
 
-        it('detects sequential characters in different cases', function () {
+        it('detects sequential characters in different cases', function (): void {
             $sequentialPatterns = ['abc', '123', 'qwe', 'asd', 'zxc'];
 
             foreach ($sequentialPatterns as $pattern) {
@@ -332,7 +332,7 @@ describe('PasswordStrength Value Object', function () {
             }
         });
 
-        it('detects repeating characters with different repeat counts', function () {
+        it('detects repeating characters with different repeat counts', function (): void {
             $patterns = ['aaa', 'bbb', '111', '!!!'];
 
             foreach ($patterns as $pattern) {
@@ -345,7 +345,7 @@ describe('PasswordStrength Value Object', function () {
             }
         });
 
-        it('allows exactly 2 repeating characters', function () {
+        it('allows exactly 2 repeating characters', function (): void {
             $password = 'TestPass11@#'; // Two 1's should be allowed
             $passwordStrength = new PasswordStrength($password);
 
@@ -353,7 +353,7 @@ describe('PasswordStrength Value Object', function () {
                 ->and($passwordStrength->isValid())->toBeTrue();
         });
 
-        it('handles very long passwords correctly', function () {
+        it('handles very long passwords correctly', function (): void {
             $veryLongPassword = 'VeryLongAndComplexP@ssw0rdThatExceedsNormalLength926185374!@#$%^&*()';
             $passwordStrength = new PasswordStrength($veryLongPassword);
 
@@ -361,7 +361,7 @@ describe('PasswordStrength Value Object', function () {
                 ->and($passwordStrength->getScore())->toBeGreaterThanOrEqual(90);
         });
 
-        it('handles unicode characters in passwords', function () {
+        it('handles unicode characters in passwords', function (): void {
             $unicodePassword = 'Validée91!'; // Contains accented character
             $passwordStrength = new PasswordStrength($unicodePassword);
 
@@ -369,8 +369,8 @@ describe('PasswordStrength Value Object', function () {
         });
     });
 
-    describe('Comprehensive Violation Testing', function () {
-        it('reports multiple violations correctly', function () {
+    describe('Comprehensive Violation Testing', function (): void {
+        it('reports multiple violations correctly', function (): void {
             try {
                 new PasswordStrength('short'); // Multiple violations
                 expect(false)->toBeTrue('Should have thrown exception');
@@ -383,7 +383,7 @@ describe('PasswordStrength Value Object', function () {
             }
         });
 
-        it('correctly identifies all requirement violations', function () {
+        it('correctly identifies all requirement violations', function (): void {
             $violations = [
                 'short' => 'Password must be at least 8 characters long',
                 'nouppercase123!' => 'Password must contain at least one uppercase letter',

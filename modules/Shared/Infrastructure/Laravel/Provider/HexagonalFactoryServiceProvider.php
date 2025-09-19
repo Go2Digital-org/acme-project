@@ -32,7 +32,7 @@ class HexagonalFactoryServiceProvider extends ServiceProvider
     /**
      * Get all discovered factory classes.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getDiscoveredFactories(): array
     {

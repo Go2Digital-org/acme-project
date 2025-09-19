@@ -45,8 +45,9 @@ abstract class BaseController extends Controller
 
     /**
      * Return a success response with proper typing.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     protected function successResponse(
         mixed $data = null,
@@ -59,9 +60,10 @@ abstract class BaseController extends Controller
 
     /**
      * Return an error response with proper typing.
-     *
-     * @param  array<string, mixed>|null  $errors
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $errors
+     * @param  array<string, mixed>  $headers
      */
     protected function errorResponse(
         string $message,
@@ -74,9 +76,10 @@ abstract class BaseController extends Controller
 
     /**
      * Return a validation error response.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $errors
-     * @param  array<string, string>  $headers
+     * @param  array<string, mixed>  $headers
      */
     protected function validationErrorResponse(
         array $errors,
@@ -89,8 +92,9 @@ abstract class BaseController extends Controller
 
     /**
      * Return a not found response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     protected function notFoundResponse(
         string $message = 'Resource not found.',
@@ -101,8 +105,9 @@ abstract class BaseController extends Controller
 
     /**
      * Return a forbidden response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     protected function forbiddenResponse(
         string $message = 'Access denied.',
@@ -113,8 +118,9 @@ abstract class BaseController extends Controller
 
     /**
      * Return an unauthorized response.
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     protected function unauthorizedResponse(
         string $message = 'Unauthorized.',
@@ -125,8 +131,9 @@ abstract class BaseController extends Controller
 
     /**
      * Respond with success data (alias for successResponse).
-     *
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $headers
      */
     protected function respondWithSuccess(
         string $message,
@@ -139,9 +146,10 @@ abstract class BaseController extends Controller
 
     /**
      * Respond with error (alias for errorResponse).
-     *
-     * @param  array<string, mixed>|null  $errors
-     * @param  array<string, string>  $headers
+     */
+    /**
+     * @param  array<string, mixed>  $errors
+     * @param  array<string, mixed>  $headers
      */
     protected function respondWithError(
         string $message,

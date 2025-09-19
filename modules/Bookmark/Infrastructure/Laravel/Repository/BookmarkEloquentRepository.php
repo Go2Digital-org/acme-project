@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Bookmark\Infrastructure\Laravel\Repository;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Modules\Bookmark\Domain\Model\Bookmark;
 use Modules\Bookmark\Domain\Repository\BookmarkRepositoryInterface;
@@ -19,6 +20,7 @@ final readonly class BookmarkEloquentRepository implements BookmarkRepositoryInt
         private Bookmark $model
     ) {}
 
+    /** @param array<string, mixed> $data */
     public function create(array $data): Bookmark
     {
         return $this->model->create($data);
@@ -66,9 +68,9 @@ final readonly class BookmarkEloquentRepository implements BookmarkRepositoryInt
             ->get();
     }
 
-    public function getUserBookmarksWithDetails(int $userId): Collection
+    public function getUserBookmarksWithDetails(int $userId): SupportCollection
     {
-        return $this->model
+        $bookmarks = $this->model
             ->where('user_id', $userId)
             ->with([
                 'campaign' => function ($query): void {
@@ -77,9 +79,22 @@ final readonly class BookmarkEloquentRepository implements BookmarkRepositoryInt
             ])
             ->orderBy('created_at', 'desc')
             ->get()
-            ->filter(function ($bookmark) {
+            ->filter(function ($bookmark): bool {
                 return $bookmark->campaign !== null; // Filter out null campaigns (deleted)
             });
+
+        $mapped = $bookmarks->map(fn ($bookmark): array => [
+            'id' => $bookmark->id,
+            'user_id' => $bookmark->user_id,
+            'campaign_id' => $bookmark->campaign_id,
+            'created_at' => $bookmark->created_at?->toISOString() ?? null,
+            'campaign' => $bookmark->campaign->toArray(),
+        ]);
+
+        /** @var SupportCollection<int, array<string, mixed>> $result */
+        $result = $mapped;
+
+        return $result;
     }
 
     public function exists(int $userId, int $campaignId): bool
@@ -153,9 +168,6 @@ final readonly class BookmarkEloquentRepository implements BookmarkRepositoryInt
             ->get();
     }
 
-    /**
-     * @return Collection<int, Bookmark>
-     */
     public function findByOrganizationId(int $organizationId): Collection
     {
         return $this->model
@@ -166,6 +178,9 @@ final readonly class BookmarkEloquentRepository implements BookmarkRepositoryInt
             ->get();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOrganizationBookmarkStats(int $organizationId): array
     {
         $stats = DB::table('bookmarks')

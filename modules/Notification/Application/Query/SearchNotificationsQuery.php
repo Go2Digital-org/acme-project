@@ -21,9 +21,13 @@ final readonly class SearchNotificationsQuery implements QueryInterface
     public function __construct(
         public int $userId,
         public ?string $searchTerm = null,
+        /** @var array<string, mixed> */
         public array $types = [],
+        /** @var array<string, mixed> */
         public array $channels = [],
+        /** @var array<string, mixed> */
         public array $statuses = [],
+        /** @var array<string, mixed> */
         public array $priorities = [],
         public ?CarbonInterface $startDate = null,
         public ?CarbonInterface $endDate = null,

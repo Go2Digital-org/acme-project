@@ -13,8 +13,8 @@ use Modules\Campaign\Domain\ValueObject\TimeRemaining;
 use Modules\Campaign\Domain\ValueObject\UserCampaignStats;
 use Modules\Shared\Domain\ValueObject\Money;
 
-describe('CampaignId Value Object', function () {
-    it('creates valid campaign id from positive integer', function () {
+describe('CampaignId Value Object', function (): void {
+    it('creates valid campaign id from positive integer', function (): void {
         $id = new CampaignId(123);
 
         expect($id->value)->toBe(123)
@@ -22,24 +22,24 @@ describe('CampaignId Value Object', function () {
             ->and((string) $id)->toBe('123');
     });
 
-    it('creates campaign id using factory method', function () {
+    it('creates campaign id using factory method', function (): void {
         $id = CampaignId::fromInt(456);
 
         expect($id->value)->toBe(456)
             ->and($id->toInt())->toBe(456);
     });
 
-    it('throws exception for zero id', function () {
+    it('throws exception for zero id', function (): void {
         expect(fn () => new CampaignId(0))
             ->toThrow(InvalidArgumentException::class, 'Campaign ID must be a positive integer');
     });
 
-    it('throws exception for negative id', function () {
+    it('throws exception for negative id', function (): void {
         expect(fn () => new CampaignId(-1))
             ->toThrow(InvalidArgumentException::class, 'Campaign ID must be a positive integer');
     });
 
-    it('compares campaign ids for equality', function () {
+    it('compares campaign ids for equality', function (): void {
         $id1 = new CampaignId(100);
         $id2 = new CampaignId(100);
         $id3 = new CampaignId(200);
@@ -48,7 +48,7 @@ describe('CampaignId Value Object', function () {
             ->and($id1->equals($id3))->toBeFalse();
     });
 
-    it('converts to string correctly', function () {
+    it('converts to string correctly', function (): void {
         $id = new CampaignId(999);
 
         expect($id->__toString())->toBe('999')
@@ -56,8 +56,8 @@ describe('CampaignId Value Object', function () {
     });
 });
 
-describe('CampaignStatus Enum', function () {
-    it('has all expected status cases', function () {
+describe('CampaignStatus Enum', function (): void {
+    it('has all expected status cases', function (): void {
         $statuses = [
             CampaignStatus::DRAFT,
             CampaignStatus::PENDING_APPROVAL,
@@ -76,21 +76,21 @@ describe('CampaignStatus Enum', function () {
         }
     });
 
-    it('identifies active status correctly', function () {
+    it('identifies active status correctly', function (): void {
         expect(CampaignStatus::ACTIVE->isActive())->toBeTrue()
             ->and(CampaignStatus::DRAFT->isActive())->toBeFalse()
             ->and(CampaignStatus::PAUSED->isActive())->toBeFalse()
             ->and(CampaignStatus::COMPLETED->isActive())->toBeFalse();
     });
 
-    it('identifies donation accepting status correctly', function () {
+    it('identifies donation accepting status correctly', function (): void {
         expect(CampaignStatus::ACTIVE->canAcceptDonations())->toBeTrue()
             ->and(CampaignStatus::DRAFT->canAcceptDonations())->toBeFalse()
             ->and(CampaignStatus::PAUSED->canAcceptDonations())->toBeFalse()
             ->and(CampaignStatus::COMPLETED->canAcceptDonations())->toBeFalse();
     });
 
-    it('identifies final statuses correctly', function () {
+    it('identifies final statuses correctly', function (): void {
         expect(CampaignStatus::COMPLETED->isFinal())->toBeTrue()
             ->and(CampaignStatus::CANCELLED->isFinal())->toBeTrue()
             ->and(CampaignStatus::EXPIRED->isFinal())->toBeTrue()
@@ -98,19 +98,19 @@ describe('CampaignStatus Enum', function () {
             ->and(CampaignStatus::DRAFT->isFinal())->toBeFalse();
     });
 
-    it('identifies approval requiring status correctly', function () {
+    it('identifies approval requiring status correctly', function (): void {
         expect(CampaignStatus::PENDING_APPROVAL->requiresApproval())->toBeTrue()
             ->and(CampaignStatus::DRAFT->requiresApproval())->toBeFalse()
             ->and(CampaignStatus::ACTIVE->requiresApproval())->toBeFalse();
     });
 
-    it('identifies rejected status correctly', function () {
+    it('identifies rejected status correctly', function (): void {
         expect(CampaignStatus::REJECTED->isRejected())->toBeTrue()
             ->and(CampaignStatus::DRAFT->isRejected())->toBeFalse()
             ->and(CampaignStatus::ACTIVE->isRejected())->toBeFalse();
     });
 
-    it('validates draft status transitions', function () {
+    it('validates draft status transitions', function (): void {
         $draft = CampaignStatus::DRAFT;
 
         expect($draft->canTransitionTo(CampaignStatus::PENDING_APPROVAL))->toBeTrue()
@@ -119,7 +119,7 @@ describe('CampaignStatus Enum', function () {
             ->and($draft->canTransitionTo(CampaignStatus::DRAFT))->toBeFalse();
     });
 
-    it('validates pending approval status transitions', function () {
+    it('validates pending approval status transitions', function (): void {
         $pending = CampaignStatus::PENDING_APPROVAL;
 
         expect($pending->canTransitionTo(CampaignStatus::ACTIVE))->toBeTrue()
@@ -128,7 +128,7 @@ describe('CampaignStatus Enum', function () {
             ->and($pending->canTransitionTo(CampaignStatus::PENDING_APPROVAL))->toBeFalse();
     });
 
-    it('validates rejected status transitions', function () {
+    it('validates rejected status transitions', function (): void {
         $rejected = CampaignStatus::REJECTED;
 
         expect($rejected->canTransitionTo(CampaignStatus::DRAFT))->toBeTrue()
@@ -137,7 +137,7 @@ describe('CampaignStatus Enum', function () {
             ->and($rejected->canTransitionTo(CampaignStatus::ACTIVE))->toBeFalse();
     });
 
-    it('validates active status transitions', function () {
+    it('validates active status transitions', function (): void {
         $active = CampaignStatus::ACTIVE;
 
         expect($active->canTransitionTo(CampaignStatus::PAUSED))->toBeTrue()
@@ -147,7 +147,7 @@ describe('CampaignStatus Enum', function () {
             ->and($active->canTransitionTo(CampaignStatus::DRAFT))->toBeFalse();
     });
 
-    it('validates paused status transitions', function () {
+    it('validates paused status transitions', function (): void {
         $paused = CampaignStatus::PAUSED;
 
         expect($paused->canTransitionTo(CampaignStatus::ACTIVE))->toBeTrue()
@@ -156,7 +156,7 @@ describe('CampaignStatus Enum', function () {
             ->and($paused->canTransitionTo(CampaignStatus::COMPLETED))->toBeFalse();
     });
 
-    it('prevents final status transitions', function () {
+    it('prevents final status transitions', function (): void {
         $completed = CampaignStatus::COMPLETED;
         $cancelled = CampaignStatus::CANCELLED;
         $expired = CampaignStatus::EXPIRED;
@@ -166,13 +166,13 @@ describe('CampaignStatus Enum', function () {
             ->and($expired->canTransitionTo(CampaignStatus::PAUSED))->toBeFalse();
     });
 
-    it('prevents self transitions', function () {
+    it('prevents self transitions', function (): void {
         $status = CampaignStatus::ACTIVE;
 
         expect($status->canTransitionTo($status))->toBeFalse();
     });
 
-    it('provides correct labels', function () {
+    it('provides correct labels', function (): void {
         expect(CampaignStatus::DRAFT->getLabel())->toBe('Draft')
             ->and(CampaignStatus::PENDING_APPROVAL->getLabel())->toBe('Pending Approval')
             ->and(CampaignStatus::REJECTED->getLabel())->toBe('Rejected')
@@ -183,7 +183,7 @@ describe('CampaignStatus Enum', function () {
             ->and(CampaignStatus::EXPIRED->getLabel())->toBe('Expired');
     });
 
-    it('provides correct colors', function () {
+    it('provides correct colors', function (): void {
         expect(CampaignStatus::DRAFT->getColor())->toBe('secondary')
             ->and(CampaignStatus::PENDING_APPROVAL->getColor())->toBe('info')
             ->and(CampaignStatus::REJECTED->getColor())->toBe('danger')
@@ -194,7 +194,7 @@ describe('CampaignStatus Enum', function () {
             ->and(CampaignStatus::EXPIRED->getColor())->toBe('warning');
     });
 
-    it('provides meaningful descriptions', function () {
+    it('provides meaningful descriptions', function (): void {
         expect(CampaignStatus::DRAFT->getDescription())
             ->toContain('not yet published')
             ->and(CampaignStatus::ACTIVE->getDescription())
@@ -203,7 +203,7 @@ describe('CampaignStatus Enum', function () {
             ->toContain('successfully reached its goal');
     });
 
-    it('checks if status is one of provided statuses', function () {
+    it('checks if status is one of provided statuses', function (): void {
         $status = CampaignStatus::ACTIVE;
         $activeStatuses = [CampaignStatus::ACTIVE, CampaignStatus::PAUSED];
         $finalStatuses = [CampaignStatus::COMPLETED, CampaignStatus::CANCELLED];
@@ -212,41 +212,41 @@ describe('CampaignStatus Enum', function () {
             ->and($status->isOneOf($finalStatuses))->toBeFalse();
     });
 
-    it('provides static methods for status groups', function () {
+    it('provides static methods for status groups', function (): void {
         expect(CampaignStatus::getActiveStatuses())->toBe([CampaignStatus::ACTIVE])
             ->and(CampaignStatus::getFinalStatuses())->toBe([CampaignStatus::COMPLETED, CampaignStatus::CANCELLED, CampaignStatus::EXPIRED])
             ->and(CampaignStatus::getDonationAcceptingStatuses())->toBe([CampaignStatus::ACTIVE]);
     });
 
-    it('creates status from string', function () {
+    it('creates status from string', function (): void {
         expect(CampaignStatus::fromString('active'))->toBe(CampaignStatus::ACTIVE)
             ->and(CampaignStatus::fromString('DRAFT'))->toBe(CampaignStatus::DRAFT)
             ->and(CampaignStatus::fromString('  Pending_Approval  '))->toBe(CampaignStatus::PENDING_APPROVAL);
     });
 
-    it('tries to create status from string safely', function () {
+    it('tries to create status from string safely', function (): void {
         expect(CampaignStatus::tryFromString('active'))->toBe(CampaignStatus::ACTIVE)
             ->and(CampaignStatus::tryFromString('invalid'))->toBeNull()
             ->and(CampaignStatus::tryFromString(null))->toBeNull()
             ->and(CampaignStatus::tryFromString(''))->toBeNull();
     });
 
-    it('gets valid transitions for each status', function () {
+    it('gets valid transitions for each status', function (): void {
         expect(CampaignStatus::DRAFT->getValidTransitions())
             ->toBe([CampaignStatus::PENDING_APPROVAL, CampaignStatus::CANCELLED])
             ->and(CampaignStatus::COMPLETED->getValidTransitions())
             ->toBe([]);
     });
 
-    it('provides transition error messages', function () {
+    it('provides transition error messages', function (): void {
         $message = CampaignStatus::DRAFT->getTransitionErrorMessage(CampaignStatus::ACTIVE);
 
         expect($message)->toContain('Cannot transition from Draft to Active status');
     });
 });
 
-describe('FundraisingTarget Value Object', function () {
-    it('creates valid fundraising target', function () {
+describe('FundraisingTarget Value Object', function (): void {
+    it('creates valid fundraising target', function (): void {
         $money = new Money(5000.0, 'EUR');
         $target = new FundraisingTarget($money);
 
@@ -255,7 +255,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($target->getCurrency())->toBe('EUR');
     });
 
-    it('creates target from money value object', function () {
+    it('creates target from money value object', function (): void {
         $money = new Money(10000.0, 'USD');
         $target = FundraisingTarget::fromMoney($money);
 
@@ -263,45 +263,45 @@ describe('FundraisingTarget Value Object', function () {
             ->and($target->getCurrency())->toBe('USD');
     });
 
-    it('creates target from amount and currency', function () {
+    it('creates target from amount and currency', function (): void {
         $target = FundraisingTarget::fromAmount(7500.0, 'GBP');
 
         expect($target->getAmount())->toBe(7500.0)
             ->and($target->getCurrency())->toBe('GBP');
     });
 
-    it('creates minimum target', function () {
+    it('creates minimum target', function (): void {
         $target = FundraisingTarget::minimum();
 
         expect($target->getAmount())->toBe(100.0)
             ->and($target->getCurrency())->toBe('EUR');
     });
 
-    it('creates maximum target', function () {
+    it('creates maximum target', function (): void {
         $target = FundraisingTarget::maximum();
 
         expect($target->getAmount())->toBe(10000000.0)
             ->and($target->getCurrency())->toBe('EUR');
     });
 
-    it('creates recommended minimum target', function () {
+    it('creates recommended minimum target', function (): void {
         $target = FundraisingTarget::recommendedMinimum();
 
         expect($target->getAmount())->toBe(1000.0)
             ->and($target->getCurrency())->toBe('EUR');
     });
 
-    it('throws exception for amount below minimum', function () {
+    it('throws exception for amount below minimum', function (): void {
         expect(fn () => FundraisingTarget::fromAmount(50.0))
             ->toThrow(InvalidArgumentException::class, 'Fundraising target must be at least');
     });
 
-    it('throws exception for amount above maximum', function () {
+    it('throws exception for amount above maximum', function (): void {
         expect(fn () => FundraisingTarget::fromAmount(20000000.0))
             ->toThrow(InvalidArgumentException::class, 'Fundraising target cannot exceed');
     });
 
-    it('identifies achievable targets', function () {
+    it('identifies achievable targets', function (): void {
         $achievable = FundraisingTarget::fromAmount(2000.0);
         $notAchievable = FundraisingTarget::fromAmount(500.0);
 
@@ -309,7 +309,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($notAchievable->isAchievable())->toBeFalse();
     });
 
-    it('identifies mega campaigns', function () {
+    it('identifies mega campaigns', function (): void {
         $mega = FundraisingTarget::fromAmount(1500000.0);
         $normal = FundraisingTarget::fromAmount(50000.0);
 
@@ -317,7 +317,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($normal->isMegaCampaign())->toBeFalse();
     });
 
-    it('identifies targets requiring approval', function () {
+    it('identifies targets requiring approval', function (): void {
         $requiresApproval = FundraisingTarget::fromAmount(500.0);
         $doesNotRequire = FundraisingTarget::fromAmount(2000.0);
 
@@ -325,21 +325,21 @@ describe('FundraisingTarget Value Object', function () {
             ->and($doesNotRequire->requiresApproval())->toBeFalse();
     });
 
-    it('calculates progress percentage', function () {
+    it('calculates progress percentage', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $raised = new Money(250.0, 'EUR');
 
         expect($target->calculateProgress($raised))->toBe(25.0);
     });
 
-    it('caps progress at 100 percent', function () {
+    it('caps progress at 100 percent', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $raised = new Money(1500.0, 'EUR');
 
         expect($target->calculateProgress($raised))->toBe(100.0);
     });
 
-    it('throws exception for currency mismatch in progress calculation', function () {
+    it('throws exception for currency mismatch in progress calculation', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0, 'EUR');
         $raised = new Money(250.0, 'USD');
 
@@ -347,7 +347,7 @@ describe('FundraisingTarget Value Object', function () {
             ->toThrow(InvalidArgumentException::class, 'Currency mismatch');
     });
 
-    it('calculates remaining amount', function () {
+    it('calculates remaining amount', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $raised = new Money(300.0, 'EUR');
         $remaining = $target->calculateRemaining($raised);
@@ -356,7 +356,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($remaining->getCurrency())->toBe('EUR');
     });
 
-    it('returns zero remaining when target exceeded', function () {
+    it('returns zero remaining when target exceeded', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $raised = new Money(1200.0, 'EUR');
         $remaining = $target->calculateRemaining($raised);
@@ -364,7 +364,7 @@ describe('FundraisingTarget Value Object', function () {
         expect($remaining->getAmount())->toBe(0.0);
     });
 
-    it('checks if target is reached', function () {
+    it('checks if target is reached', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $exactAmount = new Money(1000.0, 'EUR');
         $overAmount = new Money(1100.0, 'EUR');
@@ -375,7 +375,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($target->isReached($underAmount))->toBeFalse();
     });
 
-    it('checks if target is exceeded', function () {
+    it('checks if target is exceeded', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $exactAmount = new Money(1000.0, 'EUR');
         $overAmount = new Money(1100.0, 'EUR');
@@ -386,7 +386,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($target->isExceeded($underAmount))->toBeFalse();
     });
 
-    it('generates milestone amounts', function () {
+    it('generates milestone amounts', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $milestones = $target->getMilestones();
 
@@ -400,7 +400,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($milestones[100]->getAmount())->toBe(1000.0);
     });
 
-    it('checks milestone achievement', function () {
+    it('checks milestone achievement', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $raised = new Money(600.0, 'EUR');
 
@@ -410,7 +410,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($target->hasMilestoneBeenReached($raised, 100))->toBeFalse();
     });
 
-    it('throws exception for invalid milestone percentage', function () {
+    it('throws exception for invalid milestone percentage', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $raised = new Money(500.0, 'EUR');
 
@@ -421,7 +421,7 @@ describe('FundraisingTarget Value Object', function () {
             ->toThrow(InvalidArgumentException::class, 'Milestone percentage must be between 1 and 100');
     });
 
-    it('compares targets for equality', function () {
+    it('compares targets for equality', function (): void {
         $target1 = FundraisingTarget::fromAmount(1000.0, 'EUR');
         $target2 = FundraisingTarget::fromAmount(1000.0, 'EUR');
         $target3 = FundraisingTarget::fromAmount(2000.0, 'EUR');
@@ -430,7 +430,7 @@ describe('FundraisingTarget Value Object', function () {
             ->and($target1->equals($target3))->toBeFalse();
     });
 
-    it('compares targets for greater than', function () {
+    it('compares targets for greater than', function (): void {
         $smaller = FundraisingTarget::fromAmount(1000.0);
         $larger = FundraisingTarget::fromAmount(2000.0);
 
@@ -438,14 +438,14 @@ describe('FundraisingTarget Value Object', function () {
             ->and($smaller->isGreaterThan($larger))->toBeFalse();
     });
 
-    it('formats target for display', function () {
+    it('formats target for display', function (): void {
         $target = FundraisingTarget::fromAmount(1500.0, 'EUR');
 
         expect($target->format())->toContain('€')
             ->and($target->format())->toContain('1.500'); // EUR format uses comma decimal separator
     });
 
-    it('converts to array representation', function () {
+    it('converts to array representation', function (): void {
         $target = FundraisingTarget::fromAmount(1000.0);
         $array = $target->toArray();
 
@@ -460,15 +460,15 @@ describe('FundraisingTarget Value Object', function () {
             ->and($array['currency'])->toBe('EUR');
     });
 
-    it('converts to string using format method', function () {
+    it('converts to string using format method', function (): void {
         $target = FundraisingTarget::fromAmount(2500.0);
 
         expect((string) $target)->toBe($target->format());
     });
 });
 
-describe('UserCampaignStats Value Object', function () {
-    it('creates user campaign stats with all parameters', function () {
+describe('UserCampaignStats Value Object', function (): void {
+    it('creates user campaign stats with all parameters', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 10,
             activeCampaigns: 3,
@@ -490,7 +490,7 @@ describe('UserCampaignStats Value Object', function () {
             ->and($stats->averageSuccessRate)->toBe(75.5);
     });
 
-    it('calculates progress percentage correctly', function () {
+    it('calculates progress percentage correctly', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 5,
             activeCampaigns: 2,
@@ -505,7 +505,7 @@ describe('UserCampaignStats Value Object', function () {
         expect($stats->getProgressPercentage())->toBe(50.0);
     });
 
-    it('handles zero goal amount in progress calculation', function () {
+    it('handles zero goal amount in progress calculation', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 1,
             activeCampaigns: 1,
@@ -520,7 +520,7 @@ describe('UserCampaignStats Value Object', function () {
         expect($stats->getProgressPercentage())->toBe(0.0);
     });
 
-    it('caps progress percentage at 100', function () {
+    it('caps progress percentage at 100', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 2,
             activeCampaigns: 0,
@@ -535,7 +535,7 @@ describe('UserCampaignStats Value Object', function () {
         expect($stats->getProgressPercentage())->toBe(100.0);
     });
 
-    it('formats total raised amount correctly', function () {
+    it('formats total raised amount correctly', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 3,
             activeCampaigns: 1,
@@ -550,7 +550,7 @@ describe('UserCampaignStats Value Object', function () {
         expect($stats->getFormattedTotalRaised())->toBe('€25.750');
     });
 
-    it('formats total goal amount correctly', function () {
+    it('formats total goal amount correctly', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 4,
             activeCampaigns: 2,
@@ -565,7 +565,7 @@ describe('UserCampaignStats Value Object', function () {
         expect($stats->getFormattedTotalGoal())->toBe('€45.000');
     });
 
-    it('formats success rate correctly', function () {
+    it('formats success rate correctly', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 6,
             activeCampaigns: 1,
@@ -580,7 +580,7 @@ describe('UserCampaignStats Value Object', function () {
         expect($stats->getFormattedSuccessRate())->toBe('78.7%');
     });
 
-    it('detects if user has active campaigns', function () {
+    it('detects if user has active campaigns', function (): void {
         $withActive = new UserCampaignStats(
             totalCampaigns: 5,
             activeCampaigns: 2,
@@ -607,7 +607,7 @@ describe('UserCampaignStats Value Object', function () {
             ->and($withoutActive->hasActiveCampaigns())->toBeFalse();
     });
 
-    it('detects if user has draft campaigns', function () {
+    it('detects if user has draft campaigns', function (): void {
         $withDrafts = new UserCampaignStats(
             totalCampaigns: 7,
             activeCampaigns: 2,
@@ -634,7 +634,7 @@ describe('UserCampaignStats Value Object', function () {
             ->and($withoutDrafts->hasDrafts())->toBeFalse();
     });
 
-    it('calculates total published campaigns correctly', function () {
+    it('calculates total published campaigns correctly', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 10,
             activeCampaigns: 3,
@@ -649,7 +649,7 @@ describe('UserCampaignStats Value Object', function () {
         expect($stats->getTotalPublishedCampaigns())->toBe(8);
     });
 
-    it('handles edge case with zero values', function () {
+    it('handles edge case with zero values', function (): void {
         $stats = new UserCampaignStats(
             totalCampaigns: 0,
             activeCampaigns: 0,
@@ -668,8 +668,8 @@ describe('UserCampaignStats Value Object', function () {
     });
 });
 
-describe('DonationProgress Value Object', function () {
-    it('creates donation progress with all parameters', function () {
+describe('DonationProgress Value Object', function (): void {
+    it('creates donation progress with all parameters', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $averageDonation = new Money(50.0, 'EUR');
@@ -690,7 +690,7 @@ describe('DonationProgress Value Object', function () {
             ->and($progress->isActive())->toBeTrue();
     });
 
-    it('throws exception for currency mismatch', function () {
+    it('throws exception for currency mismatch', function (): void {
         $raised = new Money(1000.0, 'USD');
         $goal = new Money(2000.0, 'EUR');
 
@@ -698,7 +698,7 @@ describe('DonationProgress Value Object', function () {
             ->toThrow(InvalidArgumentException::class, 'Raised and goal amounts must be in the same currency');
     });
 
-    it('calculates remaining amount correctly', function () {
+    it('calculates remaining amount correctly', function (): void {
         $raised = new Money(3000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $progress = new DonationProgress($raised, $goal);
@@ -706,7 +706,7 @@ describe('DonationProgress Value Object', function () {
         expect($progress->getRemaining()->getAmount())->toBe(7000.0);
     });
 
-    it('returns zero remaining when goal exceeded', function () {
+    it('returns zero remaining when goal exceeded', function (): void {
         $raised = new Money(12000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $progress = new DonationProgress($raised, $goal);
@@ -714,7 +714,7 @@ describe('DonationProgress Value Object', function () {
         expect($progress->getRemaining()->getAmount())->toBe(0.0);
     });
 
-    it('handles negative days remaining correctly', function () {
+    it('handles negative days remaining correctly', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $progress = new DonationProgress($raised, $goal, daysRemaining: -5);
@@ -722,7 +722,7 @@ describe('DonationProgress Value Object', function () {
         expect($progress->getDaysRemaining())->toBe(0);
     });
 
-    it('determines if campaign has expired', function () {
+    it('determines if campaign has expired', function (): void {
         $raised = new Money(1000.0, 'EUR');
         $goal = new Money(5000.0, 'EUR');
 
@@ -733,7 +733,7 @@ describe('DonationProgress Value Object', function () {
             ->and($active->hasExpired())->toBeFalse();
     });
 
-    it('determines if campaign is ending soon', function () {
+    it('determines if campaign is ending soon', function (): void {
         $raised = new Money(2000.0, 'EUR');
         $goal = new Money(5000.0, 'EUR');
 
@@ -746,7 +746,7 @@ describe('DonationProgress Value Object', function () {
             ->and($inactive->isEndingSoon())->toBeFalse();
     });
 
-    it('determines if campaign is ending today', function () {
+    it('determines if campaign is ending today', function (): void {
         $raised = new Money(3000.0, 'EUR');
         $goal = new Money(8000.0, 'EUR');
 
@@ -757,7 +757,7 @@ describe('DonationProgress Value Object', function () {
             ->and($notEndingToday->isEndingToday())->toBeFalse();
     });
 
-    it('calculates average donation when provided', function () {
+    it('calculates average donation when provided', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $averageDonation = new Money(100.0, 'EUR');
@@ -771,7 +771,7 @@ describe('DonationProgress Value Object', function () {
         expect($progress->getAverageDonation())->toBe($averageDonation);
     });
 
-    it('calculates average donation from donor count and raised amount', function () {
+    it('calculates average donation from donor count and raised amount', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
 
@@ -786,7 +786,7 @@ describe('DonationProgress Value Object', function () {
             ->and($average->getAmount())->toBe(100.0);
     });
 
-    it('returns null average donation when no donors', function () {
+    it('returns null average donation when no donors', function (): void {
         $raised = new Money(0.0, 'EUR');
         $goal = new Money(5000.0, 'EUR');
 
@@ -795,7 +795,7 @@ describe('DonationProgress Value Object', function () {
         expect($progress->getAverageDonation())->toBeNull();
     });
 
-    it('gets progress percentage from progress data', function () {
+    it('gets progress percentage from progress data', function (): void {
         $raised = new Money(2500.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $progress = new DonationProgress($raised, $goal);
@@ -803,7 +803,7 @@ describe('DonationProgress Value Object', function () {
         expect($progress->getPercentage())->toBe(25.0);
     });
 
-    it('determines if goal has been reached', function () {
+    it('determines if goal has been reached', function (): void {
         $reachedGoal = new DonationProgress(
             new Money(10000.0, 'EUR'),
             new Money(10000.0, 'EUR')
@@ -818,7 +818,7 @@ describe('DonationProgress Value Object', function () {
             ->and($notReachedGoal->hasReachedGoal())->toBeFalse();
     });
 
-    it('calculates urgency levels correctly', function () {
+    it('calculates urgency levels correctly', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
 
@@ -839,7 +839,7 @@ describe('DonationProgress Value Object', function () {
             ->and($normal->getUrgencyLevel())->toBe('normal');
     });
 
-    it('provides appropriate urgency colors', function () {
+    it('provides appropriate urgency colors', function (): void {
         $raised = new Money(3000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
 
@@ -852,7 +852,7 @@ describe('DonationProgress Value Object', function () {
             ->and($normal->getUrgencyColor())->toBe('green');
     });
 
-    it('calculates momentum indicators', function () {
+    it('calculates momentum indicators', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $averageDonation = new Money(100.0, 'EUR');
@@ -880,7 +880,7 @@ describe('DonationProgress Value Object', function () {
             ->and($slowing->getMomentumIndicator())->toBe('slowing');
     });
 
-    it('estimates completion time', function () {
+    it('estimates completion time', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
         $recentMomentum = new Money(500.0, 'EUR'); // 500 per day
@@ -896,7 +896,7 @@ describe('DonationProgress Value Object', function () {
         expect($estimate)->toBe(10); // 5000 remaining / 500 per day = 10 days
     });
 
-    it('returns null completion estimate for inactive campaigns', function () {
+    it('returns null completion estimate for inactive campaigns', function (): void {
         $raised = new Money(3000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
 
@@ -905,7 +905,7 @@ describe('DonationProgress Value Object', function () {
         expect($progress->getCompletionEstimate())->toBeNull();
     });
 
-    it('determines if campaign needs boost', function () {
+    it('determines if campaign needs boost', function (): void {
         $raised = new Money(5000.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
 
@@ -925,7 +925,7 @@ describe('DonationProgress Value Object', function () {
             ->and($doesNotNeedBoost->needsBoost())->toBeFalse();
     });
 
-    it('provides comprehensive display data', function () {
+    it('provides comprehensive display data', function (): void {
         $raised = new Money(7500.0, 'EUR');
         $goal = new Money(10000.0, 'EUR');
 
@@ -950,7 +950,7 @@ describe('DonationProgress Value Object', function () {
             ->and($data['donor_count'])->toBe(150);
     });
 
-    it('converts to array using display data', function () {
+    it('converts to array using display data', function (): void {
         $raised = new Money(2500.0, 'EUR');
         $goal = new Money(5000.0, 'EUR');
 
@@ -961,8 +961,8 @@ describe('DonationProgress Value Object', function () {
     });
 });
 
-describe('CampaignProgress Value Object', function () {
-    it('creates campaign progress with all required parameters', function () {
+describe('CampaignProgress Value Object', function (): void {
+    it('creates campaign progress with all required parameters', function (): void {
         $progress = new CampaignProgress(
             campaignId: 1,
             goalAmount: 10000.0,
@@ -998,7 +998,7 @@ describe('CampaignProgress Value Object', function () {
             ->and($progress->getDonationsCount())->toBe(100);
     });
 
-    it('throws exception for negative current amount', function () {
+    it('throws exception for negative current amount', function (): void {
         expect(fn () => new CampaignProgress(
             campaignId: 1,
             goalAmount: 10000.0,
@@ -1018,7 +1018,7 @@ describe('CampaignProgress Value Object', function () {
         ))->toThrow(InvalidArgumentException::class, 'Current amount cannot be negative');
     });
 
-    it('throws exception for zero or negative goal amount', function () {
+    it('throws exception for zero or negative goal amount', function (): void {
         expect(fn () => new CampaignProgress(
             campaignId: 1,
             goalAmount: 0.0,
@@ -1038,7 +1038,7 @@ describe('CampaignProgress Value Object', function () {
         ))->toThrow(InvalidArgumentException::class, 'Goal amount must be greater than zero');
     });
 
-    it('throws exception for zero or negative campaign id', function () {
+    it('throws exception for zero or negative campaign id', function (): void {
         expect(fn () => new CampaignProgress(
             campaignId: 0,
             goalAmount: 10000.0,
@@ -1058,13 +1058,13 @@ describe('CampaignProgress Value Object', function () {
         ))->toThrow(InvalidArgumentException::class, 'Campaign ID must be positive');
     });
 
-    it('rounds percentage correctly', function () {
+    it('rounds percentage correctly', function (): void {
         $progress = CampaignProgress::createForTesting(3333.33, 10000.0);
 
         expect($progress->getPercentageRounded())->toBe(33);
     });
 
-    it('determines if campaign is behind schedule', function () {
+    it('determines if campaign is behind schedule', function (): void {
         $behindSchedule = new CampaignProgress(
             campaignId: 1,
             goalAmount: 10000.0,
@@ -1105,7 +1105,7 @@ describe('CampaignProgress Value Object', function () {
             ->and($onSchedule->isBehindSchedule())->toBeFalse();
     });
 
-    it('determines if campaign is completed', function () {
+    it('determines if campaign is completed', function (): void {
         $completed = CampaignProgress::createForTesting(10000.0, 10000.0);
         $notCompleted = CampaignProgress::createForTesting(7500.0, 10000.0);
 
@@ -1113,19 +1113,19 @@ describe('CampaignProgress Value Object', function () {
             ->and($notCompleted->isCompleted())->toBeFalse();
     });
 
-    it('calculates progress ratio correctly', function () {
+    it('calculates progress ratio correctly', function (): void {
         $progress = CampaignProgress::createForTesting(7500.0, 10000.0);
 
         expect($progress->getProgressRatio())->toBe(0.75);
     });
 
-    it('caps progress ratio at 1.0', function () {
+    it('caps progress ratio at 1.0', function (): void {
         $progress = CampaignProgress::createForTesting(15000.0, 10000.0);
 
         expect($progress->getProgressRatio())->toBe(1.0);
     });
 
-    it('provides performance status based on progress state', function () {
+    it('provides performance status based on progress state', function (): void {
         $completed = CampaignProgress::createForTesting(10000.0, 10000.0);
         $excellent = new CampaignProgress(
             campaignId: 1,
@@ -1168,7 +1168,7 @@ describe('CampaignProgress Value Object', function () {
             ->and($poor->getPerformanceStatus())->toBe('poor');
     });
 
-    it('creates progress from campaign object', function () {
+    it('creates progress from campaign object', function (): void {
         $campaign = (object) [
             'id' => 123,
             'goal_amount' => 50000.0,
@@ -1185,7 +1185,7 @@ describe('CampaignProgress Value Object', function () {
             ->and($progress->getPercentage())->toBe(50.0);
     });
 
-    it('handles campaign object without id', function () {
+    it('handles campaign object without id', function (): void {
         $campaign = (object) [
             'goal_amount' => 10000.0,
             'current_amount' => 3000.0,
@@ -1196,7 +1196,7 @@ describe('CampaignProgress Value Object', function () {
         expect($progress->getCampaignId())->toBe(1);
     });
 
-    it('creates progress for testing with sensible defaults', function () {
+    it('creates progress for testing with sensible defaults', function (): void {
         $progress = CampaignProgress::createForTesting(6000.0, 12000.0);
 
         expect($progress->getCampaignId())->toBe(1)
@@ -1209,14 +1209,14 @@ describe('CampaignProgress Value Object', function () {
             ->and($progress->getDaysRemaining())->toBe(15);
     });
 
-    it('calculates velocity in testing factory method', function () {
+    it('calculates velocity in testing factory method', function (): void {
         $progress = CampaignProgress::createForTesting(3000.0, 10000.0);
 
         // velocity = currentAmount / daysElapsed = 3000 / 15 = 200
         expect($progress->getVelocity())->toBe(200.0);
     });
 
-    it('determines track status in testing factory method', function () {
+    it('determines track status in testing factory method', function (): void {
         $onTrack = CampaignProgress::createForTesting(5000.0, 10000.0); // 50% progress, 50% expected
         $offTrack = CampaignProgress::createForTesting(2000.0, 10000.0); // 20% progress, 50% expected
 
@@ -1225,8 +1225,8 @@ describe('CampaignProgress Value Object', function () {
     });
 });
 
-describe('Goal Value Object', function () {
-    it('creates goal with target and current amounts', function () {
+describe('Goal Value Object', function (): void {
+    it('creates goal with target and current amounts', function (): void {
         $target = new Money(10000.0, 'EUR');
         $current = new Money(3000.0, 'EUR');
         $goal = new Goal($target, $current);
@@ -1235,7 +1235,7 @@ describe('Goal Value Object', function () {
             ->and($goal->currentAmount)->toBe($current);
     });
 
-    it('creates goal using factory method', function () {
+    it('creates goal using factory method', function (): void {
         $goal = Goal::create(5000.0, 1500.0, 'USD');
 
         expect($goal->targetAmount->getAmount())->toBe(5000.0)
@@ -1244,7 +1244,7 @@ describe('Goal Value Object', function () {
             ->and($goal->currentAmount->getCurrency())->toBe('USD');
     });
 
-    it('throws exception for zero or negative target amount', function () {
+    it('throws exception for zero or negative target amount', function (): void {
         expect(fn () => new Goal(
             new Money(0.0, 'EUR'),
             new Money(0.0, 'EUR')
@@ -1254,25 +1254,25 @@ describe('Goal Value Object', function () {
             ->toThrow(InvalidArgumentException::class, 'Amount cannot be negative');
     });
 
-    it('throws exception for negative current amount', function () {
+    it('throws exception for negative current amount', function (): void {
         expect(fn () => Goal::create(5000.0, -500.0))
             ->toThrow(InvalidArgumentException::class, 'Amount cannot be negative');
     });
 
-    it('throws exception for currency mismatch', function () {
+    it('throws exception for currency mismatch', function (): void {
         expect(fn () => new Goal(
             new Money(5000.0, 'EUR'),
             new Money(1000.0, 'USD')
         ))->toThrow(InvalidArgumentException::class, 'Goal target and current amounts must have the same currency');
     });
 
-    it('calculates progress percentage correctly', function () {
+    it('calculates progress percentage correctly', function (): void {
         $goal = Goal::create(8000.0, 2000.0);
 
         expect($goal->getProgressPercentage())->toBe(25.0);
     });
 
-    it('handles zero target amount in progress calculation', function () {
+    it('handles zero target amount in progress calculation', function (): void {
         $target = new Money(0.0, 'EUR');
         $current = new Money(0.0, 'EUR');
 
@@ -1281,13 +1281,13 @@ describe('Goal Value Object', function () {
         expect(true)->toBeTrue(); // Placeholder to maintain test structure
     });
 
-    it('caps progress percentage at 100', function () {
+    it('caps progress percentage at 100', function (): void {
         $goal = Goal::create(5000.0, 6000.0);
 
         expect($goal->getProgressPercentage())->toBe(100.0);
     });
 
-    it('calculates remaining amount correctly', function () {
+    it('calculates remaining amount correctly', function (): void {
         $goal = Goal::create(10000.0, 3500.0);
         $remaining = $goal->getRemainingAmount();
 
@@ -1295,14 +1295,14 @@ describe('Goal Value Object', function () {
             ->and($remaining->getCurrency())->toBe('USD');
     });
 
-    it('returns zero remaining when target exceeded', function () {
+    it('returns zero remaining when target exceeded', function (): void {
         $goal = Goal::create(5000.0, 7000.0);
         $remaining = $goal->getRemainingAmount();
 
         expect($remaining->getAmount())->toBe(0.0);
     });
 
-    it('determines if target has been reached', function () {
+    it('determines if target has been reached', function (): void {
         $reached = Goal::create(8000.0, 8000.0);
         $exceeded = Goal::create(5000.0, 6000.0);
         $notReached = Goal::create(10000.0, 7500.0);
@@ -1312,7 +1312,7 @@ describe('Goal Value Object', function () {
             ->and($notReached->hasReachedTarget())->toBeFalse();
     });
 
-    it('adds amount to current total', function () {
+    it('adds amount to current total', function (): void {
         $goal = Goal::create(10000.0, 3000.0, 'EUR');
         $donation = new Money(1500.0, 'EUR');
         $updatedGoal = $goal->addAmount($donation);
@@ -1322,7 +1322,7 @@ describe('Goal Value Object', function () {
             ->and($updatedGoal)->not->toBe($goal); // Should return new instance
     });
 
-    it('throws exception when adding different currency', function () {
+    it('throws exception when adding different currency', function (): void {
         $goal = Goal::create(5000.0, 1000.0, 'EUR');
         $donation = new Money(500.0, 'USD');
 
@@ -1330,7 +1330,7 @@ describe('Goal Value Object', function () {
             ->toThrow(InvalidArgumentException::class, 'Cannot add amount with different currency to goal');
     });
 
-    it('compares goals for equality', function () {
+    it('compares goals for equality', function (): void {
         $goal1 = Goal::create(5000.0, 2000.0, 'EUR');
         $goal2 = Goal::create(5000.0, 2000.0, 'EUR');
         $goal3 = Goal::create(5000.0, 2500.0, 'EUR');
@@ -1341,7 +1341,7 @@ describe('Goal Value Object', function () {
             ->and($goal1->equals($goal4))->toBeFalse();
     });
 
-    it('converts to string with formatted display', function () {
+    it('converts to string with formatted display', function (): void {
         $goal = Goal::create(10000.0, 7500.0, 'EUR');
         $string = (string) $goal;
 
@@ -1350,7 +1350,7 @@ describe('Goal Value Object', function () {
             ->and($string)->toContain('75.0%');
     });
 
-    it('formats string representation correctly', function () {
+    it('formats string representation correctly', function (): void {
         $goal = Goal::create(8000.0, 2000.0, 'USD');
         $string = $goal->__toString();
 
@@ -1360,8 +1360,8 @@ describe('Goal Value Object', function () {
     });
 });
 
-describe('TimeRemaining Value Object', function () {
-    it('creates time remaining with end date', function () {
+describe('TimeRemaining Value Object', function (): void {
+    it('creates time remaining with end date', function (): void {
         $endDate = Carbon::parse('2025-12-31 23:59:59');
         $currentDate = Carbon::parse('2025-12-24 12:00:00');
 
@@ -1370,7 +1370,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getDaysRemaining())->toBe(7);
     });
 
-    it('calculates days remaining correctly', function () {
+    it('calculates days remaining correctly', function (): void {
         $endDate = Carbon::parse('2025-01-10 15:00:00');
         $currentDate = Carbon::parse('2025-01-05 10:00:00');
 
@@ -1379,7 +1379,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getDaysRemaining())->toBe(5);
     });
 
-    it('calculates hours remaining correctly', function () {
+    it('calculates hours remaining correctly', function (): void {
         $endDate = Carbon::parse('2025-01-01 18:00:00');
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
@@ -1388,7 +1388,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getHoursRemaining())->toBe(6);
     });
 
-    it('calculates minutes remaining correctly', function () {
+    it('calculates minutes remaining correctly', function (): void {
         $endDate = Carbon::parse('2025-01-01 12:45:00');
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
@@ -1397,7 +1397,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getMinutesRemaining())->toBe(45);
     });
 
-    it('uses current time when no current date provided', function () {
+    it('uses current time when no current date provided', function (): void {
         $endDate = Carbon::now()->addDays(5);
         $timeRemaining = new TimeRemaining($endDate);
 
@@ -1407,7 +1407,7 @@ describe('TimeRemaining Value Object', function () {
             ->and($daysRemaining)->toBeLessThanOrEqual(5);
     });
 
-    it('determines if campaign is expired', function () {
+    it('determines if campaign is expired', function (): void {
         $expiredEndDate = Carbon::parse('2025-01-01 12:00:00');
         $currentDate = Carbon::parse('2025-01-05 12:00:00');
 
@@ -1420,7 +1420,7 @@ describe('TimeRemaining Value Object', function () {
             ->and($active->isExpired())->toBeFalse();
     });
 
-    it('determines if campaign is expiring soon', function () {
+    it('determines if campaign is expiring soon', function (): void {
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
         $expiringSoon = new TimeRemaining(
@@ -1443,7 +1443,7 @@ describe('TimeRemaining Value Object', function () {
             ->and($expired->isExpiringSoon())->toBeFalse();
     });
 
-    it('uses custom threshold for expiring soon', function () {
+    it('uses custom threshold for expiring soon', function (): void {
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
         $endDate = Carbon::parse('2025-01-04 12:00:00'); // 3 days
 
@@ -1453,7 +1453,7 @@ describe('TimeRemaining Value Object', function () {
             ->and($timeRemaining->isExpiringSoon(2))->toBeFalse();
     });
 
-    it('provides time remaining text for expired campaigns', function () {
+    it('provides time remaining text for expired campaigns', function (): void {
         $expiredEndDate = Carbon::parse('2025-01-01 12:00:00');
         $currentDate = Carbon::parse('2025-01-05 12:00:00');
 
@@ -1462,7 +1462,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getTimeRemainingText())->toBe('Expired');
     });
 
-    it('provides time remaining text for minutes', function () {
+    it('provides time remaining text for minutes', function (): void {
         $endDate = Carbon::parse('2025-01-01 12:30:00');
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
@@ -1471,7 +1471,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getTimeRemainingText())->toBe('30 minutes remaining');
     });
 
-    it('provides time remaining text for hours', function () {
+    it('provides time remaining text for hours', function (): void {
         $endDate = Carbon::parse('2025-01-01 18:00:00');
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
@@ -1480,7 +1480,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getTimeRemainingText())->toBe('6 hours remaining');
     });
 
-    it('provides time remaining text for days', function () {
+    it('provides time remaining text for days', function (): void {
         $endDate = Carbon::parse('2025-01-08 12:00:00');
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
@@ -1489,7 +1489,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getTimeRemainingText())->toBe('7 days remaining');
     });
 
-    it('handles singular vs plural text correctly', function () {
+    it('handles singular vs plural text correctly', function (): void {
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
         $oneDay = new TimeRemaining(
@@ -1512,7 +1512,7 @@ describe('TimeRemaining Value Object', function () {
             ->and($oneMinute->getTimeRemainingText())->toBe('1 minute remaining');
     });
 
-    it('calculates urgency levels correctly', function () {
+    it('calculates urgency levels correctly', function (): void {
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
         $expired = new TimeRemaining(
@@ -1547,7 +1547,7 @@ describe('TimeRemaining Value Object', function () {
             ->and($normal->getUrgencyLevel())->toBe('normal');
     });
 
-    it('provides appropriate urgency colors', function () {
+    it('provides appropriate urgency colors', function (): void {
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
         $expired = new TimeRemaining(
@@ -1570,7 +1570,7 @@ describe('TimeRemaining Value Object', function () {
             ->and($normal->getUrgencyColor())->toBe('green');
     });
 
-    it('creates time remaining from campaign object', function () {
+    it('creates time remaining from campaign object', function (): void {
         $endDate = Carbon::parse('2025-06-01 23:59:59');
         $currentDate = Carbon::parse('2025-05-01 12:00:00');
 
@@ -1583,7 +1583,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getDaysRemaining())->toBe(31);
     });
 
-    it('handles campaign with string end date', function () {
+    it('handles campaign with string end date', function (): void {
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
         $campaign = (object) [
@@ -1595,7 +1595,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getDaysRemaining())->toBe(9);
     });
 
-    it('handles campaign with null end date', function () {
+    it('handles campaign with null end date', function (): void {
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 
         $campaign = (object) [
@@ -1608,7 +1608,7 @@ describe('TimeRemaining Value Object', function () {
         expect($timeRemaining->getDaysRemaining())->toBeGreaterThan(36000);
     });
 
-    it('handles negative time differences correctly', function () {
+    it('handles negative time differences correctly', function (): void {
         $endDate = Carbon::parse('2024-12-01 12:00:00');
         $currentDate = Carbon::parse('2025-01-01 12:00:00');
 

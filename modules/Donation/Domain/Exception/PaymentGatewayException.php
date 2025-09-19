@@ -14,12 +14,14 @@ use Throwable;
  */
 final class PaymentGatewayException extends Exception
 {
+    /**
+     * @param  array<string, mixed>|null  $gatewayData
+     */
     public function __construct(
         string $message = 'Payment gateway error',
         int $code = 0,
         ?Throwable $previous = null,
         public readonly ?string $gatewayCode = null,
-        /** @var array<string, mixed>|null */
         public readonly ?array $gatewayData = null,
     ) {
         parent::__construct($message, $code, $previous);

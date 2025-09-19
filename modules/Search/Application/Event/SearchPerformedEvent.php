@@ -9,10 +9,11 @@ use Modules\Shared\Application\Event\AbstractDomainEvent;
 final class SearchPerformedEvent extends AbstractDomainEvent
 {
     /**
-     * @param  array<string>  $entityTypes
+     * @param  array<int, string>  $entityTypes
      */
     public function __construct(
         public readonly string $query,
+        /** @var array<int, string> */
         public readonly array $entityTypes,
         public readonly int $resultCount,
         public readonly float $executionTime,

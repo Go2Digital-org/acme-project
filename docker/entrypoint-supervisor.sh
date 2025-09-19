@@ -11,7 +11,7 @@ sleep 10
 echo "🔍 Checking MySQL connection..."
 php -r "
 try {
-    \$pdo = new PDO('mysql:host=mysql;dbname=acme_corp_csr', 'acme', 'secret');
+    \$pdo = new PDO('mysql:host=' . \$_ENV['DB_HOST'] . ';dbname=' . \$_ENV['DB_DATABASE'], \$_ENV['DB_USERNAME'], \$_ENV['DB_PASSWORD']);
     echo '✅ MySQL is ready!' . PHP_EOL;
 } catch (Exception \$e) {
     echo '⚠️  MySQL connection warning: ' . \$e->getMessage() . PHP_EOL;

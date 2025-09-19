@@ -51,7 +51,9 @@ class TwoFactorEnabledEvent implements DomainEventInterface
         return $this->occurredAt;
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function getEventData(): array
     {
         return [

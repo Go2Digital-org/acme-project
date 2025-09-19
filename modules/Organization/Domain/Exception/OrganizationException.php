@@ -83,7 +83,7 @@ final class OrganizationException extends DomainException
     }
 
     /**
-     * @param  array<int, string>  $fields
+     * @param  array<string, mixed>  $fields
      */
     public static function missingRequiredFields(array $fields): self
     {

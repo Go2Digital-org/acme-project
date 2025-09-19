@@ -9,7 +9,11 @@ set -euo pipefail
 
 # Configuration
 MEILISEARCH_HOST="${MEILISEARCH_HOST:-http://meilisearch:7700}"
-MEILISEARCH_KEY="${MEILISEARCH_KEY:-masterKey}"
+MEILISEARCH_KEY="${MEILISEARCH_KEY}"
+if [ -z "$MEILISEARCH_KEY" ]; then
+    echo "Error: MEILISEARCH_KEY environment variable is required"
+    exit 1
+fi
 APP_ENV="${APP_ENV:-local}"
 
 # Colors for output

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Team\Domain\Model;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,6 +16,7 @@ use Modules\Organization\Domain\Model\Organization;
 use Modules\Team\Domain\Exception\TeamException;
 use Modules\Team\Domain\ValueObject\Role;
 use Modules\Team\Domain\ValueObject\TeamId;
+use Modules\Team\Infrastructure\Laravel\Factory\TeamFactory;
 use Modules\User\Infrastructure\Laravel\Models\User;
 
 /**
@@ -38,7 +41,8 @@ use Modules\User\Infrastructure\Laravel\Models\User;
  */
 class Team extends Model
 {
-    use SoftDeletes;
+    /** @use HasFactory<TeamFactory> */
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -57,6 +61,14 @@ class Team extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): TeamFactory
+    {
+        return TeamFactory::new();
+    }
 
     // Domain Logic
 

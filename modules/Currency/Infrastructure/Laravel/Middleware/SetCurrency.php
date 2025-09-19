@@ -17,6 +17,11 @@ class SetCurrency
         private readonly CurrencyPreferenceService $currencyService,
     ) {}
 
+    /**
+     * Handle currency setting for the application.
+     *
+     * @param  Closure(Request): Response  $next
+     */
     public function handle(Request $request, Closure $next): Response
     {
         // Check if currency is specified in the request

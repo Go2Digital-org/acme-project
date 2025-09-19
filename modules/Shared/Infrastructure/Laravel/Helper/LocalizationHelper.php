@@ -10,7 +10,8 @@ final class LocalizationHelper
 {
     /**
      * Get all supported locales with their display information.
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public static function getSupportedLocales(): array
@@ -65,7 +66,8 @@ final class LocalizationHelper
 
     /**
      * Get available locales (excluding current).
-     *
+     */
+    /**
      * @return array<string, mixed>
      */
     public static function getAvailableLocales(): array

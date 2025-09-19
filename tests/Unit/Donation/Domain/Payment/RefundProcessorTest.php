@@ -7,9 +7,9 @@ use Modules\Donation\Domain\ValueObject\PaymentResult;
 use Modules\Donation\Domain\ValueObject\PaymentStatus;
 use Modules\Donation\Domain\ValueObject\RefundRequest;
 
-describe('Refund Processing and Validation', function () {
-    describe('RefundRequest Value Object', function () {
-        beforeEach(function () {
+describe('Refund Processing and Validation', function (): void {
+    describe('RefundRequest Value Object', function (): void {
+        beforeEach(function (): void {
             $this->refundRequest = new RefundRequest(
                 transactionId: 'txn_1234567890',
                 amount: 100.50,
@@ -19,8 +19,8 @@ describe('Refund Processing and Validation', function () {
             );
         });
 
-        describe('Constructor and Properties', function () {
-            it('creates refund request with all properties', function () {
+        describe('Constructor and Properties', function (): void {
+            it('creates refund request with all properties', function (): void {
                 expect($this->refundRequest->transactionId)->toBe('txn_1234567890');
                 expect($this->refundRequest->amount)->toBe(100.50);
                 expect($this->refundRequest->currency)->toBe('USD');
@@ -28,7 +28,7 @@ describe('Refund Processing and Validation', function () {
                 expect($this->refundRequest->metadata)->toBe(['order_id' => '12345']);
             });
 
-            it('creates refund request with minimal parameters', function () {
+            it('creates refund request with minimal parameters', function (): void {
                 $request = new RefundRequest('txn_123', 50.00, 'EUR');
 
                 expect($request->transactionId)->toBe('txn_123');
@@ -38,21 +38,21 @@ describe('Refund Processing and Validation', function () {
                 expect($request->metadata)->toBeNull();
             });
 
-            it('handles zero refund amount', function () {
+            it('handles zero refund amount', function (): void {
                 $request = new RefundRequest('txn_123', 0.00, 'USD');
 
                 expect($request->amount)->toBe(0.00);
                 expect($request->getAmountInCents())->toBe(0);
             });
 
-            it('handles large refund amounts', function () {
+            it('handles large refund amounts', function (): void {
                 $request = new RefundRequest('txn_123', 999999.99, 'USD');
 
                 expect($request->amount)->toBe(999999.99);
                 expect($request->getAmountInCents())->toBe(99999999);
             });
 
-            it('handles various currencies', function () {
+            it('handles various currencies', function (): void {
                 $currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD'];
 
                 foreach ($currencies as $currency) {
@@ -61,7 +61,7 @@ describe('Refund Processing and Validation', function () {
                 }
             });
 
-            it('preserves metadata structure', function () {
+            it('preserves metadata structure', function (): void {
                 $complexMetadata = [
                     'user_id' => 123,
                     'nested' => ['key' => 'value'],
@@ -76,12 +76,12 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('getAmountInCents() method', function () {
-            it('converts USD amount to cents correctly', function () {
+        describe('getAmountInCents() method', function (): void {
+            it('converts USD amount to cents correctly', function (): void {
                 expect($this->refundRequest->getAmountInCents())->toBe(10050);
             });
 
-            it('handles decimal precision correctly', function () {
+            it('handles decimal precision correctly', function (): void {
                 $testCases = [
                     ['amount' => 1.00, 'expected' => 100],
                     ['amount' => 1.01, 'expected' => 101],
@@ -97,7 +97,7 @@ describe('Refund Processing and Validation', function () {
                 }
             });
 
-            it('handles floating point edge cases', function () {
+            it('handles floating point edge cases', function (): void {
                 // Test potential floating point precision issues
                 $request = new RefundRequest('txn_123', 0.1 + 0.2, 'USD'); // Should be 0.3
 
@@ -106,59 +106,59 @@ describe('Refund Processing and Validation', function () {
                 expect($cents)->toBeBetween(29, 31); // Allow small variance
             });
 
-            it('handles zero amount', function () {
+            it('handles zero amount', function (): void {
                 $request = new RefundRequest('txn_123', 0.00, 'USD');
                 expect($request->getAmountInCents())->toBe(0);
             });
 
-            it('handles negative amounts', function () {
+            it('handles negative amounts', function (): void {
                 $request = new RefundRequest('txn_123', -50.00, 'USD');
                 expect($request->getAmountInCents())->toBe(-5000);
             });
 
-            it('works with different currencies', function () {
+            it('works with different currencies', function (): void {
                 // The conversion should work the same regardless of currency
                 $request = new RefundRequest('txn_123', 75.25, 'EUR');
                 expect($request->getAmountInCents())->toBe(7525);
             });
         });
 
-        describe('getFormattedReason() method', function () {
-            it('returns provided reason when available', function () {
+        describe('getFormattedReason() method', function (): void {
+            it('returns provided reason when available', function (): void {
                 expect($this->refundRequest->getFormattedReason())->toBe('Customer requested refund');
             });
 
-            it('returns default reason when reason is null', function () {
+            it('returns default reason when reason is null', function (): void {
                 $request = new RefundRequest('txn_123', 50.00, 'USD');
                 expect($request->getFormattedReason())->toBe('Donation refund requested');
             });
 
-            it('returns default reason when reason is empty string', function () {
+            it('returns default reason when reason is empty string', function (): void {
                 $request = new RefundRequest('txn_123', 50.00, 'USD', '');
                 expect($request->getFormattedReason())->toBe('');
             });
 
-            it('handles special characters in reason', function () {
+            it('handles special characters in reason', function (): void {
                 $specialReason = 'Refund: <test> & "quotes" & \'apostrophes\'';
                 $request = new RefundRequest('txn_123', 50.00, 'USD', $specialReason);
                 expect($request->getFormattedReason())->toBe($specialReason);
             });
 
-            it('handles unicode characters in reason', function () {
+            it('handles unicode characters in reason', function (): void {
                 $unicodeReason = 'Reembolso solicitado por el cliente 测试';
                 $request = new RefundRequest('txn_123', 50.00, 'USD', $unicodeReason);
                 expect($request->getFormattedReason())->toBe($unicodeReason);
             });
 
-            it('handles very long reasons', function () {
+            it('handles very long reasons', function (): void {
                 $longReason = str_repeat('This is a very long refund reason. ', 10);
                 $request = new RefundRequest('txn_123', 50.00, 'USD', $longReason);
                 expect($request->getFormattedReason())->toBe($longReason);
             });
         });
 
-        describe('getEnrichedMetadata() method', function () {
-            it('merges original metadata with refund context', function () {
+        describe('getEnrichedMetadata() method', function (): void {
+            it('merges original metadata with refund context', function (): void {
                 $enriched = $this->refundRequest->getEnrichedMetadata();
 
                 expect($enriched)->toHaveKey('order_id');
@@ -172,7 +172,7 @@ describe('Refund Processing and Validation', function () {
                 expect($enriched)->toHaveKey('refund_timestamp');
             });
 
-            it('handles null metadata gracefully', function () {
+            it('handles null metadata gracefully', function (): void {
                 $request = new RefundRequest('txn_123', 50.00, 'USD');
                 $enriched = $request->getEnrichedMetadata();
 
@@ -185,14 +185,14 @@ describe('Refund Processing and Validation', function () {
                 expect($enriched)->toHaveKey('refund_timestamp');
             });
 
-            it('includes ISO formatted timestamp', function () {
+            it('includes ISO formatted timestamp', function (): void {
                 $enriched = $this->refundRequest->getEnrichedMetadata();
 
                 expect($enriched['refund_timestamp'])->toBeString();
                 expect($enriched['refund_timestamp'])->toMatch('/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/');
             });
 
-            it('preserves original metadata keys', function () {
+            it('preserves original metadata keys', function (): void {
                 $originalMetadata = [
                     'user_id' => 456,
                     'ip_address' => '192.168.1.1',
@@ -208,7 +208,7 @@ describe('Refund Processing and Validation', function () {
                 }
             });
 
-            it('handles metadata conflicts gracefully', function () {
+            it('handles metadata conflicts gracefully', function (): void {
                 // Original metadata has conflicting keys
                 $conflictingMetadata = [
                     'refund_amount' => 'original_value',
@@ -223,7 +223,7 @@ describe('Refund Processing and Validation', function () {
                 expect($enriched['refund_reason'])->toBe('New reason');
             });
 
-            it('handles complex metadata structures', function () {
+            it('handles complex metadata structures', function (): void {
                 $complexMetadata = [
                     'nested_object' => ['key' => 'value'],
                     'array_data' => [1, 2, 3],
@@ -239,8 +239,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Value Object Immutability', function () {
-            it('is readonly and immutable', function () {
+        describe('Value Object Immutability', function (): void {
+            it('is readonly and immutable', function (): void {
                 $original = new RefundRequest('txn_123', 100.00, 'USD');
 
                 // Properties should be readonly - this would cause compilation error
@@ -254,7 +254,7 @@ describe('Refund Processing and Validation', function () {
                 expect($original->getAmountInCents())->toBe(10000);
             });
 
-            it('metadata enrichment does not modify original', function () {
+            it('metadata enrichment does not modify original', function (): void {
                 $originalMetadata = ['key' => 'value'];
                 $request = new RefundRequest('txn_123', 50.00, 'USD', null, $originalMetadata);
 
@@ -276,9 +276,9 @@ describe('Refund Processing and Validation', function () {
         });
     });
 
-    describe('PaymentResult Refund Integration', function () {
-        describe('Success Results', function () {
-            it('creates successful refund result', function () {
+    describe('PaymentResult Refund Integration', function (): void {
+        describe('Success Results', function (): void {
+            it('creates successful refund result', function (): void {
                 $result = PaymentResult::success([
                     'transaction_id' => 'refund_123',
                     'amount' => 50.00,
@@ -294,7 +294,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->status)->toBe(PaymentStatus::REFUNDED);
             });
 
-            it('handles partial refund results', function () {
+            it('handles partial refund results', function (): void {
                 $result = PaymentResult::success([
                     'status' => PaymentStatus::PARTIALLY_REFUNDED,
                     'amount' => 25.00,
@@ -311,7 +311,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->getGatewayData()['refunded_amount'])->toBe(25.00);
             });
 
-            it('includes processing timestamp', function () {
+            it('includes processing timestamp', function (): void {
                 $result = PaymentResult::success([
                     'status' => PaymentStatus::REFUNDED,
                     'amount' => 100.00,
@@ -322,8 +322,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Failure Results', function () {
-            it('creates failed refund result', function () {
+        describe('Failure Results', function (): void {
+            it('creates failed refund result', function (): void {
                 $result = PaymentResult::failure(
                     'Refund failed: insufficient balance',
                     'insufficient_funds',
@@ -337,7 +337,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->status)->toBe(PaymentStatus::FAILED);
             });
 
-            it('handles timeout errors', function () {
+            it('handles timeout errors', function (): void {
                 $result = PaymentResult::failure(
                     'Gateway timeout during refund processing',
                     'gateway_timeout'
@@ -348,7 +348,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->getErrorCode())->toBe('gateway_timeout');
             });
 
-            it('handles validation errors', function () {
+            it('handles validation errors', function (): void {
                 $result = PaymentResult::failure(
                     'Invalid refund amount: exceeds original transaction',
                     'invalid_amount',
@@ -361,8 +361,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Status Checking Methods', function () {
-            it('correctly identifies successful refunds', function () {
+        describe('Status Checking Methods', function (): void {
+            it('correctly identifies successful refunds', function (): void {
                 $result = PaymentResult::success(['status' => PaymentStatus::REFUNDED]);
 
                 expect($result->isSuccessful())->toBeTrue();
@@ -371,7 +371,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->requiresAction())->toBeFalse();
             });
 
-            it('correctly identifies failed refunds', function () {
+            it('correctly identifies failed refunds', function (): void {
                 $result = PaymentResult::failure('Refund failed');
 
                 expect($result->isSuccessful())->toBeFalse();
@@ -379,7 +379,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->isPending())->toBeFalse();
             });
 
-            it('correctly identifies pending refunds', function () {
+            it('correctly identifies pending refunds', function (): void {
                 $result = PaymentResult::pending([
                     'status' => PaymentStatus::PENDING,
                     'transaction_id' => 'pending_refund_123',
@@ -391,8 +391,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Amount Matching Validation', function () {
-            it('validates matching amounts correctly', function () {
+        describe('Amount Matching Validation', function (): void {
+            it('validates matching amounts correctly', function (): void {
                 $result = PaymentResult::success(['amount' => 100.00]);
                 $withMatching = $result->withMatchingAmount(100.00);
 
@@ -402,7 +402,7 @@ describe('Refund Processing and Validation', function () {
                 expect($metadata['actual_amount'])->toBe(100.00);
             });
 
-            it('detects amount mismatches', function () {
+            it('detects amount mismatches', function (): void {
                 $result = PaymentResult::success(['amount' => 95.00]);
                 $withMatching = $result->withMatchingAmount(100.00);
 
@@ -412,7 +412,7 @@ describe('Refund Processing and Validation', function () {
                 expect($metadata['actual_amount'])->toBe(95.00);
             });
 
-            it('handles small floating point differences', function () {
+            it('handles small floating point differences', function (): void {
                 $result = PaymentResult::success(['amount' => 100.001]);
                 $withMatching = $result->withMatchingAmount(100.00);
 
@@ -420,7 +420,7 @@ describe('Refund Processing and Validation', function () {
                 expect($metadata['amount_matches'])->toBeTrue(); // Within 0.01 tolerance
             });
 
-            it('handles null actual amounts', function () {
+            it('handles null actual amounts', function (): void {
                 $result = PaymentResult::success(['amount' => null]);
                 $withMatching = $result->withMatchingAmount(100.00);
 
@@ -430,8 +430,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Serialization and Data Conversion', function () {
-            it('converts to array correctly', function () {
+        describe('Serialization and Data Conversion', function (): void {
+            it('converts to array correctly', function (): void {
                 $result = PaymentResult::success([
                     'transaction_id' => 'refund_123',
                     'amount' => 75.50,
@@ -453,7 +453,7 @@ describe('Refund Processing and Validation', function () {
                 expect($array['processed_at'])->toBeString();
             });
 
-            it('handles null values in serialization', function () {
+            it('handles null values in serialization', function (): void {
                 $result = PaymentResult::failure('Refund failed');
                 $array = $result->toArray();
 
@@ -466,13 +466,13 @@ describe('Refund Processing and Validation', function () {
         });
     });
 
-    describe('PaymentGatewayInterface Refund Contract', function () {
-        beforeEach(function () {
+    describe('PaymentGatewayInterface Refund Contract', function (): void {
+        beforeEach(function (): void {
             $this->gateway = Mockery::mock(PaymentGatewayInterface::class);
         });
 
-        describe('refundPayment() method contract', function () {
-            it('accepts RefundRequest and returns PaymentResult', function () {
+        describe('refundPayment() method contract', function (): void {
+            it('accepts RefundRequest and returns PaymentResult', function (): void {
                 $refundRequest = new RefundRequest('txn_123', 50.00, 'USD');
                 $expectedResult = PaymentResult::success(['status' => PaymentStatus::REFUNDED]);
 
@@ -487,7 +487,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->isSuccessful())->toBeTrue();
             });
 
-            it('handles successful full refunds', function () {
+            it('handles successful full refunds', function (): void {
                 $refundRequest = new RefundRequest('txn_123', 100.00, 'USD', 'Customer cancellation');
 
                 $this->gateway->shouldReceive('refundPayment')
@@ -510,7 +510,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->status)->toBe(PaymentStatus::REFUNDED);
             });
 
-            it('handles successful partial refunds', function () {
+            it('handles successful partial refunds', function (): void {
                 $refundRequest = new RefundRequest('txn_123', 25.00, 'USD', 'Partial return');
 
                 $this->gateway->shouldReceive('refundPayment')
@@ -533,7 +533,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->getGatewayData()['remaining_balance'])->toBe(75.00);
             });
 
-            it('handles refund failures', function () {
+            it('handles refund failures', function (): void {
                 $refundRequest = new RefundRequest('txn_invalid', 50.00, 'USD');
 
                 $this->gateway->shouldReceive('refundPayment')
@@ -551,7 +551,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->getGatewayData()['searched_transaction'])->toBe('txn_invalid');
             });
 
-            it('handles gateway-specific errors', function () {
+            it('handles gateway-specific errors', function (): void {
                 $refundRequest = new RefundRequest('txn_123', 200.00, 'USD');
 
                 $this->gateway->shouldReceive('refundPayment')
@@ -575,7 +575,7 @@ describe('Refund Processing and Validation', function () {
                 expect($gatewayData['original_amount'])->toBe(100.00);
             });
 
-            it('handles network and timeout errors', function () {
+            it('handles network and timeout errors', function (): void {
                 $refundRequest = new RefundRequest('txn_123', 50.00, 'USD');
 
                 $this->gateway->shouldReceive('refundPayment')
@@ -594,8 +594,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Gateway capability validation', function () {
-            it('validates refund support for payment methods', function () {
+        describe('Gateway capability validation', function (): void {
+            it('validates refund support for payment methods', function (): void {
                 $this->gateway->shouldReceive('supports')
                     ->with('card')
                     ->andReturn(true);
@@ -608,7 +608,7 @@ describe('Refund Processing and Validation', function () {
                 expect($this->gateway->supports('bank_transfer'))->toBeFalse();
             });
 
-            it('validates currency support for refunds', function () {
+            it('validates currency support for refunds', function (): void {
                 $this->gateway->shouldReceive('getSupportedCurrencies')
                     ->andReturn(['USD', 'EUR', 'GBP']);
 
@@ -620,14 +620,14 @@ describe('Refund Processing and Validation', function () {
                 expect($currencies)->not->toContain('JPY');
             });
 
-            it('validates gateway configuration', function () {
+            it('validates gateway configuration', function (): void {
                 $this->gateway->shouldReceive('validateConfiguration')
                     ->andReturn(true);
 
                 expect($this->gateway->validateConfiguration())->toBeTrue();
             });
 
-            it('provides gateway identification', function () {
+            it('provides gateway identification', function (): void {
                 $this->gateway->shouldReceive('getName')
                     ->andReturn('stripe');
 
@@ -636,9 +636,9 @@ describe('Refund Processing and Validation', function () {
         });
     });
 
-    describe('Refund Business Logic Validation', function () {
-        describe('Amount Validation', function () {
-            it('validates positive refund amounts', function () {
+    describe('Refund Business Logic Validation', function (): void {
+        describe('Amount Validation', function (): void {
+            it('validates positive refund amounts', function (): void {
                 expect(fn () => new RefundRequest('txn_123', -50.00, 'USD')); // RefundRequest doesn't validate amounts
 
                 $refundRequest = new RefundRequest('txn_123', -50.00, 'USD');
@@ -646,14 +646,14 @@ describe('Refund Processing and Validation', function () {
                 expect($refundRequest->getAmountInCents())->toBe(-5000);
             });
 
-            it('handles zero refund amounts', function () {
+            it('handles zero refund amounts', function (): void {
                 $refundRequest = new RefundRequest('txn_123', 0.00, 'USD');
 
                 expect($refundRequest->amount)->toBe(0.00);
                 expect($refundRequest->getAmountInCents())->toBe(0);
             });
 
-            it('preserves decimal precision', function () {
+            it('preserves decimal precision', function (): void {
                 $preciseAmount = 123.456789;
                 $refundRequest = new RefundRequest('txn_123', $preciseAmount, 'USD');
 
@@ -663,8 +663,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Currency Consistency', function () {
-            it('preserves currency codes exactly', function () {
+        describe('Currency Consistency', function (): void {
+            it('preserves currency codes exactly', function (): void {
                 $currencies = ['USD', 'eur', 'Gbp', 'CAD'];
 
                 foreach ($currencies as $currency) {
@@ -673,7 +673,7 @@ describe('Refund Processing and Validation', function () {
                 }
             });
 
-            it('includes currency in enriched metadata', function () {
+            it('includes currency in enriched metadata', function (): void {
                 $request = new RefundRequest('txn_123', 50.00, 'JPY');
                 $enriched = $request->getEnrichedMetadata();
 
@@ -681,8 +681,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Reason and Metadata Handling', function () {
-            it('handles various reason formats', function () {
+        describe('Reason and Metadata Handling', function (): void {
+            it('handles various reason formats', function (): void {
                 $reasons = [
                     'Simple reason',
                     'Reason with numbers: 12345',
@@ -704,7 +704,7 @@ describe('Refund Processing and Validation', function () {
                 }
             });
 
-            it('preserves complex metadata structures', function () {
+            it('preserves complex metadata structures', function (): void {
                 $metadata = [
                     'simple_key' => 'simple_value',
                     'numeric_key' => 123,
@@ -724,19 +724,19 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Error Scenarios', function () {
-            it('handles empty transaction IDs', function () {
+        describe('Error Scenarios', function (): void {
+            it('handles empty transaction IDs', function (): void {
                 $request = new RefundRequest('', 50.00, 'USD');
                 expect($request->transactionId)->toBe('');
             });
 
-            it('handles very long transaction IDs', function () {
+            it('handles very long transaction IDs', function (): void {
                 $longId = str_repeat('a', 1000);
                 $request = new RefundRequest($longId, 50.00, 'USD');
                 expect($request->transactionId)->toBe($longId);
             });
 
-            it('handles special characters in transaction IDs', function () {
+            it('handles special characters in transaction IDs', function (): void {
                 $specialId = 'txn_123-456_789.abc@def#ghi';
                 $request = new RefundRequest($specialId, 50.00, 'USD');
                 expect($request->transactionId)->toBe($specialId);
@@ -744,9 +744,9 @@ describe('Refund Processing and Validation', function () {
         });
     });
 
-    describe('Integration Scenarios', function () {
-        describe('End-to-End Refund Flow', function () {
-            it('processes complete refund workflow', function () {
+    describe('Integration Scenarios', function (): void {
+        describe('End-to-End Refund Flow', function (): void {
+            it('processes complete refund workflow', function (): void {
                 // 1. Create refund request
                 $refundRequest = new RefundRequest(
                     'txn_original_123',
@@ -792,7 +792,7 @@ describe('Refund Processing and Validation', function () {
                 expect($result->getGatewayData()['original_transaction'])->toBe('txn_original_123');
             });
 
-            it('handles failed refund workflow with retries', function () {
+            it('handles failed refund workflow with retries', function (): void {
                 $refundRequest = new RefundRequest('txn_retry_123', 100.00, 'USD');
 
                 $gateway = Mockery::mock(PaymentGatewayInterface::class);
@@ -827,8 +827,8 @@ describe('Refund Processing and Validation', function () {
             });
         });
 
-        describe('Multi-Currency Refund Support', function () {
-            it('handles refunds in different currencies', function () {
+        describe('Multi-Currency Refund Support', function (): void {
+            it('handles refunds in different currencies', function (): void {
                 $currencies = [
                     ['USD', 100.00, 10000],
                     ['EUR', 85.50, 8550],

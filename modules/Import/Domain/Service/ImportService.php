@@ -21,29 +21,29 @@ interface ImportService
     /**
      * Validate import file format and structure
      *
-     * @param  array<string, string>  $mapping
-     * @return array<string>
+     * @param  array<string, mixed>  $mapping
+     * @return array<string, mixed>
      */
     public function validateImportFile(string $filePath, array $mapping): array;
 
     /**
      * Get supported file formats for import
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getSupportedFormats(): array;
 
     /**
      * Get required columns for import type
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public function getRequiredColumns(string $importType): array;
 
     /**
      * Preview import data
      *
-     * @return array<array<string, mixed>>
+     * @return array<string, mixed>
      */
     public function previewImportData(string $filePath, int $rowLimit = 10): array;
 }

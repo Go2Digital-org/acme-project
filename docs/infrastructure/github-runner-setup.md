@@ -13,7 +13,7 @@ This guide provides comprehensive scripts for setting up a secure, production-re
 sudo ./scripts/runner-setup.sh <GITHUB_TOKEN> <REPO_URL>
 
 # Example:
-sudo ./scripts/runner-setup.sh ghp_xxxxxxxxxxxx https://github.com/username/acme-corp-optimy
+sudo ./scripts/runner-setup.sh YOUR_GITHUB_TOKEN https://github.com/your-username/your-repo
 ```
 
 ### 2. Verify Installation

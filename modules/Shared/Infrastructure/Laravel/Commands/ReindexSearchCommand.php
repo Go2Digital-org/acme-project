@@ -110,7 +110,8 @@ final class ReindexSearchCommand extends Command
 
     /**
      * Reindex a specific model.
-     *
+     */
+    /**
      * @param  array<string, mixed>  $services
      */
     private function reindexModel(string $model, array $services): void

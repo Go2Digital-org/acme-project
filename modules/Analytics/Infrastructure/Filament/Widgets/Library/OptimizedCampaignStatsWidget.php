@@ -12,8 +12,12 @@ class OptimizedCampaignStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+    /** @var int|string|array<string, mixed> */
     protected int|string|array $columnSpan = 'full';
 
+    /**
+     * @return array<int, Stat>
+     */
     protected function getStats(): array
     {
         $stats = ApplicationCache::getStats('optimized_campaign_stats');
@@ -46,7 +50,7 @@ class OptimizedCampaignStatsWidget extends BaseWidget
     }
 
     /**
-     * @return array<Stat>
+     * @return array<int, Stat>
      */
     protected function getEmptyStats(): array
     {

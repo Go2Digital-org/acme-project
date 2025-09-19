@@ -27,11 +27,17 @@ class DonationSearchService extends SearchService
         return 'donation_search';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDefaultFilters(): array
     {
         return [];
     }
 
+    /**
+     * @return array<string, int>
+     */
     protected function getSearchableAttributesWeights(): array
     {
         return [
@@ -182,7 +188,7 @@ class DonationSearchService extends SearchService
         return cache()->remember($cacheKey, self::CACHE_TTL, fn () => Donation::search($query)
             ->take($limit)
             ->get()
-            ->map(fn (Donation $donation) => [
+            ->map(fn (Donation $donation): array => [
                 'id' => $donation->id,
                 'transaction_id' => $donation->transaction_id,
                 'amount' => $donation->formatted_amount,
@@ -195,14 +201,15 @@ class DonationSearchService extends SearchService
 
     /**
      * Get status facets.
-     *
+     */
+    /**
      * @return array<string, int>
      */
     public function getStatusFacets(string $query = ''): array
     {
         $cacheKey = $this->getCachePrefix() . ':status_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Donation::search($query);
             $donations = $builder->take(1000)->get();
             $facets = [];
@@ -220,14 +227,15 @@ class DonationSearchService extends SearchService
 
     /**
      * Get payment method facets.
-     *
+     */
+    /**
      * @return array<string, int>
      */
     public function getPaymentMethodFacets(string $query = ''): array
     {
         $cacheKey = $this->getCachePrefix() . ':payment_method_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Donation::search($query);
             $donations = $builder->take(1000)->get();
             $facets = [];
@@ -247,14 +255,15 @@ class DonationSearchService extends SearchService
 
     /**
      * Get amount range facets.
-     *
+     */
+    /**
      * @return array<string, int>
      */
     public function getAmountRangeFacets(string $query = ''): array
     {
         $cacheKey = $this->getCachePrefix() . ':amount_range_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Donation::search($query);
             $donations = $builder->take(1000)->get();
             $facets = [];
@@ -278,14 +287,15 @@ class DonationSearchService extends SearchService
 
     /**
      * Get campaign facets.
-     *
+     */
+    /**
      * @return array<string, int>
      */
     public function getCampaignFacets(string $query = ''): array
     {
         $cacheKey = $this->getCachePrefix() . ':campaign_facets:' . md5($query);
 
-        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query) {
+        return cache()->remember($cacheKey, self::CACHE_TTL, function () use ($query): array {
             $builder = Donation::search($query)->where('is_successful', true);
             $donations = $builder->take(1000)->get();
             $facets = [];
