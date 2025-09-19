@@ -12,9 +12,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, dev, 'feature/**', 'hotfix/**', '*.x']
+    branches: [main, dev]  # Only direct pushes to protected branches
   pull_request:
-    branches: [main, dev]
+    branches: [main, dev]  # All PRs targeting protected branches
   schedule:
     - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
   workflow_dispatch:
@@ -162,11 +162,27 @@ jobs:
     runs-on: [self-hosted, linux]
     timeout-minutes: 20
     needs: lint
-    
+
     strategy:
       fail-fast: true  # Stop on first failure to save minutes
       matrix:
         php: ['8.4']
+
+    services:
+      mariadb:
+        image: mariadb:10.11  # LTS version compatible with MySQL 8.0 syntax
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: acme_corp_csr_test
+          MYSQL_USER: acme_user
+          MYSQL_PASSWORD: secret
+        ports:
+          - 3307:3306  # Use different port to avoid conflicts with host MySQL
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout code
@@ -235,28 +251,21 @@ jobs:
         run: |
           cp .env.ci .env
           php artisan key:generate
-          
-          # Self-hosted runner database setup
-          echo "Setting up database for self-hosted runner..."
-          # Create test database if it doesn't exist
-          mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "CREATE DATABASE IF NOT EXISTS acme_corp_csr_test;" 2>/dev/null || {
-            echo "Database already exists or using Docker service"
-          }
 
-      - name: Setup database with schema dump
+      - name: Setup database with MariaDB container
         run: |
-          # Self-hosted runner uses local MySQL
-          echo "Using local MySQL installation"
+          echo "Using MariaDB service container on port 3307"
 
-          # Drop and recreate test database for clean state
-          echo "Dropping existing test database if exists..."
-          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "DROP DATABASE IF EXISTS acme_corp_csr_test;" || true
-
-          echo "Creating fresh test database..."
-          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "CREATE DATABASE IF NOT EXISTS acme_corp_csr_test;"
+          # Wait for MariaDB to be ready
+          echo "Waiting for MariaDB to be ready..."
+          for i in {1..30}; do
+            mysql -h 127.0.0.1 -P 3307 -u acme_user -psecret -e "SELECT 1;" acme_corp_csr_test 2>/dev/null && break
+            echo "Waiting for database... $i/30"
+            sleep 2
+          done
 
           # Verify connection
-          mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} -e "SELECT 1;" acme_corp_csr_test
+          mysql -h 127.0.0.1 -P 3307 -u acme_user -psecret -e "SELECT VERSION();" acme_corp_csr_test
 
           php artisan config:clear
 
@@ -264,7 +273,7 @@ jobs:
           if [ -f "database/schema/mysql-testing-schema.sql" ]; then
             echo "Loading database schema from dump (fast path)..."
             start_time=$(date +%s)
-            mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }} acme_corp_csr_test < database/schema/mysql-testing-schema.sql
+            mysql -h 127.0.0.1 -P 3307 -u acme_user -psecret acme_corp_csr_test < database/schema/mysql-testing-schema.sql
             end_time=$(date +%s)
             echo "Schema loaded successfully in $((end_time - start_time)) seconds"
 
@@ -283,9 +292,15 @@ jobs:
       - name: Run Tests with Quality Gates
         run: |
           echo "::group::Unit Tests (Parallel)"
-          # Unit tests - run without json flag when using parallel
+          # Unit tests with strict pass rate requirement
+          UNIT_RESULT=$(vendor/bin/pest --testsuite=Unit --no-coverage --parallel --processes=10 --compact --json | jq -r '.summary.passed / .summary.total * 100')
           vendor/bin/pest --testsuite=Unit --no-coverage --parallel --processes=10 --compact
-          echo "✅ Unit tests passed"
+          echo "Unit test pass rate: ${UNIT_RESULT}%"
+          if (( $(echo "${UNIT_RESULT} < ${TEST_PASS_THRESHOLD}" | bc -l) )); then
+            echo "::error::Unit test pass rate ${UNIT_RESULT}% is below required ${TEST_PASS_THRESHOLD}%"
+            exit 1
+          fi
+          echo "✅ Unit tests passed quality gate"
           echo "::endgroup::"
 
           echo "::group::Feature & Integration Tests"
