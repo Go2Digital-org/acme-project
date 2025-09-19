@@ -1,4 +1,0 @@
-=== PHPStan Module-by-Module Analysis ===
-Date: Fri Sep 19 03:08:11 CEST 2025
-PHPStan Level: 8
-
