@@ -141,10 +141,6 @@ jobs:
           echo "✅ Architecture validation passed"
           echo "::endgroup::"
 
-          echo "::group::Rector Analysis (non-blocking)"
-          vendor/bin/rector process --config=rector/rector-safe.php --dry-run || echo "⚠️ Rector suggestions available"
-          echo "::endgroup::"
-
       - name: Build Assets
         run: |
           # Try to build with proper Node version
