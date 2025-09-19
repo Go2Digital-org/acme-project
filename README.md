@@ -1,3 +1,5 @@
+<div align="center">
+
 # ACME Corp CSR Platform
 
 [![CI Pipeline](https://github.com/go2digital-org/acme-project/actions/workflows/ci.yml/badge.svg)](https://github.com/go2digital-org/acme-project/actions/workflows/ci.yml)
@@ -9,7 +11,10 @@
 [![Tests](https://img.shields.io/badge/Tests-3,934%20tests%20|%20100%25%20pass%20|%2012,828%20assertions-brightgreen.svg)](#testing)
 [![Architecture](https://img.shields.io/badge/Architecture-Hexagonal%20%E2%80%A2%20DDD%20%E2%80%A2%20CQRS-purple.svg)](#architecture)
 
-Enterprise-grade Corporate Social Responsibility platform engineered with Laravel 12, API Platform 3.x, Hexagonal Architecture, and Domain-Driven Design principles. Features pure API-first architecture with CQRS pattern, designed to handle 20,000+ concurrent users across global operations.
+  <img src="https://go2digit.al/storage/media/a58e6e4f-04bc-4e84-86fb-c18bd0f15e03.png" alt="ACME Corp CSR Platform Banner" width="600">
+</div>
+
+Enterprise-grade Corporate Social Responsibility platform engineered with Laravel 12, API Platform 3.x, Hexagonal Architecture, and Domain-Driven Design principles. Features pure API-first architecture with CQRS pattern, designed to handle 20,000+ concurrent users across global operations.a
 
 ## Tech Stack
 
@@ -366,16 +371,36 @@ docker-compose down
 
 See **[Docker Deployment](docs/docker/docker-deployment.md)** for detailed container setup and **[Deployment Guide](docs/infrastructure/deployment.md)** for production deployment procedures.
 
+## Roadmap
+
+#### Frontend Decoupling
+- [ ] **Vue.js 3 Headless Client**: Develop a modern Vue.js 3 application consuming the API Platform endpoints for complete frontend-backend separation
+- [ ] **React Alternative Client**: Create a React-based client implementation demonstrating framework flexibility through the API-first architecture
+- [ ] **API Platform Enhancement**: Extend API Platform integration with GraphQL support, advanced filtering, and real-time subscriptions via Mercure
+
+#### General Improvements
+- [ ] **Code Cleanup**: Refactor legacy code sections and remove deprecated methods
+- [ ] **Bug Fixes**: Address known issues in campaign management, donation processing, and user authentication flows
+- [ ] **Performance Optimization**: Optimize database queries and implement additional caching strategies
+- [ ] **Technical Debt**: Resolve accumulated technical debt and improve code maintainability
+
 ## Support
 
 For technical support, please contact the development team.
 
 ## License
 
-This is proprietary software owned by ACME Corporation. All rights reserved.
+This is proprietary software owned by  Go2Digital. All rights reserved.
 
 ---
 
-**Developed and Maintained by Go2Digital**
 
-Copyright 2025 Go2Digital - All Rights Reserved
+<div align="center">
+  <img src="https://go2digit.al/storage/profile-photos/19SUTKoKhYGA30JGrl5pjzQyQuXIfvAQ42wuRWGR.png" alt="Go2digit.al Logo" width="150">
+
+**Developed and Maintained by [Go2digit.al](https://go2digit.al)**
+
+Specialized in enterprise-grade applications with focus on scalability, security, and maintainability.
+
+Copyright 2025 Go2digit.al - All Rights Reserved
+</div>
