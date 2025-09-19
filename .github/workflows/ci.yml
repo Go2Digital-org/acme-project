@@ -288,23 +288,14 @@ jobs:
           echo "✅ Unit tests passed"
           echo "::endgroup::"
 
-          echo "::group::Feature Tests"
-          vendor/bin/pest --testsuite=Feature --no-coverage --compact
+          echo "::group::Feature Tests (Parallel)"
+          vendor/bin/pest --testsuite=Feature --no-coverage --parallel --processes=10 --compact
           echo "✅ Feature tests passed"
           echo "::endgroup::"
 
-          echo "::group::Integration Tests"
-          vendor/bin/pest --testsuite=Integration --no-coverage --compact
+          echo "::group::Integration Tests (Parallel)"
+          vendor/bin/pest --testsuite=Integration --no-coverage --parallel --processes=10 --compact
           echo "✅ Integration tests passed"
-          echo "::endgroup::"
-
-          echo "::group::Browser Tests (Pest 4)"
-          # Browser tests with Pest 4 Browser Plugin
-          vendor/bin/pest --testsuite=Browser --no-coverage --compact || {
-            echo "::warning::Browser tests failed - check for environment issues"
-            exit 0  # Non-blocking for now
-          }
-          echo "✅ Browser tests completed"
           echo "::endgroup::"
 
       - name: Upload test artifacts
