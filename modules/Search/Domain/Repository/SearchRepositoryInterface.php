@@ -17,7 +17,7 @@ interface SearchRepositoryInterface
     /**
      * Get search suggestions for autocomplete.
      *
-     * @return array<int, string>
+     * @return array<int, array{text: string, id: mixed, type: string}>
      */
     public function getSuggestions(string $query, string $index, int $limit = 10): array;
 

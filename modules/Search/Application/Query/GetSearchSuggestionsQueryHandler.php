@@ -16,7 +16,7 @@ final readonly class GetSearchSuggestionsQueryHandler implements QueryHandlerInt
     ) {}
 
     /**
-     * @return array<int, string>
+     * @return array<int, array{text: string, id: mixed, type: string}>
      */
     public function handle(QueryInterface $query): array
     {

@@ -62,7 +62,7 @@ interface SearchEngineInterface
     /**
      * Get search suggestions for autocomplete.
      *
-     * @return array<int, string>
+     * @return array<int, array{text: string, id: mixed, type: string}>
      */
     public function suggest(string $indexName, string $query, int $limit = 10): array;
 

@@ -180,7 +180,7 @@ class MeilisearchSearchEngine implements SearchEngineInterface
      * Get search suggestions.
      */
     /**
-     * @return array<int, string>
+     * @return array<int, array{text: string, id: mixed, type: string}>
      */
     public function suggest(string $indexName, string $query, int $limit = 10): array
     {
@@ -212,7 +212,7 @@ class MeilisearchSearchEngine implements SearchEngineInterface
                 }
             }
 
-            return array_values(array_column($suggestions, 'text'));
+            return $suggestions;
         } catch (ApiException) {
             return [];
         }
