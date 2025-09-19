@@ -32,7 +32,7 @@ interface PageRepositoryInterface
      * Find multiple pages by their slugs.
      *
      * @param  list<string>  $slugs
-     * @return Collection<int, Page>
+     * @return Collection<string, Page>
      */
     public function findBySlugs(array $slugs): Collection;
 

@@ -64,8 +64,8 @@ describe('Campaign Search Tests (Database)', function (): void {
         });
 
         it('supports case-insensitive search', function (): void {
-            $upperCaseResults = Campaign::whereRaw('LOWER(title->"$.en") LIKE ?', ['%environmental%'])->get();
-            $lowerCaseResults = Campaign::whereRaw('LOWER(title->"$.en") LIKE ?', ['%environmental%'])->get();
+            $upperCaseResults = Campaign::whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', ['%environmental%'])->get();
+            $lowerCaseResults = Campaign::whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', ['%environmental%'])->get();
 
             expect($upperCaseResults)->toHaveCount(1);
             expect($lowerCaseResults)->toHaveCount(1);
@@ -182,7 +182,7 @@ describe('Campaign Search Tests (Database)', function (): void {
                 ->create(['title' => ['en' => 'Environmental Conservation Project']]);
 
             $results = Campaign::where('title->en', 'like', '%Environment%')
-                ->orderByRaw("CASE WHEN title->'$.en' = 'Environment' THEN 1 ELSE 2 END")
+                ->orderByRaw("CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(title, '$.en')) = 'Environment' THEN 1 ELSE 2 END")
                 ->get();
 
             expect($results->first()->getTitle())->toBe('Environment');

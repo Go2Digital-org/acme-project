@@ -41,7 +41,7 @@ class PageEloquentRepository implements PageRepositoryInterface
 
     /**
      * @param  list<string>  $slugs
-     * @return Collection<int, Page>
+     * @return Collection<string, Page>
      */
     public function findBySlugs(array $slugs): Collection
     {
@@ -49,12 +49,13 @@ class PageEloquentRepository implements PageRepositoryInterface
             return new Collection;
         }
 
-        /** @var Collection<int, Page> $pages */
-        $pages = Page::query()
+        /** @var Collection<int, Page> $pagesFromDb */
+        $pagesFromDb = Page::query()
             ->whereIn('slug', $slugs)
             ->get();
 
-        return $pages;
+        // Create a collection keyed by slug, only including found pages
+        return $pagesFromDb->keyBy('slug');
     }
 
     /**

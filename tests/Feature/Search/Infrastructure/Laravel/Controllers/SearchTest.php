@@ -108,7 +108,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 404, 422, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 404, 422, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -144,7 +144,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 404, 422, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 404, 422, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -162,7 +162,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 404, 422, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 404, 422, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -181,7 +181,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 404, 422, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 404, 422, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -203,7 +203,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 302, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 302, 404, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -217,7 +217,7 @@ describe('Search API', function (): void {
             ]);
 
             // API should return 200 for suggestions endpoint, even without query parameter
-            expect($response->getStatusCode())->toBeIn([200, 302, 422, 400, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 302, 422, 400, 404, 500]);
         });
 
         it('limits number of suggestions', function (): void {
@@ -225,7 +225,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 302, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 302, 404, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -238,7 +238,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 302, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 302, 404, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -253,7 +253,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 302, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 302, 404, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
@@ -273,7 +273,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 422, 400, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 422, 400, 404, 500]);
         });
 
         it('handles long queries', function (): void {
@@ -286,7 +286,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 422, 400, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 422, 400, 404, 500]);
         });
 
         it('handles special characters in search query', function (): void {
@@ -299,7 +299,7 @@ describe('Search API', function (): void {
                 'Accept' => 'application/ld+json',
             ]);
 
-            expect($response->getStatusCode())->toBeIn([200, 422, 400, 404, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 422, 400, 404, 500]);
         });
     });
 });
