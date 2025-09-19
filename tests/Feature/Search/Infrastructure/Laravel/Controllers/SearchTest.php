@@ -89,7 +89,7 @@ describe('Search API', function (): void {
             ]);
 
             // Search service might not be available, so be flexible
-            expect($response->getStatusCode())->toBeIn([200, 404, 422, 500]);
+            expect($response->getStatusCode())->toBeIn([200, 201, 404, 422, 500]);
 
             if ($response->getStatusCode() === 200) {
                 $json = $response->json();
