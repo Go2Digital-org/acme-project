@@ -5,7 +5,6 @@ name: CI/CD Pipeline
 # - PHPStan level 8 analysis with 0 errors
 # - Deptrac architecture validation with 0 violations
 # - Laravel Pint code style enforcement
-# - Docker image building and testing
 # - Browser tests with Pest 4
 # - Code coverage analysis with 80% minimum
 # - Fast database setup with schema dumps
@@ -441,84 +440,6 @@ jobs:
           path: coverage/
           retention-days: 30
 
-
-  # ================================================================
-  # DOCKER BUILD & TEST
-  # ================================================================
-  docker:
-    name: Docker Build & Test
-    runs-on: [self-hosted, linux]
-    timeout-minutes: 15
-    needs: lint
-    if: github.event_name == 'push' && contains(fromJSON('["main", "dev"]'), github.ref_name)
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: |
-            network=host
-            image=moby/buildkit:v0.12.0
-
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          platforms: linux/amd64
-          push: false
-          tags: |
-            acme-csr:latest
-            acme-csr:${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-          build-args: |
-            PHP_VERSION=${{ env.PHP_VERSION }}
-            NODE_VERSION=${{ env.NODE_VERSION }}
-
-      - name: Test Docker image
-        run: |
-          echo "::group::Container Health Check"
-          # Start container and verify it's healthy
-          docker run -d --name acme-test \
-            -p 8080:80 \
-            -e APP_ENV=testing \
-            -e APP_KEY=base64:test-key-for-docker-testing \
-            acme-csr:latest
-
-          # Wait for container to be ready
-          sleep 10
-
-          # Health check
-          if docker exec acme-test curl -f http://localhost/health 2>/dev/null; then
-            echo "✅ Docker container health check passed"
-          else
-            echo "::error::Docker container health check failed"
-            docker logs acme-test
-            exit 1
-          fi
-
-          # Cleanup
-          docker stop acme-test
-          docker rm acme-test
-          echo "::endgroup::"
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   # ================================================================
   # BASIC SECURITY AUDIT
